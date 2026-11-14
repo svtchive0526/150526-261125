@@ -264,6 +264,34 @@
  #mail-page .mail-row .date{line-height:1.2!important}
 }
 @media(max-width:750px) and (prefers-reduced-motion:reduce){#mail-page .mail-nav,#mail-page .mail-menu-backdrop{transition:none!important}}
+
+/* v13: fixed mail header and compact, fully visible mobile drawer */
+@media(max-width:750px){
+ #svter-lock .lock-open-btn{font-size:0!important}
+ #svter-lock .lock-open-btn::after{content:'잠금해제하기';font-size:21px}
+ #mail-page .mail-header{position:sticky!important;top:0!important;z-index:110!important;height:64px!important;background:#fafafa!important}
+ #mail-page .mail-layout{overflow:visible!important}
+ #mail-page .mail-nav{top:64px!important;height:calc(100dvh - 64px)!important;box-sizing:border-box!important;align-content:flex-start!important;align-items:stretch!important;column-gap:8px!important;row-gap:0!important;padding:20px 28px 12px!important;overflow-y:auto!important;overflow-x:hidden!important}
+ #mail-page .mail-nav>.nav-action{width:calc(50% - 4px)!important;flex:0 0 calc(50% - 4px)!important;max-width:none!important;height:48px!important;min-height:48px!important;margin:0 0 8px!important;padding:0 2px!important;font-size:15px!important;border-radius:11px!important}
+ #mail-page .mail-nav .counts{display:flex!important;flex:0 0 100%!important;justify-content:space-evenly!important;align-items:center!important;width:100%!important;margin:4px 0 9px!important;padding:0!important;gap:0!important}
+ #mail-page .mail-nav .count{flex:1 1 0!important;font-size:10px!important;line-height:1.2!important}
+ #mail-page .mail-nav .count b{font-size:19px!important;margin:0 0 2px!important}
+ #mail-page .mail-nav .nav-divider{flex:0 0 100%!important;width:100%!important;margin:9px 0 10px!important;height:1px!important}
+ #mail-page .mail-nav .folder{flex:0 0 100%!important;height:41px!important;min-height:41px!important;padding:0 12px!important;font-size:15px!important;gap:12px!important;color:#222!important;font-weight:400!important}
+ #mail-page .mail-nav .folder b{font-weight:inherit!important}
+ #mail-page .mail-nav .folder.selected{background:#e3edf8!important;color:#0869bd!important;font-weight:800!important}
+ #mail-page .mail-nav .folder.selected b{font-weight:800!important}
+ #mail-page .mail-nav .folder-icon{flex:0 0 32px!important;width:32px!important;height:32px!important}
+ #mail-page .mail-menu-backdrop{top:64px!important}
+}
+@media(max-width:750px) and (max-height:650px){
+ #mail-page .mail-nav{padding-top:10px!important;padding-bottom:8px!important}
+ #mail-page .mail-nav>.nav-action{height:39px!important;min-height:39px!important;margin-bottom:5px!important}
+ #mail-page .mail-nav .counts{margin:2px 0 4px!important}
+ #mail-page .mail-nav .nav-divider{margin:5px 0 6px!important}
+ #mail-page .mail-nav .folder{height:34px!important;min-height:34px!important}
+ #mail-page .mail-nav .folder-icon{width:27px!important;height:27px!important;flex-basis:27px!important}
+}
 </style></head><body><div id="fiction-disclaimer" aria-label="게임 시작 전 안내"><div class="disclaimer-copy">본 게임은 다소 무서운 플레이 씬이 포함되어 있으니 플레이에 주의하시기 바랍니다.<br>본 게임에 등장하는 지명, 인물, 사건, 제품, 단체 등은 실제와 무관한 것으로 허구임을 밝힙니다.</div></div><canvas id="burn-transition" aria-hidden="true"></canvas><div id="loading"><div class="loading-stack"><div class="loading-text" id="typing-text" data-text=""><span id="typed"></span><span class="type-cursor">|</span></div><button type="button" id="sound-enable" class="sound-enable">클릭하여 키보드 소리 켜기 <span aria-hidden="true">♪</span></button></div></div><div id="title-interlude" aria-label="게임 타이틀 화면"><div class="glitch-band"></div><div class="kanji-sequence" aria-live="off"><span class="kanji-word" id="kanji-word"></span></div><div class="title-symbol" role="img" aria-label="신도"></div></div><section id="svter-lock" aria-label="게임 잠금 화면" aria-hidden="true"><div class="lock-wallpaper"></div><div class="lock-content"><div class="lock-datetime"><div class="lock-clock" id="lock-clock">00:00</div><div class="lock-date" id="lock-date"></div></div><div class="lock-notifications" id="lock-notifications"><button type="button" class="lock-notice" id="sent-notice"><div class="notice-heading"><strong>메일함</strong><time id="sent-notice-time">어제 21:05</time></div><div class="notice-body">성공적으로 메일이 발송되었습니다.</div></button></div><button type="button" class="lock-open-btn" id="lock-open-btn">로그인하기</button></div><div class="pin-layer" id="pin-layer"><button type="button" class="pin-back" id="pin-back" aria-label="잠금 화면으로 돌아가기">‹</button><div class="pin-prompt" id="pin-prompt" aria-live="polite">로그인하기</div><div class="pin-hint">힌트: 내 생일</div><form class="pin-form" id="pin-form"><input class="pin-input" id="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-label="잠금 화면 비밀번호"><button class="pin-submit" type="submit">로그인하기</button></form></div></section><div id="app"><aside class="browser-sidebar"><div class="tab-heading">8개의 탭 활성화</div><div id="browser-tabs"></div><div class="side-section">탭 그룹</div><div id="groups"></div><div class="side-section">저장됨</div><div id="saved"></div></aside><main class="main"><section id="login-page"><h1 class="logo">SVTER</h1><form class="login-card" id="login-form" novalidate><div class="field"><label for="user">아이디 또는 전화번호</label><input id="user" autocomplete="username" spellcheck="false" value="Bong2@carat.kr"><button type="button" class="clear" data-clear="user" aria-label="아이디 지우기">X</button></div><div class="field password" id="password-field"><label for="password">비밀번호</label><input id="password" type="password" autocomplete="current-password" value=""><button type="button" class="clear" data-clear="password" aria-label="비밀번호 지우기">X</button><div class="error-message" id="login-error" hidden>아이디 또는 비밀번호가 일치하지 않습니다. 입력한 정보를 다시 확인해 주세요.</div></div><div class="options"><label class="remember"><input type="checkbox" checked>로그인 상태 유지</label><div class="toggle-wrap">IP 보안 <button type="button" id="ip-toggle" class="toggle on" aria-label="IP 보안 설정" aria-pressed="true"></button></div></div><div class="login-buttons"><button type="button" class="passkey">패스키 로그인</button><button class="submit" type="submit">로그인</button></div><div class="links"><span>아이디 찾기</span><span>비밀번호 찾기</span><span>회원가입</span></div></form></section><section id="mail-page"><header class="mail-header"><div class="mail-brand"><button type="button" id="mail-home" aria-label="받은 메일함으로 돌아가기"><span class="mobile-back-chevron" aria-hidden="true">‹</span>메일보관함</button></div><div class="greeting">안녕하세요, Bong2님!</div></header><div class="mail-layout"><button type="button" id="mail-menu-backdrop" class="mail-menu-backdrop" aria-label="메일 메뉴 닫기"></button><nav class="mail-nav" id="mail-nav"><button class="nav-action" type="button">메일 쓰기</button><button class="nav-action" type="button">내게 쓰기</button><div class="counts"><div class="count"><b>99+</b>안읽음</div><div class="count"><b>17</b>중요</div><div class="count"><b>13</b>첨부</div><div class="count"><b>0</b>TO</div></div><div class="nav-divider"></div><button class="folder" type="button"><span class="folder-icon"></span>전체 메일</button><button class="folder primary selected" type="button" data-folder="inbox"><span class="folder-icon"></span>받은 메일함&nbsp; <b>99+</b></button><button class="folder primary" type="button" data-folder="sent"><span class="folder-icon"></span>보낸 메일함</button><button class="folder" type="button"><span class="folder-icon"></span>수신 확인</button><button class="folder" type="button"><span class="folder-icon"></span>임시보관함</button><button class="folder" type="button"><span class="folder-icon"></span>내게 쓴 메일함</button><div class="nav-divider"></div><button class="folder" type="button"><span class="folder-icon"></span>스팸메일함</button><button class="folder" type="button"><span class="folder-icon"></span>휴지통</button></nav><section class="mail-content"><div class="mail-toolbar"><div class="chips" id="chips"></div></div><div class="mail-list" id="mail-list"></div><div class="empty" id="empty-label"></div><div class="mail-panel" id="mail-panel"></div></section></div></section></main></div><script>
 // Preserve each player's first-ever launch time across refreshes.
 const SVTER_FIRST_LAUNCH_KEY='svter_first_launch_at_v1';
@@ -419,6 +447,10 @@ mailPanel.addEventListener('click',event=>{
 document.querySelectorAll('.nav-action').forEach((btn,i)=>btn.addEventListener('click',()=>openCompose(i===1)));
 
 // Live clock and date are local to each player's device; mail timestamps still use the saved first launch.
+// Once the player reaches the lock screen, future refreshes resume here.
+const SVTER_LOCK_REACHED_KEY='svter_lock_reached_v1';
+function hasReachedLock(){try{return localStorage.getItem(SVTER_LOCK_REACHED_KEY)==='1'}catch(e){return false}}
+function rememberLockReached(){try{localStorage.setItem(SVTER_LOCK_REACHED_KEY,'1')}catch(e){}}
 const lockScreen=document.getElementById('svter-lock');
 const lockClock=document.getElementById('lock-clock');
 const lockDate=document.getElementById('lock-date');
@@ -449,19 +481,21 @@ function lockNotificationChime(){
    osc.start(t+delay);osc.stop(t+delay+.4);
  }
 }
-function showNewMailNotification(){
+function showNewMailNotification(silent=false){
  if(lockHasArrived||lockUnlocked)return;
  lockHasArrived=true;
  const notice=document.createElement('button');
- notice.type='button';notice.className='lock-notice arriving';notice.id='new-mail-notice';
+ notice.type='button';notice.className='lock-notice'+(silent?'':' arriving');notice.id='new-mail-notice';
  const date=new Date(svterFirstLaunch);
  const received=`${two(date.getHours())}:${two(date.getMinutes())}`;
  notice.innerHTML=`<div class="notice-heading"><strong>메일함</strong><time>${received}</time></div><div class="notice-body">읽지 않은 메일이 하나 있어요!</div>`;
  lockNotificationList.prepend(notice);
  notice.addEventListener('click',()=>openLockPin(true));
- lockNotificationChime();
+ if(!silent)lockNotificationChime();
 }
-function showLockScreen(){
+function showLockScreen(resuming=false){
+ rememberLockReached();
+ lockScreen.style.display='';
  lockScreen.classList.add('lock-visible');
  lockScreen.setAttribute('aria-hidden','false');
  lockScreen.classList.remove('pin-open','lock-unlocking');
@@ -469,11 +503,12 @@ function showLockScreen(){
  // Fixed sent-mail notification: the previous calendar day, at the authored 21:05 time.
  document.getElementById('sent-notice-time').textContent='어제 21:05';
  clearTimeout(lockNotificationTimer);
- lockNotificationTimer=setTimeout(showNewMailNotification,1000);
+ if(resuming)showNewMailNotification(true);
+ else lockNotificationTimer=setTimeout(showNewMailNotification,1000);
 }
 function openLockPin(fromNotification){
  if(lockUnlocked)return;
- lockPrompt.textContent=fromNotification?'로그인해야 읽을 수 있어요':'로그인하기';
+ lockPrompt.textContent=fromNotification?'로그인해야 읽을 수 있어요':(matchMedia('(max-width:750px)').matches?'잠금해제하기':'로그인하기');
  lockPinInput.value='';
  lockScreen.classList.add('pin-open');
  setTimeout(()=>lockPinInput.focus({preventScroll:true}),550);
@@ -847,5 +882,15 @@ async function runOpeningDisclaimer(){
  screen.classList.add('dismissed');
  await runLoading();
 }
-runOpeningDisclaimer();
+if(hasReachedLock()){
+ // The notification has already arrived: skip disclaimer, loading, title, and chime.
+ const disclaimer=document.getElementById('fiction-disclaimer');
+ disclaimer.classList.add('dismissed');disclaimer.style.display='none';
+ const loading=document.getElementById('loading');
+ loading.style.display='none';loading.style.visibility='hidden';
+ const title=document.getElementById('title-interlude');title.style.display='none';
+ showLockScreen(true);
+}else{
+ runOpeningDisclaimer();
+}
 </script></body></html>
