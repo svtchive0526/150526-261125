@@ -97,10 +97,20 @@ footer .motto,footer button{letter-spacing:-.055em}
   .registration-controls{display:flex;margin-top:24px}
   .signin-form h1{margin-bottom:14px}
 }
+
+/* Short full-screen analog interference on the history page. */
+#history-static{position:fixed;inset:0;z-index:199;pointer-events:none;opacity:0;visibility:hidden;overflow:hidden;background:rgba(10,10,12,.32)}
+#history-static.active{visibility:visible;opacity:1;animation:historyStaticFlash .42s steps(1,end) both}
+#history-static::before{content:"";position:absolute;inset:-35%;background:repeating-linear-gradient(0deg,rgba(255,255,255,.22) 0 1px,rgba(0,0,0,.12) 1px 3px,transparent 3px 5px),repeating-linear-gradient(90deg,rgba(255,0,60,.1) 0 2px,transparent 2px 7px,rgba(0,160,255,.09) 7px 9px,transparent 9px 14px);mix-blend-mode:screen;animation:historyStaticShift .09s steps(3,end) infinite}
+#history-static::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 17px,rgba(255,255,255,.48) 18px 19px,rgba(0,0,0,.28) 20px 24px,transparent 25px 53px);animation:historyStaticBands .13s steps(2,end) infinite}
+@keyframes historyStaticFlash{0%{opacity:0}8%{opacity:.9}17%{opacity:.23}29%{opacity:1}42%{opacity:.4}56%{opacity:.92}69%{opacity:.14}83%{opacity:.85}100%{opacity:0}}
+@keyframes historyStaticShift{0%{transform:translate(0,0) skewX(0deg)}33%{transform:translate(-9px,15px) skewX(1deg)}66%{transform:translate(13px,-7px) skewX(-1deg)}100%{transform:translate(-4px,8px)}}
+@keyframes historyStaticBands{0%{transform:translateY(-12%)}50%{transform:translateY(8%)}100%{transform:translateY(-4%)}}
+@media(prefers-reduced-motion:reduce){#history-static.active,#history-static::before,#history-static::after{animation:none}#history-static.active{opacity:.35}}
 </style></head><body>
 <header><button class="logo" id="homeBtn" aria-label="카밀레교 메인 페이지">카밀레교 로고</button><nav class="nav" id="desktopNav" aria-label="주 메뉴"></nav><button class="login" data-page="로그인"><span class="login-square"></span>로그인</button><button class="mobile-toggle" id="mobileToggle" aria-label="메뉴 열기" aria-expanded="false">☰</button><div class="mobile-menu" id="mobileMenu"></div></header>
 <main class="main-area"><aside class="side"><div class="side-heading"><h2 id="sideTitle">교회 안내</h2><p id="sideDesc">카밀레교에 대해 안내드립니다.</p></div><div class="side-links" id="sideLinks"></div></aside><section class="content" id="content" aria-live="polite"></section></main>
-<div id="history-interruption" role="alertdialog" aria-modal="true" aria-label="역사 페이지 오류"><div class="interrupt-dialog">잠깐, 그 분을 불신하십니까?</div></div>
+<div id="history-static" aria-hidden="true"></div><div id="history-interruption" role="alertdialog" aria-modal="true" aria-label="역사 페이지 오류"><div class="interrupt-dialog">잠깐, 그 분을 불신하십니까?</div></div>
 <footer><div class="motto">짓밟히면 솟아오르니 이는 인내를 가르치기 위함이다.</div><div class="footer-links"><button data-page="이용약관">이용약관</button><button data-page="개인정보취급방침">개인정보취급방침</button><button data-page="이용안내">이용안내</button></div></footer>
 <script>
 const groups=[{name:'교회소개',heading:'교회 안내',description:'카밀레교에 대해 안내드립니다.',menu:['교회 안내','카밀레교의 소명','카밀레교의 역사','카밀레교의 교리'],side:['카밀레교의 소명','카밀레교의 역사','카밀레교의 교리']},{name:'목양',heading:'목양 안내',description:'카밀레교와 함께 하고 싶으신가요?',menu:['신도 등록','신도 새 모임','카밀레교 지도'],side:['신도 등록','신도 새 모임','카밀레교 지도']},{name:'찬양',heading:'찬양 안내',description:'카밀레교의 찬양에 대해 안내드립니다.',menu:['찬양 안내','예배 시간','기도회 안내','고해성사 안내'],side:['예배 시간','기도회 안내','고해성사 안내']},{name:'훈련',heading:'훈련 안내',description:'훈련에 대해 안내드립니다.',menu:['훈련 안내','교회 수련회','새 신도 환영회','교리대학'],side:['교회 수련회','새 신도 환영회','교리대학']}];
@@ -121,15 +131,23 @@ let missionIndex=0;
 const missionHTML=`<h1>카밀레교의 소명</h1><p class="mission-lead">카밀레교는 얼어붙은 영혼에 신의 생명을 불어넣으며,<br>태초 섭리(Flux)와 조화를 이루기 위해 거룩한 소명을 품고 나아갑니다.</p><div id="missionStep" class="mission-step" aria-live="polite"></div><div class="mission-controls"><button id="missionPrev" type="button" aria-label="이전 소명" title="이전 소명">‹</button><button id="missionNext" type="button" aria-label="다음 소명" title="다음 소명">›</button></div>`;
 function updateMission(){const step=missionSections[missionIndex];document.getElementById('missionStep').innerHTML=`<p>${step.intro}</p><p class="mission-paragraph">${step.body.join('<br>')}</p>`;document.getElementById('missionPrev').disabled=missionIndex===0;document.getElementById('missionNext').disabled=missionIndex===missionSections.length-1;}
 let historyTimers=[];
-function cancelHistory(){historyTimers.forEach(clearTimeout);historyTimers=[];const overlay=document.getElementById('history-interruption');overlay.className='';}
+function cancelHistory(){historyTimers.forEach(clearTimeout);historyTimers=[];const overlay=document.getElementById('history-interruption');overlay.className='';document.getElementById('history-static').classList.remove('active');}
 function startHistory(){
  // Blink for 2.6 seconds, then brief dark glitch with warning for 0.5 seconds.
  historyTimers.push(setTimeout(()=>{
    if(currentPage!=='카밀레교의 역사')return;
-   const overlay=document.getElementById('history-interruption');overlay.className='show glitch';
+   const staticLayer=document.getElementById('history-static');
+   staticLayer.classList.remove('active');
+   void staticLayer.offsetWidth;
+   staticLayer.classList.add('active');
    historyTimers.push(setTimeout(()=>{
-     if(currentPage==='카밀레교의 역사')render('교회 안내');
-   },500));
+     if(currentPage!=='카밀레교의 역사')return;
+     staticLayer.classList.remove('active');
+     const overlay=document.getElementById('history-interruption');overlay.className='show glitch';
+     historyTimers.push(setTimeout(()=>{
+       if(currentPage==='카밀레교의 역사')render('교회 안내');
+     },500));
+   },420));
  },2600));
 }
 let currentGroup=0,currentPage='교회 안내';
