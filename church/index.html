@@ -159,4 +159,76 @@ document.addEventListener('submit',e=>{if(e.target.id!=='churchSignIn')return;e.
 document.addEventListener('click',e=>{const prev=e.target.closest('#missionPrev'),next=e.target.closest('#missionNext');if(prev||next){missionIndex=Math.max(0,Math.min(2,missionIndex+(next?1:-1)));updateMission();return;}});
 document.addEventListener('click',e=>{const arrow=e.target.closest('.registration-prev,.registration-next');if(arrow){const panels=document.getElementById('registrationPanels');if(!panels)return;const next=arrow.classList.contains('registration-next')?1:0;panels.dataset.panelIndex=String(next);document.querySelector('.registration-prev').disabled=next===0;document.querySelector('.registration-next').disabled=next===1;return;}});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(b){render(b.dataset.page);return}if(!e.target.closest('.nav-group'))closeMenus()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenus()});document.querySelectorAll('.nav-group').forEach((el,i)=>{if(groups[i].name==='목양'){el.querySelector('.nav-trigger').addEventListener('click',()=>render('신도 등록'))}});document.getElementById('homeBtn').addEventListener('click',()=>render('교회 안내'));document.getElementById('mobileToggle').addEventListener('click',()=>{const show=mobile.classList.toggle('show');document.getElementById('mobileToggle').setAttribute('aria-expanded',String(show))});window.addEventListener('hashchange',()=>{const page=decodeURIComponent(location.hash.slice(1));if(page)render(page,false)});const initial=decodeURIComponent(location.hash.slice(1));render(groups.some(g=>g.menu.includes(initial))||['로그인','이용약관','개인정보취급방침','이용안내'].includes(initial)?initial:'교회 안내',false);
+</script>
+<style id="shindo-feedback-style">
+#shindo-feedback{position:fixed;inset:0;z-index:2147483640;background:#f1f1f1;color:#171717;display:none;overflow-y:auto;overscroll-behavior:contain;font-family:Pretendard,-apple-system,BlinkMacSystemFont,'Noto Sans KR',sans-serif;letter-spacing:-.045em}
+#shindo-feedback.sf-open{display:block}
+#shindo-feedback .sf-wrap{min-height:100dvh;max-width:1360px;margin:auto;display:flex;flex-direction:column;align-items:center;padding:clamp(56px,10vh,150px) 28px 58px;box-sizing:border-box}
+#shindo-feedback h2{font-size:clamp(26px,2.7vw,38px);font-weight:850;margin:0 0 38px;text-align:center}
+#shindo-feedback .sf-people{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+#shindo-feedback button{font:inherit;cursor:pointer;touch-action:manipulation}
+#shindo-feedback .sf-person,#shindo-feedback .sf-bottom button{background:#fff;border:1px solid #819e85;border-radius:11px;padding:12px 30px;color:#167787;font-weight:800;font-size:clamp(18px,1.7vw,26px)}
+#shindo-feedback .sf-person[aria-pressed="true"]{background:#006236;color:white}
+#shindo-feedback .sf-compose{width:100%;margin-top:clamp(65px,12vh,150px);max-width:1360px}
+#shindo-feedback .sf-hint{color:#888;font-size:clamp(13px,1.35vw,20px);font-weight:650;margin:0 0 14px}
+#shindo-feedback textarea{display:block;box-sizing:border-box;width:100%;min-height:125px;resize:vertical;background:transparent;border:0;border-bottom:1px solid #d0d0d0;outline:0;font:inherit;color:#222;font-size:clamp(15px,1.4vw,20px);padding:12px 0;line-height:1.7}
+#shindo-feedback textarea:focus{border-bottom-color:#006236}
+#shindo-feedback .sf-bottom{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:clamp(55px,12vh,135px)}
+#shindo-feedback .sf-bottom button{padding:12px 25px}
+#shindo-feedback .sf-status{min-height:24px;text-align:center;font-size:14px;color:#555;margin-top:15px}
+#shindo-feedback .sf-posts{width:100%;margin-top:80px;max-width:1360px}
+#shindo-feedback .sf-posts h3{font-size:20px;margin:0 0 18px}
+#shindo-feedback .sf-post{border-top:1px solid #d2d2d2;padding:17px 0 20px}
+#shindo-feedback .sf-post-meta{color:#777;font-size:13px;font-weight:650;margin-bottom:9px}
+#shindo-feedback .sf-post-text{font-size:16px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere}
+#shindo-feedback .sf-muted{color:#888;font-size:14px}
+@media(max-width:600px){#shindo-feedback .sf-wrap{padding:75px 20px 42px}#shindo-feedback h2{margin-bottom:28px}#shindo-feedback .sf-person{padding:10px 23px}#shindo-feedback .sf-compose{margin-top:75px}#shindo-feedback .sf-bottom{margin-top:55px}#shindo-feedback .sf-posts{margin-top:65px}}
+</style><section id="shindo-feedback" role="dialog" aria-modal="true" aria-label="베타테스트 피드백"><div class="sf-wrap"><h2>피드백을 남겨주세요!</h2><div class="sf-people" role="group" aria-label="작성자 선택"><button class="sf-person" data-person="셉카" aria-pressed="true">셉카</button><button class="sf-person" data-person="안처" aria-pressed="false">안처</button><button class="sf-person" data-person="비행" aria-pressed="false">비행</button></div><div class="sf-compose"><p class="sf-hint" id="sf-hint"></p><textarea id="sf-message" maxlength="3000" aria-label="피드백 내용" placeholder="피드백 내용을 적어주세요."></textarea></div><div class="sf-bottom"><button type="button" id="sf-save">저장하기</button><button type="button" id="sf-return">게임으로돌아가기</button></div><div class="sf-status" id="sf-status" role="status" aria-live="polite"></div><div class="sf-posts"><h3>모두의 피드백</h3><div id="sf-post-list" class="sf-muted">불러오는 중...</div></div></div></section><script src="../feedback-config.js"></script><script id="shindo-feedback-script">
+(()=>{
+'use strict';
+const box=document.getElementById('shindo-feedback');
+const msg=document.getElementById('sf-message');
+const status=document.getElementById('sf-status');
+const list=document.getElementById('sf-post-list');
+const hint=document.getElementById('sf-hint');
+const buttons=[...box.querySelectorAll('.sf-person')];
+let person='셉카', taps=[], lastFocus=null, fetching=false;
+const config=window.SHINDO_FEEDBACK_CONFIG||{};
+const endpoint=String(config.url||'').replace(/\/$/,'');
+const key=String(config.anonKey||'');
+const ready=endpoint.startsWith('https://')&&key&&!key.includes('여기에');
+const fmt=(date)=>{
+ const parts=new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(date);
+ const get=k=>parts.find(x=>x.type===k)?.value||'00';
+ return `${get('year')}.${get('month')}.${get('day')} ${get('hour')}:${get('minute')}`;
+};
+function updateHint(){hint.textContent=`${fmt(new Date())} ${person} - 피드백 내용을 적어주세요. 모두에게 공유됩니다.`}
+function setStatus(s){status.textContent=s}
+function headers(){const h={'apikey':key,'Content-Type':'application/json'};if(!key.startsWith('sb_publishable_'))h.Authorization=`Bearer ${key}`;return h}
+function renderPosts(rows){list.replaceChildren();if(!rows.length){list.textContent='아직 등록된 피드백이 없습니다.';return}
+ for(const r of rows){const item=document.createElement('article');item.className='sf-post';const meta=document.createElement('div');meta.className='sf-post-meta';meta.textContent=`${fmt(new Date(r.created_at))} ${r.author}`;const body=document.createElement('div');body.className='sf-post-text';body.textContent=r.content;item.append(meta,body);list.append(item)}}
+async function loadPosts(){if(fetching)return;if(!ready){list.textContent='Supabase 연결 전입니다. 설정 파일에 프로젝트 URL과 공개 키를 입력해주세요.';return}
+ fetching=true;try{const r=await fetch(`${endpoint}/rest/v1/shindo_beta_feedback?select=author,content,created_at&order=created_at.desc&limit=100`,{headers:headers(),cache:'no-store'});if(!r.ok)throw Error(`조회 실패 (${r.status})`);renderPosts(await r.json())}catch(e){list.textContent='피드백을 불러오지 못했어요. 서버 연결을 확인해주세요.'}finally{fetching=false}}
+function open(){if(box.classList.contains('sf-open'))return;lastFocus=document.activeElement;box.classList.add('sf-open');document.documentElement.style.setProperty('--sf-prior-overflow',document.documentElement.style.overflow);document.documentElement.style.overflow='hidden';updateHint();setStatus('');loadPosts();box.querySelector('.sf-person[aria-pressed="true"]').focus({preventScroll:true})}
+function close(){box.classList.remove('sf-open');document.documentElement.style.overflow=document.documentElement.style.getPropertyValue('--sf-prior-overflow')||'';lastFocus?.focus?.({preventScroll:true});taps=[]}
+buttons.forEach(b=>b.addEventListener('click',()=>{person=b.dataset.person;buttons.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));updateHint()}));
+box.querySelector('#sf-return').addEventListener('click',close);
+box.querySelector('#sf-save').addEventListener('click',async()=>{
+ const content=msg.value.trim();if(!content){setStatus('피드백 내용을 입력해주세요.');msg.focus();return}
+ if(!ready){setStatus('아직 공용 저장 서버가 연결되지 않았어요. Supabase 설정을 완료해주세요.');return}
+ const save=box.querySelector('#sf-save');save.disabled=true;setStatus('저장 중...');try{
+ const r=await fetch(`${endpoint}/rest/v1/shindo_beta_feedback`,{method:'POST',headers:{...headers(),'Prefer':'return=minimal'},body:JSON.stringify({author:person,content})});if(!r.ok)throw Error(`저장 실패 (${r.status})`);
+ msg.value='';setStatus('저장했어요. 다른 플레이어에게도 공개됩니다.');await loadPosts();updateHint()
+ }catch(e){setStatus('저장에 실패했어요. 네트워크와 Supabase 설정을 확인해주세요.')}finally{save.disabled=false}
+});
+// Triple tap/click on the game surface, excluding interactive controls.
+document.addEventListener('pointerup',e=>{
+ if(box.classList.contains('sf-open')||e.button!==0)return;
+ if(e.target.closest('button,a,input,textarea,select,label,[contenteditable="true"]')){taps=[];return}
+ const now=performance.now();taps=taps.filter(t=>now-t.t<1100&&Math.hypot(t.x-e.clientX,t.y-e.clientY)<95);taps.push({t:now,x:e.clientX,y:e.clientY});
+ if(taps.length>=3){taps=[];open()}
+},{passive:true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&box.classList.contains('sf-open'))close()});
+window.SHINDO_openFeedback=open;
+})();
 </script></body></html>
