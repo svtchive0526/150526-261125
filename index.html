@@ -507,6 +507,11 @@ body:not(.sh-browser-unlocked) #sh-browser-loading{display:none!important;pointe
 #kamille-newmail-toast span{font-size:15px;letter-spacing:-.04em;white-space:nowrap}
 @media(max-width:750px){#kamille-newmail-toast{top:40px;width:min(438px,calc(100vw - 120px));min-height:137px;padding:17px 8px}#kamille-newmail-toast strong{font-size:clamp(13px,3.3vw,20px)}#kamille-newmail-toast span{font-size:clamp(11px,2.8vw,15px)}}
 
+/* v36 — desktop notifications have no delete control. */
+@media(min-width:751px){
+ #svter-lock .lock-notice-row .lock-notice-delete{display:none!important}
+ #svter-lock .lock-notice-row.revealed .lock-notice{transform:none!important}
+}
 /* v33 — lock-screen notifications, swipe actions and mobile swipe-to-unlock. */
 #svter-lock .lock-notifications{top:43%;bottom:19%;height:auto;max-height:none;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;gap:9px;padding:0 2px 4px;scrollbar-width:none}
 #svter-lock .lock-notifications::-webkit-scrollbar{display:none}
@@ -697,7 +702,7 @@ document.querySelectorAll('.nav-action').forEach((btn,i)=>btn.addEventListener('
 // Live clock and date are local to each player's device; mail timestamps still use the saved first launch.
 // Once the player reaches the lock screen, future refreshes resume here.
 const SVTER_LOCK_REACHED_KEY='svter_lock_reached_v1';
-function hasReachedLock(){try{return localStorage.getItem(SVTER_LOCK_REACHED_KEY)==='1'}catch(e){return false}}
+function hasReachedLock(){try{return localStorage.getItem(SVTER_LOCK_REACHED_KEY)==='1'||!!localStorage.getItem('kamille_new_mail_received_v32')||localStorage.getItem('shindo_church_link_unlocked_v30')==='1'||localStorage.getItem('shindo_attachment_unlocked_v31')==='1'}catch(e){return false}}
 function rememberLockReached(){try{localStorage.setItem(SVTER_LOCK_REACHED_KEY,'1')}catch(e){}}
 const lockScreen=document.getElementById('svter-lock');
 const lockClock=document.getElementById('lock-clock');
@@ -709,16 +714,33 @@ const lockNotificationList=document.getElementById('lock-notifications');
 // v33: deleted lock notifications remain hidden after refresh.
 const LOCK_DELETED_KEY='svter_lock_deleted_notices_v33';
 function lockDeletedNotices(){try{return JSON.parse(localStorage.getItem(LOCK_DELETED_KEY)||'[]')}catch(e){return []}}
-function makeLockNoticeDismissible(notice,key){
+function dismissLockNotices(keys){
+ const deleted=new Set(lockDeletedNotices());keys.forEach(key=>deleted.add(key));
+ try{localStorage.setItem(LOCK_DELETED_KEY,JSON.stringify([...deleted]))}catch(e){}
+ lockNotificationList.querySelectorAll('.lock-notice-row').forEach(row=>{
+  if(deleted.has(row.dataset.noticeKey))row.remove();
+ });
+}
+function clearLockNoticesOnUnlock(){
+ dismissLockNotices(['sent-original','unread-first','kamille-followup']);
+}
+
+function sortLockNotices(){
+ // Sort actual notification rows by arrival time; the original sent notice is from yesterday.
+ const rows=Array.from(lockNotificationList.querySelectorAll(':scope > .lock-notice-row'));
+ rows.sort((a,b)=>Number(b.dataset.noticeTimestamp||0)-Number(a.dataset.noticeTimestamp||0));
+ rows.forEach(row=>lockNotificationList.appendChild(row));
+}
+function makeLockNoticeDismissible(notice,key,timestamp){
  if(lockDeletedNotices().includes(key)){notice.remove();return}
- const row=document.createElement('div');row.className='lock-notice-row';row.dataset.noticeKey=key;
+ const row=document.createElement('div');row.className='lock-notice-row';row.dataset.noticeKey=key;row.dataset.noticeTimestamp=String(timestamp||0);
  const del=document.createElement('button');del.type='button';del.className='lock-notice-delete';del.textContent='삭제';del.setAttribute('aria-label','알림 삭제');
- notice.parentNode.insertBefore(row,notice);row.appendChild(del);row.appendChild(notice);
+ notice.parentNode.insertBefore(row,notice);row.appendChild(del);row.appendChild(notice);sortLockNotices();
  del.addEventListener('click',event=>{event.stopPropagation();const keys=lockDeletedNotices();if(!keys.includes(key)){keys.push(key);try{localStorage.setItem(LOCK_DELETED_KEY,JSON.stringify(keys))}catch(e){}}row.remove()});
  let startX=0,startY=0,swiping=false;
- row.addEventListener('touchstart',e=>{if(!e.touches.length)return;startX=e.touches[0].clientX;startY=e.touches[0].clientY;swiping=false},{passive:true});
- row.addEventListener('touchmove',e=>{if(!e.touches.length)return;const dx=e.touches[0].clientX-startX,dy=e.touches[0].clientY-startY;if(Math.abs(dx)>18&&Math.abs(dx)>Math.abs(dy)*1.2)swiping=true},{passive:true});
- row.addEventListener('touchend',e=>{if(!e.changedTouches.length)return;const dx=e.changedTouches[0].clientX-startX;if(swiping&&dx < -38){row.classList.add('revealed');e.preventDefault()}else if(swiping&&dx>38){row.classList.remove('revealed');e.preventDefault()}},{passive:false});
+ row.addEventListener('touchstart',e=>{if(!matchMedia('(max-width:750px)').matches||!e.touches.length)return;startX=e.touches[0].clientX;startY=e.touches[0].clientY;swiping=false},{passive:true});
+ row.addEventListener('touchmove',e=>{if(!matchMedia('(max-width:750px)').matches||!e.touches.length)return;const dx=e.touches[0].clientX-startX,dy=e.touches[0].clientY-startY;if(Math.abs(dx)>18&&Math.abs(dx)>Math.abs(dy)*1.2)swiping=true},{passive:true});
+ row.addEventListener('touchend',e=>{if(!matchMedia('(max-width:750px)').matches||!e.changedTouches.length)return;const dx=e.changedTouches[0].clientX-startX;if(swiping&&dx < -38){row.classList.add('revealed');e.preventDefault()}else if(swiping&&dx>38){row.classList.remove('revealed');e.preventDefault()}},{passive:false});
  notice.addEventListener('click',e=>{if(swiping){e.stopImmediatePropagation();e.preventDefault();swiping=false;return}if(row.classList.contains('revealed')){row.classList.remove('revealed');e.stopImmediatePropagation();e.preventDefault()}},true);
 }
 // On mobile, swipe up on the lock wallpaper to open the PIN screen.
@@ -770,7 +792,7 @@ function addKamilleLockNotice(){
  const notice=document.createElement('button');notice.type='button';notice.className='lock-notice';notice.id='kamille-followup-lock-notice';
  const date=new Date(Number(localStorage.getItem(KAMILLE_NEWMAIL_KEY))||Date.now());
  notice.innerHTML=`<div class="notice-heading"><strong>메일함</strong><time>${two(date.getHours())}:${two(date.getMinutes())}</time></div><div class="notice-body">카밀레교에서 새로운 메일이 도착했습니다.</div>`;
- lockNotificationList.prepend(notice);makeLockNoticeDismissible(notice,'kamille-followup');notice.addEventListener('click',()=>openLockPin(true));
+ lockNotificationList.prepend(notice);makeLockNoticeDismissible(notice,'kamille-followup',date.getTime());notice.addEventListener('click',()=>openLockPin(true));
 }
 function openFollowupInbox(){
  kamilleToast.classList.remove('show');clearTimeout(kamilleToastTimer);
@@ -786,6 +808,8 @@ kamilleToast.addEventListener('click',openFollowupInbox);
 function receiveKamilleFollowup(){
  if(kamilleMailReceived()||!localStorage.getItem('shindo_church_link_unlocked_v30'))return;
  localStorage.setItem(KAMILLE_NEWMAIL_KEY,String(Date.now()));
+ // A fresh mail notification replaces every older lock-screen notification.
+ dismissLockNotices(['sent-original','unread-first']);
  installKamilleMail();state.inbox.unshift({checked:false,important:true});
  if(folder==='inbox')render();addKamilleLockNotice();
  if(!lockUnlocked)return;
@@ -806,7 +830,7 @@ function showNewMailNotification(silent=false){
  const date=new Date(svterFirstLaunch);
  const received=`${two(date.getHours())}:${two(date.getMinutes())}`;
  notice.innerHTML=`<div class="notice-heading"><strong>메일함</strong><time>${received}</time></div><div class="notice-body">읽지 않은 메일이 하나 있어요!</div>`;
- lockNotificationList.prepend(notice);makeLockNoticeDismissible(notice,'unread-first');
+ lockNotificationList.prepend(notice);makeLockNoticeDismissible(notice,'unread-first',svterFirstLaunch.getTime());
  notice.addEventListener('click',()=>openLockPin(true));
  if(!silent)lockNotificationChime();
 }
@@ -832,7 +856,7 @@ function openLockPin(fromNotification){
 }
 function closeLockPin(){lockScreen.classList.remove('pin-open');lockPinInput.blur()}
 document.getElementById('lock-open-btn').addEventListener('click',()=>openLockPin(false));
-makeLockNoticeDismissible(document.getElementById('sent-notice'),'sent-original');
+makeLockNoticeDismissible(document.getElementById('sent-notice'),'sent-original',svterFirstLaunch.getTime()-86400000);
 document.getElementById('sent-notice').addEventListener('click',()=>openLockPin(true));
 document.getElementById('pin-back').addEventListener('click',closeLockPin);
 // Tap/click anywhere outside the actual PIN input form to return to the lock screen.
@@ -850,6 +874,7 @@ document.getElementById('pin-form').addEventListener('submit',event=>{
    lockPinInput.value='';lockPinInput.focus();return;
  }
  lockUnlocked=true;clearTimeout(lockNotificationTimer);
+ clearLockNoticesOnUnlock();
  lockPinInput.blur();
  document.getElementById('app').classList.add('ready');
  lockScreen.classList.add('lock-unlocking');
@@ -1202,6 +1227,7 @@ async function runOpeningDisclaimer(){
  await runLoading();
 }
 if(hasReachedLock()){
+ rememberLockReached();
  // The notification has already arrived: skip disclaimer, loading, title, and chime.
  const disclaimer=document.getElementById('fiction-disclaimer');
  disclaimer.classList.add('dismissed');disclaimer.style.display='none';
@@ -1210,7 +1236,13 @@ if(hasReachedLock()){
  const title=document.getElementById('title-interlude');title.style.display='none';
  showLockScreen(true);
 }else{
- runOpeningDisclaimer();
+ runOpeningDisclaimer().catch(error=>{
+   console.error('Opening sequence recovery:',error);
+   document.getElementById('fiction-disclaimer').style.display='none';
+   document.getElementById('loading').style.display='none';
+   document.getElementById('title-interlude').style.display='none';
+   showLockScreen(true);
+ });
 }
 </script>
 <style id="shindo-feedback-style">
