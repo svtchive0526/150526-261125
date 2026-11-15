@@ -75,5 +75,5 @@ window.addEventListener('load',()=>scrollTopNow());
 const resetOnNavigation=e=>{if(e.target.closest('#sh-browserbar,#sh-browserview'))return;const hit=e.target.closest('button,a,.folder,.mail-row,.tab-item');if(hit){showLoading(360);setTimeout(()=>{if(!mode)scrollTopNow()},70)}};
 document.addEventListener('click',resetOnNavigation);
 const panel=byId('mail-panel');if(panel){const navObserver=new MutationObserver(()=>{if(!mode)scrollTopNow()});navObserver.observe(panel,{attributes:true,attributeFilter:['class','style']});}
-persist();if(!tabs.length)openNew();else sync();scrollTopNow();window.SHINDO_browser={openNew,openTabs,openAttachment:()=>create('document'),openChurch:()=>create('church')};
+persist();if(!tabs.length)openNew();else sync();scrollTopNow();window.SHINDO_browser={openNew,openTabs,openAttachment:()=>create('document'),openChurch:()=>create('church'),selectMail:()=>{const mail=tabs.find(t=>t.type==='mail');if(mail)select(mail.id);else create('mail')}};
 })();
