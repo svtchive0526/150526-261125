@@ -27,30 +27,43 @@ const scenes=[
  {kind:'line',text:'주변이 전부 산이다. 이런 데라면 쥐도 새도 모르게 사라지기 딱 좋겠지…',sound:'forest'}
 ];
 const style=document.createElement('style');style.textContent=`
-#shindo-vn{position:fixed;inset:0;z-index:30000;background:#050607;color:#fff;display:none;align-items:flex-end;justify-content:center;font-family:Pretendard,system-ui,sans-serif;cursor:pointer;touch-action:manipulation;user-select:none}
-#shindo-vn.active{display:flex}
+#shindo-vn{position:fixed;inset:0;z-index:30000;background:#050607;color:#fff;display:none;align-items:flex-end;justify-content:center;font-family:Pretendard,'Pretendard Variable',system-ui,sans-serif;cursor:pointer;touch-action:manipulation;user-select:none}
+#shindo-vn.active{display:flex;animation:shindo-story-fade-in 1.1s ease both}@keyframes shindo-story-fade-in{from{opacity:0}to{opacity:1}}
 #shindo-vn.day{background:radial-gradient(ellipse at 50% 20%,#313a3b 0%,#111719 50%,#050607 100%);transition:background 2s}
-#shindo-vn .vn-box{width:min(1000px,calc(100% - 36px));min-height:155px;margin:0 auto clamp(40px,10vh,110px);border:1px solid #777;background:rgba(15,16,18,.91);border-radius:8px;padding:30px 34px 27px;box-sizing:border-box;display:flex;align-items:center;position:relative;line-height:1.85;font-size:clamp(17px,2vw,23px);letter-spacing:-.04em}
+#shindo-vn .vn-box{width:min(1000px,calc(100% - 36px));min-height:155px;margin:0 auto clamp(40px,10vh,110px);border:1px solid #777;background:rgba(15,16,18,.91);border-radius:8px;padding:30px 34px 27px;box-sizing:border-box;display:flex;align-items:center;position:relative;line-height:1.85;font-size:clamp(16px,1.65vw,20px);letter-spacing:-.055em}
 #shindo-vn .vn-box:after{content:'▼';position:absolute;right:20px;bottom:10px;font-size:11px;color:#aaa;animation:vn-pulse 1.2s infinite}
-#shindo-vn .vn-center{align-self:center;margin:auto;text-align:center;font-size:clamp(30px,6vw,62px);font-weight:700;letter-spacing:.04em}
+#shindo-vn .vn-center{align-self:center;margin:auto;text-align:center;font-size:clamp(27px,5vw,52px);font-weight:700;letter-spacing:-.055em}
 #shindo-vn .vn-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);color:#aaa;font-size:12px;white-space:nowrap}
 @keyframes vn-pulse{50%{opacity:.25}}
-@media(max-width:750px){#shindo-vn .vn-box{padding:24px 20px 30px;min-height:170px;margin-bottom:calc(35px + env(safe-area-inset-bottom))}}
+@media(max-width:750px){#shindo-vn .vn-box{padding:19px 17px 26px;min-height:145px;margin-bottom:calc(35px + env(safe-area-inset-bottom));font-size:14px;letter-spacing:-.065em;line-height:1.7}#shindo-vn .vn-center{font-size:clamp(27px,8vw,40px);letter-spacing:-.065em}#shindo-vn .vn-hint{font-size:10px}}
 `;document.head.appendChild(style);
 const overlay=document.createElement('div');overlay.id='shindo-vn';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-label','1일차 스토리');overlay.innerHTML='<div class="vn-box"><span class="vn-text"></span></div><div class="vn-hint">화면을 터치하거나 클릭하여 진행</div>';document.body.appendChild(overlay);
 const box=overlay.querySelector('.vn-box'),content=overlay.querySelector('.vn-text');
-let index=0,locked=false, timer=null, audio=null,ambient=null;
+let index=0,locked=false, timer=null, audio=null,ambient=null;let storySfx=null,storySfxTimer=null;
 function audioContext(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();return audio}catch(e){return null}}
 function tone(freq,duration,vol=.05,type='sine',start=0){const a=audioContext();if(!a)return;const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+start;o.type=type;o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+duration);o.connect(g).connect(a.destination);o.start(t);o.stop(t+duration+.03)}
+function playStoryClip(number){
+ if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}
+ if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}
+ const clip=new Audio('story-audio/01-'+number+'.mp3');
+ storySfx=clip;clip.volume=.7;clip.preload='auto';
+ clip.play().catch(()=>{});
+ storySfxTimer=setTimeout(()=>{if(storySfx===clip){clip.pause();clip.currentTime=0;storySfx=null}},6000);
+}
 function sound(name){if(!name)return;
- if(name==='birds'||name==='forest'){tone(900,.16,.016,'sine');tone(1250,.12,.013,'sine',.22);if(name==='forest'){tone(140,.09,.035,'triangle',.45);tone(120,.1,.03,'triangle',.83)}}
+ if(name==='walk'){playStoryClip(1);return}
+ if(name==='drive'){playStoryClip(2);return}
+ if(name==='stop'){playStoryClip(3);return}
+ if(name==='forest'){playStoryClip(4);return}
+
+ if(name==='birds'){tone(900,.16,.016,'sine');tone(1250,.12,.013,'sine',.22);if(name==='forest'){tone(140,.09,.035,'triangle',.45);tone(120,.1,.03,'triangle',.83)}}
  if(name==='door'){tone(170,.35,.07,'sawtooth');tone(105,.18,.035,'triangle',.3)}
- if(name==='walk'){for(let n=0;n<4;n++)tone(95,.10,.045,'triangle',n*.43)}
- if(name==='drive'){for(let n=0;n<9;n++)tone(66+n%2*4,.35,.025,'sawtooth',n*.35)}
- if(name==='stop'){tone(95,.8,.065,'sawtooth');tone(68,.4,.05,'triangle',.5)}
+ 
+ 
+ 
 }
 function save(){try{localStorage.setItem(KEY,String(index))}catch(e){}}
-function render(){clearTimeout(timer);const scene=scenes[index];if(!scene){finish();return}overlay.classList.toggle('day',index>=3);sound(scene.sound);
+function render(){clearTimeout(timer);const scene=scenes[index];if(!scene){finish();return}overlay.classList.toggle('day',index>=3);if(!(scene.sound==='forest'&&index===22))sound(scene.sound);
  if(scene.kind==='transition'){box.style.display='none';let center=overlay.querySelector('.vn-center');if(!center){center=document.createElement('div');center.className='vn-center';overlay.appendChild(center)}center.textContent=scene.text;center.style.display='block';overlay.querySelector('.vn-hint').style.display='none';locked=true;timer=setTimeout(()=>{locked=false;next()},scene.text?2300:3300);return}
  const center=overlay.querySelector('.vn-center');if(center)center.style.display='none';box.style.display='flex';overlay.querySelector('.vn-hint').style.display='block';content.textContent=scene.text;
  if(scene.follow){locked=true;timer=setTimeout(()=>{locked=false;next()},1600)}
@@ -58,7 +71,7 @@ function render(){clearTimeout(timer);const scene=scenes[index];if(!scene){finis
  else locked=false;
 }
 function next(){if(locked)return;index++;save();render()}
-function finish(){overlay.classList.remove('active');overlay.classList.remove('day');try{localStorage.setItem(KEY,'complete')}catch(e){} }
+function finish(){if(storySfx){storySfx.pause();storySfx=null}clearTimeout(storySfxTimer);overlay.classList.remove('active');overlay.classList.remove('day');try{localStorage.setItem(KEY,'complete')}catch(e){} }
 overlay.addEventListener('click',()=>{audioContext();next()});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next()}});
 window.SHINDO_startStory=()=>{if(localStorage.getItem(KEY)==='complete')return;const n=Number(localStorage.getItem(KEY));index=Number.isInteger(n)&&n>=0&&n<scenes.length?n:0;overlay.classList.add('active');render()};
 })();
