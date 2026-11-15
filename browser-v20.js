@@ -3,6 +3,12 @@
 const main=document.querySelector('#app .main');if(!main)return;
 const bar=document.createElement('div');bar.id='sh-browserbar';bar.innerHTML='<div class="sh-address" id="sh-address">mail.svter.com/mailinventory</div><div class="sh-tablabel" id="sh-tab-a">SVTER 메일함</div><div class="sh-tablabel" id="sh-tab-b">열려있는 탭 주소</div><div class="sh-chrome-spacer"></div><button class="sh-circle" id="sh-plus" title="새 탭 열기">+</button><button class="sh-count" id="sh-count" title="현재 열려있는 탭">1</button><button class="sh-menu" id="sh-menu" title="메뉴">•••</button>';
 main.prepend(bar);
+// On phones, the browser chrome must live above the embedded church iframe,
+// outside the scrolling game content's stacking context.
+const mobileChrome=window.matchMedia('(max-width:750px)');
+function placeChrome(){if(mobileChrome.matches){if(bar.parentNode!==document.body)document.body.append(bar)}else{if(bar.parentNode!==main)main.prepend(bar)}}
+placeChrome();
+mobileChrome.addEventListener?.('change',placeChrome);
 const view=document.createElement('div');view.id='sh-browserview';view.innerHTML='<div class="sh-view-inner"><div class="sh-view-head"><h2 id="sh-view-title">새 탭 열기</h2><button class="sh-return" id="sh-view-return">탭 닫기</button></div><div class="sh-grid" id="sh-grid"></div></div>';main.append(view);
 const church=document.createElement('div');church.id='sh-church-layer';church.innerHTML='<iframe id="sh-church-frame" src="church/" title="카밀레교 홈페이지"></iframe>';main.append(church);
 const documentLayer=document.createElement('div');documentLayer.id='sh-document-layer';documentLayer.innerHTML='<img src="shindo_application.png" alt="카밀레교 신도 신청서">';main.append(documentLayer);
