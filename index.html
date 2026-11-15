@@ -839,6 +839,7 @@ function showNewMailNotification(silent=false){
  if(!silent)lockNotificationChime();
 }
 function showLockScreen(resuming=false){
+ if(lockScreen.classList.contains('lock-visible'))return;
  addKamilleLockNotice();rememberLockReached();
  lockScreen.style.display='';
  lockScreen.classList.add('lock-visible');
@@ -1230,19 +1231,9 @@ async function runOpeningDisclaimer(){
  screen.classList.add('dismissed');
  await runLoading();
 }
-// Recovery watchdog: never strand the player on the opening typewriter screen.
-let svterOpeningFinished=false;
-const svterOpeningWatchdog=setTimeout(()=>{
- if(svterOpeningFinished)return;
- console.warn('Opening timed out; recovering to lock screen');
- document.getElementById('fiction-disclaimer').style.display='none';
- document.getElementById('loading').style.display='none';
- document.getElementById('title-interlude').style.display='none';
- showLockScreen(true);
- svterOpeningFinished=true;
-},18000);
-const svterOriginalShowLockScreen=showLockScreen;
-showLockScreen=function(...args){svterOpeningFinished=true;clearTimeout(svterOpeningWatchdog);return svterOriginalShowLockScreen(...args)};
+// v40: Never interrupt the legitimate opening with a wall-clock watchdog.
+// The full disclaimer -> loading -> title chain owns the transition to the lock screen.
+// Returning players resume at the lock screen using the first-launch/lock-reached markers.
 if(hasReachedLock()){
  rememberLockReached();
  // The notification has already arrived: skip disclaimer, loading, title, and chime.
