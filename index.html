@@ -630,6 +630,9 @@ function openWelcomeMail(record){
  showPanel(`${mailToolbar('받은 메일함')}${buttons}<div class="panel-meta"><div class="panel-subject-row"><button type="button" class="panel-important ${state.inbox[kamilleMailReceived()?1:0].important?'is-important':'is-unimportant'}" data-detail-kind="inbox" data-detail-index="${kamilleMailReceived()?1:0}" aria-pressed="${state.inbox[kamilleMailReceived()?1:0].important}">${state.inbox[kamilleMailReceived()?1:0].important?'중요':'비중요'}</button><h2>${subject}</h2><span class="panel-time">${formatKoreanMailDate(record[2])}</span></div><div class="panel-person">보낸 사람 <span>카밀레교 &lt;kamillechurch@daem.net&gt;</span></div><div class="panel-person">받는 사람 <span>Bong2</span></div></div><div class="panel-body"><div class="attachment">첨부파일 <button type="button" class="pending-attachment" title="첨부 자료는 추후 제공될 예정입니다">카밀레 새 가족 안내 <svg class="download-glyph" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/></svg></button></div><div class="welcome-copy">${body}</div><a class="church-site-link" href="church/">카밀레교 사이트</a></div>`);
 }
 function openKamilleFollowupMail(record,index){
+ const shouldBeginStory=localStorage.getItem("shindo_story_progress_v37")!=="complete";
+ if(shouldBeginStory){localStorage.setItem("shindo_story_started_v37","1");setTimeout(()=>window.SHINDO_startStory?.(),1100);}
+
  try{localStorage.setItem(KAMILLE_NEWMAIL_READ_KEY,'1')}catch(e){}
  const subject=KAMILLE_NEWMAIL_SUBJECT;
  const body=`카밀레교 홈페이지를 열심히 들여다보고 계신 신도님께 메일 드립니다.<br>자세한 건 교회 내부에서 더 알아보실 수 있습니다.<br><br>궁금한 게 있다면 무엇이든 방문 이후 신도들에게 여쭤봐주세요.<br>저희는 새 신도님을 맞이 할 준비를 모두 마치고 아침을 기다리고 있는 중입니다.<br><br>새 신도 김봉봉님, 그럼 아침에 뵙겠습니다.<br><br>평안한 밤 되시길.`;
@@ -1326,4 +1329,4 @@ window.SHINDO_openFeedback=open;
  open.addEventListener('click',()=>{shell.classList.remove('collapsed');close.setAttribute('aria-expanded','true');open.setAttribute('aria-expanded','true');});
  close.setAttribute('aria-expanded','true');open.setAttribute('aria-expanded','true');
 })();
-</script><script src="browser-v20.js"></script></body></html>
+</script><script src="browser-v20.js"></script><script src="story-v37.js"></script></body></html>
