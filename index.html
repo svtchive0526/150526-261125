@@ -1406,8 +1406,8 @@ box.querySelector('#sf-save').addEventListener('click',async()=>{
 // Triple tap/click on the game surface, excluding interactive controls.
 document.addEventListener('pointerup',e=>{
  if(box.classList.contains('sf-open')||e.button!==0)return;
- // Story dialogue advances by tapping; never interpret those taps as the feedback shortcut.
- if(document.getElementById('shindo-vn')?.classList.contains('active')){taps=[];return;}
+ // The three-click shortcut is available during story dialogue as well.
+ // Require three nearby clicks in quick succession to limit accidental activation.
  if(e.target.closest('button,a,input,textarea,select,label,[contenteditable="true"]')){taps=[];return}
  const now=performance.now();taps=taps.filter(t=>now-t.t<1100&&Math.hypot(t.x-e.clientX,t.y-e.clientY)<95);taps.push({t:now,x:e.clientX,y:e.clientY});
  if(taps.length>=3){taps=[];open()}
