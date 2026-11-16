@@ -833,22 +833,37 @@ function openFollowupInbox(){
  window.scrollTo({top:0,left:0,behavior:'instant'});
 }
 kamilleToast.addEventListener('click',openFollowupInbox);
-function receiveKamilleFollowup(){
- if(kamilleMailReceived()||!localStorage.getItem('shindo_church_link_unlocked_v30'))return;
- localStorage.setItem(KAMILLE_NEWMAIL_KEY,String(Date.now()));
- // A fresh mail notification replaces every older lock-screen notification.
- dismissLockNotices(['sent-original','unread-first']);
- installKamilleMail();state.inbox.unshift({checked:false,important:true});
- if(folder==='inbox')render();addKamilleLockNotice();
- if(!lockUnlocked)return;
+// v51: Delivery and on-screen notification are separate states. A received mail
+// must not silently suppress the popup when its delivery event is missed.
+const KAMILLE_TOAST_ACK_KEY='kamille_newmail_popup_ack_v51';
+function showKamilleFollowupToast(){
+ if(!kamilleMailReceived()||localStorage.getItem(KAMILLE_TOAST_ACK_KEY))return;
+ if(!lockUnlocked||document.getElementById('shindo-story')?.classList.contains('active'))return;
+ // A toast is acknowledged when displayed, not when the mail record is created.
+ localStorage.setItem(KAMILLE_TOAST_ACK_KEY,'yes');
  lockNotificationChime();
  kamilleToast.classList.add('show');clearTimeout(kamilleToastTimer);
- kamilleToastTimer=setTimeout(()=>kamilleToast.classList.remove('show'),5000);
+ kamilleToastTimer=setTimeout(()=>kamilleToast.classList.remove('show'),6500);
+}
+function receiveKamilleFollowup(){
+ if(!localStorage.getItem('shindo_church_link_unlocked_v30'))return;
+ if(!kamilleMailReceived()){
+  localStorage.setItem(KAMILLE_NEWMAIL_KEY,String(Date.now()));
+  dismissLockNotices(['sent-original','unread-first']);
+  installKamilleMail();state.inbox.unshift({checked:false,important:true});
+  if(folder==='inbox')render();addKamilleLockNotice();
+ }
+ showKamilleFollowupToast();
 }
 window.addEventListener('message',event=>{
  if(event.origin!==location.origin||event.source!==document.getElementById('sh-church-frame')?.contentWindow)return;
  if(event.data?.type==='kamille-intro-complete-v32')receiveKamilleFollowup();
 });
+// Same-origin iframe localStorage writes do not always trigger a parent storage event.
+// Recheck on focus and at a low frequency while the game is open.
+window.addEventListener('focus',showKamilleFollowupToast);
+window.addEventListener('storage',e=>{if(e.key===KAMILLE_NEWMAIL_KEY)showKamilleFollowupToast()});
+setInterval(showKamilleFollowupToast,1600);
 addKamilleLockNotice();
 function showNewMailNotification(silent=false){
  if(lockHasArrived||lockUnlocked)return;
@@ -1391,6 +1406,8 @@ box.querySelector('#sf-save').addEventListener('click',async()=>{
 // Triple tap/click on the game surface, excluding interactive controls.
 document.addEventListener('pointerup',e=>{
  if(box.classList.contains('sf-open')||e.button!==0)return;
+ // Story dialogue advances by tapping; never interpret those taps as the feedback shortcut.
+ if(document.getElementById('shindo-vn')?.classList.contains('active')){taps=[];return;}
  if(e.target.closest('button,a,input,textarea,select,label,[contenteditable="true"]')){taps=[];return}
  const now=performance.now();taps=taps.filter(t=>now-t.t<1100&&Math.hypot(t.x-e.clientX,t.y-e.clientY)<95);taps.push({t:now,x:e.clientX,y:e.clientY});
  if(taps.length>=3){taps=[];open()}
