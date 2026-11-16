@@ -27,6 +27,9 @@ if(started()&&!done()&&!onChurch){
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',resume,{once:true});else resume();
 }
 if(started()&&!done()&&onChurch){location.replace(root+'?shindo_story_resume=1');return;}
+// A completed beta story returns to the feedback page, not to the mail/lock screen.
+if(done()&&!onChurch){const showCompleted=()=>{document.documentElement.classList.add('shindo-story-resuming');const lock=document.getElementById('svter-lock');if(lock){lock.style.setProperty('display','none','important');lock.setAttribute('aria-hidden','true')}window.SHINDO_openFeedback?.()};if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',showCompleted,{once:true});else showCompleted();}
+if(done()&&onChurch){location.replace(root+'?shindo_story_resume=1');return;}
 // Keep the resumed story above any delayed lock/login transitions.
 if(started()&&!done()&&!onChurch){const guard=document.createElement('style');guard.textContent='html.shindo-story-resuming #svter-lock,html.shindo-story-resuming #fiction-disclaimer,html.shindo-story-resuming #loading,html.shindo-story-resuming #title-interlude{display:none!important;visibility:hidden!important}html.shindo-story-resuming #shindo-vn.active{display:flex!important;visibility:visible!important;z-index:30000!important}';document.head.appendChild(guard);}
 refresh();setInterval(refresh,450);

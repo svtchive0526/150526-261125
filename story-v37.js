@@ -117,10 +117,14 @@ if(scene.kind==='dialogue'){
  else if(index===12){locked=true;timer=setTimeout(()=>{locked=false;next()},2000)}
  else locked=false;
 }
-function next(){if(locked)return; if(index>=scenes.length-1){save();return;} index++;save();render()}
-function finish(){/* The current script is unfinished: keep the final dialogue visible until new scenes are added. */ index=Math.max(0,scenes.length-1);save();render(); }
+function finish(){
+ // Only finish after the player explicitly advances past the final dialogue.
+ try{localStorage.setItem(KEY,'complete');localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}
+ window.SHINDO_openFeedback?.();
+}
+function next(){if(locked)return; if(index>=scenes.length-1){finish();return;} index++;save();render()}
 overlay.addEventListener('click',()=>{audioContext();next()});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next()}});
-window.SHINDO_startStory=()=>{if(localStorage.getItem(KEY)==='complete')return;try{localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){};const n=Number(localStorage.getItem(KEY));index=Number.isInteger(n)&&n>=0&&n<scenes.length?n:0;revealed=scenes.slice(0,index+1).some(x=>x.reveal);
+window.SHINDO_startStory=()=>{if(localStorage.getItem(KEY)==='complete'){window.SHINDO_openFeedback?.();return;}try{localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){};const n=Number(localStorage.getItem(KEY));index=Number.isInteger(n)&&n>=0&&n<scenes.length?n:0;revealed=scenes.slice(0,index+1).some(x=>x.reveal);
 currentPortrait='';for(const scene of scenes.slice(0,index+1)){if(scene.portrait)currentPortrait=scene.portrait}
 overlay.classList.add('active');render()};
 })();
