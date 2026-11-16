@@ -1365,6 +1365,22 @@ window.__shindoMainLockReady=true;
 #shindo-feedback .sf-post-text{font-size:16px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere}
 #shindo-feedback .sf-muted{color:#888;font-size:14px}
 @media(max-width:600px){#shindo-feedback .sf-wrap{padding:75px 20px 42px}#shindo-feedback h2{margin-bottom:28px}#shindo-feedback .sf-person{padding:10px 23px}#shindo-feedback .sf-compose{margin-top:75px}#shindo-feedback .sf-bottom{margin-top:55px}#shindo-feedback .sf-posts{margin-top:65px}}
+
+/* v58 — One-level replies beneath shared feedback. */
+#shindo-feedback .sf-reply-toggle{margin-top:13px;border:0;background:none;color:#176a58;font-size:14px;font-weight:750;padding:5px 0;text-align:left}
+#shindo-feedback .sf-reply-panel{margin:12px 0 0 13px;padding-left:17px;border-left:2px solid #b7c7be}
+#shindo-feedback .sf-reply{padding:11px 0;border-bottom:1px solid #ddd}
+#shindo-feedback .sf-reply-meta{font-size:12px;color:#777;margin-bottom:5px}
+#shindo-feedback .sf-reply-text{font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}
+#shindo-feedback .sf-reply-compose{margin-top:13px}
+#shindo-feedback .sf-reply-people{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+#shindo-feedback .sf-reply-person{border:1px solid #a8b7aa;border-radius:8px;background:white;color:#376e59;font-size:13px;padding:6px 12px;font-weight:700}
+#shindo-feedback .sf-reply-person[aria-pressed="true"]{background:#006236;color:#fff}
+#shindo-feedback .sf-reply-compose textarea{min-height:68px;font-size:14px;padding:8px 0}
+#shindo-feedback .sf-reply-actions{display:flex;align-items:center;gap:12px;justify-content:flex-end;margin-top:9px}
+#shindo-feedback .sf-reply-submit{background:#006236;color:#fff;border:0;border-radius:8px;padding:8px 17px;font-size:13px;font-weight:750}
+#shindo-feedback .sf-reply-submit:disabled{opacity:.5;cursor:wait}
+#shindo-feedback .sf-reply-note{color:#777;font-size:12px}
 </style><section id="shindo-feedback" role="dialog" aria-modal="true" aria-label="베타테스트 피드백"><div class="sf-wrap"><h2>피드백을 남겨주세요!</h2><div class="sf-people" role="group" aria-label="작성자 선택"><button class="sf-person" data-person="셉카" aria-pressed="true">셉카</button><button class="sf-person" data-person="안처" aria-pressed="false">안처</button><button class="sf-person" data-person="비행" aria-pressed="false">비행</button></div><div class="sf-compose"><p class="sf-hint" id="sf-hint"></p><textarea id="sf-message" maxlength="3000" aria-label="피드백 내용" placeholder="피드백 내용을 적어주세요."></textarea></div><div class="sf-bottom"><button type="button" id="sf-save">저장하기</button><button type="button" id="sf-return">게임으로돌아가기</button></div><div class="sf-status" id="sf-status" role="status" aria-live="polite"></div><div class="sf-posts"><h3>모두의 피드백</h3><div id="sf-post-list" class="sf-muted">불러오는 중...</div></div></div></section><script src="feedback-config.js"></script><script id="shindo-feedback-script">
 (()=>{
 'use strict';
@@ -1387,10 +1403,58 @@ const fmt=(date)=>{
 function updateHint(){hint.textContent=`${fmt(new Date())} ${person} - 피드백 내용을 적어주세요. 모두에게 공유됩니다.`}
 function setStatus(s){status.textContent=s}
 function headers(){const h={'apikey':key,'Content-Type':'application/json'};if(!key.startsWith('sb_publishable_'))h.Authorization=`Bearer ${key}`;return h}
-function renderPosts(rows){list.replaceChildren();if(!rows.length){list.textContent='아직 등록된 피드백이 없습니다.';return}
- for(const r of rows){const item=document.createElement('article');item.className='sf-post';const meta=document.createElement('div');meta.className='sf-post-meta';meta.textContent=`${fmt(new Date(r.created_at))} ${r.author}`;const body=document.createElement('div');body.className='sf-post-text';body.textContent=r.content;item.append(meta,body);list.append(item)}}
-async function loadPosts(){if(fetching)return;if(!ready){list.textContent='Supabase 연결 전입니다. 설정 파일에 프로젝트 URL과 공개 키를 입력해주세요.';return}
- fetching=true;try{const r=await fetch(`${endpoint}/rest/v1/shindo_beta_feedback?select=author,content,created_at&order=created_at.desc&limit=100`,{headers:headers(),cache:'no-store'});if(!r.ok)throw Error(`조회 실패 (${r.status})`);renderPosts(await r.json())}catch(e){list.textContent='피드백을 불러오지 못했어요. 서버 연결을 확인해주세요.'}finally{fetching=false}}
+const replyTable='shindo_beta_feedback_replies';
+const replyState=new Map();
+const replyKey=r=>`${r.created_at}|${r.author}`;
+const safeDate=v=>{try{return fmt(new Date(v))}catch(e){return ''}};
+function el(tag,className,txt){const node=document.createElement(tag);if(className)node.className=className;if(txt!==undefined)node.textContent=txt;return node}
+function renderPosts(rows,replies=[],replyError=false){
+ list.replaceChildren();if(!rows.length){list.textContent='아직 등록된 피드백이 없습니다.';return}
+ const grouped=new Map();for(const r of replies){const k=`${r.parent_created_at}|${r.parent_author}`;if(!grouped.has(k))grouped.set(k,[]);grouped.get(k).push(r)}
+ for(const r of rows){
+  const item=el('article','sf-post'),meta=el('div','sf-post-meta',`${safeDate(r.created_at)} ${r.author}`),body=el('div','sf-post-text',r.content);
+  item.append(meta,body);
+  const k=replyKey(r),replyRows=grouped.get(k)||[],toggle=el('button','sf-reply-toggle',`답글 ${replyRows.length}개 · 답글 달기`);
+  toggle.type='button';toggle.setAttribute('aria-expanded','false');
+  const panel=el('div','sf-reply-panel');panel.hidden=true;
+  if(replyError)panel.append(el('div','sf-reply-note','답글을 불러오지 못했어요. Supabase SQL 설정을 확인해주세요.'));
+  for(const rep of replyRows){const reply=el('div','sf-reply');reply.append(el('div','sf-reply-meta',`${safeDate(rep.created_at)} ${rep.author}`),el('div','sf-reply-text',rep.content));panel.append(reply)}
+  const compose=el('div','sf-reply-compose'),people=el('div','sf-reply-people'),field=el('textarea');
+  field.maxLength=1500;field.placeholder='이 피드백에 답글을 남겨주세요.';field.setAttribute('aria-label','답글 내용');
+  let author=person;
+  for(const name of ['셉카','안처','비행']){const b=el('button','sf-reply-person',name);b.type='button';b.setAttribute('aria-pressed',String(name===author));b.addEventListener('click',()=>{author=name;for(const x of people.children)x.setAttribute('aria-pressed',String(x===b))});people.append(b)}
+  const actions=el('div','sf-reply-actions'),note=el('span','sf-reply-note'),submit=el('button','sf-reply-submit','답글 저장');submit.type='button';
+  actions.append(note,submit);compose.append(people,field,actions);panel.append(compose);
+  toggle.addEventListener('click',()=>{panel.hidden=!panel.hidden;toggle.setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden)field.focus({preventScroll:true})});
+  submit.addEventListener('click',async()=>{
+   const content=field.value.trim();if(!content){note.textContent='답글 내용을 입력해주세요.';field.focus();return}
+   if(!ready){note.textContent='Supabase 연결이 필요합니다.';return}
+   submit.disabled=true;note.textContent='저장 중...';
+   try{const response=await fetch(`${endpoint}/rest/v1/${replyTable}`,{method:'POST',headers:{...headers(),'Prefer':'return=minimal'},body:JSON.stringify({parent_created_at:r.created_at,parent_author:r.author,author,content})});if(!response.ok)throw Error(`답글 저장 실패 (${response.status})`);
+    field.value='';note.textContent='답글을 저장했어요.';await loadPosts(true);
+   }catch(e){note.textContent='답글 저장에 실패했어요. SQL 설정을 확인해주세요.'}finally{submit.disabled=false}
+  });
+  item.append(toggle,panel);list.append(item);
+ }
+}
+async function loadPosts(force=false){
+ if(fetching)return;if(!ready){list.textContent='Supabase 연결 전입니다. 설정 파일에 프로젝트 URL과 공개 키를 입력해주세요.';return}
+ fetching=true;
+ try{
+  const r=await fetch(`${endpoint}/rest/v1/shindo_beta_feedback?select=author,content,created_at&order=created_at.desc&limit=100`,{headers:headers(),cache:'no-store'});
+  if(!r.ok)throw Error(`조회 실패 (${r.status})`);
+  const posts=await r.json();let replies=[],replyError=false;
+  if(posts.length){
+   try{
+    const dates=[...new Set(posts.map(x=>x.created_at))];
+    const encoded=dates.map(x=>`"${x.replace(/"/g,'')}"`).join(',');
+    const url=`${endpoint}/rest/v1/${replyTable}?select=parent_created_at,parent_author,author,content,created_at&parent_created_at=in.(${encodeURIComponent(encoded)})&order=created_at.asc&limit=5000`;
+    const rr=await fetch(url,{headers:headers(),cache:'no-store'});if(!rr.ok)throw Error(`답글 조회 실패 (${rr.status})`);replies=await rr.json();
+   }catch(e){replyError=true}
+  }
+  renderPosts(posts,replies,replyError);
+ }catch(e){list.textContent='피드백을 불러오지 못했어요. 서버 연결을 확인해주세요.'}finally{fetching=false}
+}
 function open(){if(box.classList.contains('sf-open'))return;lastFocus=document.activeElement;box.classList.add('sf-open');document.documentElement.style.setProperty('--sf-prior-overflow',document.documentElement.style.overflow);document.documentElement.style.overflow='hidden';updateHint();setStatus('');loadPosts();box.querySelector('.sf-person[aria-pressed="true"]').focus({preventScroll:true})}
 function close(){
  const completed=localStorage.getItem('shindo_story_progress_v37')==='complete';
