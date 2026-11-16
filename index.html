@@ -907,6 +907,7 @@ document.getElementById('pin-form').addEventListener('submit',event=>{
  clearLockNoticesOnUnlock();
  lockPinInput.blur();
  document.getElementById('app').classList.add('ready');
+ ['fiction-disclaimer','loading','title-interlude'].forEach(id=>{const el=document.getElementById(id);if(el){el.classList.add('dismissed');el.style.display='none';}});
  lockScreen.classList.add('lock-unlocking');
  setTimeout(()=>{
    lockScreen.classList.remove('lock-visible','lock-unlocking','pin-open');
@@ -1280,35 +1281,50 @@ if(hasReachedLock()){
 }
 window.__shindoMainLockReady=true;
 </script>
-<script id="shindo-lock-recovery-v44">
+<script id="shindo-lock-recovery-v45">
+/* Restore the actual application shell when an older stored session interrupts
+   the main initializer. Do not erase localStorage, cookies, or unlocked tabs. */
 (function(){
- function get(id){return document.getElementById(id)}
- function recoveryActive(){return !window.__shindoMainLockReady && document.documentElement.classList.contains('svter-resuming-lock')}
- function openPin(){
-   if(!recoveryActive())return;
-   const lock=get('svter-lock');if(!lock)return;
-   lock.classList.add('lock-visible','pin-open');
-   const input=get('pin-input');if(input){input.value='';setTimeout(()=>input.focus({preventScroll:true}),50)}
- }
- document.addEventListener('click',function(e){
-   if(!recoveryActive())return;
-   if(e.target.closest('#lock-open-btn,.lock-notice')){e.preventDefault();openPin()}
-   if(e.target.closest('#pin-back')){e.preventDefault();get('svter-lock')?.classList.remove('pin-open')}
- },true);
- document.addEventListener('submit',function(e){
-   if(!recoveryActive()||e.target.id!=='pin-form')return;
-   e.preventDefault();e.stopImmediatePropagation();
-   const input=get('pin-input');if(!input)return;
-   if(input.value!=='0214'){get('pin-prompt').textContent='다시 입력해주세요';input.value='';return}
-   const lock=get('svter-lock');get('app')?.classList.add('ready');
+ const $=id=>document.getElementById(id);
+ const failed=()=>!window.__shindoMainLockReady && document.documentElement.classList.contains('svter-resuming-lock');
+ function finishUnlock(){
+   const lock=$('svter-lock');
+   ['fiction-disclaimer','loading','title-interlude'].forEach(id=>{
+     const el=$(id);if(el){el.classList.add('dismissed');el.style.setProperty('display','none','important');el.style.visibility='hidden';}
+   });
+   const app=$('app');if(app){app.classList.add('ready');app.style.opacity='1';}
+   if(lock){lock.classList.remove('pin-open','lock-visible','lock-unlocking');lock.style.display='none';lock.setAttribute('aria-hidden','true');}
    document.documentElement.classList.remove('svter-resuming-lock');
-   lock.classList.remove('pin-open','lock-visible');lock.style.display='none';
-   lock.setAttribute('aria-hidden','true');document.body.classList.add('sh-browser-unlocked');
+   document.body.classList.add('sh-browser-unlocked');
+   // An incomplete initializer cannot restore the mailbox's event handlers.
+   // Expose the existing login view instead of trapping players on the intro.
+   const mail=$('mail-page'),login=$('login-page');
+   if(mail && login && getComputedStyle(mail).display==='none'){
+     login.style.display='flex';
+   }
+   window.scrollTo(0,0);
+ }
+ function openPin(){
+   if(!failed())return;
+   const lock=$('svter-lock');if(!lock)return;
+   lock.classList.add('lock-visible','pin-open');
+   const input=$('pin-input');if(input){input.value='';setTimeout(()=>input.focus({preventScroll:true}),50);}
+ }
+ document.addEventListener('click',e=>{
+   if(!failed())return;
+   if(e.target.closest('#lock-open-btn,.lock-notice')){e.preventDefault();openPin();}
+   if(e.target.closest('#pin-back')){e.preventDefault();$('svter-lock')?.classList.remove('pin-open');}
  },true);
- // If the normal initialization fails, reveal the lock and keep recovery controls available.
- window.addEventListener('load',function(){
-   if(!recoveryActive())return;
-   const lock=get('svter-lock');if(lock){lock.classList.add('lock-visible');lock.setAttribute('aria-hidden','false')}
+ document.addEventListener('submit',e=>{
+   if(!failed()||e.target.id!=='pin-form')return;
+   e.preventDefault();e.stopImmediatePropagation();
+   const input=$('pin-input');if(!input)return;
+   if(input.value!=='0214'){$('pin-prompt').textContent='다시 입력해주세요';input.value='';return;}
+   finishUnlock();
+ },true);
+ window.addEventListener('load',()=>{
+   if(!failed())return;
+   const lock=$('svter-lock');if(lock){lock.classList.add('lock-visible');lock.setAttribute('aria-hidden','false');}
  });
 })();
 </script>
