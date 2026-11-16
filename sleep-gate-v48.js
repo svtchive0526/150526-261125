@@ -6,8 +6,11 @@ const onChurch=location.pathname.replace(/\/$/,'').endsWith('/church');
 const root=onChurch?'../':'./';
 const read=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 const write=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
-const started=()=>read(START)==='1';
+const hasProgress=()=>{const v=read(PROGRESS);return v!==null&&v!=='complete'&&Number.isInteger(Number(v))&&Number(v)>=0};
+const started=()=>read(START)==='1'||hasProgress();
 const done=()=>read(PROGRESS)==='complete';
+// Older saves sometimes contain dialogue progress without the separate start flag.
+if(hasProgress()&&read(START)!=='1'){write(START,'1');write(GATE,'0');}
 const style=document.createElement('style');style.textContent=`
 #shindo-sleep-button{position:fixed;bottom:max(18px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:20000;padding:14px 30px;border:1px solid #888;border-radius:13px;background:#17191d;color:white;font:700 17px Pretendard,system-ui,sans-serif;box-shadow:0 5px 22px #0004;cursor:pointer;white-space:nowrap}
 #shindo-sleep-button[hidden]{display:none!important}
@@ -20,9 +23,11 @@ window.SHINDO_unlockSleepButton=()=>{if(!started()&&!done()){write(GATE,'1');ref
 btn.addEventListener('click',()=>{write(START,'1');write(GATE,'0');write(PROGRESS,'0');refresh();if(onChurch){location.href=root+'?shindo_story_resume=1';return;}window.SHINDO_startStory?.();});
 // A started game always resumes at the saved story index, not at the lock/login screen.
 if(started()&&!done()&&!onChurch){
- const resume=()=>{const lock=document.getElementById('svter-lock');if(lock){lock.style.setProperty('display','none','important');lock.setAttribute('aria-hidden','true');}['fiction-disclaimer','loading','title-interlude'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.setProperty('display','none','important')});const app=document.getElementById('app');if(app)app.classList.add('ready');window.SHINDO_startStory?.();};
+ const resume=()=>{document.documentElement.classList.add('shindo-story-resuming');const lock=document.getElementById('svter-lock');if(lock){lock.style.setProperty('display','none','important');lock.setAttribute('aria-hidden','true');}['fiction-disclaimer','loading','title-interlude'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.setProperty('display','none','important')});const app=document.getElementById('app');if(app)app.classList.add('ready');window.SHINDO_startStory?.();};
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',resume,{once:true});else resume();
 }
 if(started()&&!done()&&onChurch){location.replace(root+'?shindo_story_resume=1');return;}
+// Keep the resumed story above any delayed lock/login transitions.
+if(started()&&!done()&&!onChurch){const guard=document.createElement('style');guard.textContent='html.shindo-story-resuming #svter-lock,html.shindo-story-resuming #fiction-disclaimer,html.shindo-story-resuming #loading,html.shindo-story-resuming #title-interlude{display:none!important;visibility:hidden!important}html.shindo-story-resuming #shindo-vn.active{display:flex!important;visibility:visible!important;z-index:30000!important}';document.head.appendChild(guard);}
 refresh();setInterval(refresh,450);
 })();

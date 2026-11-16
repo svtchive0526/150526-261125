@@ -95,7 +95,7 @@ function sound(name){if(!name)return;
  
  
 }
-function save(){try{localStorage.setItem(KEY,String(index))}catch(e){}}
+function save(){try{localStorage.setItem(KEY,String(index));localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}}
 function render(){clearTimeout(timer);const scene=scenes[index];if(!scene){finish();return}
 overlay.classList.toggle('day',index>=3);
 if(scene.kind==='sfx'){sound(scene.sound);index++;save();render();return}
@@ -117,10 +117,10 @@ if(scene.kind==='dialogue'){
  else if(index===12){locked=true;timer=setTimeout(()=>{locked=false;next()},2000)}
  else locked=false;
 }
-function next(){if(locked)return;index++;save();render()}
-function finish(){if(storySfx){storySfx.pause();storySfx=null}clearTimeout(storySfxTimer);overlay.classList.remove('active');overlay.classList.remove('day');try{localStorage.setItem(KEY,'complete')}catch(e){}; window.SHINDO_openFeedback?.(); }
+function next(){if(locked)return; if(index>=scenes.length-1){save();return;} index++;save();render()}
+function finish(){/* The current script is unfinished: keep the final dialogue visible until new scenes are added. */ index=Math.max(0,scenes.length-1);save();render(); }
 overlay.addEventListener('click',()=>{audioContext();next()});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next()}});
-window.SHINDO_startStory=()=>{if(localStorage.getItem(KEY)==='complete')return;const n=Number(localStorage.getItem(KEY));index=Number.isInteger(n)&&n>=0&&n<scenes.length?n:0;revealed=scenes.slice(0,index+1).some(x=>x.reveal);
+window.SHINDO_startStory=()=>{if(localStorage.getItem(KEY)==='complete')return;try{localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){};const n=Number(localStorage.getItem(KEY));index=Number.isInteger(n)&&n>=0&&n<scenes.length?n:0;revealed=scenes.slice(0,index+1).some(x=>x.reveal);
 currentPortrait='';for(const scene of scenes.slice(0,index+1)){if(scene.portrait)currentPortrait=scene.portrait}
 overlay.classList.add('active');render()};
 })();
