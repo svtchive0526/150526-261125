@@ -6,13 +6,13 @@ if(localStorage.getItem(KEY)==='complete'&&!localStorage.getItem('shindo_story_v
 }
 
 const scenes=[
- {kind:'line',text:'아 뭔가 찝찝하지만 어떻게든 되겠지...'},
- {kind:'line',text:'내일 아침이면 정말 그 곳에 가는 건가.'},
+ {kind:'line',text:'뭔가 찝찝하지만 어떻게든 되겠지...'},
+ {kind:'line',text:'내일 아침이면 정말 그곳에 가는 건가.'},
  {kind:'line',text:'일단 자야겠다.'},
  {kind:'transition',text:'1일차 아침',sound:'birds'},
  {kind:'line',text:'…얼마나 잤지?',sound:'birds'},
  {kind:'line',text:'이제 진짜 나서야겠군.',sound:'door'},
- {kind:'line',text:'저 차인가보다.',sound:'walk'},
+ {kind:'line',text:'저 차인가 보다.',sound:'walk'},
  {kind:'transition',text:'',sound:'drive'},
  {kind:'line',text:'봉고차가 천천히 속도를 줄인다.',sound:'stop'},
  {kind:'line',text:'엔진 소리가 낮아지고 덜컹거림이 멎는다. 몸이 앞으로 살짝 쏠렸다가 제자리로 돌아왔다.'},
@@ -44,9 +44,9 @@ const scenes=[
  {kind:"dialogue",speaker:"지훈",text:"아, 죄송합니다. 오다가 길을 잃는 바람에.",inner:false,portrait:"jihoon-body1-default"},
  {kind:"dialogue",speaker:"승철",text:"야 너는 평생 여기 살아놓고 아직도 길을 잃냐?",inner:false,portrait:"seungcheol-body2-smile"},
  {kind:"dialogue",speaker:"주인공",text:"(투닥대는 두 사람은 제법 친해 보인다.)",inner:true},
- {kind:"sfx",sound:"footsteps"},
- {kind:"dialogue",speaker:"주인공",text:"(좁은 산길을 따라 10분쯤 걸었을까. 저 앞에 제법 번듯한 건축물들이 보이기 시작한다.)",inner:true},
- {kind:"dialogue",speaker:"주인공",text:"(여전히. 사이비 마을이라곤 생각되지 않을 정도로 깔끔하고 평범하다.)",inner:true},
+ {kind:"sfx",sound:"footsteps",clearPortrait:true},
+ {kind:"dialogue",speaker:"주인공",text:"(좁은 산길을 따라 10분쯤 걸었을까. 저 앞에 제법 번듯한 건축물들이 보이기 시작한다.)",inner:true,clearPortrait:true},
+ {kind:"dialogue",speaker:"주인공",text:"(여전히. 사이비 마을이라곤 생각되지 않을 정도로 깔끔하고 평범하다.)",inner:true,clearPortrait:true},
  {kind:"dialogue",speaker:"지훈",text:"생활관으로 가시기 전에, 저희 교주님을 먼저 만나뵐 겁니다.",portrait:"jihoon-body1-default"},
  {kind:"dialogue",speaker:"주인공",text:"교주…님이요?"},
  {kind:"dialogue",speaker:"지훈",text:"가벼운 면담 후 입소가 절차라서요. 신청서는 챙겨오셨죠?",portrait:"jihoon-body1-default"},
@@ -70,8 +70,8 @@ const scenes=[
  {kind:"dialogue",speaker:"주인공",text:"(…고요 속에 걷다 보니 어느덧 마을 입구 앞이다.)",inner:true},
  {kind:"dialogue",speaker:"주인공",text:"(심장이 쿵쾅거린다. 해낼 수 있을까? 과연 내가 혈혈단신으로, 이단의 소굴에서…)",inner:true},
  {kind:"image",illustration:"mail-01",duration:6000},
- {kind:"dialogue",speaker:"주인공",text:"(아냐, 김봉봉. 해낸다. 해낼 수 있다. 해내야만 한다.)",inner:true},
- {kind:"narration",text:"마음을 다잡고 승철과 지훈의 안내를 따랐다.",sound:"footsteps"}
+ {kind:"dialogue",speaker:"주인공",text:"(아냐, 김봉봉. 해낸다. 해낼 수 있다. 해내야만 한다.)",inner:true,clearPortrait:true},
+ {kind:"narration",text:"마음을 다잡고 승철과 지훈의 안내를 따랐다.",sound:"footsteps",clearPortrait:true}
 ];
 const style=document.createElement('style');style.textContent=`
 #shindo-vn{position:fixed;inset:0;z-index:30000;background:#050607;color:#fff;display:none;align-items:flex-end;justify-content:center;font-family:Pretendard,'Pretendard Variable',system-ui,sans-serif;cursor:pointer;touch-action:manipulation;user-select:none}
@@ -140,7 +140,7 @@ function sound(name){if(!name)return;
 function save(){try{localStorage.setItem(KEY,String(index));localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}}
 function render(){clearTimeout(timer);const scene=scenes[index];if(!scene){finish();return}
 overlay.classList.toggle('day',index>=3);
-if(scene.kind==='sfx'){sound(scene.sound);index++;save();render();return}
+if(scene.kind==='sfx'){if(scene.clearPortrait){currentPortrait='';portrait.hidden=true}sound(scene.sound);index++;save();render();return}
 if(!(scene.sound==='forest'&&index===22))sound(scene.sound);
 if(scene.reveal)revealed=true;
 if(scene.revealJihoon)jihoonRevealed=true;
@@ -156,6 +156,7 @@ if(scene.kind==='image'){
 }
 
 if(scene.kind==='dialogue'){
+ if(scene.clearPortrait){currentPortrait='';portrait.hidden=true}
  if(scene.portrait)currentPortrait=scene.portrait;
  speakerTag.textContent=scene.speaker==='주인공'?'김봉봉':(scene.speaker==='승철'&&!revealed?'??':scene.speaker==='지훈'&&!jihoonRevealed?'??':scene.speaker);
  content.classList.toggle('vn-inner',!!scene.inner);
@@ -187,6 +188,6 @@ window.SHINDO_startStory=()=>{
   else{window.SHINDO_openFeedback?.();return}
  }
 try{localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){};const n=Number(localStorage.getItem(KEY));index=Number.isInteger(n)&&n>=0&&n<scenes.length?n:0;revealed=scenes.slice(0,index+1).some(x=>x.reveal);jihoonRevealed=scenes.slice(0,index+1).some(x=>x.revealJihoon);
-currentPortrait='';for(const scene of scenes.slice(0,index+1)){if(scene.portrait)currentPortrait=scene.portrait}
+currentPortrait='';for(const scene of scenes.slice(0,index+1)){if(scene.clearPortrait)currentPortrait='';if(scene.portrait)currentPortrait=scene.portrait}
 overlay.classList.add('active');render()};
 })();
