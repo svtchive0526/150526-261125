@@ -1392,7 +1392,23 @@ function renderPosts(rows){list.replaceChildren();if(!rows.length){list.textCont
 async function loadPosts(){if(fetching)return;if(!ready){list.textContent='Supabase 연결 전입니다. 설정 파일에 프로젝트 URL과 공개 키를 입력해주세요.';return}
  fetching=true;try{const r=await fetch(`${endpoint}/rest/v1/shindo_beta_feedback?select=author,content,created_at&order=created_at.desc&limit=100`,{headers:headers(),cache:'no-store'});if(!r.ok)throw Error(`조회 실패 (${r.status})`);renderPosts(await r.json())}catch(e){list.textContent='피드백을 불러오지 못했어요. 서버 연결을 확인해주세요.'}finally{fetching=false}}
 function open(){if(box.classList.contains('sf-open'))return;lastFocus=document.activeElement;box.classList.add('sf-open');document.documentElement.style.setProperty('--sf-prior-overflow',document.documentElement.style.overflow);document.documentElement.style.overflow='hidden';updateHint();setStatus('');loadPosts();box.querySelector('.sf-person[aria-pressed="true"]').focus({preventScroll:true})}
-function close(){box.classList.remove('sf-open');document.documentElement.style.overflow=document.documentElement.style.getPropertyValue('--sf-prior-overflow')||'';lastFocus?.focus?.({preventScroll:true});taps=[]}
+function close(){
+ const completed=localStorage.getItem('shindo_story_progress_v37')==='complete';
+ box.classList.remove('sf-open');
+ document.documentElement.style.overflow=document.documentElement.style.getPropertyValue('--sf-prior-overflow')||'';
+ taps=[];
+ if(completed){
+  // Returning from end-of-beta feedback replays from the moment the player falls asleep.
+  // Keep the start flag so refreshing resumes the story instead of showing a blank mail view.
+  try{localStorage.setItem('shindo_story_progress_v37','0');localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}
+  document.documentElement.classList.add('shindo-story-resuming');
+  const lock=document.getElementById('svter-lock');
+  if(lock){lock.style.setProperty('display','none','important');lock.setAttribute('aria-hidden','true')}
+  window.SHINDO_startStory?.();
+  return;
+ }
+ lastFocus?.focus?.({preventScroll:true});
+}
 buttons.forEach(b=>b.addEventListener('click',()=>{person=b.dataset.person;buttons.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));updateHint()}));
 box.querySelector('#sf-return').addEventListener('click',close);
 box.querySelector('#sf-save').addEventListener('click',async()=>{
