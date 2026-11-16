@@ -24,7 +24,25 @@ const scenes=[
  {kind:'line',text:'그야말로 하늘이 내려준 선물이 아닐 수 없다.'},
  {kind:'line',text:'그래서 미친 척하고 이곳, <카밀레교>의 본거지까지 찾아오게 된 거다.'},
  {kind:'line',text:'와, 공기 죽여준다.',sound:'forest'},
- {kind:'line',text:'주변이 전부 산이다. 이런 데라면 쥐도 새도 모르게 사라지기 딱 좋겠지…',sound:'forest'}
+ {kind:'line',text:'주변이 전부 산이다. 이런 데라면 쥐도 새도 모르게 사라지기 딱 좋겠지…',sound:'forest'},
+ {kind:"dialogue",speaker:"승철",text:"좋은 계절입니다.",inner:false,portrait:"승철-바디1-기본"},
+ {kind:"dialogue",speaker:"주인공",text:"(나를 픽업해 온 사람이다. 눈썹이 짙고 몸이 다부지다.)",inner:true},
+ {kind:"dialogue",speaker:"주인공",text:"(중요하게는, 잘생겼다.)",inner:true},
+ {kind:"dialogue",speaker:"주인공",text:"네… 풍경이 참 멋있네요.",inner:false},
+ {kind:"dialogue",speaker:"승철",text:"그렇죠? 바깥 세상과는 다르게, 여기 있으면 마음이 온화해져요. 평화롭죠.",inner:false,portrait:"승철-바디1-미소"},
+ {kind:"dialogue",speaker:"주인공",text:"(명심하자 김봉봉. 잘생겨도 사이비는 사이비다.)",inner:true},
+ {kind:"dialogue",speaker:"승철",text:"소개가 늦었네요. 제 이름은 최승철입니다.",inner:false,portrait:"승철-바디2-기본",reveal:true},
+ {kind:"dialogue",speaker:"주인공",text:"김봉봉입니다. 앞으로 잘 부탁드리겠습니다!",inner:false},
+ {kind:"dialogue",speaker:"승철",text:"새 신자는 늘 환영이죠.",inner:false,portrait:"승철-바디1-미소"},
+ {kind:"dialogue",speaker:"승철",text:"이제 생활관 가시면서 수칙 몇 가지만 설명 드릴 건데…",inner:false,portrait:"승철-바디1-기본"},
+ {kind:"dialogue",speaker:"승철",text:"얘가 늦네. 왜 이렇게 안 오지?",inner:false,portrait:"승철-바디1-기본"},
+ {kind:"sfx",sound:"footsteps_fast"},
+ {kind:"dialogue",speaker:"지훈",text:"아, 죄송합니다. 오다가 길을 잃는 바람에.",inner:false,portrait:"지훈-바디1-기본"},
+ {kind:"dialogue",speaker:"승철",text:"야 너는 평생 여기 살아놓고 아직도 길을 잃냐?",inner:false,portrait:"승철-바디2-미소"},
+ {kind:"dialogue",speaker:"주인공",text:"(투닥대는 두 사람은 제법 친해 보인다.)",inner:true},
+ {kind:"sfx",sound:"footsteps"},
+ {kind:"dialogue",speaker:"주인공",text:"(좁은 산길을 따라 10분쯤 걸었을까. 저 앞에 제법 번듯한 건축물들이 보이기 시작한다.)",inner:true},
+ {kind:"dialogue",speaker:"주인공",text:"(여전히. 사이비 마을이라곤 생각되지 않을 정도로 깔끔하고 평범하다.)",inner:true}
 ];
 const style=document.createElement('style');style.textContent=`
 #shindo-vn{position:fixed;inset:0;z-index:30000;background:#050607;color:#fff;display:none;align-items:flex-end;justify-content:center;font-family:Pretendard,'Pretendard Variable',system-ui,sans-serif;cursor:pointer;touch-action:manipulation;user-select:none}
@@ -36,21 +54,36 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .vn-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);color:#aaa;font-size:12px;white-space:nowrap}
 @keyframes vn-pulse{50%{opacity:.25}}
 @media(max-width:750px){#shindo-vn .vn-box{padding:19px 17px 26px;min-height:145px;margin-bottom:calc(35px + env(safe-area-inset-bottom));font-size:14px;letter-spacing:-.065em;line-height:1.7}#shindo-vn .vn-center{font-size:clamp(27px,8vw,40px);letter-spacing:-.065em}#shindo-vn .vn-hint{font-size:10px}}
+
+#shindo-vn .vn-box{z-index:2;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding-top:38px}
+#shindo-vn .vn-speaker{position:absolute;top:-18px;left:25px;padding:5px 19px;border:1px solid #777;border-radius:6px;background:#202124;font-weight:700;font-size:16px;min-width:54px;text-align:center}
+#shindo-vn .vn-speaker:empty{display:none}
+#shindo-vn .vn-portrait{position:absolute;bottom:clamp(160px,23vh,245px);left:50%;transform:translateX(-50%);height:min(66vh,740px);max-width:95vw;object-fit:contain;object-position:bottom;pointer-events:none;z-index:1}
+#shindo-vn .vn-portrait[hidden]{display:none}
+#shindo-vn .vn-text{position:relative;z-index:2}
+#shindo-vn .vn-text.vn-inner{font-style:italic;color:#e3e3e3}
+@media(max-width:750px){#shindo-vn .vn-portrait{height:min(60vh,620px);bottom:170px}#shindo-vn .vn-speaker{top:-17px;left:12px;font-size:13px;padding:4px 13px}#shindo-vn .vn-box{padding-top:29px}}
 `;document.head.appendChild(style);
 const overlay=document.createElement('div');overlay.id='shindo-vn';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-label','1일차 스토리');overlay.innerHTML='<div class="vn-box"><span class="vn-text"></span></div><div class="vn-hint">화면을 터치하거나 클릭하여 진행</div>';document.body.appendChild(overlay);
 const box=overlay.querySelector('.vn-box'),content=overlay.querySelector('.vn-text');
+const portrait=document.createElement('img');portrait.className='vn-portrait';portrait.alt='';portrait.hidden=true;overlay.insertBefore(portrait,box);
+const speakerTag=document.createElement('div');speakerTag.className='vn-speaker';box.insertBefore(speakerTag,content);
+let currentPortrait='',revealed=false;
+const portraits={};
 let index=0,locked=false, timer=null, audio=null,ambient=null;let storySfx=null,storySfxTimer=null;
 function audioContext(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();return audio}catch(e){return null}}
 function tone(freq,duration,vol=.05,type='sine',start=0){const a=audioContext();if(!a)return;const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+start;o.type=type;o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+duration);o.connect(g).connect(a.destination);o.start(t);o.stop(t+duration+.03)}
-function playStoryClip(number){
+function playStoryClip(number,rate=1){
  if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}
  if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}
  const clip=new Audio('story-audio/01-'+number+'.mp3');
- storySfx=clip;clip.volume=.7;clip.preload='auto';
+ storySfx=clip;clip.volume=.7;clip.preload='auto';clip.playbackRate=rate;
  clip.play().catch(()=>{});
  storySfxTimer=setTimeout(()=>{if(storySfx===clip){clip.pause();clip.currentTime=0;storySfx=null}},6000);
 }
 function sound(name){if(!name)return;
+ if(name==='footsteps_fast'){playStoryClip(4,2);return}
+ if(name==='footsteps'){playStoryClip(4,1);return}
  if(name==='walk'){playStoryClip(1);return}
  if(name==='drive'){playStoryClip(2);return}
  if(name==='stop'){playStoryClip(3);return}
@@ -63,7 +96,21 @@ function sound(name){if(!name)return;
  
 }
 function save(){try{localStorage.setItem(KEY,String(index))}catch(e){}}
-function render(){clearTimeout(timer);const scene=scenes[index];if(!scene){finish();return}overlay.classList.toggle('day',index>=3);if(!(scene.sound==='forest'&&index===22))sound(scene.sound);
+function render(){clearTimeout(timer);const scene=scenes[index];if(!scene){finish();return}
+overlay.classList.toggle('day',index>=3);
+if(scene.kind==='sfx'){sound(scene.sound);index++;save();render();return}
+if(!(scene.sound==='forest'&&index===22))sound(scene.sound);
+if(scene.reveal)revealed=true;
+if(scene.kind==='dialogue'){
+ if(scene.portrait)currentPortrait=scene.portrait;
+ speakerTag.textContent=scene.speaker==='주인공'?'김봉봉':(scene.speaker==='승철'&&!revealed?'??':scene.speaker==='지훈'?'??':scene.speaker);
+ content.classList.toggle('vn-inner',!!scene.inner);
+ if(currentPortrait){portrait.src='story-portraits/'+currentPortrait+'.png';portrait.hidden=false}
+}else{
+ speakerTag.textContent='';content.classList.remove('vn-inner');
+ portrait.hidden=true;
+}
+
  if(scene.kind==='transition'){box.style.display='none';let center=overlay.querySelector('.vn-center');if(!center){center=document.createElement('div');center.className='vn-center';overlay.appendChild(center)}center.textContent=scene.text;center.style.display='block';overlay.querySelector('.vn-hint').style.display='none';locked=true;timer=setTimeout(()=>{locked=false;next()},scene.text?2300:3300);return}
  const center=overlay.querySelector('.vn-center');if(center)center.style.display='none';box.style.display='flex';overlay.querySelector('.vn-hint').style.display='block';content.textContent=scene.text;
  if(scene.follow){locked=true;timer=setTimeout(()=>{locked=false;next()},1600)}
@@ -73,5 +120,7 @@ function render(){clearTimeout(timer);const scene=scenes[index];if(!scene){finis
 function next(){if(locked)return;index++;save();render()}
 function finish(){if(storySfx){storySfx.pause();storySfx=null}clearTimeout(storySfxTimer);overlay.classList.remove('active');overlay.classList.remove('day');try{localStorage.setItem(KEY,'complete')}catch(e){}; window.SHINDO_openFeedback?.(); }
 overlay.addEventListener('click',()=>{audioContext();next()});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next()}});
-window.SHINDO_startStory=()=>{if(localStorage.getItem(KEY)==='complete')return;const n=Number(localStorage.getItem(KEY));index=Number.isInteger(n)&&n>=0&&n<scenes.length?n:0;overlay.classList.add('active');render()};
+window.SHINDO_startStory=()=>{if(localStorage.getItem(KEY)==='complete')return;const n=Number(localStorage.getItem(KEY));index=Number.isInteger(n)&&n>=0&&n<scenes.length?n:0;revealed=scenes.slice(0,index+1).some(x=>x.reveal);
+currentPortrait='';for(const scene of scenes.slice(0,index+1)){if(scene.portrait)currentPortrait=scene.portrait}
+overlay.classList.add('active');render()};
 })();
