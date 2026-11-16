@@ -1,6 +1,29 @@
 /* SHINDO v37 — VN story, after the new Kamille mail is read. */
 (()=>{
 const KEY='shindo_story_progress_v37';
+// v59: inventory entry point, available only after the main story begins.
+const inventoryStyle=document.createElement('style');
+inventoryStyle.textContent=`
+#shindo-inventory-entry{position:fixed;top:70px;right:70px;width:76px;height:76px;box-sizing:border-box;border:0;border-radius:16px;background:#5b5b5b;color:white;display:none;align-items:center;justify-content:center;z-index:32000;padding:0;cursor:pointer;box-shadow:none;-webkit-tap-highlight-color:transparent}
+#shindo-inventory-entry.is-visible{display:flex}
+#shindo-inventory-entry svg{width:51%;height:51%;display:block;fill:#fff}
+#shindo-inventory-entry:focus-visible{outline:3px solid white;outline-offset:4px}
+@media(max-width:750px){#shindo-inventory-entry{top:36px;right:36px;width:40px;height:40px;border-radius:9px}}
+`;
+document.head.appendChild(inventoryStyle);
+const inventoryButton=document.createElement('button');
+inventoryButton.type='button';inventoryButton.id='shindo-inventory-entry';
+inventoryButton.setAttribute('aria-label','인벤토리');inventoryButton.title='인벤토리';
+inventoryButton.innerHTML='<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 5c-1.4 0-2.7.6-3.8 1.8L5.8 29.3c-2.8 2.8-.9 7.7 3.2 7.7h11.2l1.2 14.2c.3 4.6 3.8 7.8 8.5 7.8h4.2c4.7 0 8.2-3.2 8.5-7.8L43.8 37H55c4.1 0 6-4.9 3.2-7.7L35.8 6.8C34.7 5.6 33.4 5 32 5z"/></svg>';
+document.body.appendChild(inventoryButton);
+function refreshInventoryVisibility(){
+ const started=localStorage.getItem('shindo_story_started_v37')==='1';
+ inventoryButton.classList.toggle('is-visible',started);
+}
+inventoryButton.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();window.alert('아직 지원하지 않는 기능입니다.')});
+window.addEventListener('storage',refreshInventoryVisibility);
+refreshInventoryVisibility();
+
 if(localStorage.getItem(KEY)==='complete'&&!localStorage.getItem('shindo_story_v55_extended')){
  try{localStorage.setItem(KEY,'41');localStorage.setItem('shindo_story_v55_extended','1')}catch(e){}
 }
@@ -137,7 +160,7 @@ function sound(name){if(!name)return;
  
  
 }
-function save(){try{localStorage.setItem(KEY,String(index));localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}}
+function save(){try{localStorage.setItem(KEY,String(index));localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}refreshInventoryVisibility()}
 function render(){clearTimeout(timer);const scene=scenes[index];if(!scene){finish();return}
 overlay.classList.toggle('day',index>=3);
 if(scene.kind==='sfx'){if(scene.clearPortrait){currentPortrait='';portrait.hidden=true}sound(scene.sound);index++;save();render();return}
@@ -189,5 +212,5 @@ window.SHINDO_startStory=()=>{
  }
 try{localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){};const n=Number(localStorage.getItem(KEY));index=Number.isInteger(n)&&n>=0&&n<scenes.length?n:0;revealed=scenes.slice(0,index+1).some(x=>x.reveal);jihoonRevealed=scenes.slice(0,index+1).some(x=>x.revealJihoon);
 currentPortrait='';for(const scene of scenes.slice(0,index+1)){if(scene.clearPortrait)currentPortrait='';if(scene.portrait)currentPortrait=scene.portrait}
-overlay.classList.add('active');render()};
+overlay.classList.add('active');refreshInventoryVisibility();render()};
 })();
