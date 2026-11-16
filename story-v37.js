@@ -69,7 +69,7 @@ const scenes=[
  {kind:"dialogue",speaker:"주인공",text:"(이 단체를 지키는 데에, 더 나아가 카밀레교에 그만큼 진심인 거겠지.)",inner:true},
  {kind:"dialogue",speaker:"주인공",text:"(…고요 속에 걷다 보니 어느덧 마을 입구 앞이다.)",inner:true},
  {kind:"dialogue",speaker:"주인공",text:"(심장이 쿵쾅거린다. 해낼 수 있을까? 과연 내가 혈혈단신으로, 이단의 소굴에서…)",inner:true},
- {kind:"image",illustration:"mail-01",duration:3000},
+ {kind:"image",illustration:"mail-01",duration:6000},
  {kind:"dialogue",speaker:"주인공",text:"(아냐, 김봉봉. 해낸다. 해낼 수 있다. 해내야만 한다.)",inner:true},
  {kind:"narration",text:"마음을 다잡고 승철과 지훈의 안내를 따랐다.",sound:"footsteps"}
 ];
@@ -96,6 +96,8 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .vn-illustration{position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);width:min(92vw,960px);max-height:70vh;object-fit:contain;z-index:1;pointer-events:none}
 #shindo-vn .vn-illustration[hidden]{display:none}
 #shindo-vn .vn-illustration.vn-fade{animation:vn-image-appear 1s ease-out both}
+#shindo-vn .vn-illustration.vn-mail-zoom{animation:vn-mail-zoom-out 6s ease-in-out both;transform-origin:center center}
+@keyframes vn-mail-zoom-out{0%{opacity:0;transform:translate(-50%,-50%) scale(1)}12%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.22)}}
 @keyframes vn-image-appear{from{opacity:0}to{opacity:1}}
 @media(max-width:750px){#shindo-vn .vn-illustration{width:98vw;max-height:63vh;top:41%}}
 `;document.head.appendChild(style);
@@ -144,7 +146,8 @@ if(scene.reveal)revealed=true;
 if(scene.revealJihoon)jihoonRevealed=true;
 if(scene.pencil)keepPencil();else stopPencil();
 illustration.hidden=!scene.illustration;
-illustration.classList.toggle('vn-fade',scene.kind==='image');
+illustration.classList.toggle('vn-fade',scene.kind==='image'&&scene.illustration!=='mail-01');
+illustration.classList.toggle('vn-mail-zoom',scene.kind==='image'&&scene.illustration==='mail-01');
 if(scene.illustration)illustration.src='story-illustrations/'+scene.illustration+'.png';
 if(scene.kind==='image'){
  portrait.hidden=true;speakerTag.textContent='';content.textContent='';box.style.display='none';
