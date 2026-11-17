@@ -17,7 +17,7 @@ inventoryStyle.textContent=`
  #shindo-phone-drawer{--phone-w:calc(100vw - 46px);--phone-gap:23px;--phone-btn-gap:0px;--phone-btn-w:31px;width:100vw;transform:translateX(calc(-1 * (var(--phone-w) + var(--phone-gap))))}
  #shindo-phone-drawer.is-open{transform:translateX(0)}
  #shindo-phone-panel{top:10%;bottom:28%;left:23px;width:calc(100vw - 46px);border-radius:12px}
- #shindo-phone-toggle{left:23px;top:50%;height:230px;max-height:32vh;transform:translateY(-50%)}
+ #shindo-phone-toggle{left:calc(var(--phone-w) + 2 * var(--phone-gap));top:50%;height:230px;max-height:32vh;transform:translateY(-50%)}
  #shindo-phone-drawer.is-open #shindo-phone-toggle{pointer-events:none;opacity:0}
  #shindo-phone-putaway{position:absolute;left:50%;top:calc(72% + 24px);transform:translateX(-50%);display:block;width:40%;max-width:280px;min-width:145px;height:52px;border:0;border-radius:12px;background:#303030;color:white;font:700 18px Pretendard,sans-serif;pointer-events:auto;cursor:pointer;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
  #shindo-phone-drawer.is-open #shindo-phone-putaway{opacity:1;visibility:visible}
