@@ -1,26 +1,49 @@
 /* SHINDO v37 — VN story, after the new Kamille mail is read. */
 (()=>{
 const KEY='shindo_story_progress_v37';
-// v59: inventory entry point, available only after the main story begins.
+// v61: slide-out phone panel. Visible only after the story has begun.
 const inventoryStyle=document.createElement('style');
 inventoryStyle.textContent=`
-#shindo-inventory-entry{position:fixed;top:70px;right:70px;width:76px;height:76px;box-sizing:border-box;border:0;border-radius:16px;background:#5b5b5b;color:white;display:none;align-items:center;justify-content:center;z-index:32000;padding:0;cursor:pointer;box-shadow:none;-webkit-tap-highlight-color:transparent}
-#shindo-inventory-entry.is-visible{display:flex}
-#shindo-inventory-entry svg{width:51%;height:51%;display:block;fill:#fff}
-#shindo-inventory-entry:focus-visible{outline:3px solid white;outline-offset:4px}
-@media(max-width:750px){#shindo-inventory-entry{top:36px;right:36px;width:40px;height:40px;border-radius:9px}}
+#shindo-phone-drawer{--phone-w:min(38vw,650px);--phone-gap:23px;--phone-btn-w:31px;--phone-btn-gap:23px;position:fixed;inset:0 auto 0 0;width:calc(var(--phone-w) + var(--phone-gap) + var(--phone-btn-gap) + var(--phone-btn-w));height:100dvh;z-index:32000;pointer-events:none;display:none;transform:translateX(calc(-1 * (var(--phone-w) + var(--phone-btn-gap))));transition:transform .65s cubic-bezier(.22,1,.36,1);will-change:transform}
+#shindo-phone-drawer.is-visible{display:block}
+#shindo-phone-drawer.is-open{transform:translateX(0)}
+#shindo-phone-panel{position:absolute;top:6.5%;bottom:6.5%;left:var(--phone-gap);width:var(--phone-w);border-radius:12px;background:#303030;pointer-events:auto}
+#shindo-phone-toggle{position:absolute;left:calc(var(--phone-gap) + var(--phone-w) + var(--phone-btn-gap));top:50%;transform:translateY(-50%);width:var(--phone-btn-w);height:230px;max-height:32vh;border:0;border-radius:16px;background:#393939;color:white;display:flex;align-items:center;justify-content:center;padding:0;pointer-events:auto;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#shindo-phone-toggle svg{width:20px;height:26px;stroke:#fff;stroke-width:2.7;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:transform .65s cubic-bezier(.22,1,.36,1)}
+#shindo-phone-drawer.is-open #shindo-phone-toggle svg{transform:rotate(180deg)}
+#shindo-phone-putaway{display:none}
+#shindo-phone-toggle:focus-visible,#shindo-phone-putaway:focus-visible{outline:2px solid #fff;outline-offset:4px}
+@media(max-width:750px){
+ #shindo-phone-drawer{--phone-w:calc(100vw - 46px);--phone-gap:23px;--phone-btn-gap:0px;--phone-btn-w:31px;width:100vw;transform:translateX(calc(-1 * (var(--phone-w) + var(--phone-gap))))}
+ #shindo-phone-drawer.is-open{transform:translateX(0)}
+ #shindo-phone-panel{top:10%;bottom:28%;left:23px;width:calc(100vw - 46px);border-radius:12px}
+ #shindo-phone-toggle{left:23px;top:50%;height:230px;max-height:32vh;transform:translateY(-50%)}
+ #shindo-phone-drawer.is-open #shindo-phone-toggle{pointer-events:none;opacity:0}
+ #shindo-phone-putaway{position:absolute;left:50%;top:calc(72% + 24px);transform:translateX(-50%);display:block;width:40%;max-width:280px;min-width:145px;height:52px;border:0;border-radius:12px;background:#303030;color:white;font:700 18px Pretendard,sans-serif;pointer-events:auto;cursor:pointer;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+ #shindo-phone-drawer.is-open #shindo-phone-putaway{opacity:1;visibility:visible}
+}
+@media(prefers-reduced-motion:reduce){#shindo-phone-drawer,#shindo-phone-toggle svg{transition-duration:.01ms}}
 `;
 document.head.appendChild(inventoryStyle);
-const inventoryButton=document.createElement('button');
-inventoryButton.type='button';inventoryButton.id='shindo-inventory-entry';
-inventoryButton.setAttribute('aria-label','인벤토리');inventoryButton.title='인벤토리';
-inventoryButton.innerHTML='<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 5c-1.4 0-2.7.6-3.8 1.8L5.8 29.3c-2.8 2.8-.9 7.7 3.2 7.7h11.2l1.2 14.2c.3 4.6 3.8 7.8 8.5 7.8h4.2c4.7 0 8.2-3.2 8.5-7.8L43.8 37H55c4.1 0 6-4.9 3.2-7.7L35.8 6.8C34.7 5.6 33.4 5 32 5z"/></svg>';
-document.body.appendChild(inventoryButton);
+const phoneDrawer=document.createElement('div');
+phoneDrawer.id='shindo-phone-drawer';
+phoneDrawer.setAttribute('aria-label','인벤토리 휴대폰');
+phoneDrawer.innerHTML='<div id="shindo-phone-panel" aria-label="휴대폰 화면"></div><button type="button" id="shindo-phone-toggle" aria-label="휴대폰 꺼내기" aria-expanded="false"><svg viewBox="0 0 24 32" aria-hidden="true"><path d="M7 5l11 11L7 27"/></svg></button><button type="button" id="shindo-phone-putaway">집어넣기</button>';
+document.body.appendChild(phoneDrawer);
+const phoneToggle=phoneDrawer.querySelector('#shindo-phone-toggle');
+function setPhoneOpen(open){
+ phoneDrawer.classList.toggle('is-open',open);
+ phoneToggle.setAttribute('aria-expanded',String(open));
+ phoneToggle.setAttribute('aria-label',open?'휴대폰 집어넣기':'휴대폰 꺼내기');
+}
 function refreshInventoryVisibility(){
  const started=localStorage.getItem('shindo_story_started_v37')==='1';
- inventoryButton.classList.toggle('is-visible',started);
+ phoneDrawer.classList.toggle('is-visible',started);
+ if(!started)setPhoneOpen(false);
 }
-inventoryButton.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();window.alert('아직 지원하지 않는 기능입니다.')});
+phoneToggle.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();setPhoneOpen(!phoneDrawer.classList.contains('is-open'))});
+phoneDrawer.querySelector('#shindo-phone-putaway').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();setPhoneOpen(false)});
+phoneDrawer.addEventListener('click',e=>e.stopPropagation());
 window.addEventListener('storage',refreshInventoryVisibility);
 refreshInventoryVisibility();
 
