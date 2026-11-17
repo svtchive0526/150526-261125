@@ -202,7 +202,7 @@ function finish(){
  window.SHINDO_openFeedback?.();
 }
 function next(){if(locked)return; if(index>=scenes.length-1){finish();return;} index++;save();render()}
-overlay.addEventListener('click',()=>{audioContext();next()});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next()}});
+overlay.addEventListener('click',()=>{audioContext();next()});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next()}});
 window.SHINDO_startStory=()=>{
  // Players who finished the previous release continue at the newly added dialogue.
  if(localStorage.getItem(KEY)==='complete'){

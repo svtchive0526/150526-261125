@@ -1492,6 +1492,15 @@ document.addEventListener('pointerup',e=>{
  const now=performance.now();taps=taps.filter(t=>now-t.t<1100&&Math.hypot(t.x-e.clientX,t.y-e.clientY)<95);taps.push({t:now,x:e.clientX,y:e.clientY});
  if(taps.length>=3){taps=[];open()}
 },{passive:true});
+// Keep feedback text editing independent from the story's global keyboard shortcuts.
+// Capture first, but do not cancel default browser behavior: Space inserts a space,
+// Enter inserts a newline, including in reply fields on mobile/desktop keyboards.
+document.addEventListener('keydown',e=>{
+ if(!box.classList.contains('sf-open'))return;
+ if(e.target.closest('#shindo-feedback textarea,#shindo-feedback input,[contenteditable="true"]')){
+  e.stopPropagation();
+ }
+},true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&box.classList.contains('sf-open'))close()});
 window.SHINDO_openFeedback=open;
 })();
