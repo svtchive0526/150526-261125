@@ -780,7 +780,15 @@ function showPrayerEnd(){
  locked=true;box.style.display='none';portrait.hidden=true;currentPortrait='';illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid');
- el.innerHTML='<h2>기도관 활동을 마쳤다.</h2><button type="button" class="shindo-day1-restart">↺ 1일차부터 다시 시작 (임시)</button><button type="button" class="shindo-feedback-direct">피드백 화면 바로가기</button>';el.style.display='flex';
+ el.innerHTML='<h2>기도관 활동을 마쳤다.</h2><button type="button" class="shindo-prayer-reselect">↺ 기도관 선택지로 돌아가기 (임시)</button><button type="button" class="shindo-day1-restart">↺ 1일차부터 다시 시작 (임시)</button><button type="button" class="shindo-feedback-direct">피드백 화면 바로가기</button>';el.style.display='flex';
+ el.querySelector('.shindo-prayer-reselect').onclick=e=>{
+  e.stopPropagation();stopPrayerClock();stopPrayerAudio();stopVnTyping(false);
+  prayerBranch=0;localStorage.removeItem('shindo_prayer_branch_v99');
+  currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+  el.style.display='none';el.classList.remove('shindo-prayer-grid');
+  index=scenes.findIndex(scene=>scene.kind==='prayer-choice');
+  locked=false;save();render();
+ };
  el.querySelector('.shindo-day1-restart').onclick=e=>{e.stopPropagation();restartFromDay1()};
  el.querySelector('.shindo-feedback-direct').onclick=e=>{e.stopPropagation();window.SHINDO_openFeedback?.()};
 }
