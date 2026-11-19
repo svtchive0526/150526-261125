@@ -317,7 +317,8 @@ const style=document.createElement('style');style.textContent=`
 #shindo-story-backdrop{position:fixed;inset:0;z-index:29999;background:#050607 center center / cover no-repeat;display:none;opacity:1!important;pointer-events:none;transition:background-image .45s ease, background-position .45s ease}
 #shindo-story-backdrop.visible{display:block}
 #shindo-vn,#shindo-vn.active{opacity:1!important;filter:none!important;mix-blend-mode:normal!important}
-#shindo-vn.day{background-color:#050607!important}
+/* v84: Keep the story overlay transparent so scene photography in #shindo-story-backdrop remains visible. */
+#shindo-vn.day:not(.confession-blackout){background-color:transparent!important;background-image:none!important}
 #shindo-vn.confession-fade:before{background:#000!important}
 /* v78: Fade only the scene/background artwork, never the dialogue UI.
    Keep the blackout opaque so the underlying SVTER login stays hidden. */
