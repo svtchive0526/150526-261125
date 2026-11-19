@@ -6,6 +6,7 @@
  if(!panel||!drawer)return;
  const HISTORY='shindo_play_history_v107';
  const AFFINITY='shindo_affinity_v107';
+ const AFFINITY_EVENTS='shindo_affinity_events_v111';
  const EVIDENCE='shindo_evidence_items_v105';
  const MET='shindo_met_characters_v108';
  const HISTORY_DAY='shindo_current_story_day_v109';
@@ -14,7 +15,7 @@
   ['원우','wonwoo-body2-default.png'],['순영','soonyoung-body1-default.png'],
   ['명호','minghao-body1-default.png'],['한솔','hansol-body1-default.png'],
   ['석민','seokmin-body1-default.png'],['찬','chan-body1-default.png'],
-  ['정한',null],['조슈아',null],['준',null],['민규',null],['승관',null],['교주',null]
+  ['정한',null],['조슈아',null],['준휘',null],['민규',null],['승관',null],['교주',null]
  ];
  const LEGACY_KNOWN={
   '한솔':'shindo_hansol_known_v99','석민':'shindo_seokmin_known_v99','찬':'shindo_chan_known_v99',
@@ -54,13 +55,85 @@
   save(HISTORY,records.slice(-400));
   document.dispatchEvent(new Event('shindo-inventory-change'));
  };
- // No affinity rules have been supplied; values remain at 0 until explicitly set by authored story rules.
- window.SHINDO_setAffinity=(person,score)=>{
-  if(!PEOPLE.some(p=>p[0]===person))return;
-  const next=load(AFFINITY,{});
-  next[person]=Math.max(0,Math.min(100,Math.round(Number(score)||0)));
-  save(AFFINITY,next);document.dispatchEvent(new Event('shindo-inventory-change'));
+ // Confirmed affiliation and location rosters. Values are NOT inferred from character introductions.
+ const GROUPS={
+  '신도':['승철','민규','지훈','찬'],
+  '사제':['조슈아','원우','명호','준휘','한솔'],
+  '경찰':['정한','승관','석민','순영']
  };
+ const ROOMS={
+  '기도관':['한솔','승철','석민','찬'],
+  '예술당':['순영','명호']
+ };
+ const PERSON_EVENTS={
+  '기도관 활동: 단상 위 청소':'한솔',
+  '기도관 활동: 자는 사람 깨우기':'승철',
+  '기도관 활동: 성경 한 장 넘기기':'석민',
+  '기도관 활동: 청소 돕기':'찬',
+  '예술당 활동: 호랑이 그림 보기':'순영',
+  '예술당 활동: 캔버스 옮기기':'명호'
+ };
+ // All participants start at zero except Joshua. Do not wipe existing scores on upgrades.
+ function getAffinity(){const result=load(AFFINITY,{});if(!result||typeof result!=='object'||Array.isArray(result))return {};
+  if(!Object.prototype.hasOwnProperty.call(result,'조슈아') || Number(result['조슈아'])===0)result['조슈아']=100;
+  return result;
+ }
+ function updateAffinity(person,score){const values=getAffinity();values[person]=Math.max(0,Math.min(100,Math.round(Number(score)||0)));save(AFFINITY,values)}
+ window.SHINDO_setAffinity=(person,score)=>{if(!PEOPLE.some(p=>p[0]===person))return;updateAffinity(person,score);document.dispatchEvent(new Event('shindo-inventory-change'))};
+ // Each authored event may be granted only once per day, even after a reload or revisit.
+ // All negative values are clamped at zero; positive values at 100.
+ function grantAffinity(kind,label,day=2){
+  const d=Math.max(1,Math.floor(Number(day)||2));
+  let changes=null, eventId=null;
+  if(kind==='prayer'){
+   if(label!=='참석'&&label!=='불참')return false;
+   eventId=d+'|새벽기도';
+   const sign=label==='참석'?1:-1;
+   changes=[...GROUPS['신도'].map(name=>[name,5*sign]),...GROUPS['사제'].map(name=>[name,5*sign]),...GROUPS['경찰'].map(name=>[name,-5*sign])];
+  }else if(kind==='room'){
+   if(!ROOMS[label])return false;
+   eventId=d+'|장소|'+label;
+   changes=ROOMS[label].map(name=>[name,5]);
+  }else if(kind==='person'){
+   const person=PERSON_EVENTS[label];if(!person)return false;
+   eventId=d+'|개별|'+label;
+   changes=[[person,15]];
+  }else return false;
+  const ledger=load(AFFINITY_EVENTS,[]);if(!Array.isArray(ledger))return false;
+  if(ledger.includes(eventId))return false;
+  const values=getAffinity();
+  for(const [name,delta] of changes)values[name]=Math.max(0,Math.min(100,Math.round((Number(values[name])||0)+delta)));
+  // Preserve the completed-event marker as part of the same synchronous operation.
+  save(AFFINITY,values);ledger.push(eventId);save(AFFINITY_EVENTS,ledger);
+  document.dispatchEvent(new Event('shindo-inventory-change'));
+  return true;
+ }
+ window.SHINDO_applyAffinityEvent=grantAffinity;
+ // Repair existing V107-V110 saves using only recorded, actually selected actions.
+ // Inferred progress positions are NOT sufficient evidence for an affinity grant.
+ function restoreAffinityFromHistory(){
+  const records=load(HISTORY,[]);const seen=new Set();
+  if(Array.isArray(records))for(const r of records){if(typeof r?.label==='string')seen.add(r.label)}
+  const legacy=(key,mapper)=>{const v=localStorage.getItem(key);if(v!==null){const val=mapper(v);if(val)seen.add(val)}};
+  legacy('shindo_day2_prayer',v=>({'1':'새벽기도: 새벽기도에 참석한다','2':'새벽기도: 새벽기도에 참석하지 않는다'})[v]);
+  legacy('shindo_day2_morning',v=>'오전 활동 장소: '+v);
+  legacy('shindo_prayer_branch_v99',v=>({'1':'기도관 활동: 단상 위 청소','2':'기도관 활동: 자는 사람 깨우기','3':'기도관 활동: 성경 한 장 넘기기','4':'기도관 활동: 청소 돕기'})[v]);
+  legacy('shindo_art_branch_v105',v=>({'1':'예술당 활동: 호랑이 그림 보기','2':'예술당 활동: 캔버스 옮기기','3':'예술당 활동: 예술당 조사하기'})[v]);
+  for(const label of seen){
+   if(label.includes('새벽기도')){
+    if(/불참|않는다/.test(label))grantAffinity('prayer','불참',2);
+    else if(/참석/.test(label))grantAffinity('prayer','참석',2);
+   }
+   if(label.startsWith('오전 활동 장소: '))grantAffinity('room',label.slice('오전 활동 장소: '.length),2);
+   if(PERSON_EVENTS[label]){
+    const room=label.startsWith('기도관')?'기도관':'예술당';
+    // Room visit is implied by an authored individual selection.
+    grantAffinity('room',room,2);
+    grantAffinity('person',label,2);
+   }
+  }
+ }
+ restoreAffinityFromHistory();
  const style=document.createElement('style');
  style.textContent=`
  #shindo-phone-panel{color:#eee;overflow:hidden;font-family:Pretendard,system-ui,sans-serif;box-sizing:border-box}
@@ -96,7 +169,7 @@
  function evidence(){const items=load(EVIDENCE,[]);if(!Array.isArray(items)||!items.length){empty('아직 획득한 증거품이 없습니다.');return}
   items.forEach(id=>{const info=evidenceInfo[id]||{name:id,description:'획득한 증거품'};const card=make('div','inv-card');card.append(make('div','inv-item-name',info.name),make('div','inv-muted',info.description));content.append(card)})
  }
- function people(){const values=load(AFFINITY,{});PEOPLE.forEach(([name,portrait])=>{
+ function people(){const values=getAffinity();PEOPLE.forEach(([name,portrait])=>{
   const known=isMet(name);
   const score=Math.max(0,Math.min(100,Number(values[name])||0));
   const card=make('div','inv-card inv-person');
