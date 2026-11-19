@@ -158,7 +158,7 @@ const scenes=[
  {kind:"narration",text:"마치 심문받는 것만 같다."},
  {kind:"dialogue",speaker:"주인공",text:"…예. 맹세합니다.",tickSpeed:1,tickVolume:.27},
  {kind:"dialogue",speaker:"주인공",text:"(기자 신분으로 여기에 잠입한 것부터가 거짓이지만, 뭐. 알 리가 있나.)",inner:true},
- {kind:"dialogue",speaker:"원우",text:"김봉봉 신도님은 바깥에서 어떤 일을 하셨습니까?",tickSpeed:1,blackout:true},
+ {kind:"dialogue",speaker:"원우",text:"김봉봉 신도님은 바깥에서 어떤 일을 하셨습니까?",tickSpeed:1,delayedConfessionBlackout:true},
  {kind:"dialogue",speaker:"주인공",text:"(젠장, 첫 질문부터 무서운 거잖아...)",inner:true},
  {kind:"choice"},
  {kind:"narration",text:"동료들의 이중적이고 자극적인 것만 쫓는 태도에 신물 나 오게 되었다고 대답했다.",branch:1,tickSpeed:1},
@@ -274,6 +274,11 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .vn-speaker:empty{display:none}
 #shindo-vn .vn-portrait{position:absolute;bottom:clamp(160px,23vh,245px);left:50%;transform:translateX(-50%);height:min(66vh,740px);max-width:95vw;object-fit:contain;object-position:bottom;pointer-events:none;z-index:1}
 #shindo-vn .vn-portrait[hidden]{display:none}
+/* v91: Fade Wonwoo's portrait after the complete question, then cut the background to black. */
+#shindo-vn .vn-portrait.vn-question-fade{opacity:0;transition:opacity .75s ease-in-out}
+#shindo-vn .vn-box{position:relative}
+#shindo-vn.confession-blackout .vn-box{z-index:6!important}
+#shindo-vn.confession-blackout .vn-hint{z-index:6!important}
 #shindo-vn .vn-text{position:relative;z-index:2}
 #shindo-vn.sanctuary{background:transparent!important;color:#fff;transition:background 1.2s ease;isolation:isolate}
 #shindo-vn.sanctuary::before{content:none!important}
@@ -481,20 +486,25 @@ function sound(name){if(!name)return;
 }
 // v85: Typewriter for dialogue, inner monologue, and narration (scene descriptions).
 // Preserve existing inline <strong> highlights and allow a second click to reveal the full line.
-let vnTypingTimer=null, vnTypingFinish=null;
+let vnTypingTimer=null, vnTypingFinish=null, vnTypingOnComplete=null;
+let confessionQuestionTimers=[];
+function clearConfessionQuestionTimers(){for(const t of confessionQuestionTimers)clearTimeout(t);confessionQuestionTimers=[];portrait.classList.remove('vn-question-fade')}
+function runVnTypingComplete(){const callback=vnTypingOnComplete;vnTypingOnComplete=null;if(callback)callback()}
 function stopVnTyping(reveal=false){
  if(vnTypingTimer!==null){cancelAnimationFrame(vnTypingTimer);vnTypingTimer=null}
  const done=vnTypingFinish;vnTypingFinish=null;
- if(reveal && done)done();
+ if(reveal && done){done();runVnTypingComplete()}
+ if(!reveal)vnTypingOnComplete=null;
 }
-function beginVnTyping(){
+function beginVnTyping(onComplete=null){
  stopVnTyping(false);
+ vnTypingOnComplete=onComplete;
  const walker=document.createTreeWalker(content,NodeFilter.SHOW_TEXT);
  const nodes=[];let n;
  while((n=walker.nextNode()))nodes.push(n);
  const originals=nodes.map(node=>Array.from(node.nodeValue||''));
  const total=originals.reduce((sum,chars)=>sum+chars.length,0);
- if(!total)return;
+ if(!total){runVnTypingComplete();return;}
  for(const node of nodes)node.nodeValue='';
  let shown=0, activeNode=0, activeOffset=0, lastStamp=null, remainder=0;
  // Append only newly visible characters; don't rewrite the entire dialogue DOM every 30ms.
@@ -515,14 +525,29 @@ function beginVnTyping(){
   remainder+=Math.max(0,Math.min(stamp-lastStamp,250));lastStamp=stamp;
   const count=Math.floor(remainder/30);
   if(count>0){remainder-=count*30;revealUpTo(Math.min(total,shown+count))}
-  if(shown>=total){stopVnTyping(false);return}
+  if(shown>=total){vnTypingOnComplete=null;stopVnTyping(false);if(onComplete)onComplete();return}
   vnTypingTimer=requestAnimationFrame(frame);
  }
  vnTypingTimer=requestAnimationFrame(frame);
 }
+function startConfessionQuestionTransition(){
+ // Dialogue stays visible and legible; only the portrait fades.
+ locked=true;
+ portrait.classList.remove('vn-question-fade');
+ // Force a style flush so the opacity transition starts from the current visible portrait.
+ void portrait.offsetWidth;
+ portrait.classList.add('vn-question-fade');
+ confessionQuestionTimers.push(setTimeout(()=>{
+   // Cut the entire scene behind the dialogue to fully opaque black in one beat.
+   overlay.classList.add('confession-blackout');
+   portrait.hidden=true;
+   portrait.classList.remove('vn-question-fade');
+   confessionQuestionTimers.push(setTimeout(()=>{locked=false},130));
+ },780));
+}
 function save(){try{localStorage.setItem(KEY,String(index));localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}refreshInventoryVisibility()}
 const DAY2_START=scenes.findIndex(x=>x.text&&x.text.includes("봉봉 씨! 새벽기도 안 가세요?"));
-function render(){clearTimeout(timer);stopVnTyping(false);const scene=scenes[index];if(!scene){finish();return}
+function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTyping(false);const scene=scenes[index];if(!scene){finish();return}
 applySceneBackdrop(index);
 // The central-square ceremony ends after "풀잎 위로 ..."; never leak its bell into the blackout.
 // This also stops the bell on rapid advancement, even before its 60-second timer expires.
@@ -593,15 +618,15 @@ if(scene.kind==='dialogue'){
  const center=overlay.querySelector('.vn-center');if(center)center.style.display='none';box.style.display='flex';overlay.querySelector('.vn-hint').style.display='block';content.textContent=scene.maskWonwoo?scene.text.replace('원우','??'):scene.text;content.style.fontSize=scene.largeText?'1.25em':'';content.style.fontWeight=scene.boldAll?'800':'';content.style.color=scene.redText?'#e02020':'';
  if(scene.redWord){const at=content.textContent.indexOf(scene.redWord);if(at>=0){const txt=content.textContent;content.textContent='';content.append(document.createTextNode(txt.slice(0,at)));const b=document.createElement('strong');b.style.color='#d41616';b.textContent=scene.redWord;content.append(b,document.createTextNode(txt.slice(at+scene.redWord.length)))}}
  if(scene.boldWord){const target=scene.boldWord;const at=content.textContent.indexOf(target);if(at>=0){const txt=content.textContent;content.textContent='';content.append(document.createTextNode(txt.slice(0,at)));const b=document.createElement('strong');b.textContent=target;content.append(b,document.createTextNode(txt.slice(at+target.length)))}}
- if(scene.kind==='dialogue'||scene.kind==='narration'||scene.kind==='line')beginVnTyping();
+ if(scene.kind==='dialogue'||scene.kind==='narration'||scene.kind==='line')beginVnTyping(scene.delayedConfessionBlackout?startConfessionQuestionTransition:null);
  if(scene.follow){locked=true;timer=setTimeout(()=>{locked=false;next()},1600)}
  else if(index===12){locked=true;timer=setTimeout(()=>{locked=false;next()},2000)}
- else locked=false;
+ else locked=!!scene.delayedConfessionBlackout;
 }
 function day2Ring(times,volume){for(let i=0;i<times;i++)setTimeout(()=>{if(overlay.classList.contains('active'))playExtraAudio('oath-bell-05.mp3',volume)},i*3300)}
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
 function restartFromDay1(){
- clearTimeout(timer);timer=null;
+ clearTimeout(timer);timer=null;clearConfessionQuestionTimers();
  stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopPencil();
  stopConfessionTick();stopEndingBell();stopSanctuaryTick();
  if(confessionTickStartTimer){clearTimeout(confessionTickStartTimer);confessionTickStartTimer=null}
@@ -637,7 +662,7 @@ function finish(){
 function next(){if(vnTypingTimer!==null){stopVnTyping(true);return;}if(locked)return; if(index>=scenes.length-1){finish();return;} index++;save();render()}
 overlay.addEventListener('click',()=>{audioContext();next()});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next()}});
 window.SHINDO_startStory=()=>{
- stopGongyangBell();stopGongyangApplause();stopPencil();stopConfessionTick();stopEndingBell();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}confessionTickLouder=false;day2Prayer=Number(localStorage.getItem("shindo_day2_prayer")||0);day2Morning=localStorage.getItem("shindo_day2_morning")||"";selectedBranch=Number(localStorage.getItem("shindo_confession_branch")||0);overlay.classList.remove("sanctuary","sanctuary-leaving","day","confession-blackout");
+ clearConfessionQuestionTimers();stopGongyangBell();stopGongyangApplause();stopPencil();stopConfessionTick();stopEndingBell();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}confessionTickLouder=false;day2Prayer=Number(localStorage.getItem("shindo_day2_prayer")||0);day2Morning=localStorage.getItem("shindo_day2_morning")||"";selectedBranch=Number(localStorage.getItem("shindo_confession_branch")||0);overlay.classList.remove("sanctuary","sanctuary-leaving","day","confession-blackout");
  if(localStorage.getItem(KEY)==='complete'&&!localStorage.getItem('shindo_story_v66_sanctuary')){localStorage.setItem(KEY,'66');localStorage.setItem('shindo_story_v66_sanctuary','1')}
 
  // Players who finished the previous release continue at the newly added dialogue.
