@@ -145,7 +145,7 @@ const scenes=[
  {kind:"dialogue",speaker:"교주",text:"밖에서 쌓은 수많은 죄를 토해내 사하기 위해서죠.",portrait:"elder-default"},
  {kind:"dialogue",speaker:"교주",text:"원우 사제님은 이 중요한 업무를 맡은 고해성사 담당 사제입니다.",portrait:"elder-default",maskWonwoo:true},
  {kind:"dialogue",speaker:"교주",text:"죄를 토해내고 꾸짖음이 필요하시다면 사제님을 찾아가세요.",portrait:"elder-default"},
- {kind:"narration",text:"본당을 나설 때쯤엔 온몸이 녹초가 되어있었다.",leaveSanctuary:true},
+ {kind:"narration",text:"본당을 나설 때쯤엔 온몸이 녹초가 되어있었다.",leaveSanctuary:true,clearPortrait:true},
  {kind:"dialogue",speaker:"주인공",text:"(이렇게 피곤한데 고해성사까지 해야 한다니...)",inner:true},
  {kind:"dialogue",speaker:"주인공",text:"(해가 벌써 서녘에 뉘엿거리네... 고해소로 가봐야겠다.)",inner:true},
  {kind:"narration",text:"고해소는 본당 옆에 있는 작은 경당이었다."},
@@ -214,11 +214,11 @@ const scenes=[
  {"kind":"dialogue","speaker":"교주","text":"대체 누가 감히 우리와 발맞추어 걸으면서, 그 눈과 심장은 죄악을 향해 있었습니까?","branch":1,"portrait":"elder-frown","boldAll":true,"largeText":true},
  {"kind":"dialogue","speaker":"교주","text":"이에 신께서는 진노하셨습니다. 그 진노 앞에서 우리는 하나가 되어야 합니다!","branch":1,"portrait":"elder-furious","boldAll":true},
  {"kind":"narration","text":"교주가 손을 들자 웅성거림이 순식간에 가라앉았다.","branch":1},
- {"kind":"dialogue","speaker":"교주","text":"죄악으로 탁해진 것을 씻고 속죄하기 위하여.","branch":1,"portraitPlaceholder":true},
- {"kind":"dialogue","speaker":"교주","text":"지금 이 시간 부로, 공양제를 시작하겠습니다.","branch":1,"portraitPlaceholder":true,"redWord":"공양제"},
+ {"kind":"dialogue","speaker":"교주","text":"죄악으로 탁해진 것을 씻고 속죄하기 위하여.","branch":1,"portrait":"elder-frown"},
+ {"kind":"dialogue","speaker":"교주","text":"지금 이 시간 부로, 공양제를 시작하겠습니다.","branch":1,"portrait":"elder-frown","redWord":"공양제"},
  {"kind":"narration","text":"목덜미가 서늘해졌다.","branch":1},
- {"kind":"dialogue","speaker":"교주","text":"이 죄인이 바로 그 첫 열매입니다.","branch":1,"portraitPlaceholder":true},
- {"kind":"dialogue","speaker":"교주","text":"역경을 지나, 번성으로!","branch":1,"portraitPlaceholder":true,"leaderShout":true},
+ {"kind":"dialogue","speaker":"교주","text":"이 죄인이 바로 그 첫 열매입니다.","branch":1,"portrait":"elder-frown"},
+ {"kind":"dialogue","speaker":"교주","text":"역경을 지나, 번성으로!","branch":1,"portrait":"elder-furious","leaderShout":true},
  {"kind":"narration","text":"신도들 사이에서 우레와 같은 박수 소리가 터져 나왔다.","branch":1,"gongyangApplause":"start"},
  {"kind":"narration","text":"발버둥 쳐봐도 소용없었다. 그 남자는 공양실 방향으로 질질 끌려갔다.","branch":1,"gongyangApplause":"continue"},
  {"kind":"narration","text":"풀잎 위로 상쾌한 바람이 불었다. 눈이 시리도록 맑은 아침이었다. 그래서 더 끔찍했다.","branch":1},
@@ -587,7 +587,7 @@ if(scene.reveal)revealed=true;
 if(scene.revealJihoon)jihoonRevealed=true;
 if(scene.enterSanctuary){overlay.classList.add('sanctuary');bell(2);startSanctuaryTick()}
 if(scene.bellOnce)bell(1);
-if(scene.leaveSanctuary){stopSanctuaryTick();overlay.classList.remove('sanctuary');overlay.classList.add('sanctuary-leaving');setTimeout(()=>overlay.classList.remove('sanctuary-leaving'),1600)}
+if(scene.leaveSanctuary){stopSanctuaryTick();currentPortrait='';portrait.hidden=true;overlay.classList.remove('sanctuary');overlay.classList.add('sanctuary-leaving');setTimeout(()=>overlay.classList.remove('sanctuary-leaving'),1600)}
 if(scene.enterConfession){stopConfessionTick();if(confessionDoorAudio){confessionDoorAudio.addEventListener("ended",onConfessionDoorEnded,{once:true});confessionTickStartTimer=setTimeout(onConfessionDoorEnded,4500)}else confessionTickStartTimer=setTimeout(onConfessionDoorEnded,1000)}
 if(scene.eventFootsteps){if(!scene.silentFootsteps)sound('footsteps');portrait.hidden=true;currentPortrait='';box.style.display='none';locked=true;timer=setTimeout(()=>{locked=false;next()},3000);return}
 if(scene.pencil)keepPencil();else stopPencil();
