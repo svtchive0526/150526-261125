@@ -304,6 +304,7 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .shindo-choices p{font-size:15px;color:#bbb;margin:0 0 12px}
 #shindo-vn .shindo-choices button{border:1px solid #555;border-radius:5px;background:#202020;color:white;text-align:left;padding:16px;font:inherit;font-size:clamp(14px,1.6vw,17px);cursor:pointer}
 #shindo-vn .shindo-choices button:hover{background:#333;border-color:#999}
+#shindo-vn .shindo-choices .shindo-day1-restart{margin-top:8px;text-align:center;font-size:clamp(12px,1.4vw,14px);color:#bbb;background:#242424;border:1px dashed #666;padding:12px 10px;letter-spacing:-.045em}
 #shindo-vn .shindo-ending{position:absolute;inset:0;z-index:15;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:24px;box-sizing:border-box;cursor:default}
 #shindo-vn .shindo-ending-copy{animation:vn-image-appear 1s ease both;max-width:900px}
 #shindo-vn .shindo-ending h1{font-family:serif;font-size:clamp(72px,12vw,140px);color:#c00000;margin:0 0 28px;line-height:1.2}
@@ -527,11 +528,32 @@ if(scene.kind==='dialogue'){
  else locked=false;
 }
 function day2Ring(times,volume){for(let i=0;i<times;i++)setTimeout(()=>{if(overlay.classList.contains('active'))playExtraAudio('oath-bell-05.mp3',volume)},i*3300)}
+// Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
+function restartFromDay1(){
+ clearTimeout(timer);timer=null;
+ stopVnTyping(false);stopGongyangBell();stopGongyangApplause();stopPencil();
+ stopConfessionTick();stopEndingBell();stopSanctuaryTick();
+ if(confessionTickStartTimer){clearTimeout(confessionTickStartTimer);confessionTickStartTimer=null}
+ if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}
+ if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}
+ if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}
+ const choices=overlay.querySelector('.shindo-choices');if(choices)choices.style.display='none';
+ overlay.classList.remove('sanctuary','sanctuary-leaving','day','confession-blackout','confession-fade','day2-shake');
+ const end=overlay.querySelector('.shindo-ending');if(end)end.remove();
+ endingTimers.forEach(clearTimeout);endingTimers=[];
+ selectedBranch=0;day2Prayer=0;day2Morning='';revealed=false;jihoonRevealed=false;
+ currentPortrait='';portrait.hidden=true;illustration.hidden=true;confessionTickLouder=false;
+ ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning'].forEach(k=>localStorage.removeItem(k));
+ const day1Start=scenes.findIndex(s=>s.kind==='transition'&&s.text==='1일차 아침');
+ index=day1Start>=0?day1Start:0;
+ locked=false;save();render();
+}
 function showDay2Choice(type){locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  const prayer=type==='prayer';const options=prayer?['새벽기도에 참석한다','새벽기도에 참석하지 않는다']:['기도관','예술당','생활관','본당','고해실','공양실'];
  el.classList.toggle('shindo-morning-grid',!prayer);
- el.innerHTML='<h2>'+(prayer?'새벽기도에 참석할까?':'오전 활동이다. 어디로 가볼까?')+'</h2>'+(prayer?options.map((t,i)=>'<button data-choice="'+(i+1)+'">'+t+'</button>').join(''):'<div class="shindo-morning-options">'+options.map((t,i)=>'<button data-choice="'+(i+1)+'">'+t+'</button>').join('')+'</div>');el.style.display='flex';
- el.querySelectorAll('button').forEach(b=>b.onclick=e=>{e.stopPropagation();if(prayer){day2Prayer=Number(b.dataset.choice);localStorage.setItem('shindo_day2_prayer',String(day2Prayer));el.style.display='none';locked=false;next()}else{day2Morning=options[Number(b.dataset.choice)-1];localStorage.setItem('shindo_day2_morning',day2Morning);el.innerHTML='<h2>'+day2Morning+'</h2><p>이후 이야기는 다음 업데이트에서 이어집니다.</p>';locked=true}})
+ el.innerHTML='<h2>'+(prayer?'새벽기도에 참석할까?':'오전 활동이다. 어디로 가볼까?')+'</h2>'+(prayer?options.map((t,i)=>'<button data-choice="'+(i+1)+'">'+t+'</button>').join(''):'<div class="shindo-morning-options">'+options.map((t,i)=>'<button data-choice="'+(i+1)+'">'+t+'</button>').join('')+'</div><button type="button" class="shindo-day1-restart">↺ 1일차부터 다시 시작 (임시)</button>');el.style.display='flex';
+ if(!prayer)el.querySelector('.shindo-day1-restart').onclick=e=>{e.stopPropagation();restartFromDay1()};
+ el.querySelectorAll('[data-choice]').forEach(b=>b.onclick=e=>{e.stopPropagation();if(prayer){day2Prayer=Number(b.dataset.choice);localStorage.setItem('shindo_day2_prayer',String(day2Prayer));el.style.display='none';locked=false;next()}else{day2Morning=options[Number(b.dataset.choice)-1];localStorage.setItem('shindo_day2_morning',day2Morning);el.innerHTML='<h2>'+day2Morning+'</h2><p>이후 이야기는 다음 업데이트에서 이어집니다.</p><button type="button" class="shindo-day1-restart">↺ 1일차부터 다시 시작 (임시)</button>';el.querySelector('.shindo-day1-restart').onclick=e=>{e.stopPropagation();restartFromDay1()};locked=true}})
 }
 function showChoice(){locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}el.classList.remove('shindo-morning-grid');el.innerHTML='<h2>어떻게 대답할까?</h2><p>원우의 질문에 답해야 한다.</p><button data-branch="1">아직은 때가 아니다. 무조건 긍정적이고 헌신적인 발언을 하자.</button><button data-branch="2">사제를 포섭해보자. 중요한 자료를 얻을 수 있을지도 모른다.</button>';el.style.display='flex';el.querySelectorAll('button').forEach(b=>b.onclick=e=>{e.stopPropagation();selectedBranch=Number(b.dataset.branch);localStorage.setItem('shindo_confession_branch',String(selectedBranch));el.style.display='none';locked=false;next()})}
 function showEnding(){stopVnTyping(false);stopGongyangBell();stopGongyangApplause();stopConfessionTick();stopEndingBell();stopSanctuaryTick();box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';overlay.classList.add('confession-blackout');locked=true;const end=document.createElement('div');end.className='shindo-ending';end.innerHTML='<div class="shindo-ending-copy"><h1>독실</h1><p>신실한 종교인의 역할은 종교와 체계에 대한 반발을 보이는 존재를 싹부터 없애는 것입니다.</p></div>';overlay.appendChild(end);const later=(fn,ms)=>endingTimers.push(setTimeout(fn,ms));later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도</div>'},3000);later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도<span>神道</span></div>'},5000);later(()=>{const b=document.createElement('button');b.className='shindo-restart';b.textContent='처음부터 다시 하기';b.onclick=e=>{e.stopPropagation();stopEndingBell();stopConfessionTick();localStorage.removeItem('shindo_confession_branch');localStorage.removeItem('shindo_day2_prayer');localStorage.removeItem('shindo_day2_morning');localStorage.removeItem(KEY);localStorage.removeItem('shindo_story_started_v37');localStorage.removeItem('shindo_sleep_gate_v48');localStorage.removeItem('shindo_story_v55_extended');localStorage.removeItem('shindo_story_v66_sanctuary');['svter_first_launch_at_v1','svter_lock_reached_v1','svter_lock_deleted_notices_v33','kamille_new_mail_received_v32','kamille_new_mail_read_v32','kamille_newmail_popup_ack_v51','shindo_church_link_unlocked_v30','shindo_attachment_unlocked_v31'].forEach(k=>localStorage.removeItem(k));sessionStorage.removeItem('shindo_story_started_v37');location.reload()};end.appendChild(b)},7000)}
