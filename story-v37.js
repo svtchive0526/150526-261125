@@ -219,7 +219,7 @@ const scenes=[
  {"kind":"narration","text":"목덜미가 서늘해졌다.","branch":1},
  {"kind":"dialogue","speaker":"교주","text":"이 죄인이 바로 그 첫 열매입니다.","branch":1,"portrait":"elder-frown"},
  {"kind":"dialogue","speaker":"교주","text":"역경을 지나, 번성으로!","branch":1,"portrait":"elder-furious","leaderShout":true},
- {"kind":"narration","text":"신도들 사이에서 우레와 같은 박수 소리가 터져 나왔다.","branch":1,"gongyangApplause":"start"},
+ {"kind":"narration","text":"신도들 사이에서 우레와 같은 박수 소리가 터져 나왔다.","branch":1,"gongyangApplause":"start","clearPortrait":true},
  {"kind":"narration","text":"발버둥 쳐봐도 소용없었다. 그 남자는 공양실 방향으로 질질 끌려갔다.","branch":1,"gongyangApplause":"continue"},
  {"kind":"narration","text":"풀잎 위로 상쾌한 바람이 불었다. 눈이 시리도록 맑은 아침이었다. 그래서 더 끔찍했다.","branch":1},
  {"kind":"narration","text":"교주의 말인즉슨, 최근 한 내부고발자가 인신 공양의 실태를 바깥으로 흘렸다.","branch":1,"squareBlack":true,"fade":true},
@@ -389,12 +389,7 @@ function stopSanctuaryTick(){
  sanctuaryTickAudio=null;
  stopClockStrikes();
 }
-function startSanctuaryTick(){
- stopSanctuaryTick();
- sanctuaryTickAudio=clockStrikeTemplate; // active marker for the sanctuary ambience
- playClockStrike(.18);
- sanctuaryTickTimer=setInterval(()=>{if(sanctuaryTickAudio)playClockStrike(.18)},2000);
-}
+function startSanctuaryTick(){stopSanctuaryTick(); /* v97: sanctuary clock disabled */}
 function playExtraAudio(filename,volume=.7){const a=new Audio('story-audio/'+filename);a.volume=volume;a.play().catch(()=>{});return a}
 function bell(times){for(let i=0;i<times;i++)setTimeout(()=>playExtraAudio('oath-bell-05.mp3',.75),i*3600)}
 // v87: During the square ceremony, gongyang bell 01 is continuous (up to 60 seconds),
@@ -440,23 +435,9 @@ function stopConfessionTick(){
  }
  stopClockStrikes();
 }
-function onConfessionDoorEnded(){if(overlay.classList.contains("active"))startConfessionTick()}
-function setConfessionTick(speed,volume){
- if(!overlay.classList.contains('active'))return;
- stopConfessionTick();
- confessionTickAudio=clockStrikeTemplate; // 1 second interval for every confession scene
- const level=volume??.27;
- playClockStrike(level);
- confessionTickStartTimer=setInterval(()=>{if(confessionTickAudio)playClockStrike(level)},1000);
-}
-function startConfessionTick(){
- if(!overlay.classList.contains("active"))return;
- if(confessionTickAudio)return;
- confessionTickAudio=new Audio('story-audio/clock_1s_sound.mp3');
- confessionTickAudio.loop=true;confessionTickAudio.preload='auto';
- confessionTickAudio.volume=confessionTickLouder?.43:.27;
- confessionTickAudio.play().catch(()=>{});
-}
+function onConfessionDoorEnded(){/* v97: confession clock disabled */}
+function setConfessionTick(speed,volume){stopConfessionTick(); /* v97: confession clock disabled */}
+function startConfessionTick(){stopConfessionTick(); /* v97: confession clock disabled */}
 function audioContext(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();return audio}catch(e){return null}}
 function tone(freq,duration,vol=.05,type='sine',start=0){const a=audioContext();if(!a)return;const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+start;o.type=type;o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+duration);o.connect(g).connect(a.destination);o.start(t);o.stop(t+duration+.03)}
 function playStoryClip(number,rate=1){
@@ -572,9 +553,9 @@ if(scene.gongyangBell)playGongyangBell(scene.gongyangBell);
 if(scene.leaderShout)playLeaderShout();
 if(scene.gongyangApplause==='start')startGongyangApplause();
 if(gongyangApplauseAudio && scene.gongyangApplause!=='start' && scene.gongyangApplause!=='continue')stopGongyangApplause();
-if(scene.tickSpeed)setConfessionTick(scene.tickSpeed,scene.tickVolume??.27);
+// v97: ignore confession tick-speed cues; no clock plays inside the confessional.
 if(scene.stopTick)stopConfessionTick();
-if(scene.tickAfter)setTimeout(()=>{if(overlay.classList.contains("active"))setConfessionTick(scene.tickAfter,.38)},250);
+// v97: no delayed confession ticks.
 if(scene.bellLoop){stopEndingBell();const ring=()=>{endingBell=playExtraAudio('oath-bell-05.mp3',.12)};ring();endingBellTimer=setInterval(ring,3900)}
 if(scene.bellStop)stopEndingBell();
 if(scene.bellLoud)playExtraAudio('oath-bell-05.mp3',1);
@@ -585,13 +566,13 @@ if(scene.kind==='sfx'){if(scene.clearPortrait){currentPortrait='';portrait.hidde
 if(!(scene.sound==='forest'&&index===22))sound(scene.sound);
 if(scene.reveal)revealed=true;
 if(scene.revealJihoon)jihoonRevealed=true;
-if(scene.enterSanctuary){overlay.classList.add('sanctuary');bell(2);startSanctuaryTick()}
+if(scene.enterSanctuary){overlay.classList.add('sanctuary');stopSanctuaryTick();bell(2)}
 if(scene.bellOnce)bell(1);
 if(scene.leaveSanctuary){stopSanctuaryTick();currentPortrait='';portrait.hidden=true;overlay.classList.remove('sanctuary');overlay.classList.add('sanctuary-leaving');setTimeout(()=>overlay.classList.remove('sanctuary-leaving'),1600)}
-if(scene.enterConfession){stopConfessionTick();if(confessionDoorAudio){confessionDoorAudio.addEventListener("ended",onConfessionDoorEnded,{once:true});confessionTickStartTimer=setTimeout(onConfessionDoorEnded,4500)}else confessionTickStartTimer=setTimeout(onConfessionDoorEnded,1000)}
+if(scene.enterConfession){stopConfessionTick();/* Keep the confession door sound; do not schedule ticking. */}
 if(scene.eventFootsteps){if(!scene.silentFootsteps)sound('footsteps');portrait.hidden=true;currentPortrait='';box.style.display='none';locked=true;timer=setTimeout(()=>{locked=false;next()},3000);return}
 if(scene.pencil)keepPencil();else stopPencil();
-if(scene.clockTickLouder){confessionTickLouder=true;if(confessionTickAudio)confessionTickAudio.volume=.43;else startConfessionTick()}
+// v97: ignore volume-up cue for the removed confession clock.
 illustration.hidden=!scene.illustration;
 illustration.classList.toggle('vn-fade',scene.kind==='image'&&scene.illustration!=='mail-01');
 illustration.classList.toggle('vn-mail-zoom',scene.kind==='image'&&scene.illustration==='mail-01');
@@ -673,6 +654,6 @@ window.SHINDO_startStory=()=>{
  }
 try{localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){};const n=Number(localStorage.getItem(KEY));index=Number.isInteger(n)&&n>=0&&n<scenes.length?n:0;revealed=scenes.slice(0,index+1).some(x=>x.reveal);jihoonRevealed=scenes.slice(0,index+1).some(x=>x.revealJihoon);
 currentPortrait='';for(const scene of scenes.slice(0,index+1)){if(scene.clearPortrait)currentPortrait='';if(scene.portrait)currentPortrait=scene.portrait}
-storyBackdrop.classList.add('visible');overlay.classList.add('active');if(scenes.slice(0,index+1).some(x=>x.enterSanctuary)&&!scenes.slice(0,index+1).some(x=>x.leaveSanctuary)){overlay.classList.add("sanctuary");if(!scenes[index].enterSanctuary)startSanctuaryTick()}refreshInventoryVisibility();render()};
+storyBackdrop.classList.add('visible');overlay.classList.add('active');if(scenes.slice(0,index+1).some(x=>x.enterSanctuary)&&!scenes.slice(0,index+1).some(x=>x.leaveSanctuary)){overlay.classList.add("sanctuary");if(!scenes[index].enterSanctuary)stopSanctuaryTick()}refreshInventoryVisibility();render()};
 })();
 
