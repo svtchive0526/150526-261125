@@ -1390,7 +1390,7 @@ const status=document.getElementById('sf-status');
 const list=document.getElementById('sf-post-list');
 const hint=document.getElementById('sf-hint');
 const buttons=[...box.querySelectorAll('.sf-person')];
-let person='셉카', taps=[], lastFocus=null, fetching=false;
+let person='셉카', lastFocus=null, fetching=false;
 const config=window.SHINDO_FEEDBACK_CONFIG||{};
 const endpoint=String(config.url||'').replace(/\/$/,'');
 const key=String(config.anonKey||'');
@@ -1460,7 +1460,6 @@ function close(){
  const completed=localStorage.getItem('shindo_story_progress_v37')==='complete';
  box.classList.remove('sf-open');
  document.documentElement.style.overflow=document.documentElement.style.getPropertyValue('--sf-prior-overflow')||'';
- taps=[];
  if(completed){
   // Returning from end-of-beta feedback replays from the moment the player falls asleep.
   // Keep the start flag so refreshing resumes the story instead of showing a blank mail view.
@@ -1483,15 +1482,6 @@ box.querySelector('#sf-save').addEventListener('click',async()=>{
  msg.value='';setStatus('저장했어요. 다른 플레이어에게도 공개됩니다.');await loadPosts();updateHint()
  }catch(e){setStatus('저장에 실패했어요. 네트워크와 Supabase 설정을 확인해주세요.')}finally{save.disabled=false}
 });
-// Triple tap/click on the game surface, excluding interactive controls.
-document.addEventListener('pointerup',e=>{
- if(box.classList.contains('sf-open')||e.button!==0)return;
- // The three-click shortcut is available during story dialogue as well.
- // Require three nearby clicks in quick succession to limit accidental activation.
- if(e.target.closest('button,a,input,textarea,select,label,[contenteditable="true"]')){taps=[];return}
- const now=performance.now();taps=taps.filter(t=>now-t.t<1100&&Math.hypot(t.x-e.clientX,t.y-e.clientY)<95);taps.push({t:now,x:e.clientX,y:e.clientY});
- if(taps.length>=3){taps=[];open()}
-},{passive:true});
 // Keep feedback text editing independent from the story's global keyboard shortcuts.
 // Capture first, but do not cancel default browser behavior: Space inserts a space,
 // Enter inserts a newline, including in reply fields on mobile/desktop keyboards.
