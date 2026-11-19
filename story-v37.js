@@ -89,7 +89,7 @@ const scenes=[
  {kind:"dialogue",speaker:"승철",text:"얘가 늦네. 왜 이렇게 안 오지?",inner:false,portrait:"seungcheol-body1-default"},
  {kind:"sfx",sound:"footsteps_fast"},
  {kind:"dialogue",speaker:"지훈",text:"아, 죄송합니다. 오다가 길을 잃는 바람에.",inner:false,portrait:"jihoon-body1-default"},
- {kind:"dialogue",speaker:"승철",text:"야 너는 평생 여기 살아놓고 아직도 길을 잃냐?",inner:false,portrait:"seungcheol-body2-smile"},
+ {kind:"dialogue",speaker:"승철",text:"야 너는 평생 여기 살아놓고 아직도 길을 잃냐?",inner:false,portrait:"seungcheol-body1-flustered"},
  {kind:"dialogue",speaker:"주인공",text:"(투닥대는 두 사람은 제법 친해 보인다.)",inner:true},
  {kind:"sfx",sound:"footsteps",clearPortrait:true},
  {kind:"dialogue",speaker:"주인공",text:"(좁은 산길을 따라 10분쯤 걸었을까. 저 앞에 제법 번듯한 건축물들이 보이기 시작한다.)",inner:true,clearPortrait:true},
@@ -118,7 +118,8 @@ const scenes=[
  {kind:"dialogue",speaker:"주인공",text:"(심장이 쿵쾅거린다. 해낼 수 있을까? 과연 내가 혈혈단신으로, 이단의 소굴에서…)",inner:true},
  {kind:"image",illustration:"mail-01",duration:6000},
  {kind:"dialogue",speaker:"주인공",text:"(아냐, 김봉봉. 해낸다. 해낼 수 있다. 해내야만 한다.)",inner:true,clearPortrait:true},
- {kind:"narration",text:"마음을 다잡고 승철과 지훈의 안내를 따랐다.",sound:"footsteps",clearPortrait:true}
+ {kind:"narration",text:"마음을 다잡고 승철과 지훈의 안내를 따랐다.",sound:"footsteps",clearPortrait:true},
+ {kind:"dialogue",speaker:"원우",text:"고해소는 신성한 장소입니다. 거짓을 고하지 않을 것임을 맹세하십니까?",portrait:"wonwoo-body2-eyes-closed",clockTickLouder:true}
 ];
 const style=document.createElement('style');style.textContent=`
 #shindo-vn{position:fixed;inset:0;z-index:30000;background:#050607;color:#fff;display:none;align-items:flex-end;justify-content:center;font-family:Pretendard,'Pretendard Variable',system-ui,sans-serif;cursor:pointer;touch-action:manipulation;user-select:none}
@@ -160,6 +161,9 @@ function stopPencil(){if(pencilAudio){pencilAudio.pause();pencilAudio.currentTim
 function keepPencil(){if(pencilAudio)return;pencilAudio=new Audio('story-audio/pencil-17s.mp3');pencilAudio.loop=true;pencilAudio.volume=.65;pencilAudio.play().catch(()=>{})}
 
 let index=0,locked=false, timer=null, audio=null,ambient=null;let storySfx=null,storySfxTimer=null;
+let confessionTickTimer=null;
+function stopConfessionTick(){if(confessionTickTimer){clearInterval(confessionTickTimer);confessionTickTimer=null}}
+function startConfessionTick(){if(confessionTickTimer)return;let ticks=0;const tick=()=>{const louder=Math.min(.075,.042+ticks*.004);tone(ticks%2?1050:1450,.035,louder,'square');ticks++};tick();confessionTickTimer=setInterval(tick,1000)}
 function audioContext(){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();return audio}catch(e){return null}}
 function tone(freq,duration,vol=.05,type='sine',start=0){const a=audioContext();if(!a)return;const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+start;o.type=type;o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+duration);o.connect(g).connect(a.destination);o.start(t);o.stop(t+duration+.03)}
 function playStoryClip(number,rate=1){
@@ -192,6 +196,7 @@ if(!(scene.sound==='forest'&&index===22))sound(scene.sound);
 if(scene.reveal)revealed=true;
 if(scene.revealJihoon)jihoonRevealed=true;
 if(scene.pencil)keepPencil();else stopPencil();
+if(scene.clockTickLouder)startConfessionTick();else stopConfessionTick();
 illustration.hidden=!scene.illustration;
 illustration.classList.toggle('vn-fade',scene.kind==='image'&&scene.illustration!=='mail-01');
 illustration.classList.toggle('vn-mail-zoom',scene.kind==='image'&&scene.illustration==='mail-01');
@@ -220,7 +225,7 @@ if(scene.kind==='dialogue'){
  else locked=false;
 }
 function finish(){
- stopPencil();
+ stopPencil();stopConfessionTick();
  // Only finish after the player explicitly advances past the final dialogue.
  try{localStorage.setItem(KEY,'complete');localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}
  window.SHINDO_openFeedback?.();
