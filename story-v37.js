@@ -426,7 +426,7 @@ function sound(name){if(!name)return;
  
  
 }
-// v80: Typewriter for character speech and protagonist inner monologue only.
+// v85: Typewriter for dialogue, inner monologue, and narration (scene descriptions).
 // Preserve existing inline <strong> highlights and allow a second click to reveal the full line.
 let vnTypingTimer=null, vnTypingFinish=null;
 function stopVnTyping(reveal=false){
@@ -523,7 +523,7 @@ if(scene.kind==='dialogue'){
  const center=overlay.querySelector('.vn-center');if(center)center.style.display='none';box.style.display='flex';overlay.querySelector('.vn-hint').style.display='block';content.textContent=scene.maskWonwoo?scene.text.replace('원우','??'):scene.text;content.style.fontSize=scene.largeText?'1.25em':'';content.style.fontWeight=scene.boldAll?'800':'';
  if(scene.redWord){const at=content.textContent.indexOf(scene.redWord);if(at>=0){const txt=content.textContent;content.textContent='';content.append(document.createTextNode(txt.slice(0,at)));const b=document.createElement('strong');b.style.color='#d41616';b.textContent=scene.redWord;content.append(b,document.createTextNode(txt.slice(at+scene.redWord.length)))}}
  if(scene.boldWord){const target=scene.boldWord;const at=content.textContent.indexOf(target);if(at>=0){const txt=content.textContent;content.textContent='';content.append(document.createTextNode(txt.slice(0,at)));const b=document.createElement('strong');b.textContent=target;content.append(b,document.createTextNode(txt.slice(at+target.length)))}}
- if(scene.kind==='dialogue')beginVnTyping();
+ if(scene.kind==='dialogue'||scene.kind==='narration'||scene.kind==='line')beginVnTyping();
  if(scene.follow){locked=true;timer=setTimeout(()=>{locked=false;next()},1600)}
  else if(index===12){locked=true;timer=setTimeout(()=>{locked=false;next()},2000)}
  else locked=false;
