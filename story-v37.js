@@ -127,7 +127,7 @@ const scenes=[
  {kind:"narration",text:"숨을 크게 들이마시고, 본당 문을 열어젖혔다.",enterSanctuary:true},
  {kind:"dialogue",speaker:"주인공",text:"(본당은 제법 그럴싸한 교회의 모습을 하고 있네... 아닌가, 성당인가.)",inner:true},
  {kind:"dialogue",speaker:"주인공",text:"(특이한 점이라면 사방에 캐모마일 꽃이 장식되어 있었다.)",inner:true},
- {kind:"event",eventFootsteps:true},
+ {kind:"event",eventFootsteps:true,silentFootsteps:true},
  {kind:"dialogue",speaker:"주인공",text:"(교주다.)",inner:true},
  {kind:"dialogue",speaker:"주인공",text:"(짜 맞춘 것도 아니고 '사이비 교주'스럽게 생긴 노인이군...)",inner:true},
  {kind:"dialogue",speaker:"주인공",text:"(회백색의 머리에 수북한 하얀 수염이라...)",inner:true},
@@ -151,7 +151,7 @@ const scenes=[
  {kind:"dialogue",speaker:"교주",text:"죄를 토해내고 꾸짖음이 필요하시다면 사제님을 찾아가세요."},
  {kind:"narration",text:"본당을 나설 때쯤엔 온몸이 녹초가 되어있었다.",leaveSanctuary:true},
  {kind:"dialogue",speaker:"주인공",text:"(이렇게 피곤한데 고해성사까지 해야 한다니...)",inner:true},
- {kind:"dialogue",speaker:"주인공",text:"(해가 벌써 서녘에 뉘엿거리네... 고해소로 가봐야겠다.)",inner:true,sound:"walk"},
+ {kind:"dialogue",speaker:"주인공",text:"(해가 벌써 서녘에 뉘엿거리네... 고해소로 가봐야겠다.)",inner:true},
  {kind:"narration",text:"고해소는 본당 옆에 있는 작은 경당이었다."},
  {kind:"narration",text:"하얀 벽 탓에 모르고 보면 동화 속 예배당으로 착각할 만했다."},
  {kind:"narration",text:"문 옆에는 고해 시간을 적은 안내판이 걸려 있고, 그 아래 명패에는 상주 사제의 이름이 적혀 있었다.",sound:"nameplate"},
@@ -176,7 +176,9 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .vn-portrait{position:absolute;bottom:clamp(160px,23vh,245px);left:50%;transform:translateX(-50%);height:min(66vh,740px);max-width:95vw;object-fit:contain;object-position:bottom;pointer-events:none;z-index:1}
 #shindo-vn .vn-portrait[hidden]{display:none}
 #shindo-vn .vn-text{position:relative;z-index:2}
-#shindo-vn.sanctuary{background:#fff!important;color:#fff;transition:background 1.2s ease}
+#shindo-vn.sanctuary{background:#fff!important;color:#fff;transition:background 1.2s ease;isolation:isolate}
+#shindo-vn.sanctuary::before{content:"";position:absolute;inset:0;background:#fff;z-index:0;pointer-events:none}
+#shindo-vn.sanctuary .vn-box,#shindo-vn.sanctuary .vn-portrait,#shindo-vn.sanctuary .vn-illustration,#shindo-vn.sanctuary .vn-hint{z-index:2}
 #shindo-vn.sanctuary-leaving{transition:background 1.5s ease}
 #shindo-vn .vn-text.vn-inner{font-style:italic;color:#e3e3e3}
 @media(max-width:750px){#shindo-vn .vn-portrait{height:min(60vh,620px);bottom:170px}#shindo-vn .vn-speaker{top:-17px;left:12px;font-size:13px;padding:4px 13px}#shindo-vn .vn-box{padding-top:29px}}
@@ -201,7 +203,7 @@ function stopPencil(){if(pencilAudio){pencilAudio.pause();pencilAudio.currentTim
 function keepPencil(){if(pencilAudio)return;pencilAudio=new Audio('story-audio/pencil-17s.mp3');pencilAudio.loop=true;pencilAudio.volume=.65;pencilAudio.play().catch(()=>{})}
 
 let index=0,locked=false, timer=null, audio=null,ambient=null;let storySfx=null,storySfxTimer=null;
-let sanctuaryTickTimer=null,sanctuaryTickAudio=null,confessionDoorAudio=null;
+let sanctuaryTickTimer=null,sanctuaryTickAudio=null,confessionDoorAudio=null,confessionTickStartTimer=null;
 function stopSanctuaryTick(){if(sanctuaryTickTimer){clearInterval(sanctuaryTickTimer);sanctuaryTickTimer=null}if(sanctuaryTickAudio){sanctuaryTickAudio.pause();sanctuaryTickAudio.currentTime=0;sanctuaryTickAudio=null}}
 function startSanctuaryTick(){
  stopSanctuaryTick();
@@ -213,8 +215,10 @@ function startSanctuaryTick(){
 function playExtraAudio(filename,volume=.7){const a=new Audio('story-audio/'+filename);a.volume=volume;a.play().catch(()=>{});return a}
 function bell(times){for(let i=0;i<times;i++)setTimeout(()=>playExtraAudio('oath-bell-05.mp3',.75),i*3600)}
 let confessionTickAudio=null,confessionTickLouder=false;
-function stopConfessionTick(){if(confessionTickAudio){confessionTickAudio.pause();confessionTickAudio.currentTime=0;confessionTickAudio=null}}
+function stopConfessionTick(){if(confessionTickStartTimer){clearTimeout(confessionTickStartTimer);confessionTickStartTimer=null}if(confessionDoorAudio){confessionDoorAudio.removeEventListener("ended",onConfessionDoorEnded)}if(confessionTickAudio){confessionTickAudio.pause();confessionTickAudio.currentTime=0;confessionTickAudio=null}}
+function onConfessionDoorEnded(){if(overlay.classList.contains("active"))startConfessionTick()}
 function startConfessionTick(){
+ if(!overlay.classList.contains("active"))return;
  if(confessionTickAudio)return;
  confessionTickAudio=new Audio('story-audio/clock_1s_sound.mp3');
  confessionTickAudio.loop=true;confessionTickAudio.preload='auto';
@@ -257,8 +261,8 @@ if(scene.revealJihoon)jihoonRevealed=true;
 if(scene.enterSanctuary){overlay.classList.add('sanctuary');bell(2);startSanctuaryTick()}
 if(scene.bellOnce)bell(1);
 if(scene.leaveSanctuary){stopSanctuaryTick();overlay.classList.remove('sanctuary');overlay.classList.add('sanctuary-leaving');setTimeout(()=>overlay.classList.remove('sanctuary-leaving'),1600)}
-if(scene.enterConfession){const start=()=>{startConfessionTick()};if(confessionDoorAudio){confessionDoorAudio.addEventListener('ended',start,{once:true});setTimeout(start,4500)}else setTimeout(start,1000)}
-if(scene.eventFootsteps){sound('footsteps');portrait.hidden=true;currentPortrait='';box.style.display='none';locked=true;timer=setTimeout(()=>{locked=false;next()},3000);return}
+if(scene.enterConfession){stopConfessionTick();if(confessionDoorAudio){confessionDoorAudio.addEventListener("ended",onConfessionDoorEnded,{once:true});confessionTickStartTimer=setTimeout(onConfessionDoorEnded,4500)}else confessionTickStartTimer=setTimeout(onConfessionDoorEnded,1000)}
+if(scene.eventFootsteps){if(!scene.silentFootsteps)sound('footsteps');portrait.hidden=true;currentPortrait='';box.style.display='none';locked=true;timer=setTimeout(()=>{locked=false;next()},3000);return}
 if(scene.pencil)keepPencil();else stopPencil();
 if(scene.clockTickLouder){confessionTickLouder=true;if(confessionTickAudio)confessionTickAudio.volume=.43;else startConfessionTick()}
 illustration.hidden=!scene.illustration;
@@ -290,7 +294,7 @@ if(scene.kind==='dialogue'){
  else locked=false;
 }
 function finish(){
- stopPencil();stopConfessionTick();stopSanctuaryTick();
+ stopPencil();stopConfessionTick();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}overlay.classList.remove("active","sanctuary","sanctuary-leaving","day");
  // Only finish after the player explicitly advances past the final dialogue.
  try{localStorage.setItem(KEY,'complete');localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}
  window.SHINDO_openFeedback?.();
@@ -298,6 +302,7 @@ function finish(){
 function next(){if(locked)return; if(index>=scenes.length-1){finish();return;} index++;save();render()}
 overlay.addEventListener('click',()=>{audioContext();next()});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next()}});
 window.SHINDO_startStory=()=>{
+ stopPencil();stopConfessionTick();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}confessionTickLouder=false;overlay.classList.remove("sanctuary","sanctuary-leaving","day");
  if(localStorage.getItem(KEY)==='complete'&&!localStorage.getItem('shindo_story_v66_sanctuary')){localStorage.setItem(KEY,'66');localStorage.setItem('shindo_story_v66_sanctuary','1')}
 
  // Players who finished the previous release continue at the newly added dialogue.
@@ -308,5 +313,5 @@ window.SHINDO_startStory=()=>{
  }
 try{localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){};const n=Number(localStorage.getItem(KEY));index=Number.isInteger(n)&&n>=0&&n<scenes.length?n:0;revealed=scenes.slice(0,index+1).some(x=>x.reveal);jihoonRevealed=scenes.slice(0,index+1).some(x=>x.revealJihoon);
 currentPortrait='';for(const scene of scenes.slice(0,index+1)){if(scene.clearPortrait)currentPortrait='';if(scene.portrait)currentPortrait=scene.portrait}
-overlay.classList.add('active');refreshInventoryVisibility();render()};
+overlay.classList.add('active');if(scenes.slice(0,index+1).some(x=>x.enterSanctuary)&&!scenes.slice(0,index+1).some(x=>x.leaveSanctuary)){overlay.classList.add("sanctuary");if(!scenes[index].enterSanctuary)startSanctuaryTick()}refreshInventoryVisibility();render()};
 })();
