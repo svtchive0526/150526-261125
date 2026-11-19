@@ -807,12 +807,19 @@ applySceneBackdrop(index);
  if(scene.prayerStart)startPrayerClock();
  if(scene.artHall){stopPrayerClock();stopPrayerAudio();stopPrayerBell();overlay.classList.remove('confession-blackout');setArtSceneArtwork(scene)}else{stopArtAudio();overlay.classList.remove('art-blackout')}
 
-// The central-square ceremony ends after "풀잎 위로 ..."; never leak its bell into the blackout.
-// This also stops the bell on rapid advancement, even before its 60-second timer expires.
+// The central-square bell has TWO cues: looping 01 and one-shot 02.
+// End cue 01 after the outdoor ceremony; end BOTH cues at the morning-activity
+// transition. Checking only audio.loop missed cue 02 and let it bleed into other rooms.
 const squareBellStart=scenes.findIndex(x=>x.text==='그때였다.' && x.gongyangBell==='01');
 const squareBellEnd=scenes.findIndex(x=>x.text&&x.text.startsWith('풀잎 위로 상쾌한 바람이 불었다.'));
-if(index<squareBellStart || index>squareBellEnd){
- if(gongyangBellAudio && gongyangBellAudio.loop)stopGongyangBell();
+const squareBellExit=scenes.findIndex(x=>x.kind==='day2-morning-choice' && x.branch===1);
+const insideSquareStory=squareBellStart>=0 && squareBellExit>=0 && index>=squareBellStart && index<squareBellExit && selectedBranch===1;
+if(!insideSquareStory){
+ stopGongyangBell();
+ stopLeaderShout();
+}else if(index>squareBellEnd && gongyangBellAudio && gongyangBellAudio.loop){
+ // Cue 01 does not continue into the post-ceremony narration; cue 02 may play there.
+ stopGongyangBell();
  stopLeaderShout();
 }
 if(index>=DAY2_START){stopConfessionTick();stopSanctuaryTick()}
@@ -951,7 +958,7 @@ function showPrayerChoice(){
 }
 
 function returnToMorningActivities(){
- clearTimeout(timer);timer=null;stopVnTyping(false);stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopArtAudio();
+ clearTimeout(timer);timer=null;stopVnTyping(false);stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopArtAudio();stopGongyangBell();stopLeaderShout();stopGongyangApplause();
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;portrait.classList.remove('prayer-silhouette','art-silhouette');
  prayerBranch=0;artBranch=0;artLocation='main';artImage='';
  localStorage.removeItem('shindo_prayer_branch_v99');localStorage.removeItem('shindo_art_branch_v105');
