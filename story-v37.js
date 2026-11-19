@@ -546,7 +546,7 @@ const DEFAULT_PORTRAIT_PROFILE={scale:1,x:'-50%',y:'0px',bottom:'',height:'',max
 const PORTRAIT_PROFILES=[
  {match:/^hansol-/,scale:0.96,y:'0px',height:'min(58vh,620px)'},
  {match:/^soonyoung-/,scale:1.02},
- {match:/^minghao-/,scale:1.04},
+ {match:/^minghao-/,scale:1.20},
  {match:/^wonwoo-/,scale:1.08},
  {match:/^jihoon-/,scale:1.03},
  {match:/^seungcheol-/,scale:.97},
