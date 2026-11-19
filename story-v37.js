@@ -204,7 +204,7 @@ const scenes=[
  {"kind":"narration","text":"도대체 그 ‘공양제’라는 게 뭘까. 영 좋지 않은 게 분명하다.","branch":1,"boldWord":"공양제"},
  {"kind":"narration","text":"그때였다.","branch":1,"gongyangBell":"01"},
  {"kind":"narration","text":"비명과 함께 한 남자가 앞으로 끌려 나왔다. 아침 식사 때 내게 친절하게 말을 걸어준 신도였다.","branch":1},
- {"kind":"dialogue","speaker":"교주","text":"성도들이여! 우리 가운데 배도자가 있었습니다!","branch":1,"gongyangBell":"01","portraitPlaceholder":true},
+ {"kind":"dialogue","speaker":"교주","text":"성도들이여! 우리 가운데 배도자가 있었습니다!","branch":1,"portraitPlaceholder":true},
  {"kind":"dialogue","speaker":"교주","text":"지금 앞에 선 이 죄인은 하나 됨을 깨트렸습니다. 우리 모두를, 섭리 앞에서 배반했습니다!","branch":1,"portraitPlaceholder":true},
  {"kind":"dialogue","speaker":"교주","text":"그 죄가 참으로 큽니다!","branch":1,"portraitPlaceholder":true,"screenShake":true},
  {"kind":"narration","text":"웅성거림이 들불처럼 번져나갔다.","branch":1,"sound":"murmur"},
@@ -215,10 +215,10 @@ const scenes=[
  {"kind":"dialogue","speaker":"교주","text":"이에 신께서는 진노하셨습니다. 그 진노 앞에서 우리는 하나가 되어야 합니다!","branch":1,"portraitPlaceholder":true,"boldAll":true},
  {"kind":"narration","text":"교주가 손을 들자 웅성거림이 순식간에 가라앉았다.","branch":1},
  {"kind":"dialogue","speaker":"교주","text":"죄악으로 탁해진 것을 씻고 속죄하기 위하여.","branch":1,"portraitPlaceholder":true},
- {"kind":"dialogue","speaker":"교주","text":"지금 이 시간 부로, 공양제를 시작하겠습니다.","branch":1,"portraitPlaceholder":true,"gongyangBell":"01","redWord":"공양제"},
+ {"kind":"dialogue","speaker":"교주","text":"지금 이 시간 부로, 공양제를 시작하겠습니다.","branch":1,"portraitPlaceholder":true,"redWord":"공양제"},
  {"kind":"narration","text":"목덜미가 서늘해졌다.","branch":1},
  {"kind":"dialogue","speaker":"교주","text":"이 죄인이 바로 그 첫 열매입니다.","branch":1,"portraitPlaceholder":true},
- {"kind":"dialogue","speaker":"교주","text":"역경을 지나, 번성으로!","branch":1,"portraitPlaceholder":true,"gongyangBell":"02"},
+ {"kind":"dialogue","speaker":"교주","text":"역경을 지나, 번성으로!","branch":1,"portraitPlaceholder":true,"leaderShout":true},
  {"kind":"narration","text":"신도들 사이에서 우레와 같은 박수 소리가 터져 나왔다.","branch":1,"gongyangApplause":"start"},
  {"kind":"narration","text":"발버둥 쳐봐도 소용없었다. 그 남자는 공양실 방향으로 질질 끌려갔다.","branch":1,"gongyangApplause":"continue"},
  {"kind":"narration","text":"풀잎 위로 상쾌한 바람이 불었다. 눈이 시리도록 맑은 아침이었다. 그래서 더 끔찍했다.","branch":1},
@@ -359,38 +359,90 @@ function keepPencil(){if(pencilAudio)return;pencilAudio=new Audio('story-audio/p
 let day2Prayer=Number(localStorage.getItem("shindo_day2_prayer")||0),day2Morning=localStorage.getItem("shindo_day2_morning")||"";
 let index=0,locked=false, timer=null, audio=null,ambient=null;let selectedBranch=Number(localStorage.getItem("shindo_confession_branch")||0),endingTimers=[],endingBell=null,endingBellTimer=null;let storySfx=null,storySfxTimer=null;
 let sanctuaryTickTimer=null,sanctuaryTickAudio=null,confessionDoorAudio=null,confessionTickStartTimer=null;
-function stopSanctuaryTick(){if(sanctuaryTickTimer){clearInterval(sanctuaryTickTimer);sanctuaryTickTimer=null}if(sanctuaryTickAudio){sanctuaryTickAudio.pause();sanctuaryTickAudio.currentTime=0;sanctuaryTickAudio=null}}
+// Keep each clock strike independent: never seek the audio element that is still playing.
+// Reuse the browser's decoded media cache while avoiding simultaneous seek/play artifacts.
+const activeClockStrikes=new Set();
+const clockStrikeTemplate=new Audio('story-audio/clock_tick_single.mp3');
+clockStrikeTemplate.preload='auto';
+function stopClockStrikes(){
+ for(const strike of activeClockStrikes){strike.pause();strike.removeAttribute('src');strike.load()}
+ activeClockStrikes.clear();
+}
+function playClockStrike(volume){
+ if(activeClockStrikes.size>=2)return;
+ const strike=clockStrikeTemplate.cloneNode(true);
+ strike.volume=volume;
+ activeClockStrikes.add(strike);
+ const release=()=>activeClockStrikes.delete(strike);
+ strike.addEventListener('ended',release,{once:true});
+ strike.addEventListener('error',release,{once:true});
+ strike.play().catch(release);
+}
+function stopSanctuaryTick(){
+ if(sanctuaryTickTimer!==null){clearInterval(sanctuaryTickTimer);sanctuaryTickTimer=null}
+ sanctuaryTickAudio=null;
+ stopClockStrikes();
+}
 function startSanctuaryTick(){
  stopSanctuaryTick();
- sanctuaryTickAudio=new Audio('story-audio/clock_tick_single.mp3');
- sanctuaryTickAudio.volume=.18;sanctuaryTickAudio.preload='auto';
- const tick=()=>{if(!sanctuaryTickAudio)return;sanctuaryTickAudio.pause();sanctuaryTickAudio.currentTime=0;sanctuaryTickAudio.play().catch(()=>{})};
- tick();sanctuaryTickTimer=setInterval(tick,2000);
+ sanctuaryTickAudio=clockStrikeTemplate; // active marker for the sanctuary ambience
+ playClockStrike(.18);
+ sanctuaryTickTimer=setInterval(()=>{if(sanctuaryTickAudio)playClockStrike(.18)},2000);
 }
 function playExtraAudio(filename,volume=.7){const a=new Audio('story-audio/'+filename);a.volume=volume;a.play().catch(()=>{});return a}
 function bell(times){for(let i=0;i<times;i++)setTimeout(()=>playExtraAudio('oath-bell-05.mp3',.75),i*3600)}
-// v79: Recorded audio for the Day 2 offering ceremony. Only one bell track plays at a time.
-let gongyangBellAudio=null,gongyangApplauseAudio=null;
-function stopGongyangBell(){if(gongyangBellAudio){gongyangBellAudio.pause();gongyangBellAudio.currentTime=0;gongyangBellAudio=null}}
+// v87: During the square ceremony, gongyang bell 01 is continuous (up to 60 seconds),
+// including "역경을 지나, 번성으로!". It stops immediately on leaving the square.
+let gongyangBellAudio=null,gongyangApplauseAudio=null,gongyangBellTimer=null,leaderShoutAudio=null;
+function stopLeaderShout(){if(leaderShoutAudio){leaderShoutAudio.pause();leaderShoutAudio.currentTime=0;leaderShoutAudio=null}}
+function playLeaderShout(){stopLeaderShout();const a=playExtraAudio('gongyang-leader-shout.mp3',.85);leaderShoutAudio=a;a.addEventListener('ended',()=>{if(leaderShoutAudio===a)leaderShoutAudio=null},{once:true})}
+function stopGongyangBell(){
+ if(gongyangBellTimer!==null){clearTimeout(gongyangBellTimer);gongyangBellTimer=null}
+ if(gongyangBellAudio){gongyangBellAudio.pause();gongyangBellAudio.currentTime=0;gongyangBellAudio=null}
+}
 function stopGongyangApplause(){if(gongyangApplauseAudio){gongyangApplauseAudio.pause();gongyangApplauseAudio.currentTime=0;gongyangApplauseAudio=null}}
 function playGongyangBell(id){
  stopGongyangBell();
- // The bell and applause don't overlap in the ceremony.
- stopGongyangApplause();
- gongyangBellAudio=playExtraAudio('gongyang-bell-'+id+'.wav',.9);
- gongyangBellAudio.addEventListener('ended',()=>{gongyangBellAudio=null},{once:true});
+ // Bell 01 starts only at the square's "그때였다" and survives dialogue progression.
+ // The supplied WAV is ~28 seconds, so loop it until the 60-second limit or scene exit.
+ const continuous=id==='01';
+ if(!continuous)stopGongyangApplause();
+ const audio=playExtraAudio('gongyang-bell-'+id+'.wav',.9);
+ gongyangBellAudio=audio;
+ if(continuous){
+  audio.loop=true;
+  gongyangBellTimer=setTimeout(()=>{if(gongyangBellAudio===audio)stopGongyangBell()},60000);
+ }else{
+  audio.addEventListener('ended',()=>{if(gongyangBellAudio===audio)gongyangBellAudio=null},{once:true});
+ }
 }
 function startGongyangApplause(){
- stopGongyangBell();stopGongyangApplause();
+ // Do not cut off the continuous bell when applause begins.
+ stopGongyangApplause();
  gongyangApplauseAudio=playExtraAudio('gongyang-applause-01.wav',.85);
  gongyangApplauseAudio.addEventListener('ended',()=>{gongyangApplauseAudio=null},{once:true});
 }
 
 let confessionTickAudio=null,confessionTickLouder=false;
 function stopEndingBell(){if(endingBellTimer){clearInterval(endingBellTimer);endingBellTimer=null}if(endingBell){endingBell.pause();endingBell.currentTime=0;endingBell=null}}
-function stopConfessionTick(){if(confessionTickStartTimer){clearInterval(confessionTickStartTimer);confessionTickStartTimer=null}if(confessionDoorAudio){confessionDoorAudio.removeEventListener("ended",onConfessionDoorEnded)}if(confessionTickAudio){confessionTickAudio.pause();confessionTickAudio.currentTime=0;confessionTickAudio=null}}
+function stopConfessionTick(){
+ if(confessionTickStartTimer!==null){clearInterval(confessionTickStartTimer);confessionTickStartTimer=null}
+ if(confessionDoorAudio)confessionDoorAudio.removeEventListener('ended',onConfessionDoorEnded);
+ if(confessionTickAudio){
+  if(confessionTickAudio!==clockStrikeTemplate){confessionTickAudio.pause();confessionTickAudio.currentTime=0}
+  confessionTickAudio=null;
+ }
+ stopClockStrikes();
+}
 function onConfessionDoorEnded(){if(overlay.classList.contains("active"))startConfessionTick()}
-function setConfessionTick(speed,volume){if(!overlay.classList.contains("active"))return;stopConfessionTick();confessionTickAudio=new Audio("story-audio/clock_tick_single.mp3");confessionTickAudio.volume=volume??.27;const tick=()=>{if(!confessionTickAudio)return;confessionTickAudio.pause();confessionTickAudio.currentTime=0;confessionTickAudio.play().catch(()=>{})};tick();confessionTickStartTimer=setInterval(tick,1000)}
+function setConfessionTick(speed,volume){
+ if(!overlay.classList.contains('active'))return;
+ stopConfessionTick();
+ confessionTickAudio=clockStrikeTemplate; // 1 second interval for every confession scene
+ const level=volume??.27;
+ playClockStrike(level);
+ confessionTickStartTimer=setInterval(()=>{if(confessionTickAudio)playClockStrike(level)},1000);
+}
 function startConfessionTick(){
  if(!overlay.classList.contains("active"))return;
  if(confessionTickAudio)return;
@@ -430,7 +482,7 @@ function sound(name){if(!name)return;
 // Preserve existing inline <strong> highlights and allow a second click to reveal the full line.
 let vnTypingTimer=null, vnTypingFinish=null;
 function stopVnTyping(reveal=false){
- if(vnTypingTimer!==null){clearInterval(vnTypingTimer);vnTypingTimer=null}
+ if(vnTypingTimer!==null){cancelAnimationFrame(vnTypingTimer);vnTypingTimer=null}
  const done=vnTypingFinish;vnTypingFinish=null;
  if(reveal && done)done();
 }
@@ -442,27 +494,43 @@ function beginVnTyping(){
  const originals=nodes.map(node=>Array.from(node.nodeValue||''));
  const total=originals.reduce((sum,chars)=>sum+chars.length,0);
  if(!total)return;
- const update=(amount)=>{
-  let remain=amount;
-  for(let i=0;i<nodes.length;i++){
-   const take=Math.min(originals[i].length,Math.max(0,remain));
-   nodes[i].nodeValue=originals[i].slice(0,take).join('');
-   remain-=take;
+ for(const node of nodes)node.nodeValue='';
+ let shown=0, activeNode=0, activeOffset=0, lastStamp=null, remainder=0;
+ // Append only newly visible characters; don't rewrite the entire dialogue DOM every 30ms.
+ function revealUpTo(goal){
+  let increment=goal-shown;
+  while(increment>0&&activeNode<nodes.length){
+   const chars=originals[activeNode];
+   const take=Math.min(increment,chars.length-activeOffset);
+   if(take>0){nodes[activeNode].appendData(chars.slice(activeOffset,activeOffset+take).join(''));activeOffset+=take;shown+=take;increment-=take}
+   if(activeOffset>=chars.length){activeNode++;activeOffset=0}
   }
- };
- update(0);
- let shown=0;
- vnTypingFinish=()=>update(total);
- vnTypingTimer=setInterval(()=>{
-  shown=Math.min(total,shown+1);
-  update(shown);
-  if(shown>=total)stopVnTyping(true);
- },30);
+ }
+ vnTypingFinish=()=>revealUpTo(total);
+ function frame(stamp){
+  if(vnTypingTimer===null)return;
+  if(lastStamp===null){lastStamp=stamp}
+  // Catch up after slow frames without blocking the UI or changing the overall typing rate.
+  remainder+=Math.max(0,Math.min(stamp-lastStamp,250));lastStamp=stamp;
+  const count=Math.floor(remainder/30);
+  if(count>0){remainder-=count*30;revealUpTo(Math.min(total,shown+count))}
+  if(shown>=total){stopVnTyping(false);return}
+  vnTypingTimer=requestAnimationFrame(frame);
+ }
+ vnTypingTimer=requestAnimationFrame(frame);
 }
 function save(){try{localStorage.setItem(KEY,String(index));localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}refreshInventoryVisibility()}
 const DAY2_START=scenes.findIndex(x=>x.text&&x.text.includes("봉봉 씨! 새벽기도 안 가세요?"));
 function render(){clearTimeout(timer);stopVnTyping(false);const scene=scenes[index];if(!scene){finish();return}
 applySceneBackdrop(index);
+// The central-square ceremony ends after "풀잎 위로 ..."; never leak its bell into the blackout.
+// This also stops the bell on rapid advancement, even before its 60-second timer expires.
+const squareBellStart=scenes.findIndex(x=>x.text==='그때였다.' && x.gongyangBell==='01');
+const squareBellEnd=scenes.findIndex(x=>x.text&&x.text.startsWith('풀잎 위로 상쾌한 바람이 불었다.'));
+if(index<squareBellStart || index>squareBellEnd){
+ if(gongyangBellAudio && gongyangBellAudio.loop)stopGongyangBell();
+ stopLeaderShout();
+}
 if(index>=DAY2_START){stopConfessionTick();stopSanctuaryTick()}
 if(scene.prayer&&day2Prayer&&scene.prayer!==day2Prayer){index++;save();render();return}
 if(scene.branch&&selectedBranch&&scene.branch!==selectedBranch){index++;save();render();return}
@@ -475,6 +543,7 @@ if(scene.squareBlack)overlay.classList.add("confession-blackout");
 if(scene.wakeShake){sound('wake-rustle');overlay.classList.add("day2-shake");setTimeout(()=>overlay.classList.remove("day2-shake"),2000)}
 if(scene.screenShake){overlay.classList.add("day2-shake");setTimeout(()=>overlay.classList.remove("day2-shake"),800)}
 if(scene.gongyangBell)playGongyangBell(scene.gongyangBell);
+if(scene.leaderShout)playLeaderShout();
 if(scene.gongyangApplause==='start')startGongyangApplause();
 if(gongyangApplauseAudio && scene.gongyangApplause!=='start' && scene.gongyangApplause!=='continue')stopGongyangApplause();
 if(scene.tickSpeed)setConfessionTick(scene.tickSpeed,scene.tickVolume??.27);
@@ -532,7 +601,7 @@ function day2Ring(times,volume){for(let i=0;i<times;i++)setTimeout(()=>{if(overl
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
 function restartFromDay1(){
  clearTimeout(timer);timer=null;
- stopVnTyping(false);stopGongyangBell();stopGongyangApplause();stopPencil();
+ stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopPencil();
  stopConfessionTick();stopEndingBell();stopSanctuaryTick();
  if(confessionTickStartTimer){clearTimeout(confessionTickStartTimer);confessionTickStartTimer=null}
  if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}
@@ -557,9 +626,9 @@ function showDay2Choice(type){locked=true;box.style.display='none';portrait.hidd
  el.querySelectorAll('[data-choice]').forEach(b=>b.onclick=e=>{e.stopPropagation();if(prayer){day2Prayer=Number(b.dataset.choice);localStorage.setItem('shindo_day2_prayer',String(day2Prayer));el.style.display='none';locked=false;next()}else{day2Morning=options[Number(b.dataset.choice)-1];localStorage.setItem('shindo_day2_morning',day2Morning);el.innerHTML='<h2>'+day2Morning+'</h2><p>이후 이야기는 다음 업데이트에서 이어집니다.</p><button type="button" class="shindo-day1-restart">↺ 1일차부터 다시 시작 (임시)</button>';el.querySelector('.shindo-day1-restart').onclick=e=>{e.stopPropagation();restartFromDay1()};locked=true}})
 }
 function showChoice(){locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}el.classList.remove('shindo-morning-grid');el.innerHTML='<h2>어떻게 대답할까?</h2><p>원우의 질문에 답해야 한다.</p><button data-branch="1">아직은 때가 아니다. 무조건 긍정적이고 헌신적인 발언을 하자.</button><button data-branch="2">사제를 포섭해보자. 중요한 자료를 얻을 수 있을지도 모른다.</button>';el.style.display='flex';el.querySelectorAll('button').forEach(b=>b.onclick=e=>{e.stopPropagation();selectedBranch=Number(b.dataset.branch);localStorage.setItem('shindo_confession_branch',String(selectedBranch));el.style.display='none';locked=false;next()})}
-function showEnding(){stopVnTyping(false);stopGongyangBell();stopGongyangApplause();stopConfessionTick();stopEndingBell();stopSanctuaryTick();box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';overlay.classList.add('confession-blackout');locked=true;const end=document.createElement('div');end.className='shindo-ending';end.innerHTML='<div class="shindo-ending-copy"><h1>독실</h1><p>신실한 종교인의 역할은 종교와 체계에 대한 반발을 보이는 존재를 싹부터 없애는 것입니다.</p></div>';overlay.appendChild(end);const later=(fn,ms)=>endingTimers.push(setTimeout(fn,ms));later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도</div>'},3000);later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도<span>神道</span></div>'},5000);later(()=>{const b=document.createElement('button');b.className='shindo-restart';b.textContent='처음부터 다시 하기';b.onclick=e=>{e.stopPropagation();stopEndingBell();stopConfessionTick();localStorage.removeItem('shindo_confession_branch');localStorage.removeItem('shindo_day2_prayer');localStorage.removeItem('shindo_day2_morning');localStorage.removeItem(KEY);localStorage.removeItem('shindo_story_started_v37');localStorage.removeItem('shindo_sleep_gate_v48');localStorage.removeItem('shindo_story_v55_extended');localStorage.removeItem('shindo_story_v66_sanctuary');['svter_first_launch_at_v1','svter_lock_reached_v1','svter_lock_deleted_notices_v33','kamille_new_mail_received_v32','kamille_new_mail_read_v32','kamille_newmail_popup_ack_v51','shindo_church_link_unlocked_v30','shindo_attachment_unlocked_v31'].forEach(k=>localStorage.removeItem(k));sessionStorage.removeItem('shindo_story_started_v37');location.reload()};end.appendChild(b)},7000)}
+function showEnding(){stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopConfessionTick();stopEndingBell();stopSanctuaryTick();box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';overlay.classList.add('confession-blackout');locked=true;const end=document.createElement('div');end.className='shindo-ending';end.innerHTML='<div class="shindo-ending-copy"><h1>독실</h1><p>신실한 종교인의 역할은 종교와 체계에 대한 반발을 보이는 존재를 싹부터 없애는 것입니다.</p></div>';overlay.appendChild(end);const later=(fn,ms)=>endingTimers.push(setTimeout(fn,ms));later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도</div>'},3000);later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도<span>神道</span></div>'},5000);later(()=>{const b=document.createElement('button');b.className='shindo-restart';b.textContent='처음부터 다시 하기';b.onclick=e=>{e.stopPropagation();stopEndingBell();stopConfessionTick();localStorage.removeItem('shindo_confession_branch');localStorage.removeItem('shindo_day2_prayer');localStorage.removeItem('shindo_day2_morning');localStorage.removeItem(KEY);localStorage.removeItem('shindo_story_started_v37');localStorage.removeItem('shindo_sleep_gate_v48');localStorage.removeItem('shindo_story_v55_extended');localStorage.removeItem('shindo_story_v66_sanctuary');['svter_first_launch_at_v1','svter_lock_reached_v1','svter_lock_deleted_notices_v33','kamille_new_mail_received_v32','kamille_new_mail_read_v32','kamille_newmail_popup_ack_v51','shindo_church_link_unlocked_v30','shindo_attachment_unlocked_v31'].forEach(k=>localStorage.removeItem(k));sessionStorage.removeItem('shindo_story_started_v37');location.reload()};end.appendChild(b)},7000)}
 function finish(){
- stopVnTyping(false);stopGongyangBell();stopGongyangApplause();stopPencil();stopConfessionTick();stopEndingBell();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}storyBackdrop.classList.remove('visible');overlay.classList.remove("active","sanctuary","sanctuary-leaving","day");
+ stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopPencil();stopConfessionTick();stopEndingBell();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}storyBackdrop.classList.remove('visible');overlay.classList.remove("active","sanctuary","sanctuary-leaving","day");
  // Only finish after the player explicitly advances past the final dialogue.
  try{localStorage.setItem(KEY,'complete');localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}
  window.SHINDO_openFeedback?.();
