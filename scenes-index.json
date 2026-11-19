@@ -1,0 +1,1071 @@
+[
+  {
+    "kind": "line",
+    "text": "뭔가 찝찝하지만 어떻게든 되겠지..."
+  },
+  {
+    "kind": "line",
+    "text": "내일 아침이면 정말 그곳에 가는 건가."
+  },
+  {
+    "kind": "line",
+    "text": "일단 자야겠다."
+  },
+  {
+    "kind": "transition",
+    "text": "1일차 아침"
+  },
+  {
+    "kind": "line",
+    "text": "봉고차가 천천히 속도를 줄인다.",
+    "sound": "stop"
+  },
+  {
+    "kind": "line",
+    "text": "엔진 소리가 낮아지고 덜컹거림이 멎는다. 몸이 앞으로 살짝 쏠렸다가 제자리로 돌아왔다."
+  },
+  {
+    "kind": "line",
+    "text": "시동이 꺼졌다. 도착한 모양이다."
+  },
+  {
+    "kind": "line",
+    "text": "…얼마나 잤지?"
+  },
+  {
+    "kind": "line",
+    "text": "하필 이런 데서 졸다니. 사이비교 본거지로 걸어 들어가면서, 태평하게 쿨쿨 잠이나 자는 기자가 어디 있단 말이냐."
+  },
+  {
+    "kind": "line",
+    "text": "...여기 있다.",
+    "delay": 2000
+  },
+  {
+    "kind": "line",
+    "text": "특종 쫓느라 며칠 밤낮으로 고생했더니 몸이 먼저 항복해버렸다."
+  },
+  {
+    "kind": "line",
+    "text": "내 이름은 김봉봉. 어리버리한 새 신도인 척하고 있지만, 사실은 기자다.",
+    "follow": true
+  },
+  {
+    "kind": "line",
+    "text": "그것도 특종에 아주 목마른."
+  },
+  {
+    "kind": "line",
+    "text": "요즘 기삿거리라고 해 봤자 멧돼지 출몰 소식이나 이상 기상현상 따위가 고작이다."
+  },
+  {
+    "kind": "line",
+    "text": "그런 판에 <카밀레교>라는 취재 아이템이 굴러왔다. 이게 웬 떡이냐."
+  },
+  {
+    "kind": "line",
+    "text": "그야말로 하늘이 내려준 선물이 아닐 수 없다."
+  },
+  {
+    "kind": "line",
+    "text": "그래서 미친 척하고 이곳, <카밀레교>의 본거지까지 찾아오게 된 거다."
+  },
+  {
+    "kind": "line",
+    "text": "와, 공기 죽여준다.",
+    "sound": "forest"
+  },
+  {
+    "kind": "line",
+    "text": "주변이 전부 산이다. 이런 데라면 쥐도 새도 모르게 사라지기 딱 좋겠지…",
+    "sound": "forest"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "승철",
+    "text": "좋은 계절입니다.",
+    "inner": false,
+    "portrait": "seungcheol-body1-default"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(나를 픽업해 온 사람이다. 눈썹이 짙고 몸이 다부지다.)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(중요하게는, 잘생겼다.)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "네… 풍경이 참 멋있네요.",
+    "inner": false
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "승철",
+    "text": "그렇죠? 바깥 세상과는 다르게, 여기 있으면 마음이 온화해져요. 평화롭죠.",
+    "inner": false,
+    "portrait": "seungcheol-body1-smile"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(명심하자 김봉봉. 잘생겨도 사이비는 사이비다.)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "승철",
+    "text": "소개가 늦었네요. 제 이름은 최승철입니다.",
+    "inner": false,
+    "portrait": "seungcheol-body2-default",
+    "reveal": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "김봉봉입니다. 앞으로 잘 부탁드리겠습니다!",
+    "inner": false
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "승철",
+    "text": "새 신자는 늘 환영이죠.",
+    "inner": false,
+    "portrait": "seungcheol-body1-smile"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "승철",
+    "text": "이제 생활관 가시면서 수칙 몇 가지만 설명 드릴 건데…",
+    "inner": false,
+    "portrait": "seungcheol-body1-default"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "승철",
+    "text": "얘가 늦네. 왜 이렇게 안 오지?",
+    "inner": false,
+    "portrait": "seungcheol-body1-default"
+  },
+  {
+    "kind": "sfx",
+    "sound": "footsteps_fast"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "지훈",
+    "text": "아, 죄송합니다. 오다가 길을 잃는 바람에.",
+    "inner": false,
+    "portrait": "jihoon-body1-default"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "승철",
+    "text": "야 너는 평생 여기 살아놓고 아직도 길을 잃냐?",
+    "inner": false,
+    "portrait": "seungcheol-body1-flustered"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(투닥대는 두 사람은 제법 친해 보인다.)",
+    "inner": true
+  },
+  {
+    "kind": "sfx",
+    "sound": "footsteps",
+    "clearPortrait": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(좁은 산길을 따라 10분쯤 걸었을까. 저 앞에 제법 번듯한 건축물들이 보이기 시작한다.)",
+    "inner": true,
+    "clearPortrait": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(여전히. 사이비 마을이라곤 생각되지 않을 정도로 깔끔하고 평범하다.)",
+    "inner": true,
+    "clearPortrait": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "지훈",
+    "text": "생활관으로 가시기 전에, 저희 교주님을 먼저 만나뵐 겁니다.",
+    "portrait": "jihoon-body1-default"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "교주…님이요?"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "지훈",
+    "text": "가벼운 면담 후 입소가 절차라서요. 신청서는 챙겨오셨죠?",
+    "portrait": "jihoon-body1-default"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "…….네, 챙겨왔죠"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(어두운 내 표정을 알아챈 걸까. 그가 황급히 말을 덧붙인다.)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "지훈",
+    "text": "어려울 거 없고요, 가셔서 기본 목회 듣는 게 전부입니다. 그리 오래 걸리지도 않아요.",
+    "portrait": "jihoon-body1-default"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "지훈",
+    "text": "기본 생활 수칙은 미리 설명드리겠습니다. 제 담당이라서요. 아, 제 이름은 이지훈입니다.",
+    "portrait": "jihoon-body2-default",
+    "revealJihoon": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(참 빨리도 알려준다.)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(지훈이 설명한 생활 수칙은 다음과 같았다.)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(아침 식사는 7-9시, 점심 식사는 11-1시, 저녁 식사는 6-8시. 이 외 시간에는 식사가 제공되지 않는다.)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "아, 받아적어야지... 저, 메모지 하나만 주시겠어요?"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(색이 왜이래?)",
+    "inner": true,
+    "illustration": "memo-01"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "아, 잠시만요 (받아적기 시작한다.)",
+    "illustration": "memo-02",
+    "pencil": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(소등은 밤 11시. 소등 후에는 야간 순찰 담당자 외에는 외출 금지.)",
+    "inner": true,
+    "illustration": "memo-03",
+    "pencil": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(세탁 및 청소 일정과 당번은 매달 1일에 발표하며 주별로 변경된다.)",
+    "inner": true,
+    "illustration": "memo-04",
+    "pencil": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(그 외에도 종교활동에 충실할 것, 불온자를 발견시 반드시 사제에게 전달할 것.)",
+    "inner": true,
+    "illustration": "memo-05",
+    "pencil": true
+  },
+  {
+    "kind": "narration",
+    "text": "그리고 마지막은 잠시 뜸을 들이더니, 아주 중요하다는 듯이 강조했다."
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "지훈",
+    "text": "우리는 가족입니다. 서로를 배려합시다.",
+    "portrait": "jihoon-body1-smile"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(오케이, 이지훈. 규칙을 철저하게 수호하는 사람 같다.)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(이 단체를 지키는 데에, 더 나아가 카밀레교에 그만큼 진심인 거겠지.)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(…고요 속에 걷다 보니 어느덧 마을 입구 앞이다.)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(심장이 쿵쾅거린다. 해낼 수 있을까? 과연 내가 혈혈단신으로, 이단의 소굴에서…)",
+    "inner": true
+  },
+  {
+    "kind": "image",
+    "illustration": "mail-01",
+    "duration": 6000
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(아냐, 김봉봉. 해낸다. 해낼 수 있다. 해내야만 한다.)",
+    "inner": true,
+    "clearPortrait": true
+  },
+  {
+    "kind": "narration",
+    "text": "마음을 다잡고 승철과 지훈의 안내를 따랐다.",
+    "sound": "footsteps",
+    "clearPortrait": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(정신을 차리고 보니 어느덧 본당 앞이었다.)",
+    "inner": true,
+    "clearPortrait": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(승철과 지훈은 내게 행운을 빌었다. 아니, 교인들이 그러하듯 축복을 빌었다.)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(당신의 생활에 행복과 안식이 있기를... 이라.)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(듣기엔 참 좋은 말이다. 그 뒤로 어떤 내막이 숨어있을지는 모르지만 말이다.)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(자, 이제 카밀레교의 교주를 만나볼 차례다.)",
+    "inner": true
+  },
+  {
+    "kind": "narration",
+    "text": "숨을 크게 들이마시고, 본당 문을 열어젖혔다.",
+    "enterSanctuary": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(본당은 제법 그럴싸한 교회의 모습을 하고 있네... 아닌가, 성당인가.)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(특이한 점이라면 사방에 캐모마일 꽃이 장식되어 있었다.)",
+    "inner": true
+  },
+  {
+    "kind": "event",
+    "eventFootsteps": true,
+    "silentFootsteps": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(교주다.)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(짜 맞춘 것도 아니고 '사이비 교주'스럽게 생긴 노인이군...)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(회백색의 머리에 수북한 하얀 수염이라...)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(기껏 늘어놓는 '설교'가 정말 형편없군...)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(죄다 홈페이지 짜깁기잖아? '살아있는 복음'이니 '영적 성장'이니…)",
+    "inner": true
+  },
+  {
+    "kind": "narration",
+    "text": "흐름에 관한 이야기가 무의미하게 이어졌다. 하품을 참느라 고역이었다."
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(이 노인이 정말 수백 수천의 신도를 이끄는 자라고?)",
+    "inner": true
+  },
+  {
+    "kind": "narration",
+    "text": "그때였다. 교주의 입에서 처음으로 구미가 당기는 말이 나온 게."
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "…그러므로 우리는 '공양'을 통해 탁한 것을 덜어내고, 죄 사함을 받아 맑은 흐름으로 돌아갑니다.",
+    "boldWord": "공양"
+  },
+  {
+    "kind": "narration",
+    "text": "최대한 침착하게 '공양'의 선출 방식을 물어봤다. 돌아오는 대답은 모호하기 그지없었다."
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "성실히 흐르는 이에게는 걱정할 일이 없습니다."
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "다만 흐름에서 탈락하는 불온한 자는 고해를 통해 드러나니, 마음속에 감추는 것이 없도록 하십시오.",
+    "bellOnce": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(그래, 뭐. 들어온 지 반나절도 안 된 신입에게 '인신 공양'을 털어놓을 리 없겠지.)",
+    "inner": true,
+    "boldWord": "인신 공양"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(그런 건 내가 알아내야만 한다.)",
+    "inner": true
+  },
+  {
+    "kind": "narration",
+    "text": "그 뒤로는 면접 아닌 면접이 이어졌다. 준비해간 이야기를 늘어놓았다."
+  },
+  {
+    "kind": "narration",
+    "text": "21세기 대한민국에서 밥 벌어먹고 살기 여간 힘들고 팍팍한 게 아니라서..."
+  },
+  {
+    "kind": "narration",
+    "text": "종교로 귀의하고 싶었다는 이야기… 다행히도 믿는 눈치였다."
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "처음 입교한 신도는 무조건 고해성사를 해야 합니다."
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "밖에서 쌓은 수많은 죄를 토해내 사하기 위해서죠."
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "원우 사제님은 이 중요한 업무를 맡은 고해성사 담당 사제입니다.",
+    "maskWonwoo": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "죄를 토해내고 꾸짖음이 필요하시다면 사제님을 찾아가세요."
+  },
+  {
+    "kind": "narration",
+    "text": "본당을 나설 때쯤엔 온몸이 녹초가 되어있었다.",
+    "leaveSanctuary": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(이렇게 피곤한데 고해성사까지 해야 한다니...)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(해가 벌써 서녘에 뉘엿거리네... 고해소로 가봐야겠다.)",
+    "inner": true
+  },
+  {
+    "kind": "narration",
+    "text": "고해소는 본당 옆에 있는 작은 경당이었다."
+  },
+  {
+    "kind": "narration",
+    "text": "하얀 벽 탓에 모르고 보면 동화 속 예배당으로 착각할 만했다."
+  },
+  {
+    "kind": "narration",
+    "text": "문 옆에는 고해 시간을 적은 안내판이 걸려 있고, 그 아래 명패에는 상주 사제의 이름이 적혀 있었다.",
+    "sound": "nameplate"
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "…전원우."
+  },
+  {
+    "kind": "narration",
+    "text": "고해실 내부로 입장한다. 문이 닫히자, 나긋하되 중압감 있는 목소리가 좁은 공간에 울린다.",
+    "sound": "confessionDoor",
+    "enterConfession": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "원우",
+    "text": "고해소는 신성한 장소입니다. 거짓을 고하지 않을 것임을 맹세하십니까?",
+    "portrait": "wonwoo-body2-eyes-closed",
+    "clockTickLouder": true
+  },
+  {
+    "kind": "narration",
+    "text": "뭔가… 기존에 알던 고해성사와는 느낌이 다르다. 좀 더, 조여오는 기분.",
+    "tickSpeed": 1,
+    "tickVolume": 0.52
+  },
+  {
+    "kind": "narration",
+    "text": "마치 심문받는 것만 같다."
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "…예. 맹세합니다.",
+    "tickSpeed": 1,
+    "tickVolume": 0.27
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(기자 신분으로 여기에 잠입한 것부터가 거짓이지만, 뭐. 알 리가 있나.)",
+    "inner": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "원우",
+    "text": "김봉봉 신도님은 바깥에서 어떤 일을 하셨습니까?",
+    "tickSpeed": 1,
+    "blackout": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(젠장, 첫 질문부터 무서운 거잖아...)",
+    "inner": true
+  },
+  {
+    "kind": "choice"
+  },
+  {
+    "kind": "narration",
+    "text": "동료들의 이중적이고 자극적인 것만 쫓는 태도에 신물 나 오게 되었다고 대답했다.",
+    "branch": 1,
+    "tickSpeed": 1
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(벽 너머의 사제는 내 말을 믿어주는 걸까?)",
+    "inner": true,
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "알기 힘들다. 날카롭고 무서운 질문이 연이어 날아 왔다.",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "하지만, 이곳의 비밀을 밝혀내기 위해서는 모든 것을 철저하게 숨기고 또 연기해야 한다.",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "고해성사가 끝난 듯 하다. 무사히 잘 넘겼을까?",
+    "branch": 1
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "원우",
+    "text": "이로써 당신의 죄는 모두 토해져, 신께 닿아 사해졌습니다. 당신의 생활에 행복과 안식이 있기를.",
+    "portrait": "wonwoo-body1-smile",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "다행히 의심은 피했다. 이제 생활관으로 넘어가 하루를 마무리하자.",
+    "branch": 1,
+    "stopTick": true
+  },
+  {
+    "kind": "narration",
+    "text": "고해소의 사제라면 신도들의 모든 정보를 알고 있으리라.",
+    "branch": 2,
+    "tickSpeed": 1
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(그를 내 편으로 포섭한다면 이곳에서 살아남기 수월할지도 모른다.)",
+    "inner": true,
+    "branch": 2
+  },
+  {
+    "kind": "narration",
+    "text": "나는 그에게 이곳에 들어온 목적을 솔직하게 털어놓았다.",
+    "branch": 2
+  },
+  {
+    "kind": "narration",
+    "text": "그 과정에서 카밀레교에 대한 부정적인 발언들도 가감 없이 쏟아냈다.",
+    "branch": 2
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "원우",
+    "text": "그렇군요… 그럴 수 있습니다, 단체 생활이란 그런 것이지요…",
+    "portrait": "wonwoo-body2-eyes-closed",
+    "tickSpeed": 1,
+    "branch": 2
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "원우",
+    "text": "신도님께서 고민이 많으시겠습니다.",
+    "portrait": "wonwoo-body2-eye-smile",
+    "branch": 2
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "네 네, 그렇지요.. 이해해주셔서 감사합니다.",
+    "branch": 2
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(잘 넘어간건가?)",
+    "inner": true,
+    "branch": 2,
+    "stopTick": true
+  },
+  {
+    "kind": "narration",
+    "text": "(그렇게 잠든 다음 날. 김봉봉은 공양자로 선정되어 신도들의 이끌려 공양실로 향하게 된다.)",
+    "branch": 2,
+    "blackout": true,
+    "fade": true
+  },
+  {
+    "kind": "narration",
+    "text": "뎅- 종소리가 울릴 때 원우는 누군가에게 말한다.",
+    "branch": 2,
+    "bellLoop": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "원우",
+    "text": "오늘도 한 명의 어린 양이 주님 곁으로 갔습니다.",
+    "portrait": "wonwoo-body2-default",
+    "branch": 2
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "원우",
+    "text": "걱정 마십시오 교주님.",
+    "portrait": "wonwoo-body2-eyes-closed",
+    "branch": 2,
+    "bellStop": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "원우",
+    "text": "우리는 굳건하고 흔들리지 않을 것입니다. 제가 그리 만들 것입니다.",
+    "portrait": "wonwoo-body2-default",
+    "branch": 2
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(그가 카밀레교의 누구보다도 신실한 신도였다니...)",
+    "inner": true,
+    "branch": 2,
+    "bellLoud": true
+  },
+  {
+    "kind": "ending",
+    "branch": 2
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "??",
+    "text": "봉봉 씨! 새벽기도 안 가세요?",
+    "branch": 1,
+    "wakeShake": true,
+    "portraitPlaceholder": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "맞다, 여기 새벽기도가 있지…",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "참석은 자율이다. 지금은 꼭두새벽. 하품이 마구 터져 나온다. 피곤하다.",
+    "branch": 1
+  },
+  {
+    "kind": "day2-prayer-choice",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "일어난다. 신실한 모습을 보이면 누군가의 호감을 살지도 모른다.",
+    "branch": 1,
+    "prayer": 1
+  },
+  {
+    "kind": "narration",
+    "text": "다시 잔다. 기도는 개뿔. 체력이나 아끼자.",
+    "branch": 1,
+    "prayer": 2
+  },
+  {
+    "kind": "narration",
+    "text": "아침이 밝았다. 중앙광장으로 가볼까...",
+    "branch": 1,
+    "sound": "footsteps",
+    "square": true
+  },
+  {
+    "kind": "narration",
+    "text": "중앙 광장은 이미 사람들로 가득했다. 발소리와 옷깃 스치는 소리만 간간이 들렸다.",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "기이한 정적 위로 새소리가 들려왔다.",
+    "branch": 1,
+    "sound": "birds"
+  },
+  {
+    "kind": "narration",
+    "text": "아침 예배가 끝나기가 무섭게 전달이 돌았다. 모두 중앙 광장으로 모이라고.",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "어쩌면 ‘공양’을 할지도 모른다. 라고,",
+    "branch": 1,
+    "squareBlack": true,
+    "fade": true
+  },
+  {
+    "kind": "narration",
+    "text": "다행히도 다들 신입 신자에게 설명해주는 데 매우 호의적이었다.",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "‘공양’은 죄를 지은 자의 죄를 밝히고 이를 사하기 위해 인도받는 자리라고 했다.",
+    "branch": 1
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "듣기로는 고해성사와 크게 다르진 않아 보이는데...",
+    "branch": 1
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "몹시 두려워하는 신도들의 태도만 아니었더라면, 그렇게 생각했을 것 같기도...",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "그들에 의하면 ‘공양’은 매일 일어나는 게 아니었다.",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "어떨 때는 보름이 지나도록 별일이 없다고도 했다.",
+    "branch": 1,
+    "square": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "…‘공양제’만 아니라면...?",
+    "branch": 1,
+    "boldWord": "공양제"
+  },
+  {
+    "kind": "narration",
+    "text": "도대체 그 ‘공양제’라는 게 뭘까. 영 좋지 않은 게 분명하다.",
+    "branch": 1,
+    "boldWord": "공양제"
+  },
+  {
+    "kind": "narration",
+    "text": "그때였다.",
+    "branch": 1,
+    "gongyangBell": "01"
+  },
+  {
+    "kind": "narration",
+    "text": "비명과 함께 한 남자가 앞으로 끌려 나왔다. 아침 식사 때 내게 친절하게 말을 걸어준 신도였다.",
+    "branch": 1
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "성도들이여! 우리 가운데 배도자가 있었습니다!",
+    "branch": 1,
+    "gongyangBell": "01",
+    "portraitPlaceholder": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "지금 앞에 선 이 죄인은 하나 됨을 깨트렸습니다. 우리 모두를, 섭리 앞에서 배반했습니다!",
+    "branch": 1,
+    "portraitPlaceholder": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "그 죄가 참으로 큽니다!",
+    "branch": 1,
+    "portraitPlaceholder": true,
+    "screenShake": true
+  },
+  {
+    "kind": "narration",
+    "text": "웅성거림이 들불처럼 번져나갔다.",
+    "branch": 1,
+    "sound": "murmur"
+  },
+  {
+    "kind": "narration",
+    "text": "어제 본 교주가 본당 계단 위에 서 있었다. 무시무시한 얼굴로 모두를 내려다보면서.",
+    "branch": 1
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "공양에 대한 말이 새어나갔습니다.",
+    "branch": 1,
+    "portraitPlaceholder": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "누가 흐름을 의심했습니까?",
+    "branch": 1,
+    "portraitPlaceholder": true,
+    "boldAll": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "대체 누가 감히 우리와 발맞추어 걸으면서, 그 눈과 심장은 죄악을 향해 있었습니까?",
+    "branch": 1,
+    "portraitPlaceholder": true,
+    "boldAll": true,
+    "largeText": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "이에 신께서는 진노하셨습니다. 그 진노 앞에서 우리는 하나가 되어야 합니다!",
+    "branch": 1,
+    "portraitPlaceholder": true,
+    "boldAll": true
+  },
+  {
+    "kind": "narration",
+    "text": "교주가 손을 들자 웅성거림이 순식간에 가라앉았다.",
+    "branch": 1
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "죄악으로 탁해진 것을 씻고 속죄하기 위하여.",
+    "branch": 1,
+    "portraitPlaceholder": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "지금 이 시간 부로, 공양제를 시작하겠습니다.",
+    "branch": 1,
+    "portraitPlaceholder": true,
+    "gongyangBell": "01",
+    "redWord": "공양제"
+  },
+  {
+    "kind": "narration",
+    "text": "목덜미가 서늘해졌다.",
+    "branch": 1
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "이 죄인이 바로 그 첫 열매입니다.",
+    "branch": 1,
+    "portraitPlaceholder": true
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "교주",
+    "text": "역경을 지나, 번성으로!",
+    "branch": 1,
+    "portraitPlaceholder": true,
+    "gongyangBell": "02"
+  },
+  {
+    "kind": "narration",
+    "text": "신도들 사이에서 우레와 같은 박수 소리가 터져 나왔다.",
+    "branch": 1,
+    "gongyangApplause": "start"
+  },
+  {
+    "kind": "narration",
+    "text": "발버둥 쳐봐도 소용없었다. 그 남자는 공양실 방향으로 질질 끌려갔다.",
+    "branch": 1,
+    "gongyangApplause": "continue"
+  },
+  {
+    "kind": "narration",
+    "text": "풀잎 위로 상쾌한 바람이 불었다. 눈이 시리도록 맑은 아침이었다. 그래서 더 끔찍했다.",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "교주의 말인즉슨, 최근 한 내부고발자가 인신 공양의 실태를 바깥으로 흘렸다.",
+    "branch": 1,
+    "squareBlack": true,
+    "fade": true
+  },
+  {
+    "kind": "narration",
+    "text": "그래서 내부 결속을 다지려고 연속 공양을 시작했다.",
+    "branch": 1
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "그 시작이 오늘.",
+    "branch": 1
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "하필 오늘.",
+    "branch": 1
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "내가 여기 온 바로 다음 날.",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "그리고 언제 끝날지는, 아무도 모른다.",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "사방을 찢어놓는 무시무시한 종소리가 울려 퍼졌다.",
+    "branch": 1,
+    "gongyangBell": "02"
+  },
+  {
+    "kind": "narration",
+    "text": "공양제의 시작이었다.",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "속이 메스껍다. 당장에라도 이 미친 사이비 집단에서 탈출하고 싶다.",
+    "branch": 1
+  },
+  {
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "그렇지만… 어디로 갈 수 있는데? 핸드폰도 안 터지는 이 산속에서.",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "이 상태로라도 정보를 얻어야 한다. 아니, 이렇기에 더더욱 정보를 얻어야만 한다.",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "악착같이 살아남아 <카밀레교>를 해체해주마.",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "우선은 신도들 틈에 자연스레 섞여 하루 일과를 시작하자.",
+    "branch": 1
+  },
+  {
+    "kind": "narration",
+    "text": "오전에는 종교 활동을, 오후에는 관리 업무를 해야 한다.",
+    "branch": 1
+  },
+  {
+    "kind": "day2-morning-choice",
+    "branch": 1
+  }
+]
