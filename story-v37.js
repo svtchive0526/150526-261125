@@ -282,7 +282,7 @@ scenes.push(
  {kind:'narration',text:'낭독이 한창인데, 옆자리 남자는 성경을 쥔 채 허둥지둥하고 있다.',prayerBranch:3,prayerRoom:true,clearPortrait:true},
  {kind:'narration',text:'손가락이 같은 구절 위를 뱅뱅 돈다. 딱 봐도 진도를 놓친 얼굴이다.',prayerBranch:3,prayerRoom:true},
  {kind:'narration',text:'결국 보다 못하고 그의 성경 위로 손을 뻗었다.',prayerBranch:3,prayerRoom:true},
- {kind:'prayer-sfx-wait',prayerBranch:3,prayerRoom:true,prayerAudio:'book-4',duration:4000},
+ {kind:'prayer-sfx-wait',prayerBranch:3,prayerRoom:true,prayerAudio:'book-2',duration:2000},
  {kind:'narration',text:'한 장, 조용히 넘겼다. 낭독 중인 구절이 있는 쪽이었다.',prayerBranch:3,prayerRoom:true},
  {kind:'dialogue',speaker:'석민',text:'와 깜짝, 가, 감사합니다….',prayerBranch:3,prayerRoom:true,maskSpeaker:true,portrait:'seokmin-body2-surprised'},
  {kind:'narration',text:'그가 놀란 눈으로 나를 본다.',prayerBranch:3,prayerRoom:true,portrait:'seokmin-body2-surprised'},
@@ -493,13 +493,14 @@ function stopSanctuaryTick(){
 }
 function startSanctuaryTick(){stopSanctuaryTick(); /* v97: sanctuary clock disabled */}
 // Prayer hall has its own ambient clock, separate from the disabled day-one sanctuary/confessional.
-let prayerClockTimer=null,prayerSceneAudio=null,prayerAudioTimeout=null,prayerFadeTimer=null;
+let prayerClockTimer=null,prayerSceneAudio=null,prayerAudioTimeout=null,prayerFadeTimer=null,prayerBellAudio=null;
 function stopPrayerClock(){if(prayerClockTimer!==null){clearInterval(prayerClockTimer);prayerClockTimer=null}stopClockStrikes()}
 function startPrayerClock(){stopPrayerClock();playClockStrike(.12);prayerClockTimer=setInterval(()=>playClockStrike(.12),1000)}
+function stopPrayerBell(){if(prayerBellAudio){prayerBellAudio.pause();prayerBellAudio.currentTime=0;prayerBellAudio=null}}
 function stopPrayerAudio(){if(prayerAudioTimeout){clearTimeout(prayerAudioTimeout);prayerAudioTimeout=null}if(prayerFadeTimer){clearInterval(prayerFadeTimer);prayerFadeTimer=null}if(prayerSceneAudio){prayerSceneAudio.pause();prayerSceneAudio.currentTime=0;prayerSceneAudio=null}}
 function playPrayerAudio(file,volume=.6,maxDuration=0){stopPrayerAudio();const a=new Audio('story-audio/'+file);a.volume=volume;prayerSceneAudio=a;a.play().catch(()=>{});if(maxDuration){prayerAudioTimeout=setTimeout(()=>{if(prayerSceneAudio===a)stopPrayerAudio()},maxDuration)}}
 function fadePrayerAudio(){if(!prayerSceneAudio)return;if(prayerFadeTimer)clearInterval(prayerFadeTimer);const a=prayerSceneAudio,initial=a.volume;let step=0;prayerFadeTimer=setInterval(()=>{if(prayerSceneAudio!==a){clearInterval(prayerFadeTimer);prayerFadeTimer=null;return}step++;a.volume=Math.max(0,initial*(1-step/12));if(step>=12)stopPrayerAudio()},85)}
-function prayerAudioCue(cue){if(cue==='clean-start')playPrayerAudio('clean_room_sound01.wav',.42);else if(cue==='clean-fade')fadePrayerAudio();else if(cue==='clean-5')playPrayerAudio('clean_room_sound01.wav',.42,5000);else if(cue==='wake-4')playPrayerAudio('human_touch_sound01.mp3',.62,4000);else if(cue==='book-4')playPrayerAudio('browsing_book_sound01.wav',.65,4000);else if(cue==='single-bell')playExtraAudio('oath-bell-05.mp3',.65)}
+function prayerAudioCue(cue){if(cue==='clean-start')playPrayerAudio('clean_room_sound01.wav',.42);else if(cue==='clean-fade')fadePrayerAudio();else if(cue==='clean-5')playPrayerAudio('clean_room_sound01.wav',.42,5000);else if(cue==='wake-4')playPrayerAudio('human_touch_sound01.mp3',.62,4000);else if(cue==='book-2')playPrayerAudio('browsing_book_sound01.wav',.65,2000);else if(cue==='single-bell'){stopPrayerBell();prayerBellAudio=playExtraAudio('oath-bell-05.mp3',.65)}}
 
 function playExtraAudio(filename,volume=.7){const a=new Audio('story-audio/'+filename);a.volume=volume;a.play().catch(()=>{});return a}
 function bell(times){for(let i=0;i<times;i++)setTimeout(()=>playExtraAudio('oath-bell-05.mp3',.75),i*3600)}
@@ -642,9 +643,8 @@ const DAY2_START=scenes.findIndex(x=>x.text&&x.text.includes("봉봉 씨! 새벽
 function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTyping(false);const scene=scenes[index];if(!scene){finish();return}
 const existingChoiceModal=overlay.querySelector('.shindo-choices');if(existingChoiceModal&&scene.kind!=='prayer-choice'&&scene.kind!=='prayer-end'&&scene.kind!=='day2-morning-choice'&&scene.kind!=='day2-prayer-choice'&&scene.kind!=='choice')existingChoiceModal.style.display='none';
 applySceneBackdrop(index);
- if(scene.prayerRoom){storyBackdrop.style.backgroundImage='linear-gradient(#080808,#080808)';overlay.classList.remove('confession-blackout')}else{stopPrayerClock();stopPrayerAudio()}
+ if(scene.prayerRoom){storyBackdrop.style.backgroundImage='linear-gradient(#080808,#080808)';overlay.classList.remove('confession-blackout')}else{stopPrayerClock();stopPrayerAudio();stopPrayerBell()}
  if(scene.prayerStart)startPrayerClock();
- if(scene.prayerAudio)prayerAudioCue(scene.prayerAudio);
 
 // The central-square ceremony ends after "풀잎 위로 ..."; never leak its bell into the blackout.
 // This also stops the bell on rapid advancement, even before its 60-second timer expires.
@@ -663,7 +663,7 @@ if(scene.kind==='choice'){showChoice();return}
 if(scene.kind==='day2-prayer-choice'){showDay2Choice('prayer');return}
 if(scene.kind==='day2-morning-choice'){showDay2Choice('morning');return}
  if(scene.kind==='prayer-choice'){stopPrayerClock();showPrayerChoice();return}
- if(scene.kind==='prayer-end'){stopPrayerClock();stopPrayerAudio();showPrayerEnd();return}
+ if(scene.kind==='prayer-end'){stopPrayerClock();stopPrayerAudio();stopPrayerBell();showPrayerEnd();return}
  if(scene.kind==='prayer-wait'||scene.kind==='prayer-sfx-wait'){
   box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';locked=true;
   timer=setTimeout(()=>{locked=false;next()},scene.duration||3000);return;
@@ -740,7 +740,7 @@ function day2Ring(times,volume){for(let i=0;i<times;i++)setTimeout(()=>{if(overl
 function restartFromDay1(){
  clearTimeout(timer);timer=null;clearConfessionQuestionTimers();
  stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopPencil();
- stopConfessionTick();stopEndingBell();stopSanctuaryTick();stopPrayerClock();stopPrayerAudio();prayerBranch=0;
+ stopConfessionTick();stopEndingBell();stopSanctuaryTick();stopPrayerClock();stopPrayerAudio();stopPrayerBell();prayerBranch=0;
  if(confessionTickStartTimer){clearTimeout(confessionTickStartTimer);confessionTickStartTimer=null}
  if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}
  if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}
@@ -774,7 +774,7 @@ function showPrayerChoice(){
  el.classList.remove('shindo-morning-grid');el.classList.add('shindo-prayer-grid');
  const options=['단상 위 청소','자는 사람 깨우기','성경 한 장 넘기기','청소 돕기'];
  el.innerHTML='<h2>뭐부터 거들어 볼까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button data-prayer="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
- el.style.display='flex';el.querySelectorAll('[data-prayer]').forEach(b=>b.onclick=e=>{e.stopPropagation();prayerBranch=Number(b.dataset.prayer);localStorage.setItem('shindo_prayer_branch_v99',String(prayerBranch));el.style.display='none';el.classList.remove('shindo-prayer-grid');locked=false;next()});
+ el.style.display='flex';el.querySelectorAll('[data-prayer]').forEach(b=>b.onclick=e=>{e.stopPropagation();stopPrayerClock();stopPrayerAudio();stopPrayerBell();prayerBranch=Number(b.dataset.prayer);localStorage.setItem('shindo_prayer_branch_v99',String(prayerBranch));el.style.display='none';el.classList.remove('shindo-prayer-grid');locked=false;next()});
 }
 function showPrayerEnd(){
  locked=true;box.style.display='none';portrait.hidden=true;currentPortrait='';illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
@@ -782,7 +782,7 @@ function showPrayerEnd(){
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid');
  el.innerHTML='<h2>기도관 활동을 마쳤다.</h2><button type="button" class="shindo-prayer-reselect">↺ 기도관 선택지로 돌아가기 (임시)</button><button type="button" class="shindo-day1-restart">↺ 1일차부터 다시 시작 (임시)</button><button type="button" class="shindo-feedback-direct">피드백 화면 바로가기</button>';el.style.display='flex';
  el.querySelector('.shindo-prayer-reselect').onclick=e=>{
-  e.stopPropagation();stopPrayerClock();stopPrayerAudio();stopVnTyping(false);
+  e.stopPropagation();stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopVnTyping(false);
   prayerBranch=0;localStorage.removeItem('shindo_prayer_branch_v99');
   currentPortrait='';portrait.hidden=true;illustration.hidden=true;
   el.style.display='none';el.classList.remove('shindo-prayer-grid');
