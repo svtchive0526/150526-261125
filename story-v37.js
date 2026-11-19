@@ -220,6 +220,10 @@ const style=document.createElement('style');style.textContent=`
 @keyframes vn-image-appear{from{opacity:0}to{opacity:1}}
 @media(max-width:750px){#shindo-vn .vn-illustration{width:98vw;max-height:63vh;top:41%}}
 
+/* v71: The story layer must remain fully opaque during the confession flash.
+   Otherwise the underlying SVTER mail-login screen can bleed through. */
+#shindo-vn.active{animation:none!important;opacity:1!important}
+#shindo-vn.confession-blackout{background-color:#000!important;background-image:none!important;opacity:1!important;isolation:isolate}
 #shindo-vn.confession-blackout{background:#000!important}
 #shindo-vn.confession-fade:before{content:"";position:absolute;inset:0;background:#000;z-index:5;animation:shindo-confession-flash 1.1s ease both;pointer-events:none}
 @keyframes shindo-confession-flash{0%{opacity:0}45%{opacity:1}100%{opacity:0}}
