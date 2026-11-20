@@ -1,4 +1,4 @@
-/* SHINDO v109 — dated play log and compact inventory spacing. */
+/* SHINDO v122 — affinity menu rename and fixed profile portraits. */
 (()=>{
  'use strict';
  const panel=document.getElementById('shindo-phone-panel');
@@ -11,11 +11,10 @@
  const MET='shindo_met_characters_v108';
  const HISTORY_DAY='shindo_current_story_day_v109';
  const PEOPLE=[
-  ['승철','seungcheol-body1-default.png'],['지훈','jihoon-body1-default.png'],
-  ['원우','wonwoo-body2-default.png'],['순영','soonyoung-body1-default.png'],
-  ['명호','minghao-body1-default.png'],['한솔','hansol-body1-default.png'],
-  ['석민','seokmin-body1-default.png'],['찬','chan-body1-default.png'],
-  ['정한',null],['조슈아',null],['준휘',null],['민규',null],['승관',null],['교주',null]
+  ['승철','profile-seungcheol.png'],['정한','profile-jeonghan.png'],['조슈아','profile-joshua.png'],
+  ['준휘','profile-junhui.png'],['순영','profile-soonyoung.png'],['원우','profile-wonwoo.png'],
+  ['지훈','profile-jihoon.png'],['명호','profile-minghao.png'],['민규','profile-mingyu.png'],
+  ['석민','profile-seokmin.png'],['승관','profile-seungkwan.png'],['한솔','profile-hansol.png'],['찬','profile-chan.png']
  ];
  const LEGACY_KNOWN={
   '한솔':'shindo_hansol_known_v99','석민':'shindo_seokmin_known_v99','찬':'shindo_chan_known_v99',
@@ -207,7 +206,7 @@
  @media(max-width:750px){#shindo-phone-panel .inv-shell{gap:10px;padding:12px}#shindo-phone-panel .inv-content{margin-top:7px;padding-top:8px}#shindo-phone-panel .inv-tabs{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}#shindo-phone-panel .inv-tab{font-size:11px;padding:9px 2px}#shindo-phone-panel .inv-avatar{width:48px;height:60px}}
  `;
  document.head.appendChild(style);
- panel.innerHTML='<div class="inv-shell"><div><div class="inv-title">기록 보관함</div></div><div class="inv-tabs" role="tablist"><button class="inv-tab" data-tab="evidence" role="tab">증거품</button><button class="inv-tab" data-tab="people" role="tab">인물 관계</button><button class="inv-tab" data-tab="history" role="tab">플레이 기록</button><button class="inv-tab" data-tab="feedback" role="tab">피드백</button></div><div class="inv-content" id="shindo-inv-content" role="tabpanel"></div></div>';
+ panel.innerHTML='<div class="inv-shell"><div><div class="inv-title">기록 보관함</div></div><div class="inv-tabs" role="tablist"><button class="inv-tab" data-tab="evidence" role="tab">증거품</button><button class="inv-tab" data-tab="people" role="tab">친밀도</button><button class="inv-tab" data-tab="history" role="tab">플레이 기록</button><button class="inv-tab" data-tab="feedback" role="tab">피드백</button></div><div class="inv-content" id="shindo-inv-content" role="tabpanel"></div></div>';
  const content=panel.querySelector('.inv-content');let active='evidence';
  function make(tag,klass,txt){const el=document.createElement(tag);if(klass)el.className=klass;if(txt!==undefined)el.textContent=txt;return el}
  function empty(message){content.appendChild(make('p','inv-muted',message))}

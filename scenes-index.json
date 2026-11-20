@@ -1,86 +1,106 @@
 [
   {
+    "scene": 1,
     "kind": "line",
     "text": "뭔가 찝찝하지만 어떻게든 되겠지..."
   },
   {
+    "scene": 2,
     "kind": "line",
     "text": "내일 아침이면 정말 그곳에 가는 건가."
   },
   {
+    "scene": 3,
     "kind": "line",
     "text": "일단 자야겠다."
   },
   {
+    "scene": 4,
     "kind": "transition",
     "text": "1일차 아침"
   },
   {
+    "scene": 5,
     "kind": "line",
     "text": "봉고차가 천천히 속도를 줄인다.",
     "sound": "stop"
   },
   {
+    "scene": 6,
     "kind": "line",
     "text": "엔진 소리가 낮아지고 덜컹거림이 멎는다. 몸이 앞으로 살짝 쏠렸다가 제자리로 돌아왔다."
   },
   {
+    "scene": 7,
     "kind": "line",
     "text": "시동이 꺼졌다. 도착한 모양이다."
   },
   {
+    "scene": 8,
     "kind": "line",
     "text": "…얼마나 잤지?"
   },
   {
+    "scene": 9,
     "kind": "line",
     "text": "하필 이런 데서 졸다니. 사이비교 본거지로 걸어 들어가면서, 태평하게 쿨쿨 잠이나 자는 기자가 어디 있단 말이냐."
   },
   {
+    "scene": 10,
     "kind": "line",
     "text": "...여기 있다.",
     "delay": 2000
   },
   {
+    "scene": 11,
     "kind": "line",
     "text": "특종 쫓느라 며칠 밤낮으로 고생했더니 몸이 먼저 항복해버렸다."
   },
   {
+    "scene": 12,
     "kind": "line",
     "text": "내 이름은 김봉봉. 어리버리한 새 신도인 척하고 있지만, 사실은 기자다.",
     "follow": true
   },
   {
+    "scene": 13,
     "kind": "line",
     "text": "그것도 특종에 아주 목마른."
   },
   {
+    "scene": 14,
     "kind": "line",
     "text": "요즘 기삿거리라고 해 봤자 멧돼지 출몰 소식이나 이상 기상현상 따위가 고작이다."
   },
   {
+    "scene": 15,
     "kind": "line",
     "text": "그런 판에 <카밀레교>라는 취재 아이템이 굴러왔다. 이게 웬 떡이냐."
   },
   {
+    "scene": 16,
     "kind": "line",
     "text": "그야말로 하늘이 내려준 선물이 아닐 수 없다."
   },
   {
+    "scene": 17,
     "kind": "line",
     "text": "그래서 미친 척하고 이곳, <카밀레교>의 본거지까지 찾아오게 된 거다."
   },
   {
+    "scene": 18,
     "kind": "line",
     "text": "와, 공기 죽여준다.",
     "sound": "forest"
   },
   {
+    "scene": 19,
     "kind": "line",
     "text": "주변이 전부 산이다. 이런 데라면 쥐도 새도 모르게 사라지기 딱 좋겠지…",
     "sound": "forest"
   },
   {
+    "scene": 20,
     "kind": "dialogue",
     "speaker": "승철",
     "text": "좋은 계절입니다.",
@@ -88,24 +108,28 @@
     "portrait": "seungcheol-body1-default"
   },
   {
+    "scene": 21,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(나를 픽업해 온 사람이다. 눈썹이 짙고 몸이 다부지다.)",
     "inner": true
   },
   {
+    "scene": 22,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(중요하게는, 잘생겼다.)",
     "inner": true
   },
   {
+    "scene": 23,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "네… 풍경이 참 멋있네요.",
     "inner": false
   },
   {
+    "scene": 24,
     "kind": "dialogue",
     "speaker": "승철",
     "text": "그렇죠? 바깥 세상과는 다르게, 여기 있으면 마음이 온화해져요. 평화롭죠.",
@@ -113,12 +137,14 @@
     "portrait": "seungcheol-body1-smile"
   },
   {
+    "scene": 25,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(명심하자 김봉봉. 잘생겨도 사이비는 사이비다.)",
     "inner": true
   },
   {
+    "scene": 26,
     "kind": "dialogue",
     "speaker": "승철",
     "text": "소개가 늦었네요. 제 이름은 최승철입니다.",
@@ -127,12 +153,14 @@
     "reveal": true
   },
   {
+    "scene": 27,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "김봉봉입니다. 앞으로 잘 부탁드리겠습니다!",
     "inner": false
   },
   {
+    "scene": 28,
     "kind": "dialogue",
     "speaker": "승철",
     "text": "새 신자는 늘 환영이죠.",
@@ -140,6 +168,7 @@
     "portrait": "seungcheol-body1-smile"
   },
   {
+    "scene": 29,
     "kind": "dialogue",
     "speaker": "승철",
     "text": "이제 생활관 가시면서 수칙 몇 가지만 설명 드릴 건데…",
@@ -147,6 +176,7 @@
     "portrait": "seungcheol-body1-default"
   },
   {
+    "scene": 30,
     "kind": "dialogue",
     "speaker": "승철",
     "text": "얘가 늦네. 왜 이렇게 안 오지?",
@@ -154,10 +184,12 @@
     "portrait": "seungcheol-body1-default"
   },
   {
+    "scene": 31,
     "kind": "sfx",
     "sound": "footsteps_fast"
   },
   {
+    "scene": 32,
     "kind": "dialogue",
     "speaker": "지훈",
     "text": "아, 죄송합니다. 오다가 길을 잃는 바람에.",
@@ -165,6 +197,7 @@
     "portrait": "jihoon-body1-default"
   },
   {
+    "scene": 33,
     "kind": "dialogue",
     "speaker": "승철",
     "text": "야 너는 평생 여기 살아놓고 아직도 길을 잃냐?",
@@ -172,17 +205,20 @@
     "portrait": "seungcheol-body1-flustered"
   },
   {
+    "scene": 34,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(투닥대는 두 사람은 제법 친해 보인다.)",
     "inner": true
   },
   {
+    "scene": 35,
     "kind": "sfx",
     "sound": "footsteps",
     "clearPortrait": true
   },
   {
+    "scene": 36,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(좁은 산길을 따라 10분쯤 걸었을까. 저 앞에 제법 번듯한 건축물들이 보이기 시작한다.)",
@@ -190,6 +226,7 @@
     "clearPortrait": true
   },
   {
+    "scene": 37,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(여전히. 사이비 마을이라곤 생각되지 않을 정도로 깔끔하고 평범하다.)",
@@ -197,40 +234,47 @@
     "clearPortrait": true
   },
   {
+    "scene": 38,
     "kind": "dialogue",
     "speaker": "지훈",
     "text": "생활관으로 가시기 전에, 저희 교주님을 먼저 만나뵐 겁니다.",
     "portrait": "jihoon-body1-default"
   },
   {
+    "scene": 39,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "교주…님이요?"
   },
   {
+    "scene": 40,
     "kind": "dialogue",
     "speaker": "지훈",
     "text": "가벼운 면담 후 입소가 절차라서요. 신청서는 챙겨오셨죠?",
     "portrait": "jihoon-body1-default"
   },
   {
+    "scene": 41,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "…….네, 챙겨왔죠"
   },
   {
+    "scene": 42,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(어두운 내 표정을 알아챈 걸까. 그가 황급히 말을 덧붙인다.)",
     "inner": true
   },
   {
+    "scene": 43,
     "kind": "dialogue",
     "speaker": "지훈",
     "text": "어려울 거 없고요, 가셔서 기본 목회 듣는 게 전부입니다. 그리 오래 걸리지도 않아요.",
     "portrait": "jihoon-body1-default"
   },
   {
+    "scene": 44,
     "kind": "dialogue",
     "speaker": "지훈",
     "text": "기본 생활 수칙은 미리 설명드리겠습니다. 제 담당이라서요. 아, 제 이름은 이지훈입니다.",
@@ -238,29 +282,34 @@
     "revealJihoon": true
   },
   {
+    "scene": 45,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(참 빨리도 알려준다.)",
     "inner": true
   },
   {
+    "scene": 46,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(지훈이 설명한 생활 수칙은 다음과 같았다.)",
     "inner": true
   },
   {
+    "scene": 47,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(아침 식사는 7-9시, 점심 식사는 11-1시, 저녁 식사는 6-8시. 이 외 시간에는 식사가 제공되지 않는다.)",
     "inner": true
   },
   {
+    "scene": 48,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "아, 받아적어야지... 저, 메모지 하나만 주시겠어요?"
   },
   {
+    "scene": 49,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(색이 왜이래?)",
@@ -268,6 +317,7 @@
     "illustration": "memo-01"
   },
   {
+    "scene": 50,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "아, 잠시만요 (받아적기 시작한다.)",
@@ -275,6 +325,7 @@
     "pencil": true
   },
   {
+    "scene": 51,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(소등은 밤 11시. 소등 후에는 야간 순찰 담당자 외에는 외출 금지.)",
@@ -283,6 +334,7 @@
     "pencil": true
   },
   {
+    "scene": 52,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(세탁 및 청소 일정과 당번은 매달 1일에 발표하며 주별로 변경된다.)",
@@ -291,6 +343,7 @@
     "pencil": true
   },
   {
+    "scene": 53,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(그 외에도 종교활동에 충실할 것, 불온자를 발견시 반드시 사제에게 전달할 것.)",
@@ -299,45 +352,53 @@
     "pencil": true
   },
   {
+    "scene": 54,
     "kind": "narration",
     "text": "그리고 마지막은 잠시 뜸을 들이더니, 아주 중요하다는 듯이 강조했다."
   },
   {
+    "scene": 55,
     "kind": "dialogue",
     "speaker": "지훈",
     "text": "우리는 가족입니다. 서로를 배려합시다.",
     "portrait": "jihoon-body1-smile"
   },
   {
+    "scene": 56,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(오케이, 이지훈. 규칙을 철저하게 수호하는 사람 같다.)",
     "inner": true
   },
   {
+    "scene": 57,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(이 단체를 지키는 데에, 더 나아가 카밀레교에 그만큼 진심인 거겠지.)",
     "inner": true
   },
   {
+    "scene": 58,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(…고요 속에 걷다 보니 어느덧 마을 입구 앞이다.)",
     "inner": true
   },
   {
+    "scene": 59,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(심장이 쿵쾅거린다. 해낼 수 있을까? 과연 내가 혈혈단신으로, 이단의 소굴에서…)",
     "inner": true
   },
   {
+    "scene": 60,
     "kind": "image",
     "illustration": "mail-01",
     "duration": 6000
   },
   {
+    "scene": 61,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(아냐, 김봉봉. 해낸다. 해낼 수 있다. 해내야만 한다.)",
@@ -345,12 +406,14 @@
     "clearPortrait": true
   },
   {
+    "scene": 62,
     "kind": "narration",
     "text": "마음을 다잡고 승철과 지훈의 안내를 따랐다.",
     "sound": "footsteps",
     "clearPortrait": true
   },
   {
+    "scene": 63,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(정신을 차리고 보니 어느덧 본당 앞이었다.)",
@@ -358,117 +421,142 @@
     "clearPortrait": true
   },
   {
+    "scene": 64,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(승철과 지훈은 내게 행운을 빌었다. 아니, 교인들이 그러하듯 축복을 빌었다.)",
     "inner": true
   },
   {
+    "scene": 65,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(당신의 생활에 행복과 안식이 있기를... 이라.)",
     "inner": true
   },
   {
+    "scene": 66,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(듣기엔 참 좋은 말이다. 그 뒤로 어떤 내막이 숨어있을지는 모르지만 말이다.)",
     "inner": true
   },
   {
+    "scene": 67,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(자, 이제 카밀레교의 교주를 만나볼 차례다.)",
     "inner": true
   },
   {
+    "scene": 68,
     "kind": "narration",
     "text": "숨을 크게 들이마시고, 본당 문을 열어젖혔다.",
     "enterSanctuary": true
   },
   {
+    "scene": 69,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(본당은 제법 그럴싸한 교회의 모습을 하고 있네... 아닌가, 성당인가.)",
     "inner": true
   },
   {
+    "scene": 70,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(특이한 점이라면 사방에 캐모마일 꽃이 장식되어 있었다.)",
     "inner": true
   },
   {
+    "scene": 71,
     "kind": "event",
     "eventFootsteps": true,
     "silentFootsteps": true
   },
   {
+    "scene": 72,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(교주다.)",
-    "inner": true
+    "inner": true,
+    "portrait": "elder-default"
   },
   {
+    "scene": 73,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(짜 맞춘 것도 아니고 '사이비 교주'스럽게 생긴 노인이군...)",
     "inner": true
   },
   {
+    "scene": 74,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(회백색의 머리에 수북한 하얀 수염이라...)",
     "inner": true
   },
   {
+    "scene": 75,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(기껏 늘어놓는 '설교'가 정말 형편없군...)",
     "inner": true
   },
   {
+    "scene": 76,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(죄다 홈페이지 짜깁기잖아? '살아있는 복음'이니 '영적 성장'이니…)",
     "inner": true
   },
   {
+    "scene": 77,
     "kind": "narration",
     "text": "흐름에 관한 이야기가 무의미하게 이어졌다. 하품을 참느라 고역이었다."
   },
   {
+    "scene": 78,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(이 노인이 정말 수백 수천의 신도를 이끄는 자라고?)",
     "inner": true
   },
   {
+    "scene": 79,
     "kind": "narration",
     "text": "그때였다. 교주의 입에서 처음으로 구미가 당기는 말이 나온 게."
   },
   {
+    "scene": 80,
     "kind": "dialogue",
     "speaker": "교주",
     "text": "…그러므로 우리는 '공양'을 통해 탁한 것을 덜어내고, 죄 사함을 받아 맑은 흐름으로 돌아갑니다.",
+    "portrait": "elder-default",
     "boldWord": "공양"
   },
   {
+    "scene": 81,
     "kind": "narration",
     "text": "최대한 침착하게 '공양'의 선출 방식을 물어봤다. 돌아오는 대답은 모호하기 그지없었다."
   },
   {
+    "scene": 82,
     "kind": "dialogue",
     "speaker": "교주",
-    "text": "성실히 흐르는 이에게는 걱정할 일이 없습니다."
+    "text": "성실히 흐르는 이에게는 걱정할 일이 없습니다.",
+    "portrait": "elder-default"
   },
   {
+    "scene": 83,
     "kind": "dialogue",
     "speaker": "교주",
     "text": "다만 흐름에서 탈락하는 불온한 자는 고해를 통해 드러나니, 마음속에 감추는 것이 없도록 하십시오.",
+    "portrait": "elder-default",
     "bellOnce": true
   },
   {
+    "scene": 84,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(그래, 뭐. 들어온 지 반나절도 안 된 신입에게 '인신 공양'을 털어놓을 리 없겠지.)",
@@ -476,86 +564,108 @@
     "boldWord": "인신 공양"
   },
   {
+    "scene": 85,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(그런 건 내가 알아내야만 한다.)",
     "inner": true
   },
   {
+    "scene": 86,
     "kind": "narration",
     "text": "그 뒤로는 면접 아닌 면접이 이어졌다. 준비해간 이야기를 늘어놓았다."
   },
   {
+    "scene": 87,
     "kind": "narration",
     "text": "21세기 대한민국에서 밥 벌어먹고 살기 여간 힘들고 팍팍한 게 아니라서..."
   },
   {
+    "scene": 88,
     "kind": "narration",
     "text": "종교로 귀의하고 싶었다는 이야기… 다행히도 믿는 눈치였다."
   },
   {
+    "scene": 89,
     "kind": "dialogue",
     "speaker": "교주",
-    "text": "처음 입교한 신도는 무조건 고해성사를 해야 합니다."
+    "text": "처음 입교한 신도는 무조건 고해성사를 해야 합니다.",
+    "portrait": "elder-default"
   },
   {
+    "scene": 90,
     "kind": "dialogue",
     "speaker": "교주",
-    "text": "밖에서 쌓은 수많은 죄를 토해내 사하기 위해서죠."
+    "text": "밖에서 쌓은 수많은 죄를 토해내 사하기 위해서죠.",
+    "portrait": "elder-default"
   },
   {
+    "scene": 91,
     "kind": "dialogue",
     "speaker": "교주",
     "text": "원우 사제님은 이 중요한 업무를 맡은 고해성사 담당 사제입니다.",
+    "portrait": "elder-default",
     "maskWonwoo": true
   },
   {
+    "scene": 92,
     "kind": "dialogue",
     "speaker": "교주",
-    "text": "죄를 토해내고 꾸짖음이 필요하시다면 사제님을 찾아가세요."
+    "text": "죄를 토해내고 꾸짖음이 필요하시다면 사제님을 찾아가세요.",
+    "portrait": "elder-default"
   },
   {
+    "scene": 93,
     "kind": "narration",
     "text": "본당을 나설 때쯤엔 온몸이 녹초가 되어있었다.",
-    "leaveSanctuary": true
+    "leaveSanctuary": true,
+    "clearPortrait": true
   },
   {
+    "scene": 94,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(이렇게 피곤한데 고해성사까지 해야 한다니...)",
     "inner": true
   },
   {
+    "scene": 95,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(해가 벌써 서녘에 뉘엿거리네... 고해소로 가봐야겠다.)",
     "inner": true
   },
   {
+    "scene": 96,
     "kind": "narration",
     "text": "고해소는 본당 옆에 있는 작은 경당이었다."
   },
   {
+    "scene": 97,
     "kind": "narration",
     "text": "하얀 벽 탓에 모르고 보면 동화 속 예배당으로 착각할 만했다."
   },
   {
+    "scene": 98,
     "kind": "narration",
     "text": "문 옆에는 고해 시간을 적은 안내판이 걸려 있고, 그 아래 명패에는 상주 사제의 이름이 적혀 있었다.",
     "sound": "nameplate"
   },
   {
+    "scene": 99,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "…전원우."
   },
   {
+    "scene": 100,
     "kind": "narration",
     "text": "고해실 내부로 입장한다. 문이 닫히자, 나긋하되 중압감 있는 목소리가 좁은 공간에 울린다.",
     "sound": "confessionDoor",
     "enterConfession": true
   },
   {
+    "scene": 101,
     "kind": "dialogue",
     "speaker": "원우",
     "text": "고해소는 신성한 장소입니다. 거짓을 고하지 않을 것임을 맹세하십니까?",
@@ -563,16 +673,19 @@
     "clockTickLouder": true
   },
   {
+    "scene": 102,
     "kind": "narration",
     "text": "뭔가… 기존에 알던 고해성사와는 느낌이 다르다. 좀 더, 조여오는 기분.",
     "tickSpeed": 1,
     "tickVolume": 0.52
   },
   {
+    "scene": 103,
     "kind": "narration",
     "text": "마치 심문받는 것만 같다."
   },
   {
+    "scene": 104,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "…예. 맹세합니다.",
@@ -580,34 +693,40 @@
     "tickVolume": 0.27
   },
   {
+    "scene": 105,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(기자 신분으로 여기에 잠입한 것부터가 거짓이지만, 뭐. 알 리가 있나.)",
     "inner": true
   },
   {
+    "scene": 106,
     "kind": "dialogue",
     "speaker": "원우",
     "text": "김봉봉 신도님은 바깥에서 어떤 일을 하셨습니까?",
     "tickSpeed": 1,
-    "blackout": true
+    "delayedConfessionBlackout": true
   },
   {
+    "scene": 107,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(젠장, 첫 질문부터 무서운 거잖아...)",
     "inner": true
   },
   {
+    "scene": 108,
     "kind": "choice"
   },
   {
+    "scene": 109,
     "kind": "narration",
     "text": "동료들의 이중적이고 자극적인 것만 쫓는 태도에 신물 나 오게 되었다고 대답했다.",
     "branch": 1,
     "tickSpeed": 1
   },
   {
+    "scene": 110,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(벽 너머의 사제는 내 말을 믿어주는 걸까?)",
@@ -615,21 +734,25 @@
     "branch": 1
   },
   {
+    "scene": 111,
     "kind": "narration",
     "text": "알기 힘들다. 날카롭고 무서운 질문이 연이어 날아 왔다.",
     "branch": 1
   },
   {
+    "scene": 112,
     "kind": "narration",
     "text": "하지만, 이곳의 비밀을 밝혀내기 위해서는 모든 것을 철저하게 숨기고 또 연기해야 한다.",
     "branch": 1
   },
   {
+    "scene": 113,
     "kind": "narration",
     "text": "고해성사가 끝난 듯 하다. 무사히 잘 넘겼을까?",
     "branch": 1
   },
   {
+    "scene": 114,
     "kind": "dialogue",
     "speaker": "원우",
     "text": "이로써 당신의 죄는 모두 토해져, 신께 닿아 사해졌습니다. 당신의 생활에 행복과 안식이 있기를.",
@@ -637,18 +760,48 @@
     "branch": 1
   },
   {
+    "scene": 115,
     "kind": "narration",
     "text": "다행히 의심은 피했다. 이제 생활관으로 넘어가 하루를 마무리하자.",
     "branch": 1,
-    "stopTick": true
+    "stopTick": true,
+    "backdrop": "bg-living-quarters-exterior.png"
   },
   {
+    "scene": 116,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "정말 힘든 하루였어.. 이제 자고 내일을 시작해야겠다.",
+    "branch": 1,
+    "backdrop": "bg-living-quarters-interior.png",
+    "clearPortrait": true
+  },
+  {
+    "scene": 117,
+    "kind": "sleep-transition",
+    "text": "2일차",
+    "branch": 1,
+    "day": 2,
+    "backdrop": "bg-living-quarters-interior.png"
+  },
+  {
+    "scene": 118,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "어, 지금 몇 시지..?",
+    "branch": 1,
+    "backdrop": "bg-living-quarters-interior.png",
+    "wakeFadeIn": true
+  },
+  {
+    "scene": 119,
     "kind": "narration",
     "text": "고해소의 사제라면 신도들의 모든 정보를 알고 있으리라.",
     "branch": 2,
     "tickSpeed": 1
   },
   {
+    "scene": 120,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(그를 내 편으로 포섭한다면 이곳에서 살아남기 수월할지도 모른다.)",
@@ -656,16 +809,19 @@
     "branch": 2
   },
   {
+    "scene": 121,
     "kind": "narration",
     "text": "나는 그에게 이곳에 들어온 목적을 솔직하게 털어놓았다.",
     "branch": 2
   },
   {
+    "scene": 122,
     "kind": "narration",
     "text": "그 과정에서 카밀레교에 대한 부정적인 발언들도 가감 없이 쏟아냈다.",
     "branch": 2
   },
   {
+    "scene": 123,
     "kind": "dialogue",
     "speaker": "원우",
     "text": "그렇군요… 그럴 수 있습니다, 단체 생활이란 그런 것이지요…",
@@ -674,6 +830,7 @@
     "branch": 2
   },
   {
+    "scene": 124,
     "kind": "dialogue",
     "speaker": "원우",
     "text": "신도님께서 고민이 많으시겠습니다.",
@@ -681,12 +838,14 @@
     "branch": 2
   },
   {
+    "scene": 125,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "네 네, 그렇지요.. 이해해주셔서 감사합니다.",
     "branch": 2
   },
   {
+    "scene": 126,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(잘 넘어간건가?)",
@@ -695,6 +854,7 @@
     "stopTick": true
   },
   {
+    "scene": 127,
     "kind": "narration",
     "text": "(그렇게 잠든 다음 날. 김봉봉은 공양자로 선정되어 신도들의 이끌려 공양실로 향하게 된다.)",
     "branch": 2,
@@ -702,34 +862,45 @@
     "fade": true
   },
   {
+    "scene": 128,
     "kind": "narration",
     "text": "뎅- 종소리가 울릴 때 원우는 누군가에게 말한다.",
     "branch": 2,
     "bellLoop": true
   },
   {
+    "scene": 129,
     "kind": "dialogue",
     "speaker": "원우",
     "text": "오늘도 한 명의 어린 양이 주님 곁으로 갔습니다.",
+    "largeText": true,
+    "redText": true,
     "portrait": "wonwoo-body2-default",
     "branch": 2
   },
   {
+    "scene": 130,
     "kind": "dialogue",
     "speaker": "원우",
     "text": "걱정 마십시오 교주님.",
+    "largeText": true,
+    "redText": true,
     "portrait": "wonwoo-body2-eyes-closed",
     "branch": 2,
     "bellStop": true
   },
   {
+    "scene": 131,
     "kind": "dialogue",
     "speaker": "원우",
     "text": "우리는 굳건하고 흔들리지 않을 것입니다. 제가 그리 만들 것입니다.",
+    "largeText": true,
+    "redText": true,
     "portrait": "wonwoo-body2-default",
     "branch": 2
   },
   {
+    "scene": 132,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "(그가 카밀레교의 누구보다도 신실한 신도였다니...)",
@@ -738,45 +909,59 @@
     "bellLoud": true
   },
   {
+    "scene": 133,
     "kind": "ending",
     "branch": 2
   },
   {
+    "scene": 134,
     "kind": "dialogue",
     "speaker": "??",
     "text": "봉봉 씨! 새벽기도 안 가세요?",
     "branch": 1,
     "wakeShake": true,
-    "portraitPlaceholder": true
+    "portraitPlaceholder": true,
+    "backdrop": "bg-living-quarters-interior.png"
   },
   {
+    "scene": 135,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "맞다, 여기 새벽기도가 있지…",
-    "branch": 1
+    "branch": 1,
+    "backdrop": "bg-living-quarters-interior.png"
   },
   {
+    "scene": 136,
     "kind": "narration",
     "text": "참석은 자율이다. 지금은 꼭두새벽. 하품이 마구 터져 나온다. 피곤하다.",
-    "branch": 1
+    "branch": 1,
+    "backdrop": "bg-living-quarters-interior.png"
   },
   {
+    "scene": 137,
     "kind": "day2-prayer-choice",
-    "branch": 1
+    "branch": 1,
+    "backdrop": "bg-living-quarters-interior.png"
   },
   {
+    "scene": 138,
     "kind": "narration",
     "text": "일어난다. 신실한 모습을 보이면 누군가의 호감을 살지도 모른다.",
     "branch": 1,
-    "prayer": 1
+    "prayer": 1,
+    "backdrop": "bg-living-quarters-interior.png"
   },
   {
+    "scene": 139,
     "kind": "narration",
     "text": "다시 잔다. 기도는 개뿔. 체력이나 아끼자.",
     "branch": 1,
-    "prayer": 2
+    "prayer": 2,
+    "backdrop": "bg-living-quarters-interior.png"
   },
   {
+    "scene": 140,
     "kind": "narration",
     "text": "아침이 밝았다. 중앙광장으로 가볼까...",
     "branch": 1,
@@ -784,22 +969,26 @@
     "square": true
   },
   {
+    "scene": 141,
     "kind": "narration",
     "text": "중앙 광장은 이미 사람들로 가득했다. 발소리와 옷깃 스치는 소리만 간간이 들렸다.",
     "branch": 1
   },
   {
+    "scene": 142,
     "kind": "narration",
     "text": "기이한 정적 위로 새소리가 들려왔다.",
     "branch": 1,
     "sound": "birds"
   },
   {
+    "scene": 143,
     "kind": "narration",
     "text": "아침 예배가 끝나기가 무섭게 전달이 돌았다. 모두 중앙 광장으로 모이라고.",
     "branch": 1
   },
   {
+    "scene": 144,
     "kind": "narration",
     "text": "어쩌면 ‘공양’을 할지도 모른다. 라고,",
     "branch": 1,
@@ -807,39 +996,46 @@
     "fade": true
   },
   {
+    "scene": 145,
     "kind": "narration",
     "text": "다행히도 다들 신입 신자에게 설명해주는 데 매우 호의적이었다.",
     "branch": 1
   },
   {
+    "scene": 146,
     "kind": "narration",
     "text": "‘공양’은 죄를 지은 자의 죄를 밝히고 이를 사하기 위해 인도받는 자리라고 했다.",
     "branch": 1
   },
   {
+    "scene": 147,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "듣기로는 고해성사와 크게 다르진 않아 보이는데...",
     "branch": 1
   },
   {
+    "scene": 148,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "몹시 두려워하는 신도들의 태도만 아니었더라면, 그렇게 생각했을 것 같기도...",
     "branch": 1
   },
   {
+    "scene": 149,
     "kind": "narration",
     "text": "그들에 의하면 ‘공양’은 매일 일어나는 게 아니었다.",
     "branch": 1
   },
   {
+    "scene": 150,
     "kind": "narration",
     "text": "어떨 때는 보름이 지나도록 별일이 없다고도 했다.",
     "branch": 1,
     "square": true
   },
   {
+    "scene": 151,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "…‘공양제’만 아니라면...?",
@@ -847,147 +1043,168 @@
     "boldWord": "공양제"
   },
   {
+    "scene": 152,
     "kind": "narration",
     "text": "도대체 그 ‘공양제’라는 게 뭘까. 영 좋지 않은 게 분명하다.",
     "branch": 1,
     "boldWord": "공양제"
   },
   {
+    "scene": 153,
     "kind": "narration",
     "text": "그때였다.",
     "branch": 1,
     "gongyangBell": "01"
   },
   {
+    "scene": 154,
     "kind": "narration",
     "text": "비명과 함께 한 남자가 앞으로 끌려 나왔다. 아침 식사 때 내게 친절하게 말을 걸어준 신도였다.",
     "branch": 1
   },
   {
+    "scene": 155,
     "kind": "dialogue",
     "speaker": "교주",
     "text": "성도들이여! 우리 가운데 배도자가 있었습니다!",
     "branch": 1,
-    "gongyangBell": "01",
-    "portraitPlaceholder": true
+    "portrait": "elder-frown"
   },
   {
+    "scene": 156,
     "kind": "dialogue",
     "speaker": "교주",
     "text": "지금 앞에 선 이 죄인은 하나 됨을 깨트렸습니다. 우리 모두를, 섭리 앞에서 배반했습니다!",
     "branch": 1,
-    "portraitPlaceholder": true
+    "portrait": "elder-frown"
   },
   {
+    "scene": 157,
     "kind": "dialogue",
     "speaker": "교주",
     "text": "그 죄가 참으로 큽니다!",
     "branch": 1,
-    "portraitPlaceholder": true,
+    "portrait": "elder-frown",
     "screenShake": true
   },
   {
+    "scene": 158,
     "kind": "narration",
     "text": "웅성거림이 들불처럼 번져나갔다.",
     "branch": 1,
     "sound": "murmur"
   },
   {
+    "scene": 159,
     "kind": "narration",
     "text": "어제 본 교주가 본당 계단 위에 서 있었다. 무시무시한 얼굴로 모두를 내려다보면서.",
     "branch": 1
   },
   {
+    "scene": 160,
     "kind": "dialogue",
     "speaker": "교주",
     "text": "공양에 대한 말이 새어나갔습니다.",
     "branch": 1,
-    "portraitPlaceholder": true
+    "portrait": "elder-frown"
   },
   {
+    "scene": 161,
     "kind": "dialogue",
     "speaker": "교주",
     "text": "누가 흐름을 의심했습니까?",
     "branch": 1,
-    "portraitPlaceholder": true,
+    "portrait": "elder-frown",
     "boldAll": true
   },
   {
+    "scene": 162,
     "kind": "dialogue",
     "speaker": "교주",
     "text": "대체 누가 감히 우리와 발맞추어 걸으면서, 그 눈과 심장은 죄악을 향해 있었습니까?",
     "branch": 1,
-    "portraitPlaceholder": true,
+    "portrait": "elder-frown",
     "boldAll": true,
     "largeText": true
   },
   {
+    "scene": 163,
     "kind": "dialogue",
     "speaker": "교주",
     "text": "이에 신께서는 진노하셨습니다. 그 진노 앞에서 우리는 하나가 되어야 합니다!",
     "branch": 1,
-    "portraitPlaceholder": true,
+    "portrait": "elder-furious",
     "boldAll": true
   },
   {
+    "scene": 164,
     "kind": "narration",
     "text": "교주가 손을 들자 웅성거림이 순식간에 가라앉았다.",
     "branch": 1
   },
   {
+    "scene": 165,
     "kind": "dialogue",
     "speaker": "교주",
     "text": "죄악으로 탁해진 것을 씻고 속죄하기 위하여.",
     "branch": 1,
-    "portraitPlaceholder": true
+    "portrait": "elder-frown"
   },
   {
+    "scene": 166,
     "kind": "dialogue",
     "speaker": "교주",
     "text": "지금 이 시간 부로, 공양제를 시작하겠습니다.",
     "branch": 1,
-    "portraitPlaceholder": true,
-    "gongyangBell": "01",
+    "portrait": "elder-frown",
     "redWord": "공양제"
   },
   {
+    "scene": 167,
     "kind": "narration",
     "text": "목덜미가 서늘해졌다.",
     "branch": 1
   },
   {
+    "scene": 168,
     "kind": "dialogue",
     "speaker": "교주",
     "text": "이 죄인이 바로 그 첫 열매입니다.",
     "branch": 1,
-    "portraitPlaceholder": true
+    "portrait": "elder-frown"
   },
   {
+    "scene": 169,
     "kind": "dialogue",
     "speaker": "교주",
     "text": "역경을 지나, 번성으로!",
     "branch": 1,
-    "portraitPlaceholder": true,
-    "gongyangBell": "02"
+    "portrait": "elder-furious",
+    "leaderShout": true
   },
   {
+    "scene": 170,
     "kind": "narration",
     "text": "신도들 사이에서 우레와 같은 박수 소리가 터져 나왔다.",
     "branch": 1,
-    "gongyangApplause": "start"
+    "gongyangApplause": "start",
+    "clearPortrait": true
   },
   {
+    "scene": 171,
     "kind": "narration",
     "text": "발버둥 쳐봐도 소용없었다. 그 남자는 공양실 방향으로 질질 끌려갔다.",
     "branch": 1,
     "gongyangApplause": "continue"
   },
   {
+    "scene": 172,
     "kind": "narration",
     "text": "풀잎 위로 상쾌한 바람이 불었다. 눈이 시리도록 맑은 아침이었다. 그래서 더 끔찍했다.",
     "branch": 1
   },
   {
+    "scene": 173,
     "kind": "narration",
     "text": "교주의 말인즉슨, 최근 한 내부고발자가 인신 공양의 실태를 바깥으로 흘렸다.",
     "branch": 1,
@@ -995,77 +1212,1873 @@
     "fade": true
   },
   {
+    "scene": 174,
     "kind": "narration",
     "text": "그래서 내부 결속을 다지려고 연속 공양을 시작했다.",
     "branch": 1
   },
   {
+    "scene": 175,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "그 시작이 오늘.",
     "branch": 1
   },
   {
+    "scene": 176,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "하필 오늘.",
     "branch": 1
   },
   {
+    "scene": 177,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "내가 여기 온 바로 다음 날.",
     "branch": 1
   },
   {
+    "scene": 178,
     "kind": "narration",
     "text": "그리고 언제 끝날지는, 아무도 모른다.",
     "branch": 1
   },
   {
+    "scene": 179,
     "kind": "narration",
     "text": "사방을 찢어놓는 무시무시한 종소리가 울려 퍼졌다.",
     "branch": 1,
     "gongyangBell": "02"
   },
   {
+    "scene": 180,
     "kind": "narration",
     "text": "공양제의 시작이었다.",
     "branch": 1
   },
   {
+    "scene": 181,
     "kind": "narration",
     "text": "속이 메스껍다. 당장에라도 이 미친 사이비 집단에서 탈출하고 싶다.",
     "branch": 1
   },
   {
+    "scene": 182,
     "kind": "dialogue",
     "speaker": "주인공",
     "text": "그렇지만… 어디로 갈 수 있는데? 핸드폰도 안 터지는 이 산속에서.",
     "branch": 1
   },
   {
+    "scene": 183,
     "kind": "narration",
     "text": "이 상태로라도 정보를 얻어야 한다. 아니, 이렇기에 더더욱 정보를 얻어야만 한다.",
     "branch": 1
   },
   {
+    "scene": 184,
     "kind": "narration",
     "text": "악착같이 살아남아 <카밀레교>를 해체해주마.",
     "branch": 1
   },
   {
+    "scene": 185,
     "kind": "narration",
     "text": "우선은 신도들 틈에 자연스레 섞여 하루 일과를 시작하자.",
     "branch": 1
   },
   {
+    "scene": 186,
     "kind": "narration",
     "text": "오전에는 종교 활동을, 오후에는 관리 업무를 해야 한다.",
     "branch": 1
   },
   {
+    "scene": 187,
     "kind": "day2-morning-choice",
     "branch": 1
+  },
+  {
+    "scene": 188,
+    "kind": "narration",
+    "text": "기도관 내부는 고풍스럽다. 은은한 햇빛이 고동색 장의자 위로 드리운다.",
+    "prayerRoom": true,
+    "prayerStart": true,
+    "clearPortrait": true
+  },
+  {
+    "scene": 189,
+    "kind": "narration",
+    "text": "신도들 틈에 섞여 기도해야겠다. 신성한 기분마저 드는 것 같다.",
+    "prayerRoom": true
+  },
+  {
+    "scene": 190,
+    "kind": "prayer-wait",
+    "duration": 3000,
+    "prayerRoom": true
+  },
+  {
+    "scene": 191,
+    "kind": "narration",
+    "text": "기도는 끝났다. 이제 슬슬 정보를 캘 시간이다.",
+    "prayerRoom": true
+  },
+  {
+    "scene": 192,
+    "kind": "narration",
+    "text": "마침 일손이 필요해 보이는 신도들이 눈에 들어왔다.",
+    "prayerRoom": true
+  },
+  {
+    "scene": 193,
+    "kind": "prayer-choice",
+    "prayerRoom": true
+  },
+  {
+    "scene": 194,
+    "kind": "narration",
+    "text": "지저분한 단상 위를 치우고 있는데, 웬 사제복을 입은 남자가 이쪽으로 걸어오는 듯 하다.",
+    "prayerBranch": 1,
+    "prayerRoom": true,
+    "prayerAudio": "clean-start",
+    "clearPortrait": true
+  },
+  {
+    "scene": 195,
+    "kind": "dialogue",
+    "speaker": "한솔",
+    "text": "어이구, 감사합니다… 이거 제 일인데.",
+    "prayerBranch": 1,
+    "prayerRoom": true,
+    "maskSpeaker": true,
+    "portrait": "hansol-body1-smile-v103"
+  },
+  {
+    "scene": 196,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(감사는 한데 그닥 죄송하게는 안 보이는 얼굴...)",
+    "prayerBranch": 1,
+    "prayerRoom": true,
+    "portrait": "hansol-body1-smile-v103"
+  },
+  {
+    "scene": 197,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(약간 이국적인 느낌이 나는 미남같다.)",
+    "prayerBranch": 1,
+    "prayerRoom": true,
+    "portrait": "hansol-body1-smile-v103"
+  },
+  {
+    "scene": 198,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(이야, 이목구비가 여기 풍경보다 훤하다...)",
+    "prayerBranch": 1,
+    "prayerRoom": true,
+    "portrait": "hansol-body1-smile-v103",
+    "prayerAudio": "clean-fade"
+  },
+  {
+    "scene": 199,
+    "kind": "narration",
+    "text": "말을 섞다 보니 알게 된 것들이 있었다.",
+    "prayerBranch": 1,
+    "prayerRoom": true,
+    "portrait": "hansol-body1-default-v103"
+  },
+  {
+    "scene": 200,
+    "kind": "narration",
+    "text": "우선, 그의 이름은 최한솔이다. 무려 사제다.",
+    "prayerBranch": 1,
+    "prayerRoom": true,
+    "portrait": "hansol-body1-default-v103",
+    "revealHansol": true
+  },
+  {
+    "scene": 201,
+    "kind": "narration",
+    "text": "그리고 여기 기도관은 그의 관할이다.",
+    "prayerBranch": 1,
+    "prayerRoom": true,
+    "portrait": "hansol-body1-default-v103"
+  },
+  {
+    "scene": 202,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(하지만 사제라기엔 그는 어딘가… 헐랭한걸..?)",
+    "prayerBranch": 1,
+    "prayerRoom": true,
+    "portrait": "hansol-body1-default-v103"
+  },
+  {
+    "scene": 203,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(영어로 된 성경을 웅얼대며 읽거나, 창밖을 멍하니 쳐다보는 게 대부분...)",
+    "prayerBranch": 1,
+    "prayerRoom": true,
+    "portrait": "hansol-body1-default-v103"
+  },
+  {
+    "scene": 204,
+    "kind": "narration",
+    "text": "신도들의 기도에도 크게 진실된 반응을 보이지 않는다.",
+    "prayerBranch": 1,
+    "prayerRoom": true,
+    "portrait": "hansol-body1-default-v103"
+  },
+  {
+    "scene": 205,
+    "kind": "narration",
+    "text": "사제임에도 크게 신앙심이 있는 것처럼 보이진 않는 듯 하다.",
+    "prayerBranch": 1,
+    "prayerRoom": true,
+    "portrait": "hansol-body1-annoyed-v103"
+  },
+  {
+    "scene": 206,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(대체 무슨 생각을 하는 거지?)",
+    "prayerBranch": 1,
+    "prayerRoom": true,
+    "clearPortrait": true
+  },
+  {
+    "scene": 207,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(흠… 파고들만 할지도 모르겠다.)",
+    "prayerBranch": 1,
+    "prayerRoom": true
+  },
+  {
+    "scene": 208,
+    "kind": "prayer-end",
+    "prayerBranch": 1,
+    "prayerRoom": true
+  },
+  {
+    "scene": 209,
+    "kind": "prayer-sfx-wait",
+    "prayerBranch": 2,
+    "prayerRoom": true,
+    "prayerAudio": "wake-4",
+    "duration": 4000
+  },
+  {
+    "scene": 210,
+    "kind": "narration",
+    "text": "덩치 큰 남자를 쿡쿡 찔렀다.",
+    "prayerBranch": 2,
+    "prayerRoom": true,
+    "portrait": "seungcheol-body1-default",
+    "silhouette": true,
+    "clearPortrait": true
+  },
+  {
+    "scene": 211,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "저기요, 사제님이 이쪽 보시는 거 같은데요….",
+    "prayerBranch": 2,
+    "prayerRoom": true,
+    "portrait": "seungcheol-body1-default",
+    "silhouette": true
+  },
+  {
+    "scene": 212,
+    "kind": "dialogue",
+    "speaker": "승철",
+    "text": "어, 어어? 감사합니다….",
+    "prayerBranch": 2,
+    "prayerRoom": true,
+    "portrait": "seungcheol-body2-flustered"
+  },
+  {
+    "scene": 213,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "어? 어제 보신 분이죠, 이름이... 최승철?",
+    "prayerBranch": 2,
+    "prayerRoom": true,
+    "portrait": "seungcheol-body1-smile"
+  },
+  {
+    "scene": 214,
+    "kind": "narration",
+    "text": "그도 나를 알아본 모양이다.",
+    "prayerBranch": 2,
+    "prayerRoom": true,
+    "portrait": "seungcheol-body1-smile"
+  },
+  {
+    "scene": 215,
+    "kind": "narration",
+    "text": "아무리 그래도 여기서 자다니, 보통 배짱이 아니다.",
+    "prayerBranch": 2,
+    "prayerRoom": true,
+    "portrait": "seungcheol-body1-smile"
+  },
+  {
+    "scene": 216,
+    "kind": "narration",
+    "text": "승철이 웃으며 교단에 선 사제를 가리킨다.",
+    "prayerBranch": 2,
+    "prayerRoom": true,
+    "portrait": "seungcheol-body2-smile"
+  },
+  {
+    "scene": 217,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "…졸면서도 굳이 설교를 듣는 이유가 있나요?",
+    "prayerBranch": 2,
+    "prayerRoom": true,
+    "portrait": "seungcheol-body2-smile"
+  },
+  {
+    "scene": 218,
+    "kind": "dialogue",
+    "speaker": "승철",
+    "text": "이제 일상이죠, 뭐.",
+    "prayerBranch": 2,
+    "prayerRoom": true,
+    "portrait": "seungcheol-body2-squintsmile"
+  },
+  {
+    "scene": 219,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(조는 게 일상이란 걸까, 설교가 일상이란 걸까.)",
+    "prayerBranch": 2,
+    "prayerRoom": true,
+    "clearPortrait": true
+  },
+  {
+    "scene": 220,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(어느 쪽인지가 중요하다. 더 친해져 봐도 좋겠다.)",
+    "prayerBranch": 2,
+    "prayerRoom": true
+  },
+  {
+    "scene": 221,
+    "kind": "prayer-end",
+    "prayerBranch": 2,
+    "prayerRoom": true
+  },
+  {
+    "scene": 222,
+    "kind": "narration",
+    "text": "낭독이 한창인데, 옆자리 남자는 성경을 쥔 채 허둥지둥하고 있다.",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "clearPortrait": true
+  },
+  {
+    "scene": 223,
+    "kind": "narration",
+    "text": "손가락이 같은 구절 위를 뱅뱅 돈다. 딱 봐도 진도를 놓친 얼굴이다.",
+    "prayerBranch": 3,
+    "prayerRoom": true
+  },
+  {
+    "scene": 224,
+    "kind": "narration",
+    "text": "결국 보다 못하고 그의 성경 위로 손을 뻗었다.",
+    "prayerBranch": 3,
+    "prayerRoom": true
+  },
+  {
+    "scene": 225,
+    "kind": "prayer-sfx-wait",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "prayerAudio": "book-2",
+    "duration": 1000
+  },
+  {
+    "scene": 226,
+    "kind": "narration",
+    "text": "한 장, 조용히 넘겼다. 낭독 중인 구절이 있는 쪽이었다.",
+    "prayerBranch": 3,
+    "prayerRoom": true
+  },
+  {
+    "scene": 227,
+    "kind": "dialogue",
+    "speaker": "석민",
+    "text": "와 깜짝, 가, 감사합니다….",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "maskSpeaker": true,
+    "portrait": "seokmin-body2-surprised"
+  },
+  {
+    "scene": 228,
+    "kind": "narration",
+    "text": "그가 놀란 눈으로 나를 본다.",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "portrait": "seokmin-body2-surprised"
+  },
+  {
+    "scene": 229,
+    "kind": "narration",
+    "text": "나는 시선을 앞에 둔 채 입만 달싹여 읽는 시늉을 했다.",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "clearPortrait": true
+  },
+  {
+    "scene": 230,
+    "kind": "narration",
+    "text": "예배가 끝난 뒤 남자가 먼저 말을 걸어왔다.",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "portrait": "seokmin-body2-smile",
+    "prayerAudio": "single-bell"
+  },
+  {
+    "scene": 231,
+    "kind": "narration",
+    "text": "이름은 이석민. 나처럼 여기 들어온 지 얼마 안 된, 신입이다.",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "portrait": "seokmin-body1-smile"
+  },
+  {
+    "scene": 232,
+    "kind": "dialogue",
+    "speaker": "석민",
+    "text": "아까는 정말 감사했습니다.",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "portrait": "seokmin-body1-eyesmile",
+    "revealSeokmin": true
+  },
+  {
+    "scene": 233,
+    "kind": "dialogue",
+    "speaker": "석민",
+    "text": "입교한 지 얼마 안 되어서, 진도를 도통 못 따라잡겠더라고요.",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "portrait": "seokmin-body1-eyesmile"
+  },
+  {
+    "scene": 234,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "저도 최근에 들어 온 걸요. 아직 여기 길도 잘 몰라요.",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "portrait": "seokmin-body1-smile"
+  },
+  {
+    "scene": 235,
+    "kind": "narration",
+    "text": "아까는 소심해 보였는데, 이렇게 보니 쾌활한 쪽이다.",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "portrait": "seokmin-body2-eyesmile"
+  },
+  {
+    "scene": 236,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(중요하게는, 상견례 때 데려오면 '니 이 사람 상대로 약점 잡았냐?' 소리를 들을 만한 얼굴이다.)",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "portrait": "seokmin-body2-eyesmile"
+  },
+  {
+    "scene": 237,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "혹시 시간 나실 때 함께 교리 공부하실래요?",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "portrait": "seokmin-body1-default"
+  },
+  {
+    "scene": 238,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(맹세하건대 흑심이 아니다.)",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "portrait": "seokmin-body1-default"
+  },
+  {
+    "scene": 239,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(초심자라면 모르는 사이에 정보를 이끌어 내기 쉬울지도 모른다는, 기자의 경험적 판단이다.)",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "portrait": "seokmin-body1-default"
+  },
+  {
+    "scene": 240,
+    "kind": "dialogue",
+    "speaker": "석민",
+    "text": "저야 너무 좋죠!",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "portrait": "seokmin-body1-eyesmile"
+  },
+  {
+    "scene": 241,
+    "kind": "dialogue",
+    "speaker": "석민",
+    "text": "안 그래도 요즘 이 '공양제'에 관심이 가서… 보다 깊은 공부를 해볼까 합니다.",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "portrait": "seokmin-body2-smile",
+    "boldWord": "공양제"
+  },
+  {
+    "scene": 242,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(잭팟이다!)",
+    "prayerBranch": 3,
+    "prayerRoom": true,
+    "clearPortrait": true
+  },
+  {
+    "scene": 243,
+    "kind": "prayer-end",
+    "prayerBranch": 3,
+    "prayerRoom": true
+  },
+  {
+    "scene": 244,
+    "kind": "narration",
+    "text": "구석에서 열심히 청소 중인 청년이 눈에 띈다. 아직 앳된 티가 나는데?",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "clearPortrait": true
+  },
+  {
+    "scene": 245,
+    "kind": "narration",
+    "text": "청년은 장의자 다리 하나를 한참 닦고 있다. 열성적으로.",
+    "prayerBranch": 4,
+    "prayerRoom": true
+  },
+  {
+    "scene": 246,
+    "kind": "narration",
+    "text": "열성적이다. 열성적인데…",
+    "prayerBranch": 4,
+    "prayerRoom": true
+  },
+  {
+    "scene": 247,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(왜 같은 자리만 닦지?)",
+    "prayerBranch": 4,
+    "prayerRoom": true
+  },
+  {
+    "scene": 248,
+    "kind": "narration",
+    "text": "여분의 걸레를 집어 들고 맞은편에 쭈그려 앉았다.",
+    "prayerBranch": 4,
+    "prayerRoom": true
+  },
+  {
+    "scene": 249,
+    "kind": "prayer-sfx",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "prayerAudio": "clean-5"
+  },
+  {
+    "scene": 250,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "저도 같이 해도 될까요?",
+    "prayerBranch": 4,
+    "prayerRoom": true
+  },
+  {
+    "scene": 251,
+    "kind": "dialogue",
+    "speaker": "찬",
+    "text": "정말요? 너무 좋죠! 와, 이런 날이 다 있네요.",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "maskSpeaker": true,
+    "portrait": "chan-body1-determined"
+  },
+  {
+    "scene": 252,
+    "kind": "dialogue",
+    "speaker": "찬",
+    "text": "처음 뵈는 분이네요. 신도님들 얼굴은 다 외우고 있거든요!",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body1-eyesmile",
+    "maskSpeaker": true
+  },
+  {
+    "scene": 253,
+    "kind": "dialogue",
+    "speaker": "찬",
+    "text": "저는 찬이라고 합니다.",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body2-eyesmile",
+    "revealChan": true
+  },
+  {
+    "scene": 254,
+    "kind": "narration",
+    "text": "이찬. 외 자랬다.",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body1-smile"
+  },
+  {
+    "scene": 255,
+    "kind": "narration",
+    "text": "혹시, 빛날 찬을 쓰세요? 하니 얼굴이 확 밝아진다.",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body1-eyesmile"
+  },
+  {
+    "scene": 256,
+    "kind": "narration",
+    "text": "대화를 이어 나가려다, 나도 모르게 시선이 그의 손에 닿았다.",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body1-eyesmile"
+  },
+  {
+    "scene": 257,
+    "kind": "narration",
+    "text": "손이 온통 빨갛게 트고 갈라져 있다.",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body2-eyesmile"
+  },
+  {
+    "scene": 258,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(…아플 텐데.)",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body1-eyesmile"
+  },
+  {
+    "scene": 259,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(고통도 느끼지 못하는지 찬은 닦은 자리만을, 같은 곳을 문지르고 또 문지른다.)",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body2-default"
+  },
+  {
+    "scene": 260,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "손이… 괜찮으세요? 좀 쉬어 가면서 하세요.",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body2-default"
+  },
+  {
+    "scene": 261,
+    "kind": "dialogue",
+    "speaker": "찬",
+    "text": "아이 괜찮아요.",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body2-default"
+  },
+  {
+    "scene": 262,
+    "kind": "dialogue",
+    "speaker": "찬",
+    "text": "정체란 곧 부패니까요. 손을 멈추면 마음이 먼저 썩어요.",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body3-eyesmile"
+  },
+  {
+    "scene": 263,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "…….",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body3-eyesmile"
+  },
+  {
+    "scene": 264,
+    "kind": "dialogue",
+    "speaker": "찬",
+    "text": "하지만 제 마음은 늘 흘러갑니다.",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body2-determined"
+  },
+  {
+    "scene": 265,
+    "kind": "dialogue",
+    "speaker": "찬",
+    "text": "그러니 더할 나위 없이 행복할 수밖에요.",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body2-determined"
+  },
+  {
+    "scene": 266,
+    "kind": "narration",
+    "text": "환하게 웃는 얼굴이다. 거짓은 없어 보인다.",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body3-default"
+  },
+  {
+    "scene": 267,
+    "kind": "dialogue",
+    "speaker": "찬",
+    "text": "저희는 모두 가족이니까요!",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body3-eyesmile"
+  },
+  {
+    "scene": 268,
+    "kind": "narration",
+    "text": "요즘 보기 드문, 성실하고 곧은 청년이다.",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "clearPortrait": true
+  },
+  {
+    "scene": 269,
+    "kind": "narration",
+    "text": "방향이 옳은지는... 모르겠지만.",
+    "prayerBranch": 4,
+    "prayerRoom": true
+  },
+  {
+    "scene": 270,
+    "kind": "dialogue",
+    "speaker": "찬",
+    "text": "저는 늘 여기 있으니까요, 다음에도 오시면 말을 걸어주세요!",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "portrait": "chan-body2-smile"
+  },
+  {
+    "scene": 271,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "inner": true,
+    "text": "(눈동자에서 열렬한 야망이 읽히는데... 믿어도 되는 걸까?)",
+    "prayerBranch": 4,
+    "prayerRoom": true,
+    "clearPortrait": true
+  },
+  {
+    "scene": 272,
+    "kind": "prayer-end",
+    "prayerBranch": 4,
+    "prayerRoom": true
+  },
+  {
+    "scene": 273,
+    "kind": "narration",
+    "text": "예술당 안은 나무 향으로 가득하다.",
+    "artHall": true,
+    "artStart": true,
+    "clearPortrait": true
+  },
+  {
+    "scene": 274,
+    "kind": "narration",
+    "text": "목조 벽과 원목 작업대 곳곳에 캔버스와 각종 미술용품이 놓여 있다.",
+    "artHall": true
+  },
+  {
+    "scene": 275,
+    "kind": "dialogue",
+    "text": "(아름다운 공간이다. 죄다 캐모마일에 잠식되어 있단 것만 제외하면.)",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": true
+  },
+  {
+    "scene": 276,
+    "kind": "dialogue",
+    "text": "(신도들에게 예술을 통해 신앙심을 기른다나 뭐라나.)",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": true
+  },
+  {
+    "scene": 277,
+    "kind": "narration",
+    "text": "붓통과 물감 상자, 흩어진 비품을 정리하며 안을 둘러봐야 겠다.",
+    "artHall": true
+  },
+  {
+    "scene": 278,
+    "kind": "art-choice",
+    "artHall": true
+  },
+  {
+    "scene": 279,
+    "kind": "dialogue",
+    "text": "웬 생뚱맞은 호랑이 그림이?",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": false,
+    "artBranch": 1,
+    "artImage": "tiger",
+    "artFade": true,
+    "clearPortrait": true
+  },
+  {
+    "scene": 280,
+    "kind": "narration",
+    "text": "자동으로 몸이 이끌렸다.",
+    "artHall": true,
+    "artBranch": 1,
+    "artImage": "tiger"
+  },
+  {
+    "scene": 281,
+    "kind": "narration",
+    "text": "멍하니 구경하고 있는데 옆으로 웬 남자가 다가왔다.",
+    "artHall": true,
+    "artBranch": 1,
+    "portrait": "soonyoung-body2-smile",
+    "silhouette": true
+  },
+  {
+    "scene": 282,
+    "kind": "dialogue",
+    "text": "와! 여기 들어와서 이 그림부터 보는 사람이 있다니!",
+    "artHall": true,
+    "speaker": "순영",
+    "artBranch": 1,
+    "portrait": "soonyoung-body2-smile",
+    "maskSpeaker": true
+  },
+  {
+    "scene": 283,
+    "kind": "dialogue",
+    "text": "저 말고 처음 봐요!",
+    "artHall": true,
+    "speaker": "순영",
+    "artBranch": 1,
+    "portrait": "soonyoung-body2-smile",
+    "maskSpeaker": true
+  },
+  {
+    "scene": 284,
+    "kind": "dialogue",
+    "text": "잠깐, 호랑이? 호랑이를 닮...",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": false,
+    "artBranch": 1,
+    "portrait": "soonyoung-body1-smile"
+  },
+  {
+    "scene": 285,
+    "kind": "dialogue",
+    "text": "?...",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": false,
+    "artBranch": 1,
+    "portrait": "soonyoung-body1-smile"
+  },
+  {
+    "scene": 286,
+    "kind": "dialogue",
+    "text": "아니.. 햄...?",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": false,
+    "artBranch": 1,
+    "portrait": "soonyoung-body1-smile"
+  },
+  {
+    "scene": 287,
+    "kind": "dialogue",
+    "text": "엥? 무슨 문제라도?",
+    "artHall": true,
+    "speaker": "순영",
+    "artBranch": 1,
+    "portrait": "soonyoung-body1-default",
+    "maskSpeaker": true
+  },
+  {
+    "scene": 288,
+    "kind": "dialogue",
+    "text": "햄...",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": false,
+    "artBranch": 1,
+    "portrait": "soonyoung-body1-default"
+  },
+  {
+    "scene": 289,
+    "kind": "dialogue",
+    "text": "네?",
+    "artHall": true,
+    "speaker": "순영",
+    "artBranch": 1,
+    "portrait": "soonyoung-body1-confused",
+    "maskSpeaker": true
+  },
+  {
+    "scene": 290,
+    "kind": "dialogue",
+    "text": "...버거가 먹고 싶네요.",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": false,
+    "artBranch": 1,
+    "portrait": "soonyoung-body1-confused"
+  },
+  {
+    "scene": 291,
+    "kind": "dialogue",
+    "text": "아 난 또 뭐라고. 권순영이라고 해요.",
+    "artHall": true,
+    "speaker": "순영",
+    "artBranch": 1,
+    "portrait": "soonyoung-body1-smile",
+    "revealSoonyoung": true
+  },
+  {
+    "scene": 292,
+    "kind": "dialogue",
+    "text": "김…봉봉입니다.",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": false,
+    "artBranch": 1,
+    "portrait": "soonyoung-body1-confused"
+  },
+  {
+    "scene": 293,
+    "kind": "dialogue",
+    "text": "네? 봉봉이요? 이름 참 특이하시네.",
+    "artHall": true,
+    "speaker": "순영",
+    "artBranch": 1,
+    "portrait": "soonyoung-body1-confused"
+  },
+  {
+    "scene": 294,
+    "kind": "dialogue",
+    "text": "네 그런 말 자주 들어요.",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": false,
+    "artBranch": 1,
+    "portrait": "soonyoung-body1-default"
+  },
+  {
+    "scene": 295,
+    "kind": "dialogue",
+    "text": "아, 나쁘단 말 아니에요! 정감 가네요, 엄청. 낯익어요.",
+    "artHall": true,
+    "speaker": "순영",
+    "artBranch": 1,
+    "portrait": "soonyoung-body2-smile"
+  },
+  {
+    "scene": 296,
+    "kind": "dialogue",
+    "text": "뭔가 어디서 들어본 것도 같고…",
+    "artHall": true,
+    "speaker": "순영",
+    "artBranch": 1,
+    "portrait": "soonyoung-body2-thinking"
+  },
+  {
+    "scene": 297,
+    "kind": "dialogue",
+    "text": "(참 웃긴 남자가 다 있네.)",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": true,
+    "artBranch": 1,
+    "portrait": "soonyoung-body1-default"
+  },
+  {
+    "scene": 298,
+    "kind": "narration",
+    "text": "잠깐 뒤를 돌자 뭔가 느껴진다.",
+    "artHall": true,
+    "artBranch": 1,
+    "portrait": "soonyoung-body1-glare",
+    "silhouette": true
+  },
+  {
+    "scene": 299,
+    "kind": "dialogue",
+    "text": "(흠칫)",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": true,
+    "artBranch": 1,
+    "portrait": "soonyoung-body1-glare",
+    "artAudio": "surprise"
+  },
+  {
+    "scene": 300,
+    "kind": "narration",
+    "text": "날카로운 시선이 느껴지는 것 같다.",
+    "artHall": true,
+    "artBranch": 1,
+    "portrait": "soonyoung-body1-glare"
+  },
+  {
+    "scene": 301,
+    "kind": "narration",
+    "text": "뒤도니 다시 순박한 얼굴의 권순영이다.",
+    "artHall": true,
+    "artBranch": 1,
+    "portrait": "soonyoung-body1-smile"
+  },
+  {
+    "scene": 302,
+    "kind": "narration",
+    "text": "화병을 들고 ‘왜용?’하는 표정으로 나를 보고 있다.",
+    "artHall": true,
+    "artBranch": 1,
+    "portrait": "soonyoung-body2-smile"
+  },
+  {
+    "scene": 303,
+    "kind": "dialogue",
+    "text": "(…수상한데. 틀림없다. 기자의 감이 외치는 거다.)",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": true,
+    "artBranch": 1,
+    "portrait": "soonyoung-body2-smile"
+  },
+  {
+    "scene": 304,
+    "kind": "dialogue",
+    "text": "(이 사람, 대체 정체가 뭐지?)",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": true,
+    "artBranch": 1,
+    "clearPortrait": true
+  },
+  {
+    "scene": 305,
+    "kind": "art-end",
+    "artHall": true,
+    "artBranch": 1
+  },
+  {
+    "scene": 306,
+    "kind": "dialogue",
+    "text": "어, 무거울 텐데.",
+    "artHall": true,
+    "speaker": "명호",
+    "artBranch": 2,
+    "portrait": "minghao-body1-smile",
+    "silhouette": true,
+    "maskSpeaker": true,
+    "clearPortrait": true
+  },
+  {
+    "scene": 307,
+    "kind": "narration",
+    "text": "등 뒤에서 나긋한 목소리가 들린다.",
+    "artHall": true,
+    "artBranch": 2
+  },
+  {
+    "scene": 308,
+    "kind": "narration",
+    "text": "깜짝 놀라 캔버스를 떨어트릴 뻔했다.",
+    "artHall": true,
+    "artBranch": 2
+  },
+  {
+    "scene": 309,
+    "kind": "narration",
+    "text": "인기척을 아예 못 느꼈는데. 언제 다가온 거지?",
+    "artHall": true,
+    "artBranch": 2
+  },
+  {
+    "scene": 310,
+    "kind": "dialogue",
+    "text": "…도와주셔서 감사합니다. 서명호예요.",
+    "artHall": true,
+    "speaker": "명호",
+    "artBranch": 2,
+    "portrait": "minghao-body1-smile",
+    "revealMinghao": true
+  },
+  {
+    "scene": 311,
+    "kind": "dialogue",
+    "text": "(이곳 예술당을 담당하는 사제라...)",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": true,
+    "artBranch": 2,
+    "portrait": "minghao-body1-default"
+  },
+  {
+    "scene": 312,
+    "kind": "dialogue",
+    "text": "(목소리도, 표정도 부드러운데 어쩐지 서늘한 인상을 주는 것 같아.)",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": true,
+    "artBranch": 2,
+    "portrait": "minghao-body1-default"
+  },
+  {
+    "scene": 313,
+    "kind": "dialogue",
+    "text": "(모델을 했다면 잘 어울렸을 거 같은데…)",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": true,
+    "artBranch": 2,
+    "portrait": "minghao-body1-default"
+  },
+  {
+    "scene": 314,
+    "kind": "dialogue",
+    "text": "(아니, 다시 보니 이 화실과도 잘 어울린다.)",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": true,
+    "artBranch": 2,
+    "portrait": "minghao-body1-default"
+  },
+  {
+    "scene": 315,
+    "kind": "dialogue",
+    "text": "그리고 싶은 계시가 있다면 언제든 여기로 오세요.",
+    "artHall": true,
+    "speaker": "명호",
+    "artBranch": 2,
+    "portrait": "minghao-body1-smile"
+  },
+  {
+    "scene": 316,
+    "kind": "dialogue",
+    "text": "신께서는 모두에게 열려 있으니까요.",
+    "artHall": true,
+    "speaker": "명호",
+    "artBranch": 2,
+    "portrait": "minghao-body1-eyesclosed"
+  },
+  {
+    "scene": 317,
+    "kind": "narration",
+    "text": "온화하게 말을 마치고 돌아서는 그의 뒷모습을 유심히 살피게 된다.",
+    "artHall": true,
+    "artBranch": 2,
+    "clearPortrait": true
+  },
+  {
+    "scene": 318,
+    "kind": "narration",
+    "text": "사제나 화가치고는 손에 굳은살이 지나치게 많다.",
+    "artHall": true,
+    "artBranch": 2
+  },
+  {
+    "scene": 319,
+    "kind": "dialogue",
+    "text": "(이곳에 자주 드나들다 보면, 그의 비밀을 캘 수 있을지도 모른다.)",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": true,
+    "artBranch": 2
+  },
+  {
+    "scene": 320,
+    "kind": "art-end",
+    "artHall": true,
+    "artBranch": 2
+  },
+  {
+    "scene": 321,
+    "kind": "narration",
+    "text": "물감을 가지러 간다고 둘러댔다.",
+    "artHall": true,
+    "artBranch": 3,
+    "clearPortrait": true
+  },
+  {
+    "scene": 322,
+    "kind": "dialogue",
+    "text": "예술당 안을 살펴봐야지.",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": false,
+    "artBranch": 3
+  },
+  {
+    "scene": 323,
+    "kind": "narration",
+    "text": "아무도 이쪽을 신경 쓰지 않는 틈에, 서둘러 복도로 빠져나왔다.",
+    "artHall": true,
+    "artBranch": 3,
+    "artLocation": "corridor",
+    "artFade": true,
+    "artAudio": "walk"
+  },
+  {
+    "scene": 324,
+    "kind": "narration",
+    "text": "이어진 방들 중 <서명호 사제> 팻말이 적힌 문이 눈에 들어왔다.",
+    "artHall": true,
+    "artBranch": 3,
+    "artLocation": "corridor-door"
+  },
+  {
+    "scene": 325,
+    "kind": "narration",
+    "text": "문고리를 잡았다. 잠겨있지 않다.",
+    "artHall": true,
+    "artBranch": 3
+  },
+  {
+    "scene": 326,
+    "kind": "narration",
+    "text": "몰래 안으로 들어선다.",
+    "artHall": true,
+    "artBranch": 3,
+    "artLocation": "office",
+    "artFade": true,
+    "artAudio": "door"
+  },
+  {
+    "scene": 327,
+    "kind": "dialogue",
+    "text": "(개인 집무실로 보이는 공간이네...)",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": true,
+    "artBranch": 3
+  },
+  {
+    "scene": 328,
+    "kind": "narration",
+    "text": "그리다 만 미완성의 캔버스가 끝도 없이 늘어서 있다.",
+    "artHall": true,
+    "artBranch": 3
+  },
+  {
+    "scene": 329,
+    "kind": "narration",
+    "text": "짙은 초록과 푸른 저녁, 군데군데 노란색과 하얀색 물감이 거칠게 찍혀 있다.",
+    "artHall": true,
+    "artBranch": 3
+  },
+  {
+    "scene": 330,
+    "kind": "dialogue",
+    "text": "(꼭 밤하늘의 별 같다.)",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": true,
+    "artBranch": 3
+  },
+  {
+    "scene": 331,
+    "kind": "dialogue",
+    "text": "(...개인 작업인 걸까?)",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": true,
+    "artBranch": 3
+  },
+  {
+    "scene": 332,
+    "kind": "narration",
+    "text": "이럴 때가 아니지. 시선을 떼고 서둘러 주변을 훑는게 좋겠다.",
+    "artHall": true,
+    "artBranch": 3
+  },
+  {
+    "scene": 333,
+    "kind": "narration",
+    "text": "물건이 빼곡한 선반이 눈에 들어온다.",
+    "artHall": true,
+    "artBranch": 3
+  },
+  {
+    "scene": 334,
+    "kind": "narration",
+    "text": "그중 유독 낡은 일기장 하나를 집어 든다.",
+    "artHall": true,
+    "artBranch": 3,
+    "artBlackout": true,
+    "artFade": true
+  },
+  {
+    "scene": 335,
+    "kind": "evidence-popup",
+    "artHall": true,
+    "artBranch": 3,
+    "evidenceId": "destroyed-document-3",
+    "evidenceTitle": "파기된 문서3",
+    "evidenceDescription": "누군가의 일기. 심하게 훼손되어 읽을 수 있는 페이지가 거의 없다."
+  },
+  {
+    "scene": 336,
+    "kind": "narration",
+    "text": "멀쩡한 장을 찾아 넘겨 보았다.",
+    "artHall": true,
+    "artBranch": 3,
+    "artImage": "diary-cover"
+  },
+  {
+    "scene": 337,
+    "kind": "narration",
+    "text": "첫 장에는 이렇게 적혀 있었다.",
+    "artHall": true,
+    "artBranch": 3,
+    "artImage": "diary-cover"
+  },
+  {
+    "scene": 338,
+    "kind": "dialogue",
+    "text": "첫 번째 공양은 …다. 우리 모두 한배를 탔다...?",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": false,
+    "artBranch": 3,
+    "artImage": "diary-evidence"
+  },
+  {
+    "scene": 339,
+    "kind": "dialogue",
+    "text": "이름에는 재가 묻어 보이지 않네...",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": false,
+    "artBranch": 3,
+    "artImage": "diary-evidence"
+  },
+  {
+    "scene": 340,
+    "kind": "narration",
+    "text": "일기장은 몰래 안주머니에 숨겨야겠다.",
+    "artHall": true,
+    "artBranch": 3,
+    "artLocation": "office",
+    "artImageClear": true,
+    "artFade": true
+  },
+  {
+    "scene": 341,
+    "kind": "dialogue",
+    "text": "훗날 증거품이 될지도 모르니까.",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": false,
+    "artBranch": 3
+  },
+  {
+    "scene": 342,
+    "kind": "dialogue",
+    "text": "이제 다시 나가야겠다.",
+    "artHall": true,
+    "speaker": "주인공",
+    "inner": false,
+    "artBranch": 3
+  },
+  {
+    "scene": 343,
+    "kind": "art-end",
+    "artHall": true,
+    "artBranch": 3
+  },
+  {
+    "scene": 344,
+    "kind": "narration",
+    "text": "예술당 잡무를 도맡다 보니, 어느덧 서명호 사제와 제법 가까워졌다.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "clearPortrait": true
+  },
+  {
+    "scene": 345,
+    "kind": "narration",
+    "text": "속마음을 터놓을 정도는 아니지만, 그래도 내가 누구냐.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true
+  },
+  {
+    "scene": 346,
+    "kind": "narration",
+    "text": "솜씨 좋은 기자란 말이다.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true
+  },
+  {
+    "scene": 347,
+    "kind": "narration",
+    "text": "서명호가 조슈아, 문준휘, 최한솔...",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true
+  },
+  {
+    "scene": 348,
+    "kind": "narration",
+    "text": "이 셋과 유독 각별하다는 것도 알아냈다.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true
+  },
+  {
+    "scene": 349,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "그 애정이, 겉으로 보이는 것보다 훨씬 깊은 것 같군…",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true
+  },
+  {
+    "scene": 350,
+    "kind": "narration",
+    "text": "오늘도 들어가려던 찰나, 남자 둘이 언성을 높이는 소리가 들린다.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "duo": [
+      "hansol-body2-mocking",
+      "minghao-body1-angry"
+    ],
+    "duoMask": "both"
+  },
+  {
+    "scene": 351,
+    "kind": "narration",
+    "text": "재빨리 나무 뒤로 숨어야겠다.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "duo": [
+      "hansol-body2-mocking",
+      "minghao-body1-angry"
+    ],
+    "duoMask": "both"
+  },
+  {
+    "scene": 352,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "대체 무슨 일이지?",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "duo": [
+      "hansol-body2-mocking",
+      "minghao-body1-angry"
+    ],
+    "duoMask": "both"
+  },
+  {
+    "scene": 353,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "서명호 사제와 목에 핏대를 세우며 싸우는 건…",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "duo": [
+      "hansol-body2-mocking",
+      "minghao-body1-angry"
+    ],
+    "duoMask": "hansol"
+  },
+  {
+    "scene": 354,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "최한솔 사제잖아?",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "duo": [
+      "hansol-body2-mocking",
+      "minghao-body1-angry"
+    ],
+    "duoMask": "none",
+    "specialMeetHansol": true
+  },
+  {
+    "scene": 355,
+    "kind": "dialogue",
+    "speaker": "한솔",
+    "text": "형. 몇 번을 말해야 알아들어.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "hansol-body3-mocking"
+  },
+  {
+    "scene": 356,
+    "kind": "dialogue",
+    "speaker": "한솔",
+    "text": "여기 남아있는 게 훨씬 좋다니까?",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "hansol-body3-mocking"
+  },
+  {
+    "scene": 357,
+    "kind": "dialogue",
+    "speaker": "한솔",
+    "text": "여기서 원하는 그림도 마음껏 그릴 수 있는데, 대체 뭐가 불만인데?",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "hansol-body2-mocking"
+  },
+  {
+    "scene": 358,
+    "kind": "dialogue",
+    "speaker": "명호",
+    "text": "원하는 그림?",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "minghao-body2-eyesclosed"
+  },
+  {
+    "scene": 359,
+    "kind": "dialogue",
+    "speaker": "명호",
+    "text": "너 지금 이 미친 꽃대가리 그림이 원하는 그림으로 보여?",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "minghao-body2-eyesclosed",
+    "boldAll": true,
+    "fontScale": 1.25
+  },
+  {
+    "scene": 360,
+    "kind": "dialogue",
+    "speaker": "명호",
+    "text": "내가 그리고 싶은 건 내 감정이고 내 마음이지!",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "minghao-body2-eyesclosed",
+    "boldAll": true,
+    "fontScale": 1.3
+  },
+  {
+    "scene": 361,
+    "kind": "dialogue",
+    "speaker": "명호",
+    "text": "이 사람 세뇌하는 곳의 가짜 신앙 따위가 아니야!",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "minghao-body2-angry",
+    "boldAll": true,
+    "fontScale": 1.35
+  },
+  {
+    "scene": 362,
+    "kind": "dialogue",
+    "speaker": "명호",
+    "text": "한솔아, 제발…. 우리는 대체 여기서 뭘 얻을 수 있어?",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "minghao-body2-flustered"
+  },
+  {
+    "scene": 363,
+    "kind": "dialogue",
+    "speaker": "한솔",
+    "text": "뭘 얻긴? 확실한 안전이지.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "hansol-body3-mocking"
+  },
+  {
+    "scene": 364,
+    "kind": "dialogue",
+    "speaker": "한솔",
+    "text": "안전한 것 중에 가장 확실한, 그리고 확실한 것 중에 가장 안전한.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "hansol-body3-mocking",
+    "boldAll": true
+  },
+  {
+    "scene": 365,
+    "kind": "dialogue",
+    "speaker": "한솔",
+    "text": "또 도망이나 다니면서 살고 싶은 건 아니지?",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "hansol-body2-annoyed",
+    "boldAll": true,
+    "fontScale": 1.3
+  },
+  {
+    "scene": 366,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(…도대체 무슨 얘기를 하는 거지? 안전? 도망?)",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "duo": [
+      "hansol-body2-annoyed",
+      "minghao-body2-flustered"
+    ]
+  },
+  {
+    "scene": 367,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(대체 저들 정체가 뭐야?)",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "duo": [
+      "hansol-body2-annoyed",
+      "minghao-body2-flustered"
+    ]
+  },
+  {
+    "scene": 368,
+    "kind": "dialogue",
+    "speaker": "한솔",
+    "text": "그렇게 나가고 싶어? 그럼 준휘 형한테 말해.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "hansol-body2-annoyed",
+    "boldWord": "준휘 형"
+  },
+  {
+    "scene": 369,
+    "kind": "dialogue",
+    "speaker": "한솔",
+    "text": "그까짓 외출쯤이야 그 형 손 쓰면 쉽게 되는 걸 왜 자꾸…",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "hansol-body2-annoyed",
+    "redWord": "외출"
+  },
+  {
+    "scene": 370,
+    "kind": "dialogue",
+    "speaker": "한솔",
+    "text": "…답답할 때마다 문준휘가 몰래 몰래 내보내 줬잖아.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "hansol-body2-default"
+  },
+  {
+    "scene": 371,
+    "kind": "dialogue",
+    "speaker": "한솔",
+    "text": "교주도 딱히 관심 없어 보이고.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "hansol-body2-default"
+  },
+  {
+    "scene": 372,
+    "kind": "dialogue",
+    "speaker": "명호",
+    "text": "그건 나도 알아! 하지만.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "minghao-body1-flustered"
+  },
+  {
+    "scene": 373,
+    "kind": "dialogue",
+    "speaker": "한솔",
+    "text": "형. 진짜 진지하게, 여기 나가서 혼자 살 수 있어? 지금 당장.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "hansol-body2-default"
+  },
+  {
+    "scene": 374,
+    "kind": "dialogue",
+    "speaker": "명호",
+    "text": "…….",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "minghao-body1-flustered"
+  },
+  {
+    "scene": 375,
+    "kind": "dialogue",
+    "speaker": "한솔",
+    "text": "지금 여기서 나가고 싶어 하는 건 형밖에 없어. 그거 하나만 알아 둬.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "hansol-body2-mocking"
+  },
+  {
+    "scene": 376,
+    "kind": "narration",
+    "text": "더 오래 있다간 들키겠다. 재빨리 자리를 빠져나가야 한다.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "artFade": true,
+    "clearPortrait": true
+  },
+  {
+    "scene": 377,
+    "kind": "narration",
+    "text": "심장이 쿵쾅거렸다.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "artBlackout": true
+  },
+  {
+    "scene": 378,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "세상에, 방금 뭘 들은 거지.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "artBlackout": true
+  },
+  {
+    "scene": 379,
+    "kind": "narration",
+    "text": "그러니까 서명호는 사제임에도 불구하고, 카밀레교에 불만을 품고 있다.",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "artBlackout": true,
+    "boldPhrase": "카밀레교에 불만을 품고 있다."
+  },
+  {
+    "scene": 380,
+    "kind": "dialogue",
+    "speaker": "명호",
+    "text": "내가 그리고 싶은 건 내 감정이고 내 마음이지!",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "minghao-body2-eyesclosed",
+    "boldAll": true,
+    "fontScale": 1.3,
+    "recall": true
+  },
+  {
+    "scene": 381,
+    "kind": "dialogue",
+    "speaker": "명호",
+    "text": "이 사람 세뇌하는 곳의 가짜 신앙 따위가 아니야!",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "portrait": "minghao-body2-angry",
+    "boldAll": true,
+    "fontScale": 1.35,
+    "recall": true
+  },
+  {
+    "scene": 382,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(이걸 어떻게 잘 이용해볼 수 있을까?)",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true,
+    "clearPortrait": true
+  },
+  {
+    "scene": 383,
+    "kind": "dialogue",
+    "speaker": "주인공",
+    "text": "(오늘 고해성사는 골치 아프게 생겼네.)",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true
+  },
+  {
+    "scene": 384,
+    "kind": "art-end",
+    "artHall": true,
+    "artBranch": 4,
+    "specialMinghao": true
   }
 ]
