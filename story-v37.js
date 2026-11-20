@@ -410,6 +410,52 @@ scenes.push(
  {"kind":"art-end","artHall":true,"artBranch":3}
 );
 
+
+// V114: special Minghao 60+ branch. Append scenes without shifting saved V113 indices.
+scenes.push(
+ {"kind": "narration", "text": "예술당 잡무를 도맡다 보니, 어느덧 서명호 사제와 제법 가까워졌다.", "artHall": true, "artBranch": 4, "specialMinghao": true, "clearPortrait": true},
+ {"kind": "narration", "text": "속마음을 터놓을 정도는 아니지만, 그래도 내가 누구냐.", "artHall": true, "artBranch": 4, "specialMinghao": true},
+ {"kind": "narration", "text": "솜씨 좋은 기자란 말이다.", "artHall": true, "artBranch": 4, "specialMinghao": true},
+ {"kind": "narration", "text": "서명호가 조슈아, 문준휘, 최한솔...", "artHall": true, "artBranch": 4, "specialMinghao": true},
+ {"kind": "narration", "text": "이 셋과 유독 각별하다는 것도 알아냈다.", "artHall": true, "artBranch": 4, "specialMinghao": true},
+ {"kind": "dialogue", "speaker": "주인공", "text": "그 애정이, 겉으로 보이는 것보다 훨씬 깊은 것 같군…", "artHall": true, "artBranch": 4, "specialMinghao": true},
+ {"kind": "narration", "text": "오늘도 들어가려던 찰나, 남자 둘이 언성을 높이는 소리가 들린다.", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-mocking", "minghao-body1-angry"], "duoMask": "both"},
+ {"kind": "narration", "text": "재빨리 나무 뒤로 숨어야겠다.", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-mocking", "minghao-body1-angry"], "duoMask": "both"},
+ {"kind": "dialogue", "speaker": "주인공", "text": "대체 무슨 일이지?", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-mocking", "minghao-body1-angry"], "duoMask": "both"},
+ {"kind": "dialogue", "speaker": "주인공", "text": "서명호 사제와 목에 핏대를 세우며 싸우는 건…", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-mocking", "minghao-body1-angry"], "duoMask": "hansol"},
+ {"kind": "dialogue", "speaker": "주인공", "text": "최한솔 사제잖아?", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-mocking", "minghao-body1-angry"], "duoMask": "none", "specialMeetHansol": true},
+ {"kind": "dialogue", "speaker": "한솔", "text": "형. 몇 번을 말해야 알아들어.", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body3-mocking"},
+ {"kind": "dialogue", "speaker": "한솔", "text": "여기 남아있는 게 훨씬 좋다니까?", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body3-mocking"},
+ {"kind": "dialogue", "speaker": "한솔", "text": "여기서 원하는 그림도 마음껏 그릴 수 있는데, 대체 뭐가 불만인데?", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body2-mocking"},
+ {"kind": "dialogue", "speaker": "명호", "text": "원하는 그림?", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body2-eyesclosed"},
+ {"kind": "dialogue", "speaker": "명호", "text": "너 지금 이 미친 꽃대가리 그림이 원하는 그림으로 보여?", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body2-eyesclosed", "boldAll": true, "fontScale": 1.25},
+ {"kind": "dialogue", "speaker": "명호", "text": "내가 그리고 싶은 건 내 감정이고 내 마음이지!", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body2-eyesclosed", "boldAll": true, "fontScale": 1.3},
+ {"kind": "dialogue", "speaker": "명호", "text": "이 사람 세뇌하는 곳의 가짜 신앙 따위가 아니야!", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body2-angry", "boldAll": true, "fontScale": 1.35},
+ {"kind": "dialogue", "speaker": "명호", "text": "한솔아, 제발…. 우리는 대체 여기서 뭘 얻을 수 있어?", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body2-flustered"},
+ {"kind": "dialogue", "speaker": "한솔", "text": "뭘 얻긴? 확실한 안전이지.", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body3-mocking"},
+ {"kind": "dialogue", "speaker": "한솔", "text": "안전한 것 중에 가장 확실한, 그리고 확실한 것 중에 가장 안전한.", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body3-mocking", "boldAll": true},
+ {"kind": "dialogue", "speaker": "한솔", "text": "또 도망이나 다니면서 살고 싶은 건 아니지?", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body2-annoyed", "boldAll": true, "fontScale": 1.3},
+ {"kind": "dialogue", "speaker": "주인공", "text": "(…도대체 무슨 얘기를 하는 거지? 안전? 도망?)", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-annoyed", "minghao-body2-flustered"]},
+ {"kind": "dialogue", "speaker": "주인공", "text": "(대체 저들 정체가 뭐야?)", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-annoyed", "minghao-body2-flustered"]},
+ {"kind": "dialogue", "speaker": "한솔", "text": "그렇게 나가고 싶어? 그럼 준휘 형한테 말해.", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body2-annoyed", "boldWord": "준휘 형"},
+ {"kind": "dialogue", "speaker": "한솔", "text": "그까짓 외출쯤이야 그 형 손 쓰면 쉽게 되는 걸 왜 자꾸…", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body2-annoyed", "redWord": "외출"},
+ {"kind": "dialogue", "speaker": "한솔", "text": "…답답할 때마다 문준휘가 몰래 몰래 내보내 줬잖아.", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body2-default"},
+ {"kind": "dialogue", "speaker": "한솔", "text": "교주도 딱히 관심 없어 보이고.", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body2-default"},
+ {"kind": "dialogue", "speaker": "명호", "text": "그건 나도 알아! 하지만.", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body1-flustered"},
+ {"kind": "dialogue", "speaker": "한솔", "text": "형. 진짜 진지하게, 여기 나가서 혼자 살 수 있어? 지금 당장.", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body2-default"},
+ {"kind": "dialogue", "speaker": "명호", "text": "…….", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body1-flustered"},
+ {"kind": "dialogue", "speaker": "한솔", "text": "지금 여기서 나가고 싶어 하는 건 형밖에 없어. 그거 하나만 알아 둬.", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body2-mocking"},
+ {"kind": "narration", "text": "더 오래 있다간 들키겠다. 재빨리 자리를 빠져나가야 한다.", "artHall": true, "artBranch": 4, "specialMinghao": true, "artFade": true, "clearPortrait": true},
+ {"kind": "narration", "text": "심장이 쿵쾅거렸다.", "artHall": true, "artBranch": 4, "specialMinghao": true, "artBlackout": true},
+ {"kind": "dialogue", "speaker": "주인공", "text": "세상에, 방금 뭘 들은 거지.", "artHall": true, "artBranch": 4, "specialMinghao": true, "artBlackout": true},
+ {"kind": "narration", "text": "그러니까 서명호는 사제임에도 불구하고, 카밀레교에 불만을 품고 있다.", "artHall": true, "artBranch": 4, "specialMinghao": true, "artBlackout": true, "boldPhrase": "카밀레교에 불만을 품고 있다."},
+ {"kind": "dialogue", "speaker": "명호", "text": "내가 그리고 싶은 건 내 감정이고 내 마음이지!", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body2-eyesclosed", "boldAll": true, "fontScale": 1.3, "recall": true},
+ {"kind": "dialogue", "speaker": "명호", "text": "이 사람 세뇌하는 곳의 가짜 신앙 따위가 아니야!", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body2-angry", "boldAll": true, "fontScale": 1.35, "recall": true},
+ {"kind": "dialogue", "speaker": "주인공", "text": "(이걸 어떻게 잘 이용해볼 수 있을까?)", "artHall": true, "artBranch": 4, "specialMinghao": true, "clearPortrait": true},
+ {"kind": "dialogue", "speaker": "주인공", "text": "(오늘 고해성사는 골치 아프게 생겼네.)", "artHall": true, "artBranch": 4, "specialMinghao": true},
+ {"kind": "art-end", "artHall": true, "artBranch": 4, "specialMinghao": true}
+);
+
 const sceneBackdropRanges=[
  {start:4,end:19,file:"bg-van-interior.png"},
  {start:20,end:45,file:"bg-forest-path.png"},
@@ -431,6 +477,21 @@ function getSceneBackdrop(sceneNumber){
  return "";
 }
 const style=document.createElement('style');style.textContent=`
+/* V114 -- special scene two-character composition and memory presentation */
+#shindo-vn .vn-duo{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;display:none}
+#shindo-vn .vn-duo.is-active{display:block}
+#shindo-vn .vn-duo img{position:absolute;bottom:clamp(155px,23vh,245px);height:min(55vh,580px);max-width:48vw;object-fit:contain;object-position:bottom;transform-origin:center bottom}
+#shindo-vn .vn-duo .duo-left{left:26%;transform:translateX(-50%)}
+#shindo-vn .vn-duo .duo-right{left:74%;transform:translateX(-50%)}
+#shindo-vn .vn-duo img.is-shadow{filter:brightness(0)!important}
+#shindo-vn.is-recall .vn-portrait{filter:grayscale(1) brightness(.75)!important}
+#shindo-vn.is-recall .vn-box{filter:grayscale(1)}
+#shindo-vn.is-recall .vn-text{color:#b9b9b9!important}
+#shindo-vn .special-memory-kicker{position:absolute;top:11%;left:50%;transform:translateX(-50%);color:#888;letter-spacing:.24em;font-size:12px;z-index:8;display:none}
+#shindo-vn.is-recall .special-memory-kicker{display:block}
+#shindo-vn .art-branch-options .shindo-special-test{border:1px dashed #956868!important;color:#e0b0b0!important;margin-top:13px}
+@media(max-width:650px){#shindo-vn .vn-duo img{height:min(47vh,490px);max-width:54vw;bottom:clamp(165px,21vh,230px)}#shindo-vn .vn-duo .duo-left{left:29%}#shindo-vn .vn-duo .duo-right{left:71%}}
+
 #shindo-vn{position:fixed;inset:0;z-index:30000;background:transparent;color:#fff;display:none;align-items:flex-end;justify-content:center;font-family:Pretendard,'Pretendard Variable',system-ui,sans-serif;cursor:pointer;touch-action:manipulation;user-select:none}
 #shindo-vn.active{display:flex;animation:shindo-story-fade-in 1.1s ease both}@keyframes shindo-story-fade-in{from{opacity:0}to{opacity:1}}
 #shindo-vn.day{background:transparent;transition:background 2s}
@@ -573,6 +634,24 @@ portrait.addEventListener('error',()=>{
    portrait.src='story-portraits/wonwoo-body2-default.png';
  }else{portrait.hidden=true}
 });
+// V114: secondary portrait layer for a two-person conversation.
+const duoLayer=document.createElement('div');duoLayer.className='vn-duo';
+const duoLeft=document.createElement('img'),duoRight=document.createElement('img');
+duoLeft.className='duo-left';duoRight.className='duo-right';duoLeft.alt='';duoRight.alt='';
+duoLayer.append(duoLeft,duoRight);overlay.insertBefore(duoLayer,box);
+const recallKicker=document.createElement('div');recallKicker.className='special-memory-kicker';recallKicker.textContent='회상';overlay.appendChild(recallKicker);
+function setSpecialPortraits(scene){
+ overlay.classList.toggle('is-recall',!!scene.recall);
+ if(!scene.duo){duoLayer.classList.remove('is-active');duoLeft.removeAttribute('src');duoRight.removeAttribute('src');return false}
+ duoLeft.src='story-portraits/'+scene.duo[0]+'.png';duoRight.src='story-portraits/'+scene.duo[1]+'.png';
+ duoLeft.classList.toggle('is-shadow',scene.duoMask==='both'||scene.duoMask==='hansol');
+ duoRight.classList.toggle('is-shadow',scene.duoMask==='both');
+ duoLayer.classList.add('is-active');return true;
+}
+function getMinghaoAffinity(){
+ try{const data=JSON.parse(localStorage.getItem('shindo_affinity_v107')||'{}');
+ const raw=data['명호']??data.minghao??0;return Math.max(0,Math.min(100,Number(raw)||0))}catch(_){return 0}
+}
 const illustration=document.createElement('img');illustration.className='vn-illustration';illustration.alt='';illustration.hidden=true;overlay.insertBefore(illustration,box);
 let jihoonRevealed=false,pencilAudio=null;
 function stopPencil(){if(pencilAudio){pencilAudio.pause();pencilAudio.currentTime=0;pencilAudio=null}}
@@ -802,6 +881,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  // Keep the day in sync with real story progress, including refreshed sessions.
  try{localStorage.setItem('shindo_current_story_day_v109',String(index>=DAY2_START?2:1))}catch(_){}
 const existingChoiceModal=overlay.querySelector('.shindo-choices');if(existingChoiceModal&&scene.kind!=='art-choice'&&scene.kind!=='art-end'&&scene.kind!=='prayer-choice'&&scene.kind!=='prayer-end'&&scene.kind!=='day2-morning-choice'&&scene.kind!=='day2-prayer-choice'&&scene.kind!=='choice')existingChoiceModal.style.display='none';
+if(!scene.specialMinghao){duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');}
 applySceneBackdrop(index);
  if(scene.prayerRoom){storyBackdrop.style.backgroundImage='linear-gradient(#080808,#080808)';overlay.classList.remove('confession-blackout')}else{stopPrayerClock();stopPrayerAudio();stopPrayerBell()}
  if(scene.prayerStart)startPrayerClock();
@@ -893,31 +973,36 @@ if(scene.kind==='image'){
 }
 
 if(scene.kind==='dialogue'&&scene.speaker==='원우'&&!scene.maskSpeaker)window.SHINDO_markCharacterMet?.('원우');
-if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.artHall)&&scene.portrait)){
+const duoVisible=scene.specialMinghao?setSpecialPortraits(scene):false;
+if(scene.specialMeetHansol)window.SHINDO_markCharacterMet?.('한솔');
+if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.artHall)&&(scene.portrait||duoVisible))){
  if(scene.clearPortrait){currentPortrait='';portrait.hidden=true}
+ if(duoVisible)currentPortrait='';
  if(scene.portrait)currentPortrait=scene.portrait;
  if(scene.portraitPlaceholder)currentPortrait='';
  speakerTag.textContent=scene.kind==='narration'||scene.inner?'':(scene.maskSpeaker||scene.speaker==='한솔'&&!hansolRevealed||scene.speaker==='석민'&&!seokminRevealed||scene.speaker==='찬'&&!chanRevealed?'??':scene.speaker==='순영'&&!soonyoungRevealed?'??':scene.speaker==='명호'&&!minghaoRevealed?'??':scene.speaker==='주인공'?'김봉봉':scene.speaker==='승철'&&!revealed?'??':scene.speaker==='지훈'&&!jihoonRevealed?'??':scene.speaker);
  content.classList.toggle('vn-inner',!!scene.inner);
- if(currentPortrait){applyPortraitProfile(currentPortrait);portrait.src='story-portraits/'+currentPortrait+'.png';portrait.hidden=!!scene.illustration;portrait.classList.toggle('prayer-silhouette',!!scene.silhouette);portrait.classList.toggle('art-silhouette',!!(scene.artHall&&scene.silhouette))}
+ if(currentPortrait){applyPortraitProfile(currentPortrait);portrait.src='story-portraits/'+currentPortrait+'.png';portrait.hidden=!!scene.illustration||duoVisible;portrait.classList.toggle('prayer-silhouette',!!scene.silhouette);portrait.classList.toggle('art-silhouette',!!(scene.artHall&&scene.silhouette))}
 }else{
- if(scene.clearPortrait)currentPortrait='';
+ if(scene.clearPortrait||scene.specialMinghao)currentPortrait='';
  speakerTag.textContent='';content.classList.remove('vn-inner');
  portrait.hidden=true;
 }
 
  if(scene.kind==='transition'){box.style.display='none';let center=overlay.querySelector('.vn-center');if(!center){center=document.createElement('div');center.className='vn-center';overlay.appendChild(center)}center.textContent=scene.text;center.style.display='block';overlay.querySelector('.vn-hint').style.display='none';locked=true;timer=setTimeout(()=>{locked=false;next()},scene.text?2300:3300);return}
- const center=overlay.querySelector('.vn-center');if(center)center.style.display='none';box.style.display='flex';overlay.querySelector('.vn-hint').style.display='block';content.textContent=scene.maskWonwoo?scene.text.replace('원우','??'):scene.text;content.style.fontSize=scene.largeText?'1.25em':'';content.style.fontWeight=scene.boldAll?'800':'';content.style.color=scene.redText?'#e02020':'';
+ const center=overlay.querySelector('.vn-center');if(center)center.style.display='none';box.style.display='flex';overlay.querySelector('.vn-hint').style.display='block';content.textContent=scene.maskWonwoo?scene.text.replace('원우','??'):scene.text;content.style.fontSize=scene.fontScale?String(scene.fontScale)+'em':(scene.largeText?'1.25em':'');content.style.fontWeight=scene.boldAll?'800':'';content.style.color=scene.redText?'#e02020':'';
  if(scene.redWord){const at=content.textContent.indexOf(scene.redWord);if(at>=0){const txt=content.textContent;content.textContent='';content.append(document.createTextNode(txt.slice(0,at)));const b=document.createElement('strong');b.style.color='#d41616';b.textContent=scene.redWord;content.append(b,document.createTextNode(txt.slice(at+scene.redWord.length)))}}
+ if(scene.boldPhrase){const at=content.textContent.indexOf(scene.boldPhrase);if(at>=0){const txt=content.textContent;content.textContent='';content.append(document.createTextNode(txt.slice(0,at)));const b=document.createElement('strong');b.textContent=scene.boldPhrase;content.append(b,document.createTextNode(txt.slice(at+scene.boldPhrase.length)))}}
  if(scene.boldWord){const target=scene.boldWord;const at=content.textContent.indexOf(target);if(at>=0){const txt=content.textContent;content.textContent='';content.append(document.createTextNode(txt.slice(0,at)));const b=document.createElement('strong');b.textContent=target;content.append(b,document.createTextNode(txt.slice(at+target.length)))}}
- if(scene.kind==='dialogue'||scene.kind==='narration'||scene.kind==='line')beginVnTyping(scene.delayedConfessionBlackout?startConfessionQuestionTransition:null);
+ if(scene.kind==='dialogue'||scene.kind==='narration'||scene.kind==='line')beginVnTyping(scene.recall?(()=>{timer=setTimeout(()=>{locked=false;next()},1300)}):(scene.delayedConfessionBlackout?startConfessionQuestionTransition:null));
  if(scene.follow){locked=true;timer=setTimeout(()=>{locked=false;next()},1600)}
  else if(index===12){locked=true;timer=setTimeout(()=>{locked=false;next()},2000)}
- else locked=!!scene.delayedConfessionBlackout;
+ else locked=!!scene.delayedConfessionBlackout||!!scene.recall;
 }
 function day2Ring(times,volume){for(let i=0;i<times;i++)setTimeout(()=>{if(overlay.classList.contains('active'))playExtraAudio('oath-bell-05.mp3',volume)},i*3300)}
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
 function restartFromDay1(){
+ duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');
  clearTimeout(timer);timer=null;clearConfessionQuestionTimers();
  stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopPencil();
  stopConfessionTick();stopEndingBell();stopSanctuaryTick();stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopArtAudio();prayerBranch=0;artBranch=0;artLocation='main';artImage='';localStorage.removeItem('shindo_art_branch_v105');
@@ -960,6 +1045,7 @@ function showPrayerChoice(){
 }
 
 function returnToMorningActivities(){
+ duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');
  clearTimeout(timer);timer=null;stopVnTyping(false);stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopArtAudio();stopGongyangBell();stopLeaderShout();stopGongyangApplause();
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;portrait.classList.remove('prayer-silhouette','art-silhouette');
  prayerBranch=0;artBranch=0;artLocation='main';artImage='';
@@ -969,21 +1055,35 @@ function returnToMorningActivities(){
  index=scenes.findIndex(x=>x.kind==='day2-morning-choice');day2Morning='';localStorage.removeItem('shindo_day2_morning');
  locked=false;save();render();
 }
+function startMinghaoSpecial(isTest){
+ stopArtAudio();stopVnTyping(false);clearTimeout(timer);
+ artBranch=4;artLocation='main';artImage='';
+ localStorage.setItem('shindo_art_branch_v105','4');
+ const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
+ currentPortrait='';portrait.hidden=true;illustration.hidden=true;duoLayer.classList.remove('is-active');
+ const first=scenes.findIndex(scene=>scene.specialMinghao===true);
+ if(first<0)return;
+ index=first;locked=false;save();render();
+}
 function showArtChoice(){
  locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid');el.classList.add('shindo-art-grid');
  const options=['호랑이 그림 보기','캔버스 옮기기','예술당 조사하기'];
- el.innerHTML='<h2>눈길이 가는 곳이 많다. 뭐부터 해볼까?</h2><div class="art-branch-options">'+options.map((text,i)=>'<button data-art="'+(i+1)+'">'+text+'</button>').join('')+'</div>';
- el.style.display='flex';el.querySelectorAll('[data-art]').forEach(b=>b.onclick=e=>{
+ el.innerHTML='<h2>눈길이 가는 곳이 많다. 뭐부터 해볼까?</h2><div class="art-branch-options">'+options.map((text,i)=>'<button data-art="'+(i+1)+'">'+text+'</button>').join('')+'<button type="button" class="shindo-special-test">[테스트] 명호 친밀도 60+ 특별 대화</button></div>';
+ el.style.display='flex';
+ el.querySelector('.shindo-special-test').onclick=e=>{e.stopPropagation();startMinghaoSpecial(true)};
+ el.querySelectorAll('[data-art]').forEach(b=>b.onclick=e=>{
   e.stopPropagation();stopArtAudio();stopVnTyping(false);artBranch=Number(b.dataset.art);window.SHINDO_addPlayRecord?.('선택','예술당 활동: '+options[artBranch-1]);artLocation='main';artImage='';
   localStorage.setItem('shindo_art_branch_v105',String(artBranch));window.SHINDO_applyAffinityEvent?.('person','예술당 활동: '+options[artBranch-1],2);
+  if(artBranch===2&&getMinghaoAffinity()>=60){startMinghaoSpecial(false);return}
   const target=scenes.findIndex((x,i)=>i>ART_SCENE_START&&x.artBranch===artBranch);
   currentPortrait='';portrait.hidden=true;illustration.hidden=true;el.style.display='none';
   if(target>=0){index=target;locked=false;save();render()}
  });
 }
 function showArtEnd(){
+ duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');
  locked=true;box.style.display='none';portrait.hidden=true;currentPortrait='';illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
