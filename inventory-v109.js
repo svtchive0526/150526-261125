@@ -253,6 +253,7 @@
  #shindo-phone-panel .inv-history{display:flex;flex-direction:column;gap:5px;font-size:13px}
  #shindo-phone-panel .inv-time{font-size:11px;color:#999}
  #shindo-phone-panel .inv-feedback{width:100%;padding:14px 10px;border-radius:8px;background:#4b3434;border:1px solid #9e6767}
+ #shindo-phone-panel .inv-feedback-reset{display:block;margin-top:12px;background:#353535;border-color:#868686;color:#f3f3f3}
  @media(max-width:750px){#shindo-phone-panel .inv-shell{gap:10px;padding:12px}#shindo-phone-panel .inv-content{margin-top:7px;padding-top:8px}#shindo-phone-panel .inv-tabs{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}#shindo-phone-panel .inv-tab{font-size:11px;padding:9px 2px}#shindo-phone-panel .inv-avatar{width:48px;height:60px}}
  `;
  document.head.appendChild(style);
@@ -316,7 +317,7 @@
    content.append(card)
   });
  }
- function feedback(){empty('기존 베타테스트 피드백 페이지로 이동합니다. 진행 중인 게임 기록은 유지됩니다.');const btn=make('button','inv-feedback','피드백 페이지 열기');btn.type='button';btn.addEventListener('click',()=>{if(typeof window.SHINDO_openFeedback!=='function'){empty('현재 피드백 페이지를 열 수 없습니다.');return}drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');window.SHINDO_openFeedback()});content.append(btn)}
+ function feedback(){empty('기존 베타테스트 피드백 페이지로 이동합니다. 진행 중인 게임 기록은 유지됩니다.');const btn=make('button','inv-feedback','피드백 페이지 열기');btn.type='button';btn.addEventListener('click',()=>{if(typeof window.SHINDO_openFeedback!=='function'){empty('현재 피드백 페이지를 열 수 없습니다.');return}drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');window.SHINDO_openFeedback()});content.append(btn);const restart=make('button','inv-feedback inv-feedback-reset','아예 처음부터 다시 하기');restart.type='button';restart.addEventListener('click',()=>window.SHINDO_restartFromOpening?.());content.append(restart)}
  function render(){panel.querySelectorAll('.inv-tab').forEach(b=>{b.setAttribute('aria-selected',String(b.dataset.tab===active))});refreshUnreadIndicators();content.replaceChildren();({evidence,people,history,feedback})[active]()}
  panel.querySelectorAll('.inv-tab').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();active=b.dataset.tab;render()}));
  document.addEventListener('shindo-inventory-change',render);

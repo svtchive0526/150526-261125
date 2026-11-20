@@ -1374,6 +1374,9 @@ window.__shindoMainLockReady=true;
 #shindo-feedback textarea:focus{border-bottom-color:#006236}
 #shindo-feedback .sf-bottom{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:clamp(55px,12vh,135px)}
 #shindo-feedback .sf-bottom button{padding:12px 25px}
+
+#shindo-feedback #sf-restart-from-opening{background:#343434;border-color:#575757;color:#fff}
+#shindo-feedback #sf-restart-from-opening:hover{background:#4b4b4b}
 #shindo-feedback .sf-status{min-height:24px;text-align:center;font-size:14px;color:#555;margin-top:15px}
 #shindo-feedback .sf-posts{width:100%;margin-top:80px;max-width:1360px}
 #shindo-feedback .sf-posts h3{font-size:20px;margin:0 0 18px}
@@ -1398,7 +1401,7 @@ window.__shindoMainLockReady=true;
 #shindo-feedback .sf-reply-submit{background:#006236;color:#fff;border:0;border-radius:8px;padding:8px 17px;font-size:13px;font-weight:750}
 #shindo-feedback .sf-reply-submit:disabled{opacity:.5;cursor:wait}
 #shindo-feedback .sf-reply-note{color:#777;font-size:12px}
-</style><section id="shindo-feedback" role="dialog" aria-modal="true" aria-label="베타테스트 피드백"><div class="sf-wrap"><h2>피드백을 남겨주세요!</h2><div class="sf-people" role="group" aria-label="작성자 선택"><button class="sf-person" data-person="셉카" aria-pressed="true">셉카</button><button class="sf-person" data-person="안처" aria-pressed="false">안처</button><button class="sf-person" data-person="비행" aria-pressed="false">비행</button></div><div class="sf-compose"><p class="sf-hint" id="sf-hint"></p><textarea id="sf-message" maxlength="3000" aria-label="피드백 내용" placeholder="피드백 내용을 적어주세요."></textarea></div><div class="sf-bottom"><button type="button" id="sf-save">저장하기</button><button type="button" id="sf-return">게임으로돌아가기</button></div><div class="sf-status" id="sf-status" role="status" aria-live="polite"></div><div class="sf-posts"><h3>모두의 피드백</h3><div id="sf-post-list" class="sf-muted">불러오는 중...</div></div></div></section><script src="feedback-config.js"></script><script id="shindo-feedback-script">
+</style><section id="shindo-feedback" role="dialog" aria-modal="true" aria-label="베타테스트 피드백"><div class="sf-wrap"><h2>피드백을 남겨주세요!</h2><div class="sf-people" role="group" aria-label="작성자 선택"><button class="sf-person" data-person="셉카" aria-pressed="true">셉카</button><button class="sf-person" data-person="안처" aria-pressed="false">안처</button><button class="sf-person" data-person="비행" aria-pressed="false">비행</button></div><div class="sf-compose"><p class="sf-hint" id="sf-hint"></p><textarea id="sf-message" maxlength="3000" aria-label="피드백 내용" placeholder="피드백 내용을 적어주세요."></textarea></div><div class="sf-bottom"><button type="button" id="sf-save">저장하기</button><button type="button" id="sf-return">게임으로돌아가기</button><button type="button" id="sf-restart-from-opening">아예 처음부터 다시 하기</button></div><div class="sf-status" id="sf-status" role="status" aria-live="polite"></div><div class="sf-posts"><h3>모두의 피드백</h3><div id="sf-post-list" class="sf-muted">불러오는 중...</div></div></div></section><script src="feedback-config.js"></script><script id="shindo-feedback-script">
 (()=>{
 'use strict';
 const box=document.getElementById('shindo-feedback');
@@ -1472,6 +1475,18 @@ async function loadPosts(force=false){
   renderPosts(posts,replies,replyError);
  }catch(e){list.textContent='피드백을 불러오지 못했어요. 서버 연결을 확인해주세요.'}finally{fetching=false}
 }
+// V126: Explicitly restart the WHOLE experience, including disclaimer, loading and title.
+// Clear only game-owned storage; never delete feedback submitted to the shared server.
+window.SHINDO_restartFromOpening=()=>{
+ const approved=window.confirm('오프닝 타이틀부터 다시 시작할까요?\n이 브라우저에 저장된 게임 진행 상황, 친밀도, 인벤토리, 메일함 기록이 초기화됩니다.');
+ if(!approved)return;
+ const ownKey=k=>/^(shindo_|svter_|kamille_)/.test(k);
+ try{for(const k of Object.keys(localStorage)){if(ownKey(k))localStorage.removeItem(k)}}catch(e){console.error('게임 저장 데이터 초기화 실패',e);window.alert('저장 데이터를 초기화하지 못했어요. 브라우저 저장 권한을 확인해주세요.');return}
+ try{for(const k of Object.keys(sessionStorage)){if(ownKey(k))sessionStorage.removeItem(k)}}catch(e){}
+ // Remove resume query/hash and let the normal first-visit initializer run.
+ location.replace(location.pathname);
+};
+box.querySelector('#sf-restart-from-opening').addEventListener('click',window.SHINDO_restartFromOpening);
 function open(){if(box.classList.contains('sf-open'))return;lastFocus=document.activeElement;box.classList.add('sf-open');document.documentElement.style.setProperty('--sf-prior-overflow',document.documentElement.style.overflow);document.documentElement.style.overflow='hidden';updateHint();setStatus('');loadPosts();box.querySelector('.sf-person[aria-pressed="true"]').focus({preventScroll:true})}
 function close(){
  const completed=localStorage.getItem('shindo_story_progress_v37')==='complete';
