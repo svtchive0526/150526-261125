@@ -480,7 +480,7 @@ const style=document.createElement('style');style.textContent=`
 /* V114 -- special scene two-character composition and memory presentation */
 #shindo-vn .vn-duo{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;display:none}
 #shindo-vn .vn-duo.is-active{display:block}
-#shindo-vn .vn-duo img{position:absolute;bottom:clamp(155px,23vh,245px);height:min(55vh,580px);max-width:48vw;object-fit:contain;object-position:bottom;transform-origin:center bottom}
+#shindo-vn .vn-duo img{position:absolute;bottom:clamp(155px,23vh,245px);height:min(44vh,520px);width:auto;max-width:46vw;object-fit:contain;object-position:bottom;transform-origin:center bottom}
 #shindo-vn .vn-duo .duo-left{left:26%;transform:translateX(-50%)}
 #shindo-vn .vn-duo .duo-right{left:74%;transform:translateX(-50%)}
 #shindo-vn .vn-duo img.is-shadow{filter:brightness(0)!important}
@@ -490,7 +490,7 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .special-memory-kicker{position:absolute;top:11%;left:50%;transform:translateX(-50%);color:#888;letter-spacing:.24em;font-size:12px;z-index:8;display:none}
 #shindo-vn.is-recall .special-memory-kicker{display:block}
 #shindo-vn .art-branch-options .shindo-special-test{border:1px dashed #956868!important;color:#e0b0b0!important;margin-top:13px}
-@media(max-width:650px){#shindo-vn .vn-duo img{height:min(47vh,490px);max-width:54vw;bottom:clamp(165px,21vh,230px)}#shindo-vn .vn-duo .duo-left{left:29%}#shindo-vn .vn-duo .duo-right{left:71%}}
+@media(max-width:650px){#shindo-vn .vn-duo img{height:min(31vh,360px);width:auto;max-width:46vw;bottom:clamp(165px,21vh,230px)}#shindo-vn .vn-duo .duo-left{left:29%}#shindo-vn .vn-duo .duo-right{left:71%}}
 
 #shindo-vn{position:fixed;inset:0;z-index:30000;background:transparent;color:#fff;display:none;align-items:flex-end;justify-content:center;font-family:Pretendard,'Pretendard Variable',system-ui,sans-serif;cursor:pointer;touch-action:manipulation;user-select:none}
 #shindo-vn.active{display:flex;animation:shindo-story-fade-in 1.1s ease both}@keyframes shindo-story-fade-in{from{opacity:0}to{opacity:1}}
@@ -605,9 +605,9 @@ let currentPortrait='',revealed=false;
 const portraits={};
 const DEFAULT_PORTRAIT_PROFILE={scale:1,x:'-50%',y:'0px',bottom:'',height:'',maxWidth:''};
 const PORTRAIT_PROFILES=[
- {match:/^hansol-/,scale:0.96,y:'0px',height:'min(58vh,620px)'},
+ {match:/^hansol-/,scale:1.04,y:'0px',height:'min(60vh,620px)'},
  {match:/^soonyoung-/,scale:1.02},
- {match:/^minghao-/,scale:1.20},
+ {match:/^minghao-/,scale:1.04,y:'0px',height:'min(60vh,620px)'},
  {match:/^wonwoo-/,scale:1.08},
  {match:/^jihoon-/,scale:1.03},
  {match:/^seungcheol-/,scale:.97},
@@ -643,10 +643,11 @@ const recallKicker=document.createElement('div');recallKicker.className='special
 function setSpecialPortraits(scene){
  overlay.classList.toggle('is-recall',!!scene.recall);
  if(!scene.duo){duoLayer.classList.remove('is-active');duoLeft.removeAttribute('src');duoRight.removeAttribute('src');return false}
- duoLeft.src='story-portraits/'+scene.duo[0]+'.png';duoRight.src='story-portraits/'+scene.duo[1]+'.png';
+ duoLeft.src='story-portraits/duo-'+scene.duo[0]+'.png';duoRight.src='story-portraits/duo-'+scene.duo[1]+'.png';
  duoLeft.classList.toggle('is-shadow',scene.duoMask==='both'||scene.duoMask==='hansol');
  duoRight.classList.toggle('is-shadow',scene.duoMask==='both');
- duoLayer.classList.add('is-active');return true;
+ portrait.hidden=true; // V116: always suppress previous solo portrait during duo scenes
+  duoLayer.classList.add('is-active');return true;
 }
 function getMinghaoAffinity(){
  try{const data=JSON.parse(localStorage.getItem('shindo_affinity_v107')||'{}');
@@ -974,10 +975,23 @@ if(scene.kind==='image'){
 
 if(scene.kind==='dialogue'&&scene.speaker==='원우'&&!scene.maskSpeaker)window.SHINDO_markCharacterMet?.('원우');
 const duoVisible=scene.specialMinghao?setSpecialPortraits(scene):false;
-if(scene.specialMeetHansol)window.SHINDO_markCharacterMet?.('한솔');
+// V115: the special branch has its own recognition moments, independent of earlier branches.
+// Minghao has already been met at the start of this 60+ story. Hansol remains
+// unidentified until the protagonist explicitly recognises him.
+if(scene.specialMinghao){
+ minghaoRevealed=true;
+ localStorage.setItem('shindo_minghao_known_v105','1');
+ window.SHINDO_markCharacterMet?.('명호');
+ const hansolRevealIndex=scenes.findIndex(s=>s.specialMeetHansol===true);
+ if(scene.specialMeetHansol || (hansolRevealIndex>=0 && index>hansolRevealIndex)){
+  hansolRevealed=true;
+  localStorage.setItem('shindo_hansol_known_v99','1');
+  window.SHINDO_markCharacterMet?.('한솔');
+ }
+}
 if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.artHall)&&(scene.portrait||duoVisible))){
  if(scene.clearPortrait){currentPortrait='';portrait.hidden=true}
- if(duoVisible)currentPortrait='';
+ if(duoVisible){currentPortrait='';portrait.hidden=true;portrait.removeAttribute('src');} // V116: prevent lingering solo portrait behind two-person scene
  if(scene.portrait)currentPortrait=scene.portrait;
  if(scene.portraitPlaceholder)currentPortrait='';
  speakerTag.textContent=scene.kind==='narration'||scene.inner?'':(scene.maskSpeaker||scene.speaker==='한솔'&&!hansolRevealed||scene.speaker==='석민'&&!seokminRevealed||scene.speaker==='찬'&&!chanRevealed?'??':scene.speaker==='순영'&&!soonyoungRevealed?'??':scene.speaker==='명호'&&!minghaoRevealed?'??':scene.speaker==='주인공'?'김봉봉':scene.speaker==='승철'&&!revealed?'??':scene.speaker==='지훈'&&!jihoonRevealed?'??':scene.speaker);
