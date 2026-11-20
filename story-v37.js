@@ -460,7 +460,7 @@ scenes.push(
 );
 
 const sceneBackdropRanges=[
- {start:8,end:17,file:"bg-van-interior.png"},
+ {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
  {start:58,end:62,file:"bg-village-front.png"},
  {start:63,end:68,file:"bg-sanctuary-front.png"},
@@ -1186,13 +1186,23 @@ function finish(){
  try{localStorage.setItem(KEY,'complete');localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}
  window.SHINDO_openFeedback?.();
 }
-// V130: A quiet, dry mechanical click only on a real player-triggered dialogue advance.
-const dialogueClickTemplate=new Audio('story-audio/dialogue-soft-click.wav');
+// V132: Reliable, clearly audible but subdued click on player-triggered dialogue advances.
+// Reuse the exact user-approved V130 WAV; it is only ~105ms long.
+const dialogueClickFile='story-audio/dialogue-soft-click.wav';
+const dialogueClickTemplate=new Audio(dialogueClickFile);
 dialogueClickTemplate.preload='auto';
+try{dialogueClickTemplate.load()}catch(_){}
+const activeDialogueClicks=new Set();
 function playDialogueAdvanceClick(){
- const click=dialogueClickTemplate.cloneNode(true);
- click.volume=.24;
- click.play().catch(()=>{});
+ const click=new Audio(dialogueClickFile);
+ click.preload='auto';
+ click.volume=.65;
+ activeDialogueClicks.add(click);
+ const release=()=>{activeDialogueClicks.delete(click)};
+ click.addEventListener('ended',release,{once:true});
+ click.addEventListener('error',release,{once:true});
+ const played=click.play();
+ if(played&&typeof played.catch==='function')played.catch(release);
 }
 function next(userAdvance=false){
  if(vnTypingTimer!==null){stopVnTyping(true);return;}
