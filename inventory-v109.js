@@ -1,4 +1,4 @@
-/* SHINDO v122 — affinity menu rename and fixed profile portraits. */
+/* SHINDO v125 — unread affinity indicator on toggle, tab, and character cards. */
 (()=>{
  'use strict';
  const panel=document.getElementById('shindo-phone-panel');
@@ -10,6 +10,9 @@
  const EVIDENCE='shindo_evidence_items_v105';
  const MET='shindo_met_characters_v108';
  const HISTORY_DAY='shindo_current_story_day_v109';
+ const AFFINITY_UNREAD='shindo_affinity_unread_v125';
+ // Only runtime changes trigger a notice; migration/repair at startup never does.
+ let affinityNoticesReady=false;
  const PEOPLE=[
   ['승철','profile-seungcheol.png'],['정한','profile-jeonghan.png'],['조슈아','profile-joshua.png'],
   ['준휘','profile-junhui.png'],['순영','profile-soonyoung.png'],['원우','profile-wonwoo.png'],
@@ -43,6 +46,28 @@
  };
  function load(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v===null?fallback:v}catch(_){return fallback}}
  function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}}
+ function getUnread(){
+  const value=load(AFFINITY_UNREAD,[]);
+  return Array.isArray(value)?value.filter(name=>PEOPLE.some(p=>p[0]===name)):[];
+ }
+ function addUnread(names){
+  if(!affinityNoticesReady || !names.length)return;
+  const unread=new Set(getUnread());
+  names.forEach(name=>{if(PEOPLE.some(p=>p[0]===name))unread.add(name)});
+  save(AFFINITY_UNREAD,[...unread]);
+  document.dispatchEvent(new Event('shindo-inventory-change'));
+ }
+ function acknowledgeAffinity(name){
+  const unread=getUnread();
+  if(!unread.includes(name))return;
+  save(AFFINITY_UNREAD,unread.filter(n=>n!==name));
+  render();
+ }
+ function refreshUnreadIndicators(){
+  const any=getUnread().length>0;
+  document.getElementById('shindo-phone-toggle')?.classList.toggle('shindo-affinity-unread',any);
+  panel.querySelector('[data-tab="people"]')?.classList.toggle('shindo-affinity-unread',any);
+ }
  // Story runtime supplies the day; old records are migrated only where their labels are unambiguous.
  window.SHINDO_addPlayRecord=(type,label,day)=>{
   if(!type||!label)return;
@@ -77,7 +102,7 @@
   if(!Object.prototype.hasOwnProperty.call(result,'조슈아') || Number(result['조슈아'])===0)result['조슈아']=100;
   return result;
  }
- function updateAffinity(person,score){const values=getAffinity();values[person]=Math.max(0,Math.min(100,Math.round(Number(score)||0)));save(AFFINITY,values)}
+ function updateAffinity(person,score){const values=getAffinity();const before=Number(values[person])||0;const after=Math.max(0,Math.min(100,Math.round(Number(score)||0)));values[person]=after;save(AFFINITY,values);if(before!==after)addUnread([person])}
  window.SHINDO_setAffinity=(person,score)=>{if(!PEOPLE.some(p=>p[0]===person))return;updateAffinity(person,score);document.dispatchEvent(new Event('shindo-inventory-change'))};
  // Each authored event may be granted only once per day, even after a reload or revisit.
  // All negative values are clamped at zero; positive values at 100.
@@ -101,9 +126,16 @@
   const ledger=load(AFFINITY_EVENTS,[]);if(!Array.isArray(ledger))return false;
   if(ledger.includes(eventId))return false;
   const values=getAffinity();
-  for(const [name,delta] of changes)values[name]=Math.max(0,Math.min(100,Math.round((Number(values[name])||0)+delta)));
+  const changed=[];
+  for(const [name,delta] of changes){
+   const before=Number(values[name])||0;
+   const after=Math.max(0,Math.min(100,Math.round(before+delta)));
+   values[name]=after;
+   if(after!==before)changed.push(name);
+  }
   // Preserve the completed-event marker as part of the same synchronous operation.
   save(AFFINITY,values);ledger.push(eventId);save(AFFINITY_EVENTS,ledger);
+  addUnread(changed);
   document.dispatchEvent(new Event('shindo-inventory-change'));
   return true;
  }
@@ -178,6 +210,7 @@
   if(changed){save(AFFINITY,actual);document.dispatchEvent(new Event('shindo-inventory-change'))}
  }
  reconcileRoomBonuses();
+ affinityNoticesReady=true;
  const style=document.createElement('style');
  style.textContent=`
  #shindo-phone-panel{color:#eee;overflow:hidden;font-family:Pretendard,system-ui,sans-serif;box-sizing:border-box}
@@ -188,6 +221,23 @@
  #shindo-phone-panel button{font:inherit;cursor:pointer;color:#eee}
  #shindo-phone-panel .inv-tab{font-size:13px;padding:10px 6px;border-radius:6px;border:1px solid #777;background:#393939}
  #shindo-phone-panel .inv-tab[aria-selected=true]{background:#eee;color:#161616}
+ /* V125: The unread dot is centered on the TOP-LEFT CORNER of the actual control. */
+ #shindo-phone-toggle.shindo-affinity-unread::after,
+ #shindo-phone-panel .inv-tab.shindo-affinity-unread::after,
+ #shindo-phone-panel .inv-person.shindo-affinity-unread::after{
+   content:"";position:absolute;top:-6px;left:-6px;width:12px;height:12px;
+   box-sizing:border-box;border-radius:50%;background:#ff1515;
+   pointer-events:none;z-index:8;animation:shindo-affinity-blink 1.1s ease-in-out infinite;
+ }
+ #shindo-phone-panel .inv-tab{position:relative;overflow:visible;}
+ #shindo-phone-panel .inv-person{position:relative;}
+ #shindo-phone-toggle.shindo-affinity-unread::after{top:-6px;left:-6px;}
+ @keyframes shindo-affinity-blink{0%,100%{opacity:1}50%{opacity:.14}}
+ @media(prefers-reduced-motion:reduce){
+  #shindo-phone-toggle.shindo-affinity-unread::after,
+  #shindo-phone-panel .inv-tab.shindo-affinity-unread::after,
+  #shindo-phone-panel .inv-person.shindo-affinity-unread::after{animation:none}
+ }
  #shindo-phone-panel .inv-content{min-height:0;flex:1;overflow-y:auto;overscroll-behavior:contain;padding:9px 3px 14px;margin-top:7px}
  #shindo-phone-panel .inv-muted{color:#bbb;font-size:12px;line-height:1.65}
  #shindo-phone-panel .inv-card{border:1px solid #575757;background:#252525;border-radius:8px;padding:12px;margin-bottom:9px}
@@ -213,10 +263,18 @@
  function evidence(){const items=load(EVIDENCE,[]);if(!Array.isArray(items)||!items.length){empty('아직 획득한 증거품이 없습니다.');return}
   items.forEach(id=>{const info=evidenceInfo[id]||{name:id,description:'획득한 증거품'};const card=make('div','inv-card');card.append(make('div','inv-item-name',info.name),make('div','inv-muted',info.description));content.append(card)})
  }
- function people(){const values=getAffinity();PEOPLE.forEach(([name,portrait])=>{
+ function people(){const values=getAffinity();const unread=new Set(getUnread());PEOPLE.forEach(([name,portrait])=>{
   const known=isMet(name);
   const score=Math.max(0,Math.min(100,Number(values[name])||0));
   const card=make('div','inv-card inv-person');
+  if(unread.has(name) && known){
+   card.classList.add('shindo-affinity-unread');
+   card.setAttribute('role','button');
+   card.setAttribute('tabindex','0');
+   card.setAttribute('aria-label',name+' 친밀도 변경 확인');
+   card.addEventListener('click',()=>acknowledgeAffinity(name));
+   card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();acknowledgeAffinity(name)}});
+  }
   if(known&&portrait){const img=make('img','inv-avatar');img.src='story-portraits/'+portrait;img.alt=name+' 프로필';img.loading='lazy';img.onerror=()=>{img.replaceWith(make('div','inv-avatar inv-avatar-unknown','??'))};card.append(img)}
   else{card.append(make('div','inv-avatar inv-avatar-unknown',known?'??':'??'))}
   const main=make('div','inv-person-main'),top=make('div','inv-person-top');
@@ -259,7 +317,7 @@
   });
  }
  function feedback(){empty('기존 베타테스트 피드백 페이지로 이동합니다. 진행 중인 게임 기록은 유지됩니다.');const btn=make('button','inv-feedback','피드백 페이지 열기');btn.type='button';btn.addEventListener('click',()=>{if(typeof window.SHINDO_openFeedback!=='function'){empty('현재 피드백 페이지를 열 수 없습니다.');return}drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');window.SHINDO_openFeedback()});content.append(btn)}
- function render(){panel.querySelectorAll('.inv-tab').forEach(b=>{b.setAttribute('aria-selected',String(b.dataset.tab===active))});content.replaceChildren();({evidence,people,history,feedback})[active]()}
+ function render(){panel.querySelectorAll('.inv-tab').forEach(b=>{b.setAttribute('aria-selected',String(b.dataset.tab===active))});refreshUnreadIndicators();content.replaceChildren();({evidence,people,history,feedback})[active]()}
  panel.querySelectorAll('.inv-tab').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();active=b.dataset.tab;render()}));
  document.addEventListener('shindo-inventory-change',render);
  document.getElementById('shindo-phone-toggle')?.addEventListener('click',()=>{render()});
