@@ -109,7 +109,7 @@ const scenes=[
  {kind:"narration",text:"그리고 마지막은 잠시 뜸을 들이더니, 아주 중요하다는 듯이 강조했다."},
  {kind:"dialogue",speaker:"지훈",text:"우리는 가족입니다. 서로를 배려합시다.",portrait:"jihoon-body1-smile"},
  {kind:"dialogue",speaker:"주인공",text:"(오케이, 이지훈. 규칙을 철저하게 수호하는 사람 같다.)",inner:true},
- {kind:"dialogue",speaker:"주인공",text:"(이 단체를 지키는 데에, 더 나아가 카밀레교에 그만큼 진심인 거겠지.)",inner:true},
+ {kind:"dialogue",speaker:"주인공",text:"(이 단체를 지키는 데에, 더 나아가 카밀레교에 그만큼 진심인 거겠지.)",inner:true,clearPortrait:true},
  {kind:"dialogue",speaker:"주인공",text:"(…고요 속에 걷다 보니 어느덧 마을 입구 앞이다.)",inner:true},
  {kind:"dialogue",speaker:"주인공",text:"(심장이 쿵쾅거린다. 해낼 수 있을까? 과연 내가 혈혈단신으로, 이단의 소굴에서…)",inner:true},
  {kind:"image",illustration:"mail-01",duration:6000},
@@ -497,7 +497,7 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn{position:fixed;inset:0;z-index:30000;background:transparent;color:#fff;display:none;align-items:flex-end;justify-content:center;font-family:Pretendard,'Pretendard Variable',system-ui,sans-serif;cursor:pointer;touch-action:manipulation;user-select:none}
 #shindo-vn.active{display:flex;animation:shindo-story-fade-in 1.1s ease both}@keyframes shindo-story-fade-in{from{opacity:0}to{opacity:1}}
 #shindo-vn.day{background:transparent;transition:background 2s}
-#shindo-vn .vn-box{width:min(1000px,calc(100% - 36px));min-height:155px;margin:0 auto clamp(40px,10vh,110px);border:1px solid #777;background:rgba(15,16,18,.91);border-radius:8px;padding:30px 34px 27px;box-sizing:border-box;display:flex;align-items:center;position:relative;line-height:1.85;font-size:clamp(16px,1.65vw,20px);letter-spacing:-.055em}
+#shindo-vn .vn-box{width:min(1000px,calc(100% - 36px));min-height:155px;margin:0 auto clamp(40px,10vh,110px);border:1px solid #777;background:rgba(15,16,18,.985);border-radius:8px;padding:30px 34px 27px;box-sizing:border-box;display:flex;align-items:center;position:relative;line-height:1.85;font-size:clamp(16px,1.65vw,20px);letter-spacing:-.055em}
 #shindo-vn .vn-box:after{content:'▼';position:absolute;right:20px;bottom:10px;font-size:11px;color:#aaa;animation:vn-pulse 1.2s infinite}
 #shindo-vn .vn-center{align-self:center;margin:auto;text-align:center;font-size:clamp(27px,5vw,52px);font-weight:700;letter-spacing:-.055em}
 #shindo-vn .vn-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);color:#aaa;font-size:12px;white-space:nowrap}
@@ -759,41 +759,79 @@ async function resolveOfficialPortrait(key){
  candidates.push(...getOfficialCandidatePaths(relative));
  return [...new Set(candidates.map(encodeOfficialSegments))];
 }
+// V140: Resolve and decode offscreen. Keep the already-rendered picture visible
+// until the replacement has loaded; identical expressions never re-request assets.
+const OFFICIAL_PRELOAD_CACHE=new Map();
+const OFFICIAL_PRELOAD_LIMIT=55;
+function preloadOfficialPortrait(key){
+ const relative=officialKeyToFilename(key);
+ if(!relative)return Promise.reject(new Error('Unknown official portrait: '+key));
+ if(OFFICIAL_PRELOAD_CACHE.has(relative))return OFFICIAL_PRELOAD_CACHE.get(relative);
+ const loading=resolveOfficialPortrait(key).then(async paths=>{
+  if(!paths.length)throw new Error('No official candidate for '+key);
+  let lastError;
+  for(const path of paths){
+   try{
+    const image=new Image();
+    image.decoding='async';
+    await new Promise((resolve,reject)=>{
+     image.onload=resolve;
+     image.onerror=()=>reject(new Error('Failed official image: '+path));
+     image.src=path;
+    });
+    if(typeof image.decode==='function'){try{await image.decode()}catch(_){/* already loaded */}}
+    OFFICIAL_PATH_CACHE.set(relative,path);
+    return path;
+   }catch(error){lastError=error;}
+  }
+  throw lastError||new Error('No usable official portrait: '+key);
+ }).catch(error=>{OFFICIAL_PRELOAD_CACHE.delete(relative);throw error});
+ OFFICIAL_PRELOAD_CACHE.set(relative,loading);
+ // Bound the number of decoded images retained by our JS promise cache.
+ if(OFFICIAL_PRELOAD_CACHE.size>OFFICIAL_PRELOAD_LIMIT){
+  const oldest=OFFICIAL_PRELOAD_CACHE.keys().next().value;
+  if(oldest!==relative)OFFICIAL_PRELOAD_CACHE.delete(oldest);
+ }
+ return loading;
+}
 function assignOfficialPortrait(img,key){
  const relative=officialKeyToFilename(key);
- img.dataset.portraitKey=key;
+ img.dataset.officialShouldShow=img.dataset.officialShouldShow||'1';
+ if(!relative){console.error('[SHINDO V140] Unmapped official portrait:',key);return false;}
+ const requestedShow=img.dataset.officialShouldShow!=='0';
+ // A text-only scene may follow a portraited scene: keep source warm but hide it.
+ if(!requestedShow){img.hidden=true;return true;}
+ // Do not touch the DOM if the same official artwork is already on screen.
+ if(img.dataset.officialDisplayedKey===relative && img.getAttribute('src')){
+  img.hidden=false;
+  return true;
+ }
  img.dataset.officialRequest=String((Number(img.dataset.officialRequest)||0)+1);
  const request=img.dataset.officialRequest;
- if(!relative){img.hidden=true;img.removeAttribute('src');console.error('[SHINDO V138] Missing portrait key:',key);return false;}
- img.dataset.officialValid='0';
- img.hidden=true;
- img.removeAttribute('src');
- // Determine real GitHub filename path first; no English filename PNGs are ever loaded.
- resolveOfficialPortrait(key).then(paths=>{
+ // Deliberately DO NOT set img.hidden or remove src here: this is the flicker fix.
+ preloadOfficialPortrait(key).then(path=>{
+  if(img.dataset.officialRequest!==request || img.dataset.officialShouldShow==='0')return;
+  img.src=path;
+  img.dataset.officialDisplayedKey=relative;
+  img.dataset.officialValid='1';
+  img.hidden=false;
+ }).catch(error=>{
   if(img.dataset.officialRequest!==request)return;
-  if(!paths.length){console.error('[SHINDO V138] No official portrait path:',key);return;}
-  let i=0;
-  function tryNext(){
-   if(img.dataset.officialRequest!==request)return;
-   if(i>=paths.length){img.removeAttribute('src');img.hidden=true;
-    console.error('[SHINDO V138] All official paths failed:',key,relative);return;}
-   const path=paths[i++];
-   img.onload=()=>{
-    if(img.dataset.officialRequest!==request)return;
-    OFFICIAL_PATH_CACHE.set(relative,path);
-    img.dataset.officialValid='1';
-    img.hidden=(img.dataset.officialShouldShow==='0');
-   };
-   img.onerror=()=>{
-    if(img.dataset.officialRequest!==request)return;
-    img.hidden=true;
-    tryNext();
-   };
-   img.src=path;
-  }
-  tryNext();
+  console.error('[SHINDO V140] Official image load failed:',key,error);
+  // Keep the last valid image, if any. Never display the browser's broken icon.
+  if(!img.getAttribute('src'))img.hidden=true;
  });
  return true;
+}
+// Warm nearby story expressions without uploading or renaming any official image.
+function warmUpcomingPortraits(fromIndex){
+ const keys=new Set();
+ for(let n=fromIndex+1;n<Math.min(scenes.length,fromIndex+6);n++){
+  const scene=scenes[n];
+  if(scene.portrait)keys.add(scene.portrait);
+  if(scene.duo)for(const key of scene.duo)keys.add('duo-'+key);
+ }
+ for(const key of keys)preloadOfficialPortrait(key).catch(()=>{});
 }
 function attachPortraitErrorHandler(img){
  // Error handling and fallback are managed centrally by assignOfficialPortrait.
@@ -1204,6 +1242,7 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
  if(scene.redWord){const at=content.textContent.indexOf(scene.redWord);if(at>=0){const txt=content.textContent;content.textContent='';content.append(document.createTextNode(txt.slice(0,at)));const b=document.createElement('strong');b.style.color='#d41616';b.textContent=scene.redWord;content.append(b,document.createTextNode(txt.slice(at+scene.redWord.length)))}}
  if(scene.boldPhrase){const at=content.textContent.indexOf(scene.boldPhrase);if(at>=0){const txt=content.textContent;content.textContent='';content.append(document.createTextNode(txt.slice(0,at)));const b=document.createElement('strong');b.textContent=scene.boldPhrase;content.append(b,document.createTextNode(txt.slice(at+scene.boldPhrase.length)))}}
  if(scene.boldWord){const target=scene.boldWord;const at=content.textContent.indexOf(target);if(at>=0){const txt=content.textContent;content.textContent='';content.append(document.createTextNode(txt.slice(0,at)));const b=document.createElement('strong');b.textContent=target;content.append(b,document.createTextNode(txt.slice(at+target.length)))}}
+ if(scene.kind==='dialogue'||scene.kind==='narration')queueMicrotask(()=>warmUpcomingPortraits(index));
  if(scene.kind==='dialogue'||scene.kind==='narration'||scene.kind==='line')beginVnTyping(scene.recall?(()=>{timer=setTimeout(()=>{locked=false;next()},1300)}):(scene.delayedConfessionBlackout?startConfessionQuestionTransition:null));
  if(scene.follow){locked=true;timer=setTimeout(()=>{locked=false;next()},1600)}
  else if(index===12){locked=true;timer=setTimeout(()=>{locked=false;next()},2000)}
@@ -1319,23 +1358,62 @@ function finish(){
  try{localStorage.setItem(KEY,'complete');localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}
  window.SHINDO_openFeedback?.();
 }
-// V132: Reliable, clearly audible but subdued click on player-triggered dialogue advances.
-// Reuse the exact user-approved V130 WAV; it is only ~105ms long.
+// V139: Preload the user-provided click once and play it synchronously on user input.
+// AudioBuffer playback avoids the latency of constructing a fresh Audio element per click.
 const dialogueClickFile='story-audio/dialogue-soft-click.wav';
-const dialogueClickTemplate=new Audio(dialogueClickFile);
-dialogueClickTemplate.preload='auto';
-try{dialogueClickTemplate.load()}catch(_){}
-const activeDialogueClicks=new Set();
+const dialogueClickPlayers=Array.from({length:4},()=>{
+ const el=new Audio(dialogueClickFile);
+ el.preload='auto';
+ try{el.load()}catch(_e){}
+ return el;
+});
+let dialogueClickPlayerIndex=0;
+let dialogueClickBuffer=null;
+let dialogueClickBytes=null;
+let dialogueClickDecodeStarted=false;
+// Fetch early, without attempting autoplay. Keep the same WAV supplied by the user.
+fetch(dialogueClickFile).then(response=>{
+ if(!response.ok)throw new Error('Dialogue click audio HTTP '+response.status);
+ return response.arrayBuffer();
+}).then(bytes=>{dialogueClickBytes=bytes;}).catch(error=>{
+ console.warn('[SHINDO] Dialogue click WAV could not be preloaded:',error);
+});
+function prepareDialogueClickBuffer(ctx){
+ if(!ctx||!dialogueClickBytes||dialogueClickDecodeStarted)return;
+ dialogueClickDecodeStarted=true;
+ ctx.decodeAudioData(dialogueClickBytes.slice(0)).then(buffer=>{
+  dialogueClickBuffer=buffer;
+ }).catch(error=>{
+  console.warn('[SHINDO] Dialogue click decode failed; using HTML audio:',error);
+ });
+}
 function playDialogueAdvanceClick(){
- const click=new Audio(dialogueClickFile);
- click.preload='auto';
- click.volume=.65;
- activeDialogueClicks.add(click);
- const release=()=>{activeDialogueClicks.delete(click)};
- click.addEventListener('ended',release,{once:true});
- click.addEventListener('error',release,{once:true});
- const played=click.play();
- if(played&&typeof played.catch==='function')played.catch(release);
+ const ctx=audioContext();
+ if(ctx){
+  prepareDialogueClickBuffer(ctx);
+  if(dialogueClickBuffer){
+   try{
+    const source=ctx.createBufferSource();
+    const gain=ctx.createGain();
+    source.buffer=dialogueClickBuffer;
+    gain.gain.value=1.5; // short, quiet input; perceptible without changing its waveform
+    source.connect(gain).connect(ctx.destination);
+    source.start();
+    return;
+   }catch(error){console.warn('[SHINDO] WebAudio click failed; using HTML audio:',error)}
+  }
+ }
+ // Immediate fallback on the first input, while the preloaded buffer decodes.
+ const player=dialogueClickPlayers[dialogueClickPlayerIndex++%dialogueClickPlayers.length];
+ try{
+  player.pause();
+  player.currentTime=0;
+  player.volume=1;
+  const playback=player.play();
+  if(playback&&typeof playback.catch==='function')playback.catch(error=>{
+   console.warn('[SHINDO] Dialogue click playback blocked:',error);
+  });
+ }catch(error){console.warn('[SHINDO] Dialogue click playback error:',error)}
 }
 function next(userAdvance=false){
  if(vnTypingTimer!==null){stopVnTyping(true);return;}
