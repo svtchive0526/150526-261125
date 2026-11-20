@@ -134,6 +134,51 @@
   }
  }
  restoreAffinityFromHistory();
+ // V113: Older saves may contain a completed room event without every
+ // participant's corresponding +5 in the saved aggregate. Recalculate the
+ // minimum earned affinity from the chronological, once-only event ledger.
+ // Never reset a score or add the same entrance bonus a second time.
+ function reconcileRoomBonuses(){
+  const ledger=load(AFFINITY_EVENTS,[]);
+  if(!Array.isArray(ledger)||!ledger.some(id=>typeof id==='string'&&id.includes('|장소|')))return;
+  const expected={'조슈아':100};
+  let hasRoom=false;
+  for(const id of ledger){
+   if(typeof id!=='string')continue;
+   const parts=id.split('|');
+   if(parts.length<2)continue;
+   let changes=[];
+   if(parts[1]==='새벽기도'){
+    // The original event ledger records the prayer choice only through the
+    // saved player history. Its absence should not invent a choice.
+    const records=load(HISTORY,[]);
+    const prayerRecord=Array.isArray(records)?records.find(r=>Number(r.day||2)===Number(parts[0])&&typeof r.label==='string'&&r.label.includes('새벽기도')):null;
+    let selected=prayerRecord?.label||'';
+    if(!selected){const v=localStorage.getItem('shindo_day2_prayer');selected=v==='1'?'참석':v==='2'?'불참':''}
+    if(!selected)continue;
+    const sign=/불참|않는다/.test(selected)?-1:1;
+    changes=[...GROUPS['신도'].map(n=>[n,5*sign]),...GROUPS['사제'].map(n=>[n,5*sign]),...GROUPS['경찰'].map(n=>[n,-5*sign])];
+   }else if(parts[1]==='장소'&&ROOMS[parts.slice(2).join('|')]){
+    hasRoom=true;
+    changes=ROOMS[parts.slice(2).join('|')].map(n=>[n,5]);
+   }else if(parts[1]==='개별'){
+    const person=PERSON_EVENTS[parts.slice(2).join('|')];
+    if(person)changes=[[person,15]];
+   }
+   for(const [name,delta] of changes){
+    expected[name]=Math.max(0,Math.min(100,(expected[name]||0)+delta));
+   }
+  }
+  if(!hasRoom)return;
+  const actual=getAffinity();let changed=false;
+  for(const [name,value] of Object.entries(expected)){
+   if(value>(Number(actual[name])||0)){
+    actual[name]=value;changed=true;
+   }
+  }
+  if(changed){save(AFFINITY,actual);document.dispatchEvent(new Event('shindo-inventory-change'))}
+ }
+ reconcileRoomBonuses();
  const style=document.createElement('style');
  style.textContent=`
  #shindo-phone-panel{color:#eee;overflow:hidden;font-family:Pretendard,system-ui,sans-serif;box-sizing:border-box}

@@ -830,6 +830,8 @@ if(scene.branch&&selectedBranch&&scene.branch!==selectedBranch){index++;save();r
  if(scene.prayerAudio)prayerAudioCue(scene.prayerAudio);
 if(scene.kind==='choice'){showChoice();return}
 if(scene.kind==='day2-prayer-choice'){showDay2Choice('prayer');return}
+if(scene.prayerStart)window.SHINDO_applyAffinityEvent?.('room','기도관',2);
+if(index===ART_SCENE_START)window.SHINDO_applyAffinityEvent?.('room','예술당',2);
 if(scene.kind==='day2-morning-choice'){showDay2Choice('morning');return}
  if(scene.kind==='art-choice'){stopArtAudio();showArtChoice();return}
  if(scene.kind==='art-end'){stopArtAudio();showArtEnd();return}
