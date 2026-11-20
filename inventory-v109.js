@@ -1,4 +1,4 @@
-/* SHINDO v125 — unread affinity indicator on toggle, tab, and character cards. */
+/* SHINDO v128 — affinity indicators blink 5 times then clear automatically. */
 (()=>{
  'use strict';
  const panel=document.getElementById('shindo-phone-panel');
@@ -11,6 +11,11 @@
  const MET='shindo_met_characters_v108';
  const HISTORY_DAY='shindo_current_story_day_v109';
  const AFFINITY_UNREAD='shindo_affinity_unread_v125';
+ const AFFINITY_BLINK_MS=1100;
+ const AFFINITY_BLINK_COUNT=5;
+ const affinityNoticeTimers=new Map();
+ // V128: notices are temporary. Discard persistent unread state from V125-V127.
+ try{localStorage.removeItem(AFFINITY_UNREAD)}catch(_){}
  // Only runtime changes trigger a notice; migration/repair at startup never does.
  let affinityNoticesReady=false;
  const PEOPLE=[
@@ -53,11 +58,20 @@
  function addUnread(names){
   if(!affinityNoticesReady || !names.length)return;
   const unread=new Set(getUnread());
-  names.forEach(name=>{if(PEOPLE.some(p=>p[0]===name))unread.add(name)});
-  save(AFFINITY_UNREAD,[...unread]);
-  document.dispatchEvent(new Event('shindo-inventory-change'));
+  let changed=false;
+  names.forEach(name=>{
+   if(!PEOPLE.some(p=>p[0]===name))return;
+   unread.add(name);changed=true;
+   const prior=affinityNoticeTimers.get(name);
+   if(prior)clearTimeout(prior);
+   const timer=setTimeout(()=>{affinityNoticeTimers.delete(name);acknowledgeAffinity(name)},AFFINITY_BLINK_MS*AFFINITY_BLINK_COUNT);
+   affinityNoticeTimers.set(name,timer);
+  });
+  if(changed){save(AFFINITY_UNREAD,[...unread]);document.dispatchEvent(new Event('shindo-inventory-change'))}
  }
  function acknowledgeAffinity(name){
+  const prior=affinityNoticeTimers.get(name);
+  if(prior){clearTimeout(prior);affinityNoticeTimers.delete(name)}
   const unread=getUnread();
   if(!unread.includes(name))return;
   save(AFFINITY_UNREAD,unread.filter(n=>n!==name));
@@ -227,12 +241,12 @@
  #shindo-phone-panel .inv-person.shindo-affinity-unread::after{
    content:"";position:absolute;top:-6px;left:-6px;width:12px;height:12px;
    box-sizing:border-box;border-radius:50%;background:#ff1515;
-   pointer-events:none;z-index:8;animation:shindo-affinity-blink 1.1s ease-in-out infinite;
+   pointer-events:none;z-index:8;animation:shindo-affinity-blink 1.1s ease-in-out 5 forwards;
  }
  #shindo-phone-panel .inv-tab{position:relative;overflow:visible;}
  #shindo-phone-panel .inv-person{position:relative;}
  #shindo-phone-toggle.shindo-affinity-unread::after{top:-6px;left:-6px;}
- @keyframes shindo-affinity-blink{0%,100%{opacity:1}50%{opacity:.14}}
+ @keyframes shindo-affinity-blink{0%{opacity:1}50%{opacity:.14}100%{opacity:0}}
  @media(prefers-reduced-motion:reduce){
   #shindo-phone-toggle.shindo-affinity-unread::after,
   #shindo-phone-panel .inv-tab.shindo-affinity-unread::after,
