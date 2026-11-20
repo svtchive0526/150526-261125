@@ -225,11 +225,11 @@
   meter.append(fill);main.append(top,meter);card.append(main);content.append(card)
  })}
  function history(){
-  const saved=load(HISTORY,[]);const records=Array.isArray(saved)?saved.slice():[];
+  const saved=load(HISTORY,[]);const records=(Array.isArray(saved)?saved:[]).map(r=>({...r,label:String(r.label||'').replace(/고해(?:실|소)/g,'고해소')}));
   // Reconstruct only known saved selections. Do not fabricate missing clicks or timestamps.
   const past=[
    ['shindo_day2_prayer',['','새벽기도 참석','새벽기도 불참'],'새벽기도 선택',2],
-   ['shindo_confession_branch',['','긍정적 발언','사제 포섭 시도'],'고해실 선택',1],
+   ['shindo_confession_branch',['','긍정적 발언','사제 포섭 시도'],'고해소 선택',1],
    ['shindo_day2_morning',null,'오전 활동 장소',2],
    ['shindo_prayer_branch_v99',['','단상 위 청소','자는 사람 깨우기','성경 한 장 넘기기','청소 돕기'],'기도관 활동',2],
    ['shindo_art_branch_v105',['','호랑이 그림 보기','캔버스 옮기기','예술당 조사하기'],'예술당 활동',2]
@@ -246,7 +246,7 @@
   if(!records.length){empty('아직 기록된 플레이 이력이 없습니다. 앞으로 선택하는 활동과 획득한 증거품이 이곳에 저장됩니다.');return}
   function knownDay(r){if(Number(r.day)>0)return Number(r.day);
    if(/새벽기도|오전 활동|기도관 활동|예술당 활동/.test(r.label||''))return 2;
-   if(/고해실 선택/.test(r.label||''))return 1;
+   if(/고해(?:실|소) 선택/.test(r.label||''))return 1;
    return null;
   }
   records.slice().reverse().forEach(r=>{

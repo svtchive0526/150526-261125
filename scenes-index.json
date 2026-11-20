@@ -660,7 +660,7 @@
   {
     "scene": 100,
     "kind": "narration",
-    "text": "고해실 내부로 입장한다. 문이 닫히자, 나긋하되 중압감 있는 목소리가 좁은 공간에 울린다.",
+    "text": "고해소 내부로 입장한다. 문이 닫히자, 나긋하되 중압감 있는 목소리가 좁은 공간에 울린다.",
     "sound": "confessionDoor",
     "enterConfession": true
   },
