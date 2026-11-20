@@ -576,6 +576,11 @@ const style=document.createElement('style');style.textContent=`
 @media(max-width:450px){#shindo-vn .shindo-prayer-grid .shindo-morning-options{gap:8px}#shindo-vn .shindo-prayer-grid .shindo-morning-options button{font-size:13px;padding:14px 8px}}
 
 /* v105: Art Hall and reusable evidence acquisition UI */
+
+/* V119: Normalized portraits for the Minghao special branch, without changing other story characters. */
+#shindo-vn .vn-portrait.special-solo{height:min(56vh,650px)!important;max-width:none!important;width:auto!important;--portrait-scale:1!important;--portrait-offset-x:-50%!important;--portrait-offset-y:0px!important;bottom:clamp(160px,23vh,245px)!important;object-fit:contain}
+@media(max-width:750px){#shindo-vn .vn-portrait.special-solo{height:min(49vh,600px)!important;bottom:170px!important}}
+
 #shindo-vn .vn-portrait.art-silhouette{filter:brightness(0)!important}
 #shindo-vn .shindo-evidence-overlay{position:absolute;inset:0;z-index:32;background:#000;display:flex;align-items:center;justify-content:center;padding:22px;box-sizing:border-box;cursor:default}
 #shindo-vn .shindo-evidence-card{width:min(560px,100%);background:#101012;border:1px solid #5a5a5d;border-radius:9px;padding:30px 25px;color:#fff;text-align:center;display:flex;flex-direction:column;align-items:center;gap:19px;box-sizing:border-box;animation:vn-image-appear .65s ease both}
@@ -643,6 +648,9 @@ const recallKicker=document.createElement('div');recallKicker.className='special
 function setSpecialPortraits(scene){
  overlay.classList.toggle('is-recall',!!scene.recall);
  if(!scene.duo){duoLayer.classList.remove('is-active');duoLeft.removeAttribute('src');duoRight.removeAttribute('src');return false}
+ duoLeft.style.visibility='visible';duoRight.style.visibility='visible';
+ duoLeft.onerror=()=>{duoLeft.onerror=()=>{duoLeft.style.visibility='hidden'};duoLeft.src='story-portraits/'+scene.duo[0]+'.png'};
+ duoRight.onerror=()=>{duoRight.onerror=()=>{duoRight.style.visibility='hidden'};duoRight.src='story-portraits/'+scene.duo[1]+'.png'};
  duoLeft.src='story-portraits/duo-'+scene.duo[0]+'.png';duoRight.src='story-portraits/duo-'+scene.duo[1]+'.png';
  duoLeft.classList.toggle('is-shadow',scene.duoMask==='both'||scene.duoMask==='hansol');
  duoRight.classList.toggle('is-shadow',scene.duoMask==='both');
@@ -996,7 +1004,15 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
  if(scene.portraitPlaceholder)currentPortrait='';
  speakerTag.textContent=scene.kind==='narration'||scene.inner?'':(scene.maskSpeaker||scene.speaker==='한솔'&&!hansolRevealed||scene.speaker==='석민'&&!seokminRevealed||scene.speaker==='찬'&&!chanRevealed?'??':scene.speaker==='순영'&&!soonyoungRevealed?'??':scene.speaker==='명호'&&!minghaoRevealed?'??':scene.speaker==='주인공'?'김봉봉':scene.speaker==='승철'&&!revealed?'??':scene.speaker==='지훈'&&!jihoonRevealed?'??':scene.speaker);
  content.classList.toggle('vn-inner',!!scene.inner);
- if(currentPortrait){applyPortraitProfile(currentPortrait);portrait.src='story-portraits/'+currentPortrait+'.png';portrait.hidden=!!scene.illustration||duoVisible;portrait.classList.toggle('prayer-silhouette',!!scene.silhouette);portrait.classList.toggle('art-silhouette',!!(scene.artHall&&scene.silhouette))}
+ if(currentPortrait){
+  const specialSolo=!!(scene.specialMinghao&&scene.portrait&&!duoVisible);
+  applyPortraitProfile(currentPortrait);
+  portrait.classList.toggle('special-solo',specialSolo);
+  portrait.src='story-portraits/'+(specialSolo?'solo-':'')+currentPortrait+'.png';
+  portrait.hidden=!!scene.illustration||duoVisible;
+  portrait.classList.toggle('prayer-silhouette',!!scene.silhouette);
+  portrait.classList.toggle('art-silhouette',!!(scene.artHall&&scene.silhouette));
+ }else{portrait.classList.remove('special-solo')}
 }else{
  if(scene.clearPortrait||scene.specialMinghao)currentPortrait='';
  speakerTag.textContent='';content.classList.remove('vn-inner');
