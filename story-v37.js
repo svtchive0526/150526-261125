@@ -611,35 +611,35 @@ const CONFESSIONAL_MORNING_START=scenes.length;
 scenes.push(
  {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"대낮에, 그것도 스스로 고해소에 오다니.","speaker":"주인공","clearPortrait":true},
  {"kind":"narration","confMorning":true,"confLocation":"outside","text":"고해소의 문을 두드린다.","sound":"knock","clearPortrait":true},
- {"kind":"narration","confMorning":true,"confLocation":"outside","text":"원우 사제가 의문스러운 표정으로 나를 쳐다본다.","portrait":"wonwoo-body2-default"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"고해성사를 하러 오신 겁니까?","speaker":"원우","portrait":"wonwoo-body2-default"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"정보를 캐러 왔다고 할 수도 없고, 놀러 왔다고 둘러댈 수도 없고...","speaker":"주인공","portrait":"wonwoo-body2-default"},
- {"kind":"conf-morning-choice","confMorning":true,"confLocation":"outside"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","confMorningBranch":1,"text":"♪어찌 합…니까...♪","speaker":"주인공","portrait":"wonwoo-body2-default","fontScale":0.75,"boxShakeSoft":true},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","confMorningBranch":1,"text":"♪어떻게 할...까요...♪","speaker":"주인공","portrait":"wonwoo-body2-default","fontScale":0.5,"boxShakeSoft":true},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","confMorningBranch":1,"text":"(그래 내가 감히 드립을 쳤다.)","speaker":"주인공","portrait":"wonwoo-body2-default"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","confMorningBranch":1,"text":"(그것도 하필 찔러도 피 한 방울 나오지 않을 거 같은 사제 앞에서.)","speaker":"주인공","portrait":"wonwoo-body2-default"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","confMorningBranch":1,"text":"…? 여긴 코인 노래방이 아닙니다만.","speaker":"원우","portrait":"wonwoo-body1-default"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","confMorningBranch":1,"text":"…죄송합니다.","speaker":"주인공","portrait":"wonwoo-body1-default"},
- {"kind":"conf-morning-shared-start","confMorning":true,"confLocation":"outside"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"저 실은, 제 안의 불안을 고백하고자 왔습니다.","speaker":"주인공","portrait":"wonwoo-body1-default"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"그리고 사제님께 조언을 구하고자 왔습니다.","speaker":"주인공","portrait":"wonwoo-body1-default"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"이곳 생활에 조금 더 빨리 적응하고 싶습니다.","speaker":"주인공","portrait":"wonwoo-body1-default"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"어떻게 하면 신께 가까워질 수 있을까요?","speaker":"주인공","portrait":"wonwoo-body1-default"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"(물론 연기다.)","speaker":"주인공","portrait":"wonwoo-body1-default"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"(최대한 간절한 척하면, 아무리 사이비라도 사제면 못 본 척은 못 할 거다.)","speaker":"주인공","portrait":"wonwoo-body1-smile"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"음, 저 역시 혼란을 겪은 적 있습니다.","speaker":"원우","portrait":"wonwoo-body1-eyesmile"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"불안이란 고인 물과도 같아서,","speaker":"원우","portrait":"wonwoo-body1-eyesmile"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"쌓일수록 흐르지 못하고 마음 바닥에 무겁게 가라앉기만 합니다.","speaker":"원우","portrait":"wonwoo-body1-eyesmile"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"그걸 풀어 주는 건 결국엔 사람, 가족입니다.","speaker":"원우","portrait":"wonwoo-body1-eyesmile"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"봉봉 씨도 사람에 지쳐 이곳을 찾으셨겠지요.","speaker":"원우","portrait":"wonwoo-body1-smile"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"카밀레교에서 참된 가족을,","speaker":"원우","portrait":"wonwoo-body1-eyesclosed","boldAll":true,"fontScale":1.15},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"원래의 흐름을,","speaker":"원우","portrait":"wonwoo-body1-eyesclosed","boldAll":true,"fontScale":1.15},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"진정한 믿음을 찾으시길 바랍니다.","speaker":"원우","portrait":"wonwoo-body1-eyesmile","boldAll":true,"fontScale":1.2},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"(따듯한 말이다. 그래서 더 서늘하다.)","speaker":"주인공","portrait":"wonwoo-body1-eyesclosed"},
- {"kind":"narration","confMorning":true,"confLocation":"outside","text":"그래도 원우 사제의 표정이 전보다는 풀어진 듯 하다.","portrait":"wonwoo-body1-eyesmile"},
- {"kind":"dialogue","confMorning":true,"confLocation":"outside","text":"(조금 더 친근해졌다고 믿, 믿을 수 있을까?!)","speaker":"주인공","portrait":"wonwoo-body1-eyesclosed"},
- {"kind":"conf-morning-end","confMorning":true,"confLocation":"outside"}
+ {"kind":"narration","confMorning":true,"confLocation":"inside","text":"원우 사제가 의문스러운 표정으로 나를 쳐다본다.","portrait":"wonwoo-body2-default"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"고해성사를 하러 오신 겁니까?","speaker":"원우","portrait":"wonwoo-body2-default"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"정보를 캐러 왔다고 할 수도 없고, 놀러 왔다고 둘러댈 수도 없고...","speaker":"주인공","portrait":"wonwoo-body2-default"},
+ {"kind":"conf-morning-choice","confMorning":true,"confLocation":"inside"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","confMorningBranch":1,"text":"♪어찌 합…니까...♪","speaker":"주인공","portrait":"wonwoo-body2-default","fontScale":0.75,"boxShakeSoft":true},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","confMorningBranch":1,"text":"♪어떻게 할...까요...♪","speaker":"주인공","portrait":"wonwoo-body2-default","fontScale":0.5,"boxShakeSoft":true},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","confMorningBranch":1,"text":"(그래 내가 감히 드립을 쳤다.)","speaker":"주인공","portrait":"wonwoo-body2-default"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","confMorningBranch":1,"text":"(그것도 하필 찔러도 피 한 방울 나오지 않을 거 같은 사제 앞에서.)","speaker":"주인공","portrait":"wonwoo-body2-default"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","confMorningBranch":1,"text":"…? 여긴 코인 노래방이 아닙니다만.","speaker":"원우","portrait":"wonwoo-body1-default"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","confMorningBranch":1,"text":"…죄송합니다.","speaker":"주인공","portrait":"wonwoo-body1-default"},
+ {"kind":"conf-morning-shared-start","confMorning":true,"confLocation":"inside"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"저 실은, 제 안의 불안을 고백하고자 왔습니다.","speaker":"주인공","portrait":"wonwoo-body1-default"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"그리고 사제님께 조언을 구하고자 왔습니다.","speaker":"주인공","portrait":"wonwoo-body1-default"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"이곳 생활에 조금 더 빨리 적응하고 싶습니다.","speaker":"주인공","portrait":"wonwoo-body1-default"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"어떻게 하면 신께 가까워질 수 있을까요?","speaker":"주인공","portrait":"wonwoo-body1-default"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"(물론 연기다.)","speaker":"주인공","portrait":"wonwoo-body1-default"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"(최대한 간절한 척하면, 아무리 사이비라도 사제면 못 본 척은 못 할 거다.)","speaker":"주인공","portrait":"wonwoo-body1-smile"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"음, 저 역시 혼란을 겪은 적 있습니다.","speaker":"원우","portrait":"wonwoo-body1-eyesmile"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"불안이란 고인 물과도 같아서,","speaker":"원우","portrait":"wonwoo-body1-eyesmile"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"쌓일수록 흐르지 못하고 마음 바닥에 무겁게 가라앉기만 합니다.","speaker":"원우","portrait":"wonwoo-body1-eyesmile"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"그걸 풀어 주는 건 결국엔 사람, 가족입니다.","speaker":"원우","portrait":"wonwoo-body1-eyesmile"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"봉봉 씨도 사람에 지쳐 이곳을 찾으셨겠지요.","speaker":"원우","portrait":"wonwoo-body1-smile"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"카밀레교에서 참된 가족을,","speaker":"원우","portrait":"wonwoo-body1-eyesclosed","boldAll":true,"fontScale":1.15},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"원래의 흐름을,","speaker":"원우","portrait":"wonwoo-body1-eyesclosed","boldAll":true,"fontScale":1.15},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"진정한 믿음을 찾으시길 바랍니다.","speaker":"원우","portrait":"wonwoo-body1-eyesmile","boldAll":true,"fontScale":1.2},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"(따듯한 말이다. 그래서 더 서늘하다.)","speaker":"주인공","portrait":"wonwoo-body1-eyesclosed"},
+ {"kind":"narration","confMorning":true,"confLocation":"inside","text":"그래도 원우 사제의 표정이 전보다는 풀어진 듯 하다.","portrait":"wonwoo-body1-eyesmile"},
+ {"kind":"dialogue","confMorning":true,"confLocation":"inside","text":"(조금 더 친근해졌다고 믿, 믿을 수 있을까?!)","speaker":"주인공","portrait":"wonwoo-body1-eyesclosed"},
+ {"kind":"conf-morning-end","confMorning":true,"confLocation":"inside"}
 );
 
 const sceneBackdropRanges=[
@@ -670,7 +670,7 @@ function getSceneBackdrop(sceneNumber,scene){
   return LIVING_BACKDROPS[location]||'';
  }
  if(scene&&scene.mainHall)return {inside:'bg-sanctuary-inside.png',office:'bg-sanctuary-office.jpg',library:'bg-sanctuary-library.jpg'}[scene.mainLocation||'inside']||'';
- if(scene&&scene.confMorning)return 'bg-confession-outside.png';
+ if(scene&&scene.confMorning)return {outside:'bg-confession-outside.png',inside:'bg-confession-inside.png'}[scene.confLocation||'outside']||'bg-confession-outside.png';
  // V149: keep the sleep/title interstitial entirely black.
  if(scene&&scene.kind==='sleep-transition')return "";
  // V152: optional location photos for Day 2 activities. No scene is inserted,
@@ -1551,7 +1551,7 @@ if(scene.specialMinghao){
   window.SHINDO_markCharacterMet?.('한솔');
  }
 }
-if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.artHall||scene.livingHall||scene.mainHall)&&(scene.portrait||duoVisible))){
+if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.artHall||scene.livingHall||scene.mainHall||scene.confMorning)&&(scene.portrait||duoVisible))){
  if(scene.clearPortrait){currentPortrait='';portrait.hidden=true}
  if(duoVisible){currentPortrait='';portrait.dataset.officialRequest=String((Number(portrait.dataset.officialRequest)||0)+1);portrait.hidden=true;portrait.removeAttribute('src');} // V116: prevent lingering solo portrait behind two-person scene
  if(inDay2Square && !scene.portrait)currentPortrait='';
