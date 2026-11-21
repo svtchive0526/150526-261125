@@ -528,7 +528,7 @@ scenes.push(
  {"kind":"dialogue","livingHall":true,"text":"(자꾸 비집고 나오는 호기심을 꾹 참고 일단 웃어본다.)","livingBranch":3,"portrait":"jihoon-body1-flustered","livingLocation":"corridor","speaker":"주인공"},
  {"kind":"dialogue","livingHall":true,"text":"와, 이곳 생활이 그만큼 좋으니까 다시 돌아오신 거겠네요.","livingBranch":3,"portrait":"jihoon-body1-smile","livingLocation":"corridor","speaker":"주인공"},
  {"kind":"dialogue","livingHall":true,"text":"아무래도 그렇죠?","livingBranch":3,"portrait":"jihoon-body2-smile","livingLocation":"corridor","speaker":"지훈"},
- {"kind":"narration","livingHall":true,"text":"지훈의 목소리가 조금 차분해졌다.","livingBranch":3,"livingLocation":"corridor"},
+ {"kind":"narration","livingHall":true,"text":"지훈의 목소리가 조금 차분해졌다.","livingBranch":3,"portrait":"jihoon-body2-smile","livingLocation":"corridor"},
  {"kind":"dialogue","livingHall":true,"text":"편합니다. 규칙적인 생활도 그렇고, 사람들도요.","livingBranch":3,"portrait":"jihoon-body1-smile","livingLocation":"corridor","speaker":"지훈"},
  {"kind":"dialogue","livingHall":true,"text":"…신도들은 가족이니깐요.","livingBranch":3,"portrait":"jihoon-body1-smile","livingLocation":"corridor","speaker":"주인공"},
  {"kind":"dialogue","livingHall":true,"text":"가족 이상으로 소중하죠.","livingBranch":3,"portrait":"jihoon-body1-eyesmile","livingLocation":"corridor","speaker":"지훈"},
