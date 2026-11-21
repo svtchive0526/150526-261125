@@ -1929,8 +1929,30 @@ function hadMorningConfessionalVisit(){
 }
 let v178BellAudio=null,v178BellGain=null,v178AudioTimers=[];
 function stopV178Bell(){if(v178BellGain)clearInterval(v178BellGain);v178BellGain=null;if(v178BellAudio){v178BellAudio.pause();v178BellAudio=null}}
-function startV178Bell(){stopV178Bell();v178BellAudio=playExtraAudio('gongyang-bell-01.wav',.07);const a=v178BellAudio;let count=0;v178BellGain=setInterval(()=>{if(v178BellAudio!==a){clearInterval(v178BellGain);v178BellGain=null;return}count++;a.volume=Math.min(.9,.07+count*.075);if(count>=11){clearInterval(v178BellGain);v178BellGain=null}},360)}
-function v178Cue(cue){if(cue==='bell'&&!v178BellAudio)startV178Bell()}
+function startV178Bell(){
+ // V181: use the same official gongyang bell as Day 2, but begin directly on
+ // the user-triggered transition to the Day 3 title (mobile autoplay safe).
+ if(v178BellAudio&&!v178BellAudio.paused&&!v178BellAudio.ended)return;
+ stopV178Bell();
+ const a=new Audio('story-audio/gongyang-bell-01.wav');
+ a.preload='auto';a.loop=false;a.volume=.12;
+ v178BellAudio=a;
+ const clear=()=>{if(v178BellAudio===a)stopV178Bell()};
+ a.addEventListener('ended',clear,{once:true});
+ a.addEventListener('error',clear,{once:true});
+ const started=a.play();
+ if(started&&typeof started.catch==='function')started.catch(err=>{
+  console.warn('3일차 공양제 종소리 재생 실패; 다음 진행 입력에서 재시도',err);
+  if(v178BellAudio===a)stopV178Bell();
+ });
+ let count=0;
+ v178BellGain=setInterval(()=>{
+  if(v178BellAudio!==a){clearInterval(v178BellGain);v178BellGain=null;return}
+  count++;a.volume=Math.min(.9,.12+count*.078);
+  if(count>=10){clearInterval(v178BellGain);v178BellGain=null}
+ },330);
+}
+function v178Cue(cue){if(cue==='bell'&&(!v178BellAudio||v178BellAudio.paused||v178BellAudio.ended))startV178Bell()}
 function v178Patrol(mode){
  if(!mode){duoLayer.classList.remove('v178-patrol','is-visible','is-active');return}
  if(mode==='in'){
@@ -1955,7 +1977,9 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
    areaSkipButton.hidden=true;stopV178Bell();v178Patrol(null);storyBackdrop.style.opacity='0';applySceneBackdrop(index,scene);
    box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
    const center=overlay.querySelector('.vn-center')||(()=>{const e=document.createElement('div');e.className='vn-center';overlay.appendChild(e);return e})();
-   center.textContent=scene.text;center.style.display='block';locked=true;if(scene.kind==='v178-day3-title')setTimeout(()=>{if(scenes[index]===scene)startV178Bell()},1750);timer=setTimeout(()=>{center.style.display='none';locked=false;next()},2300);return;
+   center.textContent=scene.text;center.style.display='block';locked=true;
+   if(scene.kind==='v178-day3-title')startV178Bell();
+   timer=setTimeout(()=>{center.style.display='none';locked=false;next()},2300);return;
   }
   if(scene.v178Audio)v178Cue(scene.v178Audio);
   if(scene.patrolDuo==='in'||scene.patrolDuo==='out'){currentPortrait='';portrait.hidden=true;v178Patrol(scene.patrolDuo);}
@@ -2355,6 +2379,7 @@ function enterEveningDay2(){
  stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopArtAudio();stopPencil();
  duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall','art-blackout');
  eveningBranch=0;localStorage.removeItem('shindo_evening_branch_day2_v173');
+ seungkwanTruthBranch=0;localStorage.removeItem('shindo_seungkwan_truth_branch_v177');localStorage.removeItem('shindo_police_coop_v178');
  const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
  currentPortrait='';portrait.hidden=true;portrait.classList.remove('evening-shadow');illustration.hidden=true;
  index=EVENING_DAY2_START;locked=false;save();render();
@@ -2382,7 +2407,9 @@ function showSeungkwanChoice(){
  locked=true;box.style.display='none';overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
- if(seungkwanTruthBranch){jumpV178(seungkwanTruthBranch===1?'tell':'deny');return}
+ // V181: always offer the choice on revisiting this scene, including a replay.
+ // A previous decision never silently redirects the player.
+ seungkwanTruthBranch=0;localStorage.removeItem('shindo_seungkwan_truth_branch_v177');
  const options=['말한다','말하지 않는다'];
  el.innerHTML='<h2>승관에게 진실을 말할까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button type="button" data-seungkwan="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
  el.style.display='flex';
@@ -2561,7 +2588,9 @@ function showPrayerChoice(){
 }
 
 function returnToMorningActivities(){
+ stopV178Bell();v178Patrol(null);stopEveningWalk();
  stopEveningTick();eveningBranch=0;localStorage.removeItem('shindo_evening_branch_day2_v173');
+ seungkwanTruthBranch=0;localStorage.removeItem('shindo_seungkwan_truth_branch_v177');localStorage.removeItem('shindo_police_coop_v178');
  duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');
  clearTimeout(timer);timer=null;stopVnTyping(false);stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopArtAudio();stopGongyangBell();stopLeaderShout();stopGongyangApplause();
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;portrait.classList.remove('prayer-silhouette','art-silhouette','living-silhouette');
