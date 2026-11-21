@@ -1406,7 +1406,7 @@ window.__shindoMainLockReady=true;
 #shindo-feedback .sf-bottom{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:clamp(55px,12vh,135px)}
 #shindo-feedback .sf-bottom button{padding:12px 25px}
 
-#shindo-feedback #sf-restart-day1,#shindo-feedback #sf-restart-day2{background:#e7e7e7;border-color:#929292;color:#262626}
+#shindo-feedback #sf-restart-day1,#shindo-feedback #sf-restart-day2,#shindo-feedback #sf-restart-day2-afternoon{background:#e7e7e7;border-color:#929292;color:#262626}
 #shindo-feedback #sf-restart-from-opening{background:#343434;border-color:#575757;color:#fff}
 #shindo-feedback #sf-restart-from-opening:hover{background:#4b4b4b}
 #shindo-feedback .sf-status{min-height:24px;text-align:center;font-size:14px;color:#555;margin-top:15px}
@@ -1433,7 +1433,7 @@ window.__shindoMainLockReady=true;
 #shindo-feedback .sf-reply-submit{background:#006236;color:#fff;border:0;border-radius:8px;padding:8px 17px;font-size:13px;font-weight:750}
 #shindo-feedback .sf-reply-submit:disabled{opacity:.5;cursor:wait}
 #shindo-feedback .sf-reply-note{color:#777;font-size:12px}
-</style><section id="shindo-feedback" role="dialog" aria-modal="true" aria-label="베타테스트 피드백"><div class="sf-wrap"><h2>피드백을 남겨주세요!</h2><div class="sf-people" role="group" aria-label="작성자 선택"><button class="sf-person" data-person="셉카" aria-pressed="true">셉카</button><button class="sf-person" data-person="안처" aria-pressed="false">안처</button><button class="sf-person" data-person="비행" aria-pressed="false">비행</button></div><div class="sf-compose"><p class="sf-hint" id="sf-hint"></p><textarea id="sf-message" maxlength="3000" aria-label="피드백 내용" placeholder="피드백 내용을 적어주세요."></textarea></div><div class="sf-bottom"><button type="button" id="sf-save">저장하기</button><button type="button" id="sf-return">게임으로돌아가기</button><button type="button" id="sf-restart-day1">1일차부터 다시 시작</button><button type="button" id="sf-restart-day2">2일차부터 다시 시작</button><button type="button" id="sf-restart-from-opening">아예 처음부터 다시 하기</button></div><div class="sf-status" id="sf-status" role="status" aria-live="polite"></div><div class="sf-posts"><h3>모두의 피드백</h3><div id="sf-post-list" class="sf-muted">불러오는 중...</div></div></div></section><script src="feedback-config.js"></script><script id="shindo-feedback-script">
+</style><section id="shindo-feedback" role="dialog" aria-modal="true" aria-label="베타테스트 피드백"><div class="sf-wrap"><h2>피드백을 남겨주세요!</h2><div class="sf-people" role="group" aria-label="작성자 선택"><button class="sf-person" data-person="셉카" aria-pressed="true">셉카</button><button class="sf-person" data-person="안처" aria-pressed="false">안처</button><button class="sf-person" data-person="비행" aria-pressed="false">비행</button></div><div class="sf-compose"><p class="sf-hint" id="sf-hint"></p><textarea id="sf-message" maxlength="3000" aria-label="피드백 내용" placeholder="피드백 내용을 적어주세요."></textarea></div><div class="sf-bottom"><button type="button" id="sf-save">저장하기</button><button type="button" id="sf-return">게임으로돌아가기</button><button type="button" id="sf-restart-day1">1일차부터 다시 시작</button><button type="button" id="sf-restart-day2">2일차부터 다시 시작</button><button type="button" id="sf-restart-day2-afternoon">2일차 오후 활동부터 다시 시작</button><button type="button" id="sf-restart-from-opening">아예 처음부터 다시 하기</button></div><div class="sf-status" id="sf-status" role="status" aria-live="polite"></div><div class="sf-posts"><h3>모두의 피드백</h3><div id="sf-post-list" class="sf-muted">불러오는 중...</div></div></div></section><script src="feedback-config.js"></script><script id="shindo-feedback-script">
 (()=>{
 'use strict';
 const box=document.getElementById('shindo-feedback');
@@ -1530,6 +1530,14 @@ function restartAtDay(day){
 }
 box.querySelector('#sf-restart-day1').addEventListener('click',()=>restartAtDay(1));
 box.querySelector('#sf-restart-day2').addEventListener('click',()=>restartAtDay(2));
+box.querySelector('#sf-restart-day2-afternoon').addEventListener('click',()=>{
+ const action=window.SHINDO_restartFromDay2Afternoon;
+ if(typeof action!=='function'){setStatus('2일차 오후 재시작 기능을 찾지 못했습니다. 패치 파일을 확인해주세요.');return}
+ if(!window.confirm('2일차 오후 활동(저녁 고해소)부터 다시 시작할까요?\n오전 활동의 친밀도·증거품은 유지하고 오후 이후 선택 기록만 초기화됩니다.'))return;
+ box.classList.remove('sf-open');
+ document.documentElement.style.overflow=document.documentElement.style.getPropertyValue('--sf-prior-overflow')||'';
+ try{action()}catch(err){console.error('2일차 오후 재시작 오류',err);box.classList.add('sf-open');setStatus('2일차 오후 재시작 중 오류가 발생했습니다.')}
+});
 function open(){if(box.classList.contains('sf-open'))return;lastFocus=document.activeElement;box.classList.add('sf-open');document.documentElement.style.setProperty('--sf-prior-overflow',document.documentElement.style.overflow);document.documentElement.style.overflow='hidden';updateHint();setStatus('');loadPosts();box.querySelector('.sf-person[aria-pressed="true"]').focus({preventScroll:true})}
 function close(){
  const completed=localStorage.getItem('shindo_story_progress_v37')==='complete';

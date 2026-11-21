@@ -387,7 +387,12 @@
    drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');
    (day===1?window.SHINDO_restartFromDay1:window.SHINDO_restartFromDay2)?.();
   });content.append(restart);
- }const restart=make('button','inv-feedback inv-feedback-reset','아예 처음부터 다시 하기');restart.type='button';restart.addEventListener('click',()=>window.SHINDO_restartFromOpening?.());content.append(restart)}
+ }const afternoonRestart=make('button','inv-feedback inv-feedback-reset','2일차 오후 활동부터 다시 시작');afternoonRestart.type='button';afternoonRestart.addEventListener('click',()=>{
+  if(typeof window.SHINDO_restartFromDay2Afternoon!=='function')return;
+  if(!window.confirm('2일차 오후 활동(저녁 고해소)부터 다시 시작할까요?\n오전 활동 기록과 친밀도·증거품은 유지됩니다.'))return;
+  drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');
+  window.SHINDO_restartFromDay2Afternoon();
+ });content.append(afternoonRestart);const restart=make('button','inv-feedback inv-feedback-reset','아예 처음부터 다시 하기');restart.type='button';restart.addEventListener('click',()=>window.SHINDO_restartFromOpening?.());content.append(restart)}
  function render(){panel.querySelectorAll('.inv-tab').forEach(b=>{b.setAttribute('aria-selected',String(b.dataset.tab===active))});refreshUnreadIndicators();content.replaceChildren();({evidence,people,history,feedback})[active]()}
  panel.querySelectorAll('.inv-tab').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();active=b.dataset.tab;render()}));
  document.addEventListener('shindo-inventory-change',render);
