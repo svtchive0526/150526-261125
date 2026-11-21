@@ -1617,12 +1617,16 @@ function restartFromDay1(){
  index=day1Start>=0?day1Start:0;
  locked=false;save();render();
 }
+function getMorningAffinityDay(){
+ const stored=Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||2);
+ return Math.max(2,Math.min(13,stored));
+}
 function showDay2Choice(type){locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  const prayer=type==='prayer';const options=prayer?['새벽기도에 참석한다','새벽기도에 참석하지 않는다']:['기도관','예술당','생활관','본당','고해소','공양실'];
  el.classList.toggle('shindo-morning-grid',!prayer);
  el.innerHTML='<h2>'+(prayer?'새벽기도에 참석할까?':'오전 활동이다. 어디로 가볼까?')+'</h2>'+(prayer?options.map((t,i)=>'<button data-choice="'+(i+1)+'">'+t+'</button>').join(''):'<div class="shindo-morning-options">'+options.map((t,i)=>'<button data-choice="'+(i+1)+'">'+t+'</button>').join('')+'</div><button type="button" class="shindo-day1-restart">↺ 1일차부터 다시 시작 (임시)</button>');el.style.display='flex';
  if(!prayer)el.querySelector('.shindo-day1-restart').onclick=e=>{e.stopPropagation();restartFromDay1()};
- el.querySelectorAll('[data-choice]').forEach(b=>b.onclick=e=>{e.stopPropagation();if(prayer){day2Prayer=Number(b.dataset.choice);window.SHINDO_addPlayRecord?.('선택','새벽기도: '+options[day2Prayer-1]);localStorage.setItem('shindo_day2_prayer',String(day2Prayer));window.SHINDO_applyAffinityEvent?.('prayer',day2Prayer===1?'참석':'불참',2);el.style.display='none';locked=false;next()}else{day2Morning=options[Number(b.dataset.choice)-1];window.SHINDO_addPlayRecord?.('선택','오전 활동 장소: '+day2Morning);localStorage.setItem('shindo_day2_morning',day2Morning);window.SHINDO_applyAffinityEvent?.('room',day2Morning,2);
+ el.querySelectorAll('[data-choice]').forEach(b=>b.onclick=e=>{e.stopPropagation();if(prayer){day2Prayer=Number(b.dataset.choice);window.SHINDO_addPlayRecord?.('선택','새벽기도: '+options[day2Prayer-1]);localStorage.setItem('shindo_day2_prayer',String(day2Prayer));window.SHINDO_applyAffinityEvent?.('prayer',day2Prayer===1?'참석':'불참',2);el.style.display='none';locked=false;next()}else{day2Morning=options[Number(b.dataset.choice)-1];window.SHINDO_addPlayRecord?.('선택','오전 활동 장소: '+day2Morning);localStorage.setItem('shindo_day2_morning',day2Morning);window.SHINDO_applyAffinityEvent?.('room',day2Morning,getMorningAffinityDay());
  if(day2Morning==='예술당'){
   artBranch=0;artLocation='main';artImage='';stopArtAudio();el.style.display='none';currentPortrait='';portrait.hidden=true;index=ART_SCENE_START;save();locked=true;enterMorningBuilding('bg-art-hall-exterior.jpg',()=>{locked=false;render()});
  }else if(day2Morning==='기도관'){
@@ -1652,6 +1656,7 @@ function showMainChoice(){
  el.querySelectorAll('[data-main]').forEach(b=>b.onclick=e=>{
   e.stopPropagation();mainBranch=Number(b.dataset.main);localStorage.setItem('shindo_main_branch_v160',String(mainBranch));
   window.SHINDO_addPlayRecord?.('선택','본당 탐색: '+(mainBranch===1?'사무실':'도서실'));
+  if(mainBranch===1)window.SHINDO_applyAffinityEvent?.('person','본당 탐색: 사무실',getMorningAffinityDay());
   const target=scenes.findIndex((x,i)=>i>MAIN_SCENE_START&&x.mainBranch===mainBranch);
   el.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;
   if(target>=0){index=target;save();locked=false;render()}
@@ -1676,6 +1681,7 @@ function showConfMorningChoice(){
   confMorningBranch=Number(b.dataset.confMorning);
   localStorage.setItem('shindo_confession_morning_branch_v163',String(confMorningBranch));
   window.SHINDO_addPlayRecord?.('선택','고해소 대응: '+options[confMorningBranch-1]);
+  window.SHINDO_applyAffinityEvent?.('person','고해소 대응: '+options[confMorningBranch-1],getMorningAffinityDay());
   const target=confMorningBranch===1 ? scenes.findIndex((x,i)=>i>CONFESSIONAL_MORNING_START&&x.confMorningBranch===1) : scenes.findIndex((x,i)=>i>CONFESSIONAL_MORNING_START&&x.kind==='conf-morning-shared-start');
   el.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;
   if(target>=0){index=target;save();locked=false;render()}
@@ -1701,6 +1707,7 @@ function showLivingChoice(){
   e.stopPropagation();livingBranch=Number(b.dataset.living);
   localStorage.setItem('shindo_living_branch_v156',String(livingBranch));
   window.SHINDO_addPlayRecord?.('선택','생활관 활동: '+options[livingBranch-1]);
+  if(livingBranch!==1)window.SHINDO_applyAffinityEvent?.('person','생활관 활동: '+options[livingBranch-1],getMorningAffinityDay());
   if(livingBranch===1){
    // Persistent, hidden story flag. The actual Jihoon bad-ending route will be
    // resolved by the later ending chapter; do not reveal it in the UI.
@@ -1749,7 +1756,7 @@ function showPrayerChoice(){
  el.classList.remove('shindo-morning-grid');el.classList.add('shindo-prayer-grid');
  const options=['단상 위 청소','자는 사람 깨우기','성경 한 장 넘기기','청소 돕기'];
  el.innerHTML='<h2>뭐부터 거들어 볼까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button data-prayer="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
- el.style.display='flex';el.querySelectorAll('[data-prayer]').forEach(b=>b.onclick=e=>{e.stopPropagation();stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopVnTyping(false);prayerBranch=Number(b.dataset.prayer);window.SHINDO_addPlayRecord?.('선택','기도관 활동: '+options[prayerBranch-1]);localStorage.setItem('shindo_prayer_branch_v99',String(prayerBranch));window.SHINDO_applyAffinityEvent?.('person','기도관 활동: '+options[prayerBranch-1],2);const branchStart=findPrayerBranchStart(prayerBranch);el.style.display='none';el.classList.remove('shindo-prayer-grid');currentPortrait='';portrait.hidden=true;illustration.hidden=true;if(branchStart!==-1){index=branchStart;locked=false;save();render();return}locked=false;next()});
+ el.style.display='flex';el.querySelectorAll('[data-prayer]').forEach(b=>b.onclick=e=>{e.stopPropagation();stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopVnTyping(false);prayerBranch=Number(b.dataset.prayer);window.SHINDO_addPlayRecord?.('선택','기도관 활동: '+options[prayerBranch-1]);localStorage.setItem('shindo_prayer_branch_v99',String(prayerBranch));window.SHINDO_applyAffinityEvent?.('person','기도관 활동: '+options[prayerBranch-1],getMorningAffinityDay());const branchStart=findPrayerBranchStart(prayerBranch);el.style.display='none';el.classList.remove('shindo-prayer-grid');currentPortrait='';portrait.hidden=true;illustration.hidden=true;if(branchStart!==-1){index=branchStart;locked=false;save();render();return}locked=false;next()});
 }
 
 function returnToMorningActivities(){
@@ -1783,7 +1790,7 @@ function showArtChoice(){
  el.querySelector('.shindo-special-test').onclick=e=>{e.stopPropagation();startMinghaoSpecial(true)};
  el.querySelectorAll('[data-art]').forEach(b=>b.onclick=e=>{
   e.stopPropagation();stopArtAudio();stopVnTyping(false);artBranch=Number(b.dataset.art);window.SHINDO_addPlayRecord?.('선택','예술당 활동: '+options[artBranch-1]);artLocation='main';artImage='';
-  localStorage.setItem('shindo_art_branch_v105',String(artBranch));window.SHINDO_applyAffinityEvent?.('person','예술당 활동: '+options[artBranch-1],2);
+  localStorage.setItem('shindo_art_branch_v105',String(artBranch));window.SHINDO_applyAffinityEvent?.('person','예술당 활동: '+options[artBranch-1],getMorningAffinityDay());
   if(artBranch===2&&getMinghaoAffinity()>=60){startMinghaoSpecial(false);return}
   const target=scenes.findIndex((x,i)=>i>ART_SCENE_START&&x.artBranch===artBranch);
   currentPortrait='';portrait.hidden=true;illustration.hidden=true;el.style.display='none';

@@ -100,9 +100,16 @@
   '사제':['조슈아','원우','명호','준휘','한솔'],
   '경찰':['정한','승관','석민','순영']
  };
+ // Morning locations: the verified cast appearing at each authored place.
+ // 공양실 has no authored character introductions yet. Add its roster when the
+ // story defines who is there, rather than silently awarding an arbitrary person.
  const ROOMS={
   '기도관':['한솔','승철','석민','찬'],
-  '예술당':['순영','명호']
+  '예술당':['순영','명호'],
+  '생활관':['정한','지훈','민규'],
+  '본당':['조슈아'],
+  '고해소':['원우'],
+  '공양실':[]
  };
  const PERSON_EVENTS={
   '기도관 활동: 단상 위 청소':'한솔',
@@ -110,7 +117,13 @@
   '기도관 활동: 성경 한 장 넘기기':'석민',
   '기도관 활동: 청소 돕기':'찬',
   '예술당 활동: 호랑이 그림 보기':'순영',
-  '예술당 활동: 캔버스 옮기기':'명호'
+  '예술당 활동: 캔버스 옮기기':'명호',
+  '생활관 활동: ??의 방에서 대화':'정한',
+  '생활관 활동: 말 걸기':'지훈',
+  '생활관 활동: 빨래 수거':'민규',
+  '본당 탐색: 사무실':'조슈아',
+  '고해소 대응: 임재범의 「고해」를 부른다.':'원우',
+  '고해소 대응: 미쳤냐? 가만히 있는다.':'원우'
  };
  // All participants start at zero except Joshua. Do not wipe existing scores on upgrades.
  function getAffinity(){const result=load(AFFINITY,{});if(!result||typeof result!=='object'||Array.isArray(result))return {};
@@ -135,11 +148,18 @@
    changes=ROOMS[label].map(name=>[name,5]);
   }else if(kind==='person'){
    const person=PERSON_EVENTS[label];if(!person)return false;
-   eventId=d+'|개별|'+label;
+   eventId=d+'|개별인물|'+person;
    changes=[[person,15]];
   }else return false;
   const ledger=load(AFFINITY_EVENTS,[]);if(!Array.isArray(ledger))return false;
   if(ledger.includes(eventId))return false;
+  if(kind==='person'){
+   const selected=PERSON_EVENTS[label];
+   if(ledger.some(id=>typeof id==='string'&&(
+    id===d+'|개별인물|'+selected ||
+    (id.startsWith(d+'|개별|')&&PERSON_EVENTS[id.slice((d+'|개별|').length)]===selected)
+   )))return false;
+  }
   const values=getAffinity();
   const changed=[];
   for(const [name,delta] of changes){
@@ -158,24 +178,32 @@
  // Repair existing V107-V110 saves using only recorded, actually selected actions.
  // Inferred progress positions are NOT sufficient evidence for an affinity grant.
  function restoreAffinityFromHistory(){
-  const records=load(HISTORY,[]);const seen=new Set();
-  if(Array.isArray(records))for(const r of records){if(typeof r?.label==='string')seen.add(r.label)}
-  const legacy=(key,mapper)=>{const v=localStorage.getItem(key);if(v!==null){const val=mapper(v);if(val)seen.add(val)}};
+  const records=load(HISTORY,[]);
+  const seen=new Map();
+  if(Array.isArray(records))for(const r of records){
+   if(typeof r?.label==='string'){
+    const day=Math.max(2,Math.floor(Number(r.day)||2));
+    if(day<=13)seen.set(day+'|'+r.label,{day,label:r.label});
+   }
+  }
+  const legacy=(key,mapper)=>{const v=localStorage.getItem(key);if(v!==null){const label=mapper(v);if(label)seen.set('2|'+label,{day:2,label})}};
   legacy('shindo_day2_prayer',v=>({'1':'새벽기도: 새벽기도에 참석한다','2':'새벽기도: 새벽기도에 참석하지 않는다'})[v]);
   legacy('shindo_day2_morning',v=>'오전 활동 장소: '+v);
   legacy('shindo_prayer_branch_v99',v=>({'1':'기도관 활동: 단상 위 청소','2':'기도관 활동: 자는 사람 깨우기','3':'기도관 활동: 성경 한 장 넘기기','4':'기도관 활동: 청소 돕기'})[v]);
   legacy('shindo_art_branch_v105',v=>({'1':'예술당 활동: 호랑이 그림 보기','2':'예술당 활동: 캔버스 옮기기','3':'예술당 활동: 예술당 조사하기'})[v]);
-  for(const label of seen){
+  legacy('shindo_living_branch_v156',v=>({'2':'생활관 활동: ??의 방에서 대화','3':'생활관 활동: 말 걸기','4':'생활관 활동: 빨래 수거'})[v]);
+  legacy('shindo_main_branch_v160',v=>({'1':'본당 탐색: 사무실','2':'본당 탐색: 도서실'})[v]);
+  legacy('shindo_confession_morning_branch_v163',v=>({'1':'고해소 대응: 임재범의 「고해」를 부른다.','2':'고해소 대응: 미쳤냐? 가만히 있는다.'})[v]);
+  for(const {day,label} of seen.values()){
    if(label.includes('새벽기도')){
-    if(/불참|않는다/.test(label))grantAffinity('prayer','불참',2);
-    else if(/참석/.test(label))grantAffinity('prayer','참석',2);
+    if(/불참|않는다/.test(label))grantAffinity('prayer','불참',day);
+    else if(/참석/.test(label))grantAffinity('prayer','참석',day);
    }
-   if(label.startsWith('오전 활동 장소: '))grantAffinity('room',label.slice('오전 활동 장소: '.length),2);
+   if(label.startsWith('오전 활동 장소: '))grantAffinity('room',label.slice('오전 활동 장소: '.length),day);
    if(PERSON_EVENTS[label]){
-    const room=label.startsWith('기도관')?'기도관':'예술당';
-    // Room visit is implied by an authored individual selection.
-    grantAffinity('room',room,2);
-    grantAffinity('person',label,2);
+    const room=label.startsWith('기도관')?'기도관':label.startsWith('예술당')?'예술당':label.startsWith('생활관')?'생활관':label.startsWith('본당')?'본당':'고해소';
+    grantAffinity('room',room,day);
+    grantAffinity('person',label,day);
    }
   }
  }
@@ -188,7 +216,7 @@
   const ledger=load(AFFINITY_EVENTS,[]);
   if(!Array.isArray(ledger)||!ledger.some(id=>typeof id==='string'&&id.includes('|장소|')))return;
   const expected={'조슈아':100};
-  let hasRoom=false;
+  let hasRoom=false;const creditedIndividuals=new Set();
   for(const id of ledger){
    if(typeof id!=='string')continue;
    const parts=id.split('|');
@@ -207,11 +235,19 @@
    }else if(parts[1]==='장소'&&ROOMS[parts.slice(2).join('|')]){
     hasRoom=true;
     changes=ROOMS[parts.slice(2).join('|')].map(n=>[n,5]);
+   }else if(parts[1]==='개별인물'){
+    const person=parts.slice(2).join('|');
+    if(PEOPLE.some(p=>p[0]===person))changes=[[person,15]];
    }else if(parts[1]==='개별'){
     const person=PERSON_EVENTS[parts.slice(2).join('|')];
     if(person)changes=[[person,15]];
    }
    for(const [name,delta] of changes){
+    if(parts[1]==='개별'||parts[1]==='개별인물'){
+     const individualKey=parts[0]+'|'+name;
+     if(creditedIndividuals.has(individualKey))continue;
+     creditedIndividuals.add(individualKey);
+    }
     expected[name]=Math.max(0,Math.min(100,(expected[name]||0)+delta));
    }
   }
