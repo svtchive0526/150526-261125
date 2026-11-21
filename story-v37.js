@@ -1403,10 +1403,14 @@ function playDialogueAdvanceClick(){
   });
  }catch(error){console.warn('[SHINDO] Dialogue click playback error:',error)}
 }
+// V144: Every real dialogue-advance input gets a click, whether it reveals
+// the current typewriter line or advances to the next line.
 function next(userAdvance=false){
- if(vnTypingTimer!==null){stopVnTyping(true);return;}
  if(locked)return;
- if(userAdvance && ['dialogue','narration','line'].includes(scenes[index]?.kind))playDialogueAdvanceClick();
+ if(userAdvance && ['dialogue','narration','line'].includes(scenes[index]?.kind)){
+  playDialogueAdvanceClick();
+ }
+ if(vnTypingTimer!==null){stopVnTyping(true);return;}
  if(index>=scenes.length-1){finish();return;}
  index++;save();render();
 }
