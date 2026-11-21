@@ -1790,8 +1790,40 @@ function findBranchEnd(prefix,branch){return scenes.findIndex((x,i)=>i>0 && x[pr
 function findCurrentAreaSkipTarget(){
  if(localStorage.getItem(SKIP_REPLAY)!=='1')return -1;
  const scene=scenes[index];if(!scene||AREA_CHOICE_KINDS.has(scene.kind)||AREA_END_KINDS.has(scene.kind)||scene.kind==='ending'||scene.kind==='sleep-transition'||scene.kind==='evidence-popup'||scene.kind==='living-recall')return -1;
- // V173: evening scene can be skipped only until its manual choice.
- if(scene.eveningDay2){const choice=scenes.findIndex((x,i)=>i>=EVENING_DAY2_START&&x.kind==='evening-choice');return index<choice?choice:-1}
+ // V180: replay-only skipping is scoped to a single Day 2 evening/night section.
+ // Never cross a manual choice, the evening intertitle, the room threshold,
+ // the Day 3 title or the ending. The first replay never unlocks full-story skip.
+ if(scene.eveningDay2){
+  const eveningChoice=scenes.findIndex((x,i)=>i>=EVENING_DAY2_START&&i<V178_OFFSET&&x.kind==='evening-choice');
+  if(index<eveningChoice)return eveningChoice;
+  if(!scene.v178){
+   if(scene.eveningBranch!==1&&scene.eveningBranch!==2)return -1;
+   const nextChoice=scenes.findIndex((x,i)=>i>index&&i<V178_OFFSET&&x.kind==='seungkwan-choice'&&x.eveningBranch===scene.eveningBranch);
+   return nextChoice;
+  }
+  if(['v178-hold','v178-ending','v178-coop-choice','v178-intertitle','v178-day3-title'].includes(scene.kind))return -1;
+  const byKind=(kind,extra)=>scenes.findIndex((x,i)=>i>=V178_OFFSET&&x.kind===kind&&(!extra||extra(x)));
+  const denyEnd=byKind('v178-hold',x=>x.v178Hold==='deny');
+  const nightTitle=byKind('v178-intertitle');
+  const firstEunjae=scenes.findIndex((x,i)=>i>=V178_OFFSET&&x.v178&&x.eveningLocation==='eunjae');
+  const coopChoice=byKind('v178-coop-choice');
+  const acceptEnd=byKind('v178-hold',x=>x.v178Hold==='accept');
+  const day3Title=byKind('v178-day3-title');
+  const finalEnding=byKind('v178-ending');
+  const denyStart=V178_OFFSET+V178_TARGETS.deny;
+  const tellStart=V178_OFFSET+V178_TARGETS.tell;
+  const acceptStart=V178_OFFSET+V178_TARGETS.accept;
+  const refuseStart=V178_OFFSET+V178_TARGETS.refuse;
+  if(index>=denyStart&&index<denyEnd)return denyEnd;
+  if(index>=tellStart&&index<nightTitle)return nightTitle;
+  if(index>nightTitle&&index<firstEunjae)return firstEunjae;
+  if(index>=firstEunjae&&index<coopChoice)return coopChoice;
+  if(index>=acceptStart&&index<acceptEnd)return acceptEnd;
+  if(index>=refuseStart&&index<day3Title)return day3Title;
+  // The final line and ending presentation remain visible; do not skip the ending.
+  if(index>day3Title&&index<finalEnding-1)return finalEnding-1;
+  return -1;
+ }
  // One day-one region at a time. The confessional stops BEFORE the choice.
  const choiceIndex=scenes.findIndex(x=>x.kind==='choice');
  const early=[[4,16],[17,56],[57,61],[62,67],[68,93]];
@@ -1846,11 +1878,19 @@ function runSkippedSceneState(from,to){
    ['revealChan','찬','shindo_chan_known_v99'],['revealSoonyoung','순영','shindo_soonyoung_known_v105'],
    ['revealMinghao','명호','shindo_minghao_known_v105'],['revealJeonghan','정한','shindo_jeonghan_known_v156'],
    ['revealMingyu','민규','shindo_mingyu_known_v156'],['revealJoshua','조슈아','shindo_joshua_known_v160'],
-   ['revealJunhui','준휘','shindo_junhui_known_v167']
+   ['revealJunhui','준휘','shindo_junhui_known_v167'],['revealSeungkwan','승관','shindo_seungkwan_known_v177']
   ])if(s[flag]){localStorage.setItem(key,'1');window.SHINDO_markCharacterMet?.(name);
    if(name==='한솔')hansolRevealed=true;if(name==='석민')seokminRevealed=true;if(name==='찬')chanRevealed=true;
    if(name==='순영')soonyoungRevealed=true;if(name==='명호')minghaoRevealed=true;if(name==='정한')jeonghanRevealed=true;
    if(name==='민규')mingyuRevealed=true;if(name==='조슈아')joshuaRevealed=true;if(name==='준휘')junhuiRevealed=true;
+   if(name==='승관')seungkwanRevealed=true;
+  }
+  // V178 police introductions grant name unlocks on narration, not a reveal flag.
+  if(s.revealName){
+   window.SHINDO_markCharacterMet?.(s.revealName);
+   const info={정한:['shindo_jeonghan_known_v156','jeonghan'],순영:['shindo_soonyoung_known_v105','soonyoung'],석민:['shindo_seokmin_known_v99','seokmin']}[s.revealName];
+   if(info){localStorage.setItem(info[0],'1');if(info[1]==='정한')jeonghanRevealed=true;
+    else if(info[1]==='순영')soonyoungRevealed=true;else seokminRevealed=true;}
   }
   if(s.enterSanctuary)overlay.classList.add('sanctuary');
   if(s.leaveSanctuary)overlay.classList.remove('sanctuary');
@@ -1870,6 +1910,11 @@ function skipCurrentArea(e){
  if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}
  if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}
  locked=false;currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+ if(scenes[index]?.eveningDay2){
+  // Background/character changes are handled by render() at the destination.
+  // Clear the night patrol overlay if the skip crossed its departure.
+  if(duoLayer.classList.contains('v178-patrol'))v178Patrol(null);
+ }
  index=target;save();render();
 }
 areaSkipButton.addEventListener('click',skipCurrentArea);
