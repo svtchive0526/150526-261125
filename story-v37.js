@@ -709,7 +709,9 @@ scenes.push(
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"square","text":"오늘은 뭘 건졌을까. 아니, 뭘 말해야 할까.","speaker":"주인공","clearPortrait":true},
  {"kind":"narration","eveningDay2":true,"eveningLocation":"outside","text":"신도들이 하나둘 고해소 쪽으로 걸음을 옮기고 있다.","clearPortrait":true},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"outside","text":"고해성사 시간이구나.","speaker":"주인공","clearPortrait":true},
- {"kind":"dialogue","eveningDay2":true,"eveningLocation":"inside","text":"고해소는 신성한 장소입니다.","speaker":"원우","portrait":"wonwoo-body2-default","sound":"confessionDoor"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"outside","eveningMorningConfessionalOnly":true,"text":"오전에도 갔는데, 또 가야하는군.","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"inside","eveningMorningConfessionalOnly":true,"text":"김봉봉씨. 또 보네요.","speaker":"원우","portrait":"wonwoo-body2-default","sound":"confessionDoor"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"inside","text":"고해소는 신성한 장소입니다.","speaker":"원우","portrait":"wonwoo-body2-default","sound":"confessionDoor","soundOnlyWithoutMorningConfessional":true},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"inside","text":"거짓을 고하지 않을 것임을 맹세하십니까?","speaker":"원우","portrait":"wonwoo-body2-default"},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"inside","text":"예. 맹세합니다.","speaker":"주인공","portrait":"wonwoo-body2-default"},
  {"kind":"narration","eveningDay2":true,"eveningLocation":"inside","text":"오늘도 되는대로 지어냈다.","portrait":"wonwoo-body2-default"},
@@ -1674,7 +1676,15 @@ areaSkipButton.addEventListener('click',skipCurrentArea);
 function findPrayerBranchStart(branch){
  return scenes.findIndex((scene,sceneIndex)=>sceneIndex>PRAYER_SCENE_START&&scene.prayerBranch===branch);
 }
+function hadMorningConfessionalVisit(){
+ // A location click alone is not enough: the player must have finished a
+ // conversation branch with Wonwoo before the evening scene.
+ return day2Morning==='고해소' && confMorningBranch>0;
+}
 function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTyping(false);const scene=scenes[index];if(!scene){finish();return}
+ if(scene.eveningMorningConfessionalOnly&&!hadMorningConfessionalVisit()){
+  index++;save();render();return;
+ }
  // V175: no interim selection screen after a completed Day 2 morning branch.
  // This also resumes correctly when an older save is parked on a branch-end node.
  if(DAY2_MORNING_AUTO_EVENING_ENDS.has(scene.kind)){enterEveningDay2();return}
@@ -1799,7 +1809,7 @@ if(scene.blackout)overlay.classList.add('confession-blackout');
 if(scene.fade){overlay.classList.add('confession-fade');setTimeout(()=>overlay.classList.remove('confession-fade'),1100)}
 overlay.classList.toggle('day',index>=3);
 if(scene.kind==='sfx'){if(scene.clearPortrait){currentPortrait='';portrait.hidden=true}sound(scene.sound);index++;save();render();return}
-if(!(scene.sound==='forest'&&index===22))sound(scene.sound);
+if(!(scene.sound==='forest'&&index===22)&&!(scene.soundOnlyWithoutMorningConfessional&&hadMorningConfessionalVisit()))sound(scene.sound);
 if(scene.reveal)revealed=true;
 if(scene.revealJihoon)jihoonRevealed=true;
  if(scene.revealHansol){hansolRevealed=true;localStorage.setItem('shindo_hansol_known_v99','1')}
@@ -2303,7 +2313,19 @@ window.SHINDO_startStory=()=>{
   if(!migrated){localStorage.setItem(KEY,'66');localStorage.setItem('shindo_story_v55_extended','1')}
   else{window.SHINDO_openFeedback?.();return}
  }
-try{localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){};const n=Number(localStorage.getItem(KEY));index=Number.isInteger(n)&&n>=0&&n<scenes.length?n:0;revealed=scenes.slice(0,index+1).some(x=>x.reveal);jihoonRevealed=scenes.slice(0,index+1).some(x=>x.revealJihoon);
+try{localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){};
+// V176 adds two scenes to the evening introduction. Correct V175 numeric saves
+// once so an in-progress player is not dropped into the wrong dialogue.
+try{
+ if(localStorage.getItem('shindo_scene_index_migrated_v176')!=='1'){
+  const old=Number(localStorage.getItem(KEY));
+  if(Number.isInteger(old)&&old>=EVENING_DAY2_START+4){
+   localStorage.setItem(KEY,String(old+2));
+  }
+  localStorage.setItem('shindo_scene_index_migrated_v176','1');
+ }
+}catch(_){/* no persistent storage available */}
+const n=Number(localStorage.getItem(KEY));index=Number.isInteger(n)&&n>=0&&n<scenes.length?n:0;revealed=scenes.slice(0,index+1).some(x=>x.reveal);jihoonRevealed=scenes.slice(0,index+1).some(x=>x.revealJihoon);
 currentPortrait='';for(const scene of scenes.slice(0,index+1)){if(scene.clearPortrait)currentPortrait='';if(scene.portrait)currentPortrait=scene.portrait}
 storyUnderlay.classList.add('visible');storyBackdrop.classList.add('visible');overlay.classList.add('active');if(scenes.slice(0,index+1).some(x=>x.enterSanctuary)&&!scenes.slice(0,index+1).some(x=>x.leaveSanctuary)){overlay.classList.add("sanctuary");if(!scenes[index].enterSanctuary)stopSanctuaryTick()}refreshInventoryVisibility();render()};
 })();
