@@ -47,6 +47,7 @@
   document.dispatchEvent(new Event('shindo-inventory-change'));
  };
  const evidenceInfo={
+  'destroyed-document-2':{name:'파기된 문서2',description:'마을의 내부 지도다. 밖으로 이어지는 길마다 전부 X자가 쳐진 채다.'},
   'destroyed-document-3':{name:'파기된 문서3',description:'누군가의 일기. 심하게 훼손되어 읽을 수 있는 페이지가 거의 없다.'}
  };
  function load(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v===null?fallback:v}catch(_){return fallback}}
