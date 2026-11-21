@@ -1993,7 +1993,9 @@ function startV178Bell(){
     if(token!==v178BellToken)return;
     v178BellStarted=true;
     let n=0;v178BellGain=setInterval(()=>{n++;a.volume=Math.min(.9,.12+n*.078);if(n>=10){clearInterval(v178BellGain);v178BellGain=null}},330);
-    setTimeout(()=>{if(token===v178BellToken)stopV178Bell()},6000);
+    // V186: keep the entire original bell recording through the ending.
+    // Release the audio only after the natural end event.
+    a.addEventListener('ended',()=>{if(token===v178BellToken)stopV178Bell()},{once:true});
    }).catch(err=>{console.warn('3일차 종소리 HTML Audio 재생 실패',err);if(v178BellAudio===a)v178BellAudio=null;v178BellWanted=false});
    return;
   }
@@ -2007,7 +2009,8 @@ function startV178Bell(){
    v178BellSource=source;v178BellGainNode=gain;
    v178BellStarted=true;
    source.onended=()=>{if(token===v178BellToken)stopV178Bell()};
-   source.start(now);source.stop(now+Math.min(6,buffer.duration));
+   // V186: no artificial six-second cutoff; allow buffer to play to completion.
+   source.start(now);
   }catch(err){console.warn('3일차 Web Audio 종소리 재생 실패',err);v178BellStarted=false;v178BellWanted=false}
  };
  if(v178BellBuffer){attempt(v178BellBuffer);return}
@@ -2570,7 +2573,7 @@ function showV178Holding(type){
  el.style.display='flex';el.querySelector('.shindo-morning-return').onclick=e=>{e.stopPropagation();stopV178Bell();returnToMorningActivities()};
 }
 function showV178Dogodai(){
- areaSkipButton.hidden=true;stopV178Bell();stopEveningTick();stopEveningWalk();v178Patrol(null);clearTimeout(timer);stopVnTyping(false);
+ areaSkipButton.hidden=true;/* V186: bell continues through this ending */stopEveningTick();stopEveningWalk();v178Patrol(null);clearTimeout(timer);stopVnTyping(false);
  box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  applySceneBackdrop(index,scenes[index]);locked=true;
  const end=document.createElement('div');end.className='shindo-ending v178-dogodai';
