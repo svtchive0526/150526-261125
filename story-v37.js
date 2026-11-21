@@ -1781,6 +1781,26 @@ function hasCompletedDay1(){
  return (Number.isInteger(n)&&n>=DAY2_START) || localStorage.getItem(KEY)==='complete' || !!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169');
 }
 function flagReplay(){if(hasCompletedDay1())localStorage.setItem(SKIP_REPLAY,'1')}
+// V183: Resolve police introductions from reached story position as well as
+// per-line events. This keeps name labels and the affinity profiles consistent
+// after an area skip or a reload at the cooperation choice.
+const V183_POLICE_LAST_INTRO=scenes.findIndex((scene,i)=>i>=V178_OFFSET&&scene.v178&&scene.revealName==='석민');
+const V183_POLICE_COOP_CHOICE=scenes.findIndex((scene,i)=>i>=V178_OFFSET&&scene.kind==='v178-coop-choice');
+function v183UnlockPoliceTeam(){
+ for(const [name,key] of [['정한','shindo_jeonghan_known_v156'],['순영','shindo_soonyoung_known_v105'],['석민','shindo_seokmin_known_v99']]){
+  localStorage.setItem(key,'1');
+  window.SHINDO_markCharacterMet?.(name);
+ }
+ jeonghanRevealed=true;soonyoungRevealed=true;seokminRevealed=true;
+}
+function v183SyncPoliceIdentityAt(position){
+ if(position<=V183_POLICE_LAST_INTRO || V183_POLICE_LAST_INTRO<0)return;
+ // Only a run that chose to disclose the truth reaches the police team's base.
+ if(seungkwanTruthBranch!==1)return;
+ if(position>=V183_POLICE_LAST_INTRO+1 && position>=V178_OFFSET){
+  v183UnlockPoliceTeam();
+ }
+}
 const AREA_CHOICE_KINDS=new Set(['choice','day2-prayer-choice','day2-morning-choice','prayer-choice','art-choice','living-choice','main-choice','conf-morning-choice','evening-choice','seungkwan-choice','v178-coop-choice']);
 const AREA_END_KINDS=new Set(['prayer-end','art-end','living-end','main-end','conf-morning-end','gongyang-end','evening-end']);
 // V175: Day 2 morning activities flow directly into the evening confession.
@@ -1915,7 +1935,7 @@ function skipCurrentArea(e){
   // Clear the night patrol overlay if the skip crossed its departure.
   if(duoLayer.classList.contains('v178-patrol'))v178Patrol(null);
  }
- index=target;save();render();
+ index=target;v183SyncPoliceIdentityAt(index);save();render();
 }
 areaSkipButton.addEventListener('click',skipCurrentArea);
 
@@ -1967,6 +1987,7 @@ function v178Patrol(mode){
 }
 function jumpV178(which){const target=V178_TARGETS[which];if(target===undefined)return;const el=overlay.querySelector('.shindo-choices');if(el)el.style.display='none';locked=false;index=V178_OFFSET+target;save();render()}
 function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTyping(false);const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){finish();return}
+ v183SyncPoliceIdentityAt(index);
  if(scene.v178){
   // No clock ticks are allowed during the subsequent living-quarters story.
   stopEveningTick();
@@ -2426,6 +2447,7 @@ function showSeungkwanEnd(){
 }
 
 function showV178CoopChoice(){
+ v183UnlockPoliceTeam();
  locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
