@@ -109,7 +109,7 @@
   '생활관':['정한','지훈','민규'],
   '본당':['조슈아'],
   '고해소':['원우'],
-  '공양실':[]
+  '공양실':['준휘']
  };
  const PERSON_EVENTS={
   '기도관 활동: 단상 위 청소':'한솔',
@@ -123,7 +123,8 @@
   '생활관 활동: 빨래 수거':'민규',
   '본당 탐색: 사무실':'조슈아',
   '고해소 대응: 임재범의 「고해」를 부른다.':'원우',
-  '고해소 대응: 미쳤냐? 가만히 있는다.':'원우'
+  '고해소 대응: 미쳤냐? 가만히 있는다.':'원우',
+  '공양실 활동: 준휘와 대화':'준휘'
  };
  // All participants start at zero except Joshua. Do not wipe existing scores on upgrades.
  function getAffinity(){const result=load(AFFINITY,{});if(!result||typeof result!=='object'||Array.isArray(result))return {};
@@ -145,8 +146,12 @@
   }else if(kind==='room'){
    if(!ROOMS[label])return false;
    eventId=d+'|장소|'+label;
-   changes=ROOMS[label].map(name=>[name,5]);
+   // 고해소/공양실에는 추가 캐릭터 선택 없이 바로 1:1 대화가 시작된다.
+   // 따라서 입장 즉시 +20, 별도 개별 대화 +15는 지급하지 않는다.
+   changes=ROOMS[label].map(name=>[name,(label==='고해소'||label==='공양실')?20:5]);
   }else if(kind==='person'){
+   // 특수 장소는 장소 선택 보너스 +20에 대화를 포함한다.
+   if(label.startsWith('고해소 대응: ')||label==='공양실 활동: 준휘와 대화')return false;
    const person=PERSON_EVENTS[label];if(!person)return false;
    eventId=d+'|개별인물|'+person;
    changes=[[person,15]];
@@ -201,7 +206,7 @@
    }
    if(label.startsWith('오전 활동 장소: '))grantAffinity('room',label.slice('오전 활동 장소: '.length),day);
    if(PERSON_EVENTS[label]){
-    const room=label.startsWith('기도관')?'기도관':label.startsWith('예술당')?'예술당':label.startsWith('생활관')?'생활관':label.startsWith('본당')?'본당':'고해소';
+    const room=label.startsWith('기도관')?'기도관':label.startsWith('예술당')?'예술당':label.startsWith('생활관')?'생활관':label.startsWith('본당')?'본당':label.startsWith('공양실')?'공양실':'고해소';
     grantAffinity('room',room,day);
     grantAffinity('person',label,day);
    }
@@ -234,13 +239,18 @@
     changes=[...GROUPS['신도'].map(n=>[n,5*sign]),...GROUPS['사제'].map(n=>[n,5*sign]),...GROUPS['경찰'].map(n=>[n,-5*sign])];
    }else if(parts[1]==='장소'&&ROOMS[parts.slice(2).join('|')]){
     hasRoom=true;
-    changes=ROOMS[parts.slice(2).join('|')].map(n=>[n,5]);
+    const room=parts.slice(2).join('|');
+    changes=ROOMS[room].map(n=>[n,(room==='고해소'||room==='공양실')?20:5]);
    }else if(parts[1]==='개별인물'){
     const person=parts.slice(2).join('|');
-    if(PEOPLE.some(p=>p[0]===person))changes=[[person,15]];
+    const specialRoom=person==='원우'?'고해소':person==='준휘'?'공양실':null;
+    // 과거 버전 +5/+15 이력은 특수 장소의 +20 한 번으로 해석한다.
+    const creditedByRoom=specialRoom&&ledger.includes(parts[0]+'|장소|'+specialRoom);
+    if(!creditedByRoom&&PEOPLE.some(p=>p[0]===person))changes=[[person,15]];
    }else if(parts[1]==='개별'){
     const person=PERSON_EVENTS[parts.slice(2).join('|')];
-    if(person)changes=[[person,15]];
+    const specialRoom=person==='원우'?'고해소':person==='준휘'?'공양실':null;
+    if(person&&!(specialRoom&&ledger.includes(parts[0]+'|장소|'+specialRoom)))changes=[[person,15]];
    }
    for(const [name,delta] of changes){
     if(parts[1]==='개별'||parts[1]==='개별인물'){

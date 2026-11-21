@@ -2351,7 +2351,7 @@ function showDay2Choice(type){locked=true;box.style.display='none';portrait.hidd
   index=CONFESSIONAL_MORNING_START;save();locked=false;render();
  }else if(day2Morning==='공양실'){
   window.SHINDO_addPlayRecord?.('선택','공양실 활동: 준휘와 대화');
-  window.SHINDO_applyAffinityEvent?.('person','공양실 활동: 준휘와 대화',getMorningAffinityDay());
+  // V182: 준휘 친밀도 +20은 공양실 장소 선택 시 이미 지급됨.
   el.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;
   index=GONGYANG_SCENE_START;save();locked=false;render();
  }else{
@@ -2471,7 +2471,7 @@ function showConfMorningChoice(){
   confMorningBranch=Number(b.dataset.confMorning);
   localStorage.setItem('shindo_confession_morning_branch_v163',String(confMorningBranch));
   window.SHINDO_addPlayRecord?.('선택','고해소 대응: '+options[confMorningBranch-1]);
-  window.SHINDO_applyAffinityEvent?.('person','고해소 대응: '+options[confMorningBranch-1],getMorningAffinityDay());
+  // V182: 원우 친밀도 +20은 고해소 장소 선택 시 이미 지급됨.
   const target=confMorningBranch===1 ? scenes.findIndex((x,i)=>i>CONFESSIONAL_MORNING_START&&x.confMorningBranch===1) : scenes.findIndex((x,i)=>i>CONFESSIONAL_MORNING_START&&x.kind==='conf-morning-shared-start');
   el.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;
   if(target>=0){index=target;save();locked=false;render()}
