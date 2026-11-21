@@ -1302,8 +1302,52 @@ let sanctuaryTickTimer=null,sanctuaryTickAudio=null,confessionDoorAudio=null,con
 let confMorningBranch=Number(localStorage.getItem('shindo_confession_morning_branch_v163')||0);
 let eveningBranch=Number(localStorage.getItem('shindo_evening_branch_day2_v173')||0);
 let eveningTickTimer=null;
-function stopEveningTick(){if(eveningTickTimer!==null){clearInterval(eveningTickTimer);eveningTickTimer=null}}
-function startEveningTick(){if(eveningTickTimer!==null)return;const tick=()=>{if(overlay.classList.contains('active'))playExtraAudio('clock_tick_single.mp3',.35)};tick();eveningTickTimer=setInterval(tick,1000)}
+const eveningTickSounds=new Set();
+let eveningTickFadeTimer=null,eveningWalkingAudio=null,eveningLivingEntered=false;
+function stopEveningWalk(){
+ if(eveningWalkingAudio){eveningWalkingAudio.pause();eveningWalkingAudio.currentTime=0;eveningWalkingAudio=null}
+}
+function stopEveningTick(fade=false){
+ if(eveningTickTimer!==null){clearInterval(eveningTickTimer);eveningTickTimer=null}
+ if(eveningTickFadeTimer!==null){clearInterval(eveningTickFadeTimer);eveningTickFadeTimer=null}
+ if(!fade){
+  for(const tick of eveningTickSounds){tick.pause();tick.currentTime=0}
+  eveningTickSounds.clear();return;
+ }
+ // Fade the tail of the final clock strike instead of cutting it abruptly.
+ const active=[...eveningTickSounds];if(!active.length)return;
+ const initial=active.map(tick=>tick.volume);const started=performance.now();
+ eveningTickFadeTimer=setInterval(()=>{
+  const t=Math.min(1,(performance.now()-started)/850);
+  active.forEach((tick,i)=>{if(eveningTickSounds.has(tick))tick.volume=Math.max(0,initial[i]*(1-t))});
+  if(t>=1){clearInterval(eveningTickFadeTimer);eveningTickFadeTimer=null;active.forEach(tick=>{tick.pause();tick.currentTime=0;eveningTickSounds.delete(tick)})}
+ },35);
+}
+function startEveningTick(){
+ if(eveningTickTimer!==null)return;
+ if(eveningTickFadeTimer!==null){clearInterval(eveningTickFadeTimer);eveningTickFadeTimer=null}
+ const tick=()=>{
+  if(!overlay.classList.contains('active'))return;
+  const a=playExtraAudio('clock_tick_single.mp3',.35);
+  eveningTickSounds.add(a);
+  const cleanup=()=>eveningTickSounds.delete(a);
+  a.addEventListener('ended',cleanup,{once:true});a.addEventListener('error',cleanup,{once:true});
+ };
+ tick();eveningTickTimer=setInterval(tick,1000);
+}
+function enterEveningLiving(){
+ // Exactly once on the fade from the black confessional to the living-quarters exterior.
+ if(eveningLivingEntered)return;
+ eveningLivingEntered=true;
+ stopEveningTick(true);
+ stopEveningWalk();
+ const steps=playExtraAudio('01-4.mp3',.17); // Day 1 forest footsteps, quietly
+ eveningWalkingAudio=steps;
+ const finish=()=>{if(eveningWalkingAudio===steps)eveningWalkingAudio=null};
+ steps.addEventListener('ended',finish,{once:true});steps.addEventListener('error',finish,{once:true});
+ // Keep this cue short, but do not couple it to dialogue advancement.
+ setTimeout(()=>{if(eveningWalkingAudio===steps)stopEveningWalk()},6000);
+}
 // Keep each clock strike independent: never seek the audio element that is still playing.
 // Reuse the browser's decoded media cache while avoiding simultaneous seek/play artifacts.
 const activeClockStrikes=new Set();
@@ -1639,7 +1683,7 @@ const existingChoiceModal=overlay.querySelector('.shindo-choices');if(existingCh
 if(!scene.specialMinghao){duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');}
 const fadingOutOfSquare=scene.kind==='day2-morning-choice'&&currentSceneBackdropKey==='bg-central-square.jpg';
 applySceneBackdrop(index,scene);
- if(scene.eveningDay2){if(scene.eveningLocation==='dark')startEveningTick();else stopEveningTick()}else stopEveningTick();
+ if(scene.eveningDay2){if(scene.eveningLocation==='dark'){eveningLivingEntered=false;startEveningTick()}else if(scene.eveningLocation==='living')enterEveningLiving();else stopEveningTick()}else{stopEveningTick();stopEveningWalk();eveningLivingEntered=false;}
  if(scene.prayerRoom){overlay.classList.remove('confession-blackout')}else{stopPrayerClock();stopPrayerAudio();stopPrayerBell()}
  if(scene.prayerStart)startPrayerClock();
  if(scene.artHall){stopPrayerClock();stopPrayerAudio();stopPrayerBell();overlay.classList.remove('confession-blackout');setArtSceneArtwork(scene)}else{stopArtAudio();overlay.classList.remove('art-blackout')}
@@ -2003,7 +2047,7 @@ function showMainChoice(){
  });
 }
 function enterEveningDay2(){
- stopEveningTick();stopVnTyping(false);clearTimeout(timer);timer=null;
+ stopEveningTick();stopEveningWalk();eveningLivingEntered=false;stopVnTyping(false);clearTimeout(timer);timer=null;
  eveningBranch=0;localStorage.removeItem('shindo_evening_branch_day2_v173');
  const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
  currentPortrait='';portrait.hidden=true;portrait.classList.remove('evening-shadow');illustration.hidden=true;
