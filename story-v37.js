@@ -1108,7 +1108,22 @@ if(scene.prayer&&day2Prayer&&scene.prayer!==day2Prayer){index++;save();render();
 if(scene.branch&&selectedBranch&&scene.branch!==selectedBranch){index++;save();render();return}
  if(scene.prayerBranch&&prayerBranch&&scene.prayerBranch!==prayerBranch){index++;save();render();return}
  if(scene.artBranch&&artBranch&&scene.artBranch!==artBranch){index++;save();render();return}
- if(scene.prayerAudio)prayerAudioCue(scene.prayerAudio);
+ // V150: The Day 2 central-square scene has no Wonwoo appearance.
+// Portraits from the confessional (or an old asynchronous preload) must not leak
+// into the square; narration with no explicit portrait always clears the slot.
+const squareSceneStart=scenes.findIndex(x=>x.square===true && String(x.text||'').includes('중앙광장으로 가볼까'));
+const squareSceneEnd=scenes.findIndex((x,i)=>i>squareSceneStart && x.kind==='day2-morning-choice');
+const inDay2Square=squareSceneStart>=0 && index>=squareSceneStart && (squareSceneEnd<0 || index<squareSceneEnd) && selectedBranch===1;
+if(inDay2Square && !scene.portrait){
+ currentPortrait='';
+ portrait.dataset.officialRequest=String((Number(portrait.dataset.officialRequest)||0)+1);
+ portrait.dataset.officialShouldShow='0';
+ portrait.dataset.officialDisplayedKey='';
+ portrait.dataset.portraitKey='';
+ portrait.hidden=true;
+ portrait.removeAttribute('src');
+}
+if(scene.prayerAudio)prayerAudioCue(scene.prayerAudio);
 if(scene.wakeFadeIn){overlay.classList.remove('confession-blackout');overlay.classList.remove('sleep-fadeout');overlay.classList.add('sleep-fadein');setTimeout(()=>overlay.classList.remove('sleep-fadein'),980)}
 if(scene.kind==='sleep-transition'){
  const center=overlay.querySelector('.vn-center')||(()=>{const el=document.createElement('div');el.className='vn-center';overlay.appendChild(el);return el})();
@@ -1208,6 +1223,7 @@ if(scene.specialMinghao){
 if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.artHall)&&(scene.portrait||duoVisible))){
  if(scene.clearPortrait){currentPortrait='';portrait.hidden=true}
  if(duoVisible){currentPortrait='';portrait.dataset.officialRequest=String((Number(portrait.dataset.officialRequest)||0)+1);portrait.hidden=true;portrait.removeAttribute('src');} // V116: prevent lingering solo portrait behind two-person scene
+ if(inDay2Square && !scene.portrait)currentPortrait='';
  if(scene.portrait)currentPortrait=scene.portrait;
  if(scene.portraitPlaceholder)currentPortrait='';
  speakerTag.textContent=scene.kind==='narration'||scene.inner?'':(scene.maskSpeaker||scene.speaker==='한솔'&&!hansolRevealed||scene.speaker==='석민'&&!seokminRevealed||scene.speaker==='찬'&&!chanRevealed?'??':scene.speaker==='순영'&&!soonyoungRevealed?'??':scene.speaker==='명호'&&!minghaoRevealed?'??':scene.speaker==='주인공'?'김봉봉':scene.speaker==='승철'&&!revealed?'??':scene.speaker==='지훈'&&!jihoonRevealed?'??':scene.speaker);
