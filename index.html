@@ -495,6 +495,14 @@
  #sh-church-layer{top:0!important;bottom:70px!important;height:calc(100dvh - 70px)!important;min-height:0!important;overflow:hidden!important}
  #sh-church-frame{height:100%!important}
 }
+/* V143: mobile church tab must sit above the entire mailbox/login screen.
+   The browser toolbar remains the highest layer. */
+@media(max-width:750px){
+ body>#sh-church-layer{position:fixed!important;inset:0 0 70px 0!important;height:calc(100dvh - 70px)!important;min-height:0!important;z-index:900!important;background:#fff!important;overflow:hidden!important;display:none}
+ body>#sh-church-layer.active{display:block!important}
+ body>#sh-church-layer #sh-church-frame{display:block!important;height:100%!important;width:100%!important;border:0!important}
+ body.sh-church-active #login-page{visibility:hidden!important;pointer-events:none!important}
+}
 /* v29: Browser chrome only after lock-screen PIN unlock completes. */
 body:not(.sh-browser-unlocked) #sh-browserbar{display:none!important;visibility:hidden!important;pointer-events:none!important}
 body.sh-browser-unlocked #sh-browserbar{visibility:visible!important}
