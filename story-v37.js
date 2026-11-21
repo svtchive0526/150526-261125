@@ -885,6 +885,9 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .shindo-choices .shindo-morning-return{font-size:clamp(13px,1.6vw,16px);text-align:center}
 #shindo-vn .vn-box.box-shake-soft{animation:shindo-soft-box-shake .26s ease-in-out 1}
 @keyframes shindo-soft-box-shake{0%,100%{transform:translate(0,0)}20%{transform:translate(-1.5px,.5px)}40%{transform:translate(1.5px,-.5px)}60%{transform:translate(-1px,-.5px)}80%{transform:translate(1px,.5px)}}
+#shindo-vn .vn-box .shindo-area-skip{position:absolute;right:14px;top:8px;z-index:18;min-width:82px;padding:4px 10px;background:rgba(40,42,46,.96);border:1px solid #777;border-radius:7px;color:#f5f5f5;font-size:12px;font-weight:700;letter-spacing:-.04em;cursor:pointer;line-height:1.5}
+#shindo-vn .vn-box .shindo-area-skip[hidden]{display:none!important}
+@media(max-width:750px){#shindo-vn .vn-box .shindo-area-skip{right:9px;top:6px;font-size:11px;min-width:70px;padding:3px 7px}}
 `;document.head.appendChild(style);
 const storyUnderlay=document.createElement('div');storyUnderlay.id='shindo-story-underlay';document.body.appendChild(storyUnderlay);
 const storyBackdrop=document.createElement('div');storyBackdrop.id='shindo-story-backdrop';document.body.appendChild(storyBackdrop);
@@ -974,6 +977,8 @@ const overlay=document.createElement('div');overlay.id='shindo-vn';overlay.setAt
 const box=overlay.querySelector('.vn-box'),content=overlay.querySelector('.vn-text');
 const portrait=document.createElement('img');portrait.className='vn-portrait';portrait.alt='';portrait.hidden=true;overlay.insertBefore(portrait,box);
 const speakerTag=document.createElement('div');speakerTag.className='vn-speaker';box.insertBefore(speakerTag,content);
+const areaSkipButton=document.createElement('button');areaSkipButton.type='button';areaSkipButton.className='shindo-area-skip';areaSkipButton.textContent='≫ 구역 스킵';areaSkipButton.hidden=true;areaSkipButton.setAttribute('aria-label','현재 구역 스킵');box.appendChild(areaSkipButton);
+
 let currentPortrait='',revealed=false;
 const portraits={};
 const DEFAULT_PORTRAIT_PROFILE={scale:1,x:'-50%',y:'0px',bottom:'',height:'',maxWidth:''};
@@ -1457,12 +1462,111 @@ function startConfessionQuestionTransition(){
 }
 function save(){try{localStorage.setItem(KEY,String(index));localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}refreshInventoryVisibility()}
 const DAY2_START=scenes.findIndex(x=>x.day===2 || (x.text&&x.text.includes("봉봉 씨! 새벽기도 안 가세요?")));
+const SKIP_REACHED='shindo_day1_reached_day2_v171';
+const SKIP_REPLAY='shindo_area_skip_replay_v171';
+// Old V170 saves that have reached Day 2 are eligible once they restart.
+function hasCompletedDay1(){
+ if(localStorage.getItem(SKIP_REACHED)==='1')return true;
+ const n=Number(localStorage.getItem(KEY));
+ return (Number.isInteger(n)&&n>=DAY2_START) || localStorage.getItem(KEY)==='complete' || !!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169');
+}
+function flagReplay(){if(hasCompletedDay1())localStorage.setItem(SKIP_REPLAY,'1')}
+const AREA_CHOICE_KINDS=new Set(['choice','day2-prayer-choice','day2-morning-choice','prayer-choice','art-choice','living-choice','main-choice','conf-morning-choice']);
+const AREA_END_KINDS=new Set(['prayer-end','art-end','living-end','main-end','conf-morning-end','gongyang-end']);
+function findBranchEnd(prefix,branch){return scenes.findIndex((x,i)=>i>0 && x[prefix]===branch && AREA_END_KINDS.has(x.kind))}
+function findCurrentAreaSkipTarget(){
+ if(localStorage.getItem(SKIP_REPLAY)!=='1')return -1;
+ const scene=scenes[index];if(!scene||AREA_CHOICE_KINDS.has(scene.kind)||AREA_END_KINDS.has(scene.kind)||scene.kind==='ending'||scene.kind==='sleep-transition'||scene.kind==='evidence-popup'||scene.kind==='living-recall')return -1;
+ // One day-one region at a time. The confessional stops BEFORE the choice.
+ const choiceIndex=scenes.findIndex(x=>x.kind==='choice');
+ const early=[[4,16],[17,56],[57,61],[62,67],[68,93]];
+ for(const [a,b] of early)if(index>=a&&index<b)return b;
+ if(index>=94&&index<choiceIndex)return choiceIndex;
+ // Day 2: the common square ends at the manual morning-activity choice.
+ const squareStart=scenes.findIndex(x=>x.square && String(x.text||'').includes('중앙광장으로 가볼까'));
+ const morningChoice=scenes.findIndex((x,i)=>i>squareStart && x.kind==='day2-morning-choice');
+ if(squareStart>=0&&index>=squareStart&&index<morningChoice&&selectedBranch===1)return morningChoice;
+ // Morning common introductions are deliberately NOT skippable.
+ const match=[
+  [scenes[index]?.prayerRoom,prayerBranch,'prayerBranch'],
+  [scenes[index]?.artHall,artBranch,'artBranch'],
+  [scenes[index]?.livingHall,livingBranch,'livingBranch'],
+  [scenes[index]?.mainHall,mainBranch,'mainBranch'],
+  [scenes[index]?.confMorning,confMorningBranch,'confMorningBranch'],
+  [scenes[index]?.gongyangHall,1,'gongyangHall']
+ ];
+ for(const [active,branch,key] of match){
+  if(!active||!branch)continue;
+  if(key==='artBranch' && branch===4)return -1; // The Minghao 60+ special scene is protected.
+  if(key==='gongyangHall')return -1; // No subchoice yet: protect the entire common dialogue.
+  const starts=key==='confMorningBranch'&&branch===2
+   ? scenes.findIndex(x=>x.kind==='conf-morning-shared-start')+1
+   : scenes.findIndex((x,i)=>i>0&&x[key]===branch&&(
+    key==='confMorningBranch'||key==='prayerBranch'||key==='artBranch'||key==='livingBranch'||key==='mainBranch'));
+  if(starts<0||index<starts)return -1;
+  let end=key==='confMorningBranch' ? scenes.findIndex((x,i)=>i>index&&x.kind==='conf-morning-end') : findBranchEnd(key,branch);
+  if(end>index){
+   // Previously designated unskippable flashbacks must actually play.
+   const recall=scenes.findIndex((x,i)=>i>index&&i<end&&x.kind==='living-recall');
+   if(recall>index)return recall;
+   for(let i=index+1;i<end;i++)if(AREA_CHOICE_KINDS.has(scenes[i]?.kind)||scenes[i]?.kind==='ending')return -1;
+   return end;
+  }
+ }
+ return -1;
+}
+function updateAreaSkipButton(){
+ const target=findCurrentAreaSkipTarget();
+ areaSkipButton.hidden=target<=index;
+ areaSkipButton.dataset.skipTarget=String(target);
+}
+function runSkippedSceneState(from,to){
+ // Apply non-visual scene effects without running timers, sounds, or background transitions.
+ for(let j=from;j<to;j++){
+  const s=scenes[j];if(!s)continue;
+  if(s.reveal){revealed=true;window.SHINDO_markCharacterMet?.('승철')}
+  if(s.revealJihoon){jihoonRevealed=true;window.SHINDO_markCharacterMet?.('지훈')}
+  for(const [flag,name,key] of [
+   ['revealHansol','한솔','shindo_hansol_known_v99'],['revealSeokmin','석민','shindo_seokmin_known_v99'],
+   ['revealChan','찬','shindo_chan_known_v99'],['revealSoonyoung','순영','shindo_soonyoung_known_v105'],
+   ['revealMinghao','명호','shindo_minghao_known_v105'],['revealJeonghan','정한','shindo_jeonghan_known_v156'],
+   ['revealMingyu','민규','shindo_mingyu_known_v156'],['revealJoshua','조슈아','shindo_joshua_known_v160'],
+   ['revealJunhui','준휘','shindo_junhui_known_v167']
+  ])if(s[flag]){localStorage.setItem(key,'1');window.SHINDO_markCharacterMet?.(name);
+   if(name==='한솔')hansolRevealed=true;if(name==='석민')seokminRevealed=true;if(name==='찬')chanRevealed=true;
+   if(name==='순영')soonyoungRevealed=true;if(name==='명호')minghaoRevealed=true;if(name==='정한')jeonghanRevealed=true;
+   if(name==='민규')mingyuRevealed=true;if(name==='조슈아')joshuaRevealed=true;if(name==='준휘')junhuiRevealed=true;
+  }
+  if(s.enterSanctuary)overlay.classList.add('sanctuary');
+  if(s.leaveSanctuary)overlay.classList.remove('sanctuary');
+  if(s.kind==='evidence-popup'&&s.evidenceId)collectEvidence(s.evidenceId);
+ }
+}
+function skipCurrentArea(e){
+ e.stopPropagation();e.preventDefault();
+ if(!overlay.classList.contains('active'))return;
+ const target=findCurrentAreaSkipTarget();if(target<=index)return;
+ // Nothing may silently cross a player decision, ending, or protected common-scene boundary.
+ for(let i=index+1;i<target;i++)if(AREA_CHOICE_KINDS.has(scenes[i]?.kind)||scenes[i]?.kind==='ending')return;
+ runSkippedSceneState(index,target);
+ clearTimeout(timer);timer=null;clearConfessionQuestionTimers();stopVnTyping(false);
+ stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopPencil();stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopArtAudio();stopConfessionTick();stopSanctuaryTick();stopEndingBell();
+ if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}
+ if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}
+ if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}
+ locked=false;currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+ index=target;save();render();
+}
+areaSkipButton.addEventListener('click',skipCurrentArea);
+
 function findPrayerBranchStart(branch){
  return scenes.findIndex((scene,sceneIndex)=>sceneIndex>PRAYER_SCENE_START&&scene.prayerBranch===branch);
 }
 function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTyping(false);const scene=scenes[index];if(!scene){finish();return}
  // Keep the day in sync with real story progress, including refreshed sessions.
  try{localStorage.setItem('shindo_current_story_day_v109',String(index>=DAY2_START?2:1))}catch(_){}
+ if(index===DAY2_START)localStorage.setItem(SKIP_REACHED,'1');
+ updateAreaSkipButton();
  if(index===DAY2_START&&!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169')){
   try{localStorage.setItem('shindo_day2_start_affinity_snapshot_v169',localStorage.getItem('shindo_affinity_v107')||'{"조슈아":100}')}catch(_){}
  }
@@ -1671,6 +1775,7 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
 function day2Ring(times,volume){for(let i=0;i<times;i++)setTimeout(()=>{if(overlay.classList.contains('active'))playExtraAudio('oath-bell-05.mp3',volume)},i*3300)}
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
 function restartFromDay1(){
+ flagReplay();
  duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');
  clearTimeout(timer);timer=null;clearConfessionQuestionTimers();
  stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopPencil();
@@ -1696,6 +1801,7 @@ window.SHINDO_restartFromDay1=restartFromDay1;
 
 // V169: Test restart at the black "2일차" title, keeping the authenticated mail/browser.
 function restartFromDay2(){
+ flagReplay();
  const day2Start=scenes.findIndex(s=>s.kind==='sleep-transition'&&s.day===2);
  if(day2Start<0){console.error('2일차 시작 지점을 찾지 못했습니다.');return}
  duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');
@@ -2005,7 +2111,7 @@ function showPrayerEnd(){
 function showChoice(){locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}el.classList.remove('shindo-morning-grid');el.innerHTML='<h2>어떻게 대답할까?</h2><p>원우의 질문에 답해야 한다.</p><button data-branch="1">아직은 때가 아니다. 무조건 긍정적이고 헌신적인 발언을 하자.</button><button data-branch="2">사제를 포섭해보자. 중요한 자료를 얻을 수 있을지도 모른다.</button>';el.style.display='flex';el.querySelectorAll('button').forEach(b=>b.onclick=e=>{e.stopPropagation();selectedBranch=Number(b.dataset.branch);window.SHINDO_addPlayRecord?.('선택','고해소 선택: '+(selectedBranch===1?'긍정적 발언':'사제 포섭 시도'));localStorage.setItem('shindo_confession_branch',String(selectedBranch));el.style.display='none';locked=false;next()})}
 function showEnding(){stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopConfessionTick();stopEndingBell();stopSanctuaryTick();box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';overlay.classList.add('confession-blackout');locked=true;const end=document.createElement('div');end.className='shindo-ending';end.innerHTML='<div class="shindo-ending-copy"><img class="shindo-ending-title-image" src="story-illustrations/ending-doksil-title.png" alt="독실"><p>신실한 종교인의 역할은 종교와 체계에 대한 반발을 보이는 존재를 싹부터 없애는 것입니다.</p></div>';overlay.appendChild(end);const later=(fn,ms)=>endingTimers.push(setTimeout(fn,ms));later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도</div>'},3000);later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도<span>神道</span></div>'},5000);later(()=>{const b=document.createElement('button');b.className='shindo-restart';b.textContent='처음부터 다시 하기';b.onclick=e=>{e.stopPropagation();stopEndingBell();stopConfessionTick();localStorage.removeItem('shindo_confession_branch');localStorage.removeItem('shindo_day2_prayer');localStorage.removeItem('shindo_day2_morning');localStorage.removeItem('shindo_affinity_v107');localStorage.removeItem('shindo_affinity_events_v111');localStorage.removeItem('shindo_affinity_unread_v125');localStorage.removeItem(KEY);localStorage.removeItem('shindo_story_started_v37');localStorage.removeItem('shindo_sleep_gate_v48');localStorage.removeItem('shindo_story_v55_extended');localStorage.removeItem('shindo_story_v66_sanctuary');['svter_first_launch_at_v1','svter_lock_reached_v1','svter_lock_deleted_notices_v33','kamille_new_mail_received_v32','kamille_new_mail_read_v32','kamille_newmail_popup_ack_v51','shindo_church_link_unlocked_v30','shindo_attachment_unlocked_v31'].forEach(k=>localStorage.removeItem(k));sessionStorage.removeItem('shindo_story_started_v37');location.reload()};end.appendChild(b)},7000)}
 function finish(){
- stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopPencil();stopConfessionTick();stopEndingBell();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}storyBackdrop.classList.remove('visible');storyUnderlay.classList.remove('visible');overlay.classList.remove("active","sanctuary","sanctuary-leaving","day");
+ areaSkipButton.hidden=true;stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopPencil();stopConfessionTick();stopEndingBell();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}storyBackdrop.classList.remove('visible');storyUnderlay.classList.remove('visible');overlay.classList.remove("active","sanctuary","sanctuary-leaving","day");
  // Only finish after the player explicitly advances past the final dialogue.
  try{localStorage.setItem(KEY,'complete');localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}
  window.SHINDO_openFeedback?.();
