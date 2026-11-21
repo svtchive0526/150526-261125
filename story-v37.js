@@ -509,7 +509,7 @@ scenes.push(
  {"kind":"dialogue","livingHall":true,"text":"정신 차리고 나니 생활관 밖으로 나와버렸네..","livingBranch":2,"livingLocation":"exterior","speaker":"주인공","clearPortrait":true},
  {"kind":"dialogue","livingHall":true,"text":"뭔가에 홀린 기분이야...","livingBranch":2,"livingLocation":"exterior","speaker":"주인공"},
  {"kind":"living-end","livingHall":true,"livingBranch":2,"livingLocation":"exterior"},
- {"kind":"narration","livingHall":true,"text":"복도 한가운데 멍하니 서 있는 남자가 있다.","livingBranch":3,"portrait":"jihoon-body1-default","livingLocation":"corridor","livingSilhouette":true},
+ {"kind":"narration","livingHall":true,"text":"복도 한가운데 멍하니 서 있는 남자가 있다.","livingBranch":3,"portrait":"jihoon-body1-default","livingLocation":"corridor","livingSilhouette":true,"livingJihoonEntrance":true},
  {"kind":"narration","livingHall":true,"text":"어라? 아는 얼굴이다.","livingBranch":3,"portrait":"jihoon-body1-default","livingLocation":"corridor","livingSilhouette":true},
  {"kind":"narration","livingHall":true,"text":"이렇게 피부가 하얀 사람은 드물다. 이름이 분명…","livingBranch":3,"portrait":"jihoon-body1-default","livingLocation":"corridor","livingSilhouette":true},
  {"kind":"dialogue","livingHall":true,"text":"저기 혹시, 뭐 찾으시는 거 있으세요?","livingBranch":3,"portrait":"jihoon-body1-default","livingLocation":"corridor","speaker":"주인공"},
@@ -983,6 +983,20 @@ function preloadOfficialPortrait(key){
  }
  return loading;
 }
+// V158: The Jihoon silhouette enters together with the living-corridor
+// background.  Wait for both the image and the backdrop's existing 500ms
+// preparation; never reveal an older asynchronous portrait after advancing.
+function revealLivingJihoonOnBackgroundFade(img){
+ if(img!==portrait||!scenes[index]?.livingJihoonEntrance)return;
+ const sceneIndex=index;
+ Promise.all([primeBackdrop('bg-living-corridor.jpg'),
+   new Promise(done=>setTimeout(done,500))]).then(()=>{
+  if(index!==sceneIndex||img.hidden)return;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   if(index===sceneIndex&&!img.hidden)img.style.opacity='1';
+  }));
+ });
+}
 function assignOfficialPortrait(img,key){
  const relative=officialKeyToFilename(key);
  img.dataset.officialShouldShow=img.dataset.officialShouldShow||'1';
@@ -993,6 +1007,7 @@ function assignOfficialPortrait(img,key){
  // Do not touch the DOM if the same official artwork is already on screen.
  if(img.dataset.officialDisplayedKey===relative && img.getAttribute('src')){
   img.hidden=false;
+  revealLivingJihoonOnBackgroundFade(img);
   return true;
  }
  img.dataset.officialRequest=String((Number(img.dataset.officialRequest)||0)+1);
@@ -1004,6 +1019,7 @@ function assignOfficialPortrait(img,key){
   img.dataset.officialDisplayedKey=relative;
   img.dataset.officialValid='1';
   img.hidden=false;
+  revealLivingJihoonOnBackgroundFade(img);
  }).catch(error=>{
   if(img.dataset.officialRequest!==request)return;
   console.error('[SHINDO V140] Official image load failed:',key,error);
@@ -1436,6 +1452,10 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
  if(currentPortrait){
   const specialSolo=!!(scene.specialMinghao&&scene.portrait&&!duoVisible);
   applyPortraitProfile(currentPortrait);
+  // Do not allow the silhouette to flash ahead of the corridor photo.
+  // Reset the one-shot opacity on every later scene, including refreshes.
+  portrait.style.transition=scene.livingJihoonEntrance?'opacity 1.05s ease':'';
+  portrait.style.opacity=scene.livingJihoonEntrance?'0':'';
   portrait.classList.toggle('special-solo',specialSolo);
   portrait.dataset.portraitKey=(specialSolo?'solo-':'')+currentPortrait;
   portrait.dataset.officialShouldShow=scene.illustration||duoVisible?'0':'1';
@@ -1443,10 +1463,11 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
   portrait.classList.toggle('prayer-silhouette',!!scene.silhouette);
   portrait.classList.toggle('art-silhouette',!!(scene.artHall&&scene.silhouette));
   portrait.classList.toggle('living-silhouette',!!scene.livingSilhouette);
- }else{portrait.classList.remove('special-solo');portrait.dataset.officialRequest=String((Number(portrait.dataset.officialRequest)||0)+1);portrait.hidden=true;portrait.removeAttribute('src')}
+ }else{portrait.style.opacity='';portrait.style.transition='';portrait.classList.remove('special-solo');portrait.dataset.officialRequest=String((Number(portrait.dataset.officialRequest)||0)+1);portrait.hidden=true;portrait.removeAttribute('src')}
 }else{
  if(scene.clearPortrait||scene.specialMinghao)currentPortrait='';
  speakerTag.textContent='';content.classList.remove('vn-inner');
+ portrait.style.opacity='';portrait.style.transition='';
  portrait.hidden=true;
 }
 
