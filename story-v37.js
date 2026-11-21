@@ -819,6 +819,7 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .shindo-choices p{font-size:15px;color:#bbb;margin:0 0 12px}
 #shindo-vn .shindo-choices button{border:1px solid #555;border-radius:5px;background:#202020;color:white;text-align:left;padding:16px;font:inherit;font-size:clamp(14px,1.6vw,17px);cursor:pointer}
 #shindo-vn .shindo-choices button:hover{background:#333;border-color:#999}
+#shindo-vn .shindo-choices .shindo-gongyang-package-test{margin-top:8px;text-align:center;font-size:clamp(12px,1.4vw,14px);color:#c9c9c9;background:#242424;border:1px dashed #777;padding:12px 10px;letter-spacing:-.045em}
 #shindo-vn .shindo-choices .shindo-day1-restart{margin-top:8px;text-align:center;font-size:clamp(12px,1.4vw,14px);color:#bbb;background:#242424;border:1px dashed #666;padding:12px 10px;letter-spacing:-.045em}
 #shindo-vn .shindo-ending{position:absolute;inset:0;z-index:15;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:24px;box-sizing:border-box;cursor:default}
 #shindo-vn .shindo-ending-copy{animation:vn-image-appear 1s ease both;max-width:900px}
@@ -1532,6 +1533,8 @@ if(scene.kind==='day2-morning-choice'){
  if(scene.kind==='conf-morning-choice'){showConfMorningChoice();return}
  if(scene.kind==='conf-morning-shared-start'){index++;save();render();return}
  if(scene.kind==='conf-morning-end'){showConfMorningEnd();return}
+ if(scene.kind==='gongyang-item-check'){showGongyangItemCheck();return}
+ if(scene.kind==='gongyang-end'){showGongyangEnd();return}
  if(scene.kind==='living-choice'){showLivingChoice();return}
  if(scene.kind==='living-end'){showLivingEnd();return}
  if(scene.kind==='living-recall'){showLivingRecall(scene);return}
@@ -1675,7 +1678,7 @@ function restartFromDay1(){
  endingTimers.forEach(clearTimeout);endingTimers=[];
  selectedBranch=0;day2Prayer=0;day2Morning='';livingBranch=0;mainBranch=0;confMorningBranch=0;joshuaRevealed=false;revealed=false;jihoonRevealed=false;soonyoungRevealed=false;minghaoRevealed=false;jeonghanRevealed=false;mingyuRevealed=false;
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;confessionTickLouder=false;
- ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_confession_morning_branch_v163'].forEach(k=>localStorage.removeItem(k));
+ ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_escape_package_v167','shindo_confession_morning_branch_v163'].forEach(k=>localStorage.removeItem(k));
  const day1Start=scenes.findIndex(s=>s.kind==='transition'&&s.text==='1일차 아침');
  index=day1Start>=0?day1Start:0;
  locked=false;save();render();
@@ -1687,8 +1690,17 @@ function getMorningAffinityDay(){
 function showDay2Choice(type){locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  const prayer=type==='prayer';const options=prayer?['새벽기도에 참석한다','새벽기도에 참석하지 않는다']:['기도관','예술당','생활관','본당','고해소','공양실'];
  el.classList.toggle('shindo-morning-grid',!prayer);
- el.innerHTML='<h2>'+(prayer?'새벽기도에 참석할까?':'오전 활동이다. 어디로 가볼까?')+'</h2>'+(prayer?options.map((t,i)=>'<button data-choice="'+(i+1)+'">'+t+'</button>').join(''):'<div class="shindo-morning-options">'+options.map((t,i)=>'<button data-choice="'+(i+1)+'">'+t+'</button>').join('')+'</div><button type="button" class="shindo-day1-restart">↺ 1일차부터 다시 시작 (임시)</button>');el.style.display='flex';
- if(!prayer)el.querySelector('.shindo-day1-restart').onclick=e=>{e.stopPropagation();restartFromDay1()};
+ el.innerHTML='<h2>'+(prayer?'새벽기도에 참석할까?':'오전 활동이다. 어디로 가볼까?')+'</h2>'+(prayer?options.map((t,i)=>'<button data-choice="'+(i+1)+'">'+t+'</button>').join(''):'<div class="shindo-morning-options">'+options.map((t,i)=>'<button data-choice="'+(i+1)+'">'+t+'</button>').join('')+'</div><button type="button" class="shindo-gongyang-package-test">[테스트] 탈출패키지 획득 후 공양실</button><button type="button" class="shindo-day1-restart">↺ 1일차부터 다시 시작 (임시)</button>');el.style.display='flex';
+ if(!prayer){
+  el.querySelector('.shindo-day1-restart').onclick=e=>{e.stopPropagation();restartFromDay1()};
+  el.querySelector('.shindo-gongyang-package-test').onclick=e=>{
+   e.stopPropagation();
+   // Test-only state: the actual item-acquisition chapter will set this key in future.
+   localStorage.setItem('shindo_escape_package_v167','1');
+   // Use the same location-selection handler so ordinary room/person affinity rules are retained.
+   el.querySelector('[data-choice="6"]')?.click();
+  };
+ }
  el.querySelectorAll('[data-choice]').forEach(b=>b.onclick=e=>{e.stopPropagation();if(prayer){day2Prayer=Number(b.dataset.choice);window.SHINDO_addPlayRecord?.('선택','새벽기도: '+options[day2Prayer-1]);localStorage.setItem('shindo_day2_prayer',String(day2Prayer));window.SHINDO_applyAffinityEvent?.('prayer',day2Prayer===1?'참석':'불참',2);el.style.display='none';locked=false;next()}else{day2Morning=options[Number(b.dataset.choice)-1];window.SHINDO_addPlayRecord?.('선택','오전 활동 장소: '+day2Morning);localStorage.setItem('shindo_day2_morning',day2Morning);window.SHINDO_applyAffinityEvent?.('room',day2Morning,getMorningAffinityDay());
  if(day2Morning==='예술당'){
   artBranch=0;artLocation='main';artImage='';stopArtAudio();el.style.display='none';currentPortrait='';portrait.hidden=true;index=ART_SCENE_START;save();locked=true;enterMorningBuilding('bg-art-hall-exterior.jpg',()=>{locked=false;render()});
