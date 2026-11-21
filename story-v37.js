@@ -168,8 +168,8 @@ const scenes=[
  {kind:"narration",text:"고해성사가 끝난 듯 하다. 무사히 잘 넘겼을까?",branch:1},
  {kind:"dialogue",speaker:"원우",text:"이로써 당신의 죄는 모두 토해져, 신께 닿아 사해졌습니다. 당신의 생활에 행복과 안식이 있기를.",portrait:"wonwoo-body1-smile",branch:1},
  {kind:"narration",text:"다행히 의심은 피했다. 이제 생활관으로 넘어가 하루를 마무리하자.",branch:1,stopTick:true,backdrop:"bg-living-quarters-exterior.png"},
- {kind:"dialogue",speaker:"주인공",text:"정말 힘든 하루였어.. 이제 자고 내일을 시작해야겠다.",branch:1,backdrop:"bg-living-quarters-interior.png",clearPortrait:true},
- {kind:"sleep-transition",text:"2일차",branch:1,day:2,backdrop:"bg-living-quarters-interior.png"},
+ {kind:"dialogue",speaker:"주인공",text:"정말 힘든 하루였어.. 이제 자고 내일을 시작해야겠다.",branch:1,backdrop:"bg-living-quarters-exterior.png",clearPortrait:true},
+ {kind:"sleep-transition",text:"2일차",branch:1,day:2},
  {kind:"dialogue",speaker:"주인공",text:"어, 지금 몇 시지..?",branch:1,backdrop:"bg-living-quarters-interior.png",wakeFadeIn:true},
  {kind:"narration",text:"고해소의 사제라면 신도들의 모든 정보를 알고 있으리라.",branch:2,tickSpeed:1},
  {kind:"dialogue",speaker:"주인공",text:"(그를 내 편으로 포섭한다면 이곳에서 살아남기 수월할지도 모른다.)",inner:true,branch:2},
@@ -472,6 +472,9 @@ const sceneBackdropRanges=[
  {start:150,end:172,file:"bg-central-square.png"}
 ];
 function getSceneBackdrop(sceneNumber,scene){
+ // V149: Never show the day-2 dorm photograph during the sleep/title interstitial.
+ // The first day-2 morning dialogue owns the dorm interior background.
+ if(scene&&scene.kind==='sleep-transition')return "";
  if(scene&&scene.backdrop)return scene.backdrop;
  for(const range of sceneBackdropRanges){
   if(sceneNumber>=range.start && sceneNumber<=range.end)return range.file;
