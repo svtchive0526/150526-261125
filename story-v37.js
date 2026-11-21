@@ -422,24 +422,24 @@ scenes.push(
  {"kind": "narration", "text": "서명호가 조슈아, 문준휘, 최한솔...", "artHall": true, "artBranch": 4, "specialMinghao": true},
  {"kind": "narration", "text": "이 셋과 유독 각별하다는 것도 알아냈다.", "artHall": true, "artBranch": 4, "specialMinghao": true},
  {"kind": "dialogue", "speaker": "주인공", "text": "그 애정이, 겉으로 보이는 것보다 훨씬 깊은 것 같군…", "artHall": true, "artBranch": 4, "specialMinghao": true},
- {"kind": "narration", "text": "오늘도 들어가려던 찰나, 남자 둘이 언성을 높이는 소리가 들린다.", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-mocking", "minghao-body1-angry"], "duoMask": "both"},
- {"kind": "narration", "text": "재빨리 나무 뒤로 숨어야겠다.", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-mocking", "minghao-body1-angry"], "duoMask": "both"},
- {"kind": "dialogue", "speaker": "주인공", "text": "대체 무슨 일이지?", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-mocking", "minghao-body1-angry"], "duoMask": "both"},
- {"kind": "dialogue", "speaker": "주인공", "text": "서명호 사제와 목에 핏대를 세우며 싸우는 건…", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-mocking", "minghao-body1-angry"], "duoMask": "hansol"},
- {"kind": "dialogue", "speaker": "주인공", "text": "최한솔 사제잖아?", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-mocking", "minghao-body1-angry"], "duoMask": "none", "specialMeetHansol": true},
+ {"kind": "narration", "text": "오늘도 들어가려던 찰나, 남자 둘이 언성을 높이는 소리가 들린다.", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-mocking", "minghao-body1-flustered"], "duoMask": "both"},
+ {"kind": "narration", "text": "재빨리 나무 뒤로 숨어야겠다.", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-mocking", "minghao-body1-flustered"], "duoMask": "both"},
+ {"kind": "dialogue", "speaker": "주인공", "text": "대체 무슨 일이지?", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-mocking", "minghao-body1-flustered"], "duoMask": "both"},
+ {"kind": "dialogue", "speaker": "주인공", "text": "서명호 사제와 목에 핏대를 세우며 싸우는 건…", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-mocking", "minghao-body1-flustered"], "duoMask": "hansol"},
+ {"kind": "dialogue", "speaker": "주인공", "text": "최한솔 사제잖아?", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-mocking", "minghao-body1-flustered"], "duoMask": "none", "specialMeetHansol": true},
  {"kind": "dialogue", "speaker": "한솔", "text": "형. 몇 번을 말해야 알아들어.", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body3-mocking"},
  {"kind": "dialogue", "speaker": "한솔", "text": "여기 남아있는 게 훨씬 좋다니까?", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body3-mocking"},
  {"kind": "dialogue", "speaker": "한솔", "text": "여기서 원하는 그림도 마음껏 그릴 수 있는데, 대체 뭐가 불만인데?", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body2-mocking"},
- {"kind": "dialogue", "speaker": "명호", "text": "원하는 그림?", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body2-eyesclosed"},
- {"kind": "dialogue", "speaker": "명호", "text": "너 지금 이 미친 꽃대가리 그림이 원하는 그림으로 보여?", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body2-eyesclosed", "boldAll": true, "fontScale": 1.25},
- {"kind": "dialogue", "speaker": "명호", "text": "내가 그리고 싶은 건 내 감정이고 내 마음이지!", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body2-eyesclosed", "boldAll": true, "fontScale": 1.3},
- {"kind": "dialogue", "speaker": "명호", "text": "이 사람 세뇌하는 곳의 가짜 신앙 따위가 아니야!", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body2-angry", "boldAll": true, "fontScale": 1.35},
- {"kind": "dialogue", "speaker": "명호", "text": "한솔아, 제발…. 우리는 대체 여기서 뭘 얻을 수 있어?", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body2-flustered"},
+ {"kind": "dialogue", "speaker": "명호", "text": "원하는 그림?", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body3-angry"},
+ {"kind": "dialogue", "speaker": "명호", "text": "너 지금 이 미친 꽃대가리 그림이 원하는 그림으로 보여?", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body3-angry", "boldAll": true, "fontScale": 1.25},
+ {"kind": "dialogue", "speaker": "명호", "text": "내가 그리고 싶은 건 내 감정이고 내 마음이지!", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body3-angry", "boldAll": true, "fontScale": 1.3},
+ {"kind": "dialogue", "speaker": "명호", "text": "이 사람 세뇌하는 곳의 가짜 신앙 따위가 아니야!", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body3-angry", "boldAll": true, "fontScale": 1.35},
+ {"kind": "dialogue", "speaker": "명호", "text": "한솔아, 제발…. 우리는 대체 여기서 뭘 얻을 수 있어?", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body3-eyesclosed"},
  {"kind": "dialogue", "speaker": "한솔", "text": "뭘 얻긴? 확실한 안전이지.", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body3-mocking"},
  {"kind": "dialogue", "speaker": "한솔", "text": "안전한 것 중에 가장 확실한, 그리고 확실한 것 중에 가장 안전한.", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body3-mocking", "boldAll": true},
  {"kind": "dialogue", "speaker": "한솔", "text": "또 도망이나 다니면서 살고 싶은 건 아니지?", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body2-annoyed", "boldAll": true, "fontScale": 1.3},
- {"kind": "dialogue", "speaker": "주인공", "text": "(…도대체 무슨 얘기를 하는 거지? 안전? 도망?)", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-annoyed", "minghao-body2-flustered"]},
- {"kind": "dialogue", "speaker": "주인공", "text": "(대체 저들 정체가 뭐야?)", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-annoyed", "minghao-body2-flustered"]},
+ {"kind": "dialogue", "speaker": "주인공", "text": "(…도대체 무슨 얘기를 하는 거지? 안전? 도망?)", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-annoyed", "minghao-body3-eyesclosed"]},
+ {"kind": "dialogue", "speaker": "주인공", "text": "(대체 저들 정체가 뭐야?)", "artHall": true, "artBranch": 4, "specialMinghao": true, "duo": ["hansol-body2-annoyed", "minghao-body3-eyesclosed"]},
  {"kind": "dialogue", "speaker": "한솔", "text": "그렇게 나가고 싶어? 그럼 준휘 형한테 말해.", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body2-annoyed", "boldWord": "준휘 형"},
  {"kind": "dialogue", "speaker": "한솔", "text": "그까짓 외출쯤이야 그 형 손 쓰면 쉽게 되는 걸 왜 자꾸…", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body2-annoyed", "redWord": "외출"},
  {"kind": "dialogue", "speaker": "한솔", "text": "…답답할 때마다 문준휘가 몰래 몰래 내보내 줬잖아.", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "hansol-body2-default"},
@@ -452,8 +452,8 @@ scenes.push(
  {"kind": "narration", "text": "심장이 쿵쾅거렸다.", "artHall": true, "artBranch": 4, "specialMinghao": true, "artBlackout": true},
  {"kind": "dialogue", "speaker": "주인공", "text": "세상에, 방금 뭘 들은 거지.", "artHall": true, "artBranch": 4, "specialMinghao": true, "artBlackout": true},
  {"kind": "narration", "text": "그러니까 서명호는 사제임에도 불구하고, 카밀레교에 불만을 품고 있다.", "artHall": true, "artBranch": 4, "specialMinghao": true, "artBlackout": true, "boldPhrase": "카밀레교에 불만을 품고 있다."},
- {"kind": "dialogue", "speaker": "명호", "text": "내가 그리고 싶은 건 내 감정이고 내 마음이지!", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body2-eyesclosed", "boldAll": true, "fontScale": 1.3, "recall": true},
- {"kind": "dialogue", "speaker": "명호", "text": "이 사람 세뇌하는 곳의 가짜 신앙 따위가 아니야!", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body2-angry", "boldAll": true, "fontScale": 1.35, "recall": true},
+ {"kind": "dialogue", "speaker": "명호", "text": "내가 그리고 싶은 건 내 감정이고 내 마음이지!", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body3-angry", "boldAll": true, "fontScale": 1.3, "recall": true},
+ {"kind": "dialogue", "speaker": "명호", "text": "이 사람 세뇌하는 곳의 가짜 신앙 따위가 아니야!", "artHall": true, "artBranch": 4, "specialMinghao": true, "portrait": "minghao-body3-angry", "boldAll": true, "fontScale": 1.35, "recall": true},
  {"kind": "dialogue", "speaker": "주인공", "text": "(이걸 어떻게 잘 이용해볼 수 있을까?)", "artHall": true, "artBranch": 4, "specialMinghao": true, "clearPortrait": true},
  {"kind": "dialogue", "speaker": "주인공", "text": "(오늘 고해성사는 골치 아프게 생겼네.)", "artHall": true, "artBranch": 4, "specialMinghao": true},
  {"kind": "art-end", "artHall": true, "artBranch": 4, "specialMinghao": true}
@@ -482,9 +482,9 @@ const style=document.createElement('style');style.textContent=`
 /* V114 -- special scene two-character composition and memory presentation */
 #shindo-vn .vn-duo{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;display:none}
 #shindo-vn .vn-duo.is-active{display:block}
-#shindo-vn .vn-duo img{position:absolute;bottom:clamp(155px,23vh,245px);height:min(44vh,520px);width:auto;max-width:46vw;object-fit:contain;object-position:bottom;transform-origin:center bottom}
-#shindo-vn .vn-duo .duo-left{left:26%;transform:translateX(-50%)}
-#shindo-vn .vn-duo .duo-right{left:74%;transform:translateX(-50%)}
+#shindo-vn .vn-duo img{position:absolute;bottom:clamp(155px,23vh,245px);height:min(47vh,560px);width:auto;max-width:48vw;object-fit:contain;object-position:bottom;transform-origin:center bottom}
+#shindo-vn .vn-duo .duo-left{left:31%;transform:translateX(-50%)}
+#shindo-vn .vn-duo .duo-right{left:69%;transform:translateX(-50%)}
 #shindo-vn .vn-duo img.is-shadow{filter:brightness(0)!important}
 #shindo-vn.is-recall .vn-portrait{filter:grayscale(1) brightness(.75)!important}
 #shindo-vn.is-recall .vn-box{filter:grayscale(1)}
@@ -492,7 +492,7 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .special-memory-kicker{position:absolute;top:11%;left:50%;transform:translateX(-50%);color:#888;letter-spacing:.24em;font-size:12px;z-index:8;display:none}
 #shindo-vn.is-recall .special-memory-kicker{display:block}
 #shindo-vn .art-branch-options .shindo-special-test{border:1px dashed #956868!important;color:#e0b0b0!important;margin-top:13px}
-@media(max-width:650px){#shindo-vn .vn-duo img{height:min(31vh,360px);width:auto;max-width:46vw;bottom:clamp(165px,21vh,230px)}#shindo-vn .vn-duo .duo-left{left:29%}#shindo-vn .vn-duo .duo-right{left:71%}}
+@media(max-width:650px){#shindo-vn .vn-duo img{height:min(32vh,375px);width:auto;max-width:47vw;bottom:clamp(165px,21vh,230px)}#shindo-vn .vn-duo .duo-left{left:29%}#shindo-vn .vn-duo .duo-right{left:71%}}
 
 #shindo-vn{position:fixed;inset:0;z-index:30000;background:transparent;color:#fff;display:none;align-items:flex-end;justify-content:center;font-family:Pretendard,'Pretendard Variable',system-ui,sans-serif;cursor:pointer;touch-action:manipulation;user-select:none}
 #shindo-vn.active{display:flex;animation:shindo-story-fade-in 1.1s ease both}@keyframes shindo-story-fade-in{from{opacity:0}to{opacity:1}}
