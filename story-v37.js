@@ -196,7 +196,7 @@ const scenes=[
  {"kind":"narration","text":"중앙 광장은 이미 사람들로 가득했다. 발소리와 옷깃 스치는 소리만 간간이 들렸다.","branch":1},
  {"kind":"narration","text":"기이한 정적 위로 새소리가 들려왔다.","branch":1,"sound":"birds"},
  {"kind":"narration","text":"아침 예배가 끝나기가 무섭게 전달이 돌았다. 모두 중앙 광장으로 모이라고.","branch":1},
- {"kind":"narration","text":"어쩌면 ‘공양’을 할지도 모른다. 라고,","branch":1,"squareBlack":true,"fade":true},
+ {"kind":"narration","text":"어쩌면 ‘공양’을 할지도 모른다. 라고,","branch":1},
  {"kind":"narration","text":"다행히도 다들 신입 신자에게 설명해주는 데 매우 호의적이었다.","branch":1},
  {"kind":"narration","text":"‘공양’은 죄를 지은 자의 죄를 밝히고 이를 사하기 위해 인도받는 자리라고 했다.","branch":1},
  {"kind":"dialogue","speaker":"주인공","text":"듣기로는 고해성사와 크게 다르진 않아 보이는데...","branch":1},
@@ -225,7 +225,7 @@ const scenes=[
  {"kind":"narration","text":"신도들 사이에서 우레와 같은 박수 소리가 터져 나왔다.","branch":1,"gongyangApplause":"start","clearPortrait":true},
  {"kind":"narration","text":"발버둥 쳐봐도 소용없었다. 그 남자는 공양실 방향으로 질질 끌려갔다.","branch":1,"gongyangApplause":"continue"},
  {"kind":"narration","text":"풀잎 위로 상쾌한 바람이 불었다. 눈이 시리도록 맑은 아침이었다. 그래서 더 끔찍했다.","branch":1},
- {"kind":"narration","text":"교주의 말인즉슨, 최근 한 내부고발자가 인신 공양의 실태를 바깥으로 흘렸다.","branch":1,"squareBlack":true,"fade":true},
+ {"kind":"narration","text":"교주의 말인즉슨, 최근 한 내부고발자가 인신 공양의 실태를 바깥으로 흘렸다.","branch":1},
  {"kind":"narration","text":"그래서 내부 결속을 다지려고 연속 공양을 시작했다.","branch":1},
  {"kind":"dialogue","speaker":"주인공","text":"그 시작이 오늘.","branch":1},
  {"kind":"dialogue","speaker":"주인공","text":"하필 오늘.","branch":1},
@@ -486,7 +486,7 @@ function getSceneBackdrop(sceneNumber,scene){
  // the old numeric ranges had gaps that made the photo disappear mid-scene.
  const squareStart=scenes.findIndex(x=>x.square===true&&String(x.text||'').includes('중앙광장으로 가볼까'));
  const squareEnd=scenes.findIndex((x,i)=>i>squareStart&&x.kind==='day2-morning-choice');
- if(scene&&scene.branch===1&&squareStart>=0&&sceneNumber-1>=squareStart&&sceneNumber-1<=squareEnd)return 'bg-central-square.jpg';
+ if(scene&&scene.branch===1&&squareStart>=0&&sceneNumber-1>=squareStart&&(squareEnd<0||sceneNumber-1<squareEnd))return 'bg-central-square.jpg';
  if(scene&&scene.backdrop)return scene.backdrop;
  for(const range of sceneBackdropRanges){
   if(sceneNumber>=range.start && sceneNumber<=range.end)return range.file;
@@ -651,6 +651,19 @@ function applySceneBackdrop(sceneIndex,scene){
   storyBackdrop.dataset.backdropReady='1';
   setSceneBackdropImage(file);
   storyBackdrop.style.opacity='1';
+  return;
+ }
+ // On entering the central square, fade the new photograph in from black
+ // rather than briefly retaining the previous living-quarters background.
+ if(file==='bg-central-square.jpg'&&scene?.square){
+  storyBackdrop.style.opacity='0';
+  primeBackdrop(file).then(()=>{
+   if(token!==backdropChangeToken)return;
+   setSceneBackdropImage(file);
+   requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    if(token===backdropChangeToken)storyBackdrop.style.opacity='1';
+   }));
+  });
   return;
  }
  // Fade the old photo away before switching. Preload the next one before
@@ -1142,6 +1155,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  try{localStorage.setItem('shindo_current_story_day_v109',String(index>=DAY2_START?2:1))}catch(_){}
 const existingChoiceModal=overlay.querySelector('.shindo-choices');if(existingChoiceModal&&scene.kind!=='art-choice'&&scene.kind!=='art-end'&&scene.kind!=='prayer-choice'&&scene.kind!=='prayer-end'&&scene.kind!=='day2-morning-choice'&&scene.kind!=='day2-prayer-choice'&&scene.kind!=='choice')existingChoiceModal.style.display='none';
 if(!scene.specialMinghao){duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');}
+const fadingOutOfSquare=scene.kind==='day2-morning-choice'&&currentSceneBackdropKey==='bg-central-square.jpg';
 applySceneBackdrop(index,scene);
  if(scene.prayerRoom){overlay.classList.remove('confession-blackout')}else{stopPrayerClock();stopPrayerAudio();stopPrayerBell()}
  if(scene.prayerStart)startPrayerClock();
@@ -1197,7 +1211,15 @@ if(scene.kind==='choice'){showChoice();return}
 if(scene.kind==='day2-prayer-choice'){showDay2Choice('prayer');return}
 if(scene.prayerStart)window.SHINDO_applyAffinityEvent?.('room','기도관',2);
 if(index===ART_SCENE_START)window.SHINDO_applyAffinityEvent?.('room','예술당',2);
-if(scene.kind==='day2-morning-choice'){showDay2Choice('morning');return}
+if(scene.kind==='day2-morning-choice'){
+  if(fadingOutOfSquare){
+   locked=true;
+   timer=setTimeout(()=>{
+    if(scenes[index]===scene && overlay.classList.contains('active'))showDay2Choice('morning');
+   },1050);
+  }else showDay2Choice('morning');
+  return;
+ }
  if(scene.kind==='art-choice'){stopArtAudio();showArtChoice();return}
  if(scene.kind==='art-end'){stopArtAudio();showArtEnd();return}
  if(scene.kind==='evidence-popup'){showEvidencePopup(scene);return}
@@ -1211,7 +1233,7 @@ if(scene.kind==='day2-morning-choice'){showDay2Choice('morning');return}
 
 if(scene.kind==='ending'){showEnding();return}
 if(scene.square)overlay.classList.remove("confession-blackout");
-if(scene.squareBlack)overlay.classList.add("confession-blackout");
+// V155: all central-square dialogue keeps the background visible; no mid-scene blackouts.
 if(scene.wakeShake){sound('wake-rustle');overlay.classList.add("day2-shake");setTimeout(()=>overlay.classList.remove("day2-shake"),2000)}
 if(scene.screenShake){overlay.classList.add("day2-shake");setTimeout(()=>overlay.classList.remove("day2-shake"),800)}
 if(scene.gongyangBell)playGongyangBell(scene.gongyangBell);
