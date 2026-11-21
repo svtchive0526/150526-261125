@@ -865,11 +865,11 @@ scenes.push(
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"하지만 이미 정체를 들킨 거, 끝장은 봐야지.","speaker":"주인공"},
  {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"…<은재의 방> 앞에 도착했다."},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"복도는 텅 비어있고, 내 숨소리만 유난히 선명하네...","speaker":"주인공"},
- {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"뒤를 한 번 돌아본 뒤, 천천히 노크를 했다.","v178Audio":"knock"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"뒤를 한 번 돌아본 뒤, 천천히 노크를 했다."},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"승관이 알려준 대로...","speaker":"주인공"},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"은재… 씨를 찾으러 왔습니다.","speaker":"주인공"},
  {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"고요하다."},
- {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"잠금장치가 풀리는 소리가 들린다.","v178Audio":"unlock"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"잠금장치가 풀리는 소리가 들린다."},
  {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"문이 열렸다. 안에는 승관 외에도 사람이 셋이나 더 있었다."},
  {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"놀라 도망치려는 나를, 그들은 침착하게 붙잡았다."},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"진정하세요. 소리 내시면 안 됩니다.","speaker":"석민","portrait":"seokmin-body1-default","maskUntilMet":"석민","portraitFadeOutAfter":true},
@@ -1885,10 +1885,7 @@ function hadMorningConfessionalVisit(){
 let v178BellAudio=null,v178BellGain=null,v178AudioTimers=[];
 function stopV178Bell(){if(v178BellGain)clearInterval(v178BellGain);v178BellGain=null;if(v178BellAudio){v178BellAudio.pause();v178BellAudio=null}}
 function startV178Bell(){stopV178Bell();v178BellAudio=playExtraAudio('gongyang-bell-01.wav',.07);const a=v178BellAudio;let count=0;v178BellGain=setInterval(()=>{if(v178BellAudio!==a){clearInterval(v178BellGain);v178BellGain=null;return}count++;a.volume=Math.min(.9,.07+count*.075);if(count>=11){clearInterval(v178BellGain);v178BellGain=null}},360)}
-function v178Cue(cue){if(cue==='unlock')playExtraAudio('clean_room_sound01.wav',.4);if(cue==='knock'){
- // Use the already registered first-day knock effect so sound filename stays canonical.
- sound('knock');
- }if(cue==='bell'&&!v178BellAudio)startV178Bell()}
+function v178Cue(cue){if(cue==='bell'&&!v178BellAudio)startV178Bell()}
 function v178Patrol(mode){
  if(!mode){duoLayer.classList.remove('v178-patrol','is-visible','is-active');return}
  if(mode==='in'){
