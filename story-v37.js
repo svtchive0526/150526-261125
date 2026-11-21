@@ -978,6 +978,11 @@ let currentPortrait='',revealed=false;
 const portraits={};
 const DEFAULT_PORTRAIT_PROFILE={scale:1,x:'-50%',y:'0px',bottom:'',height:'',maxWidth:''};
 const PORTRAIT_PROFILES=[
+ // V170: Junhui's body1/body2/body3 canvases have nearly identical heights,
+ // but very different widths. The global 95vw max-width was shrinking the
+ // wide poses on phones. Keep one fixed portrait height across all poses,
+ // allowing the illustration's wide arms to extend beyond the viewport.
+ {match:/^junhui-/,scale:1,maxWidth:'none'},
  {match:/^hansol-/,scale:1.04,y:'0px',height:'min(60vh,620px)'},
  {match:/^soonyoung-/,scale:1.02},
  {match:/^minghao-/,scale:1.04,y:'0px',height:'min(60vh,620px)'},
