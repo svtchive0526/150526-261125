@@ -834,6 +834,112 @@ scenes.push(
  {"kind":"seungkwan-choice","eveningDay2":true,"eveningLocation":"living","eveningBranch":2}
 );
 
+
+// V178: Day 2 night / Eunjae room police and Dogodai ending.
+const V178_OFFSET=scenes.length;
+scenes.push(
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","v178":true,"text":"사람 잘못 보신 것 같습니다.","speaker":"주인공","portrait":"seungkwan-body1-thinking","portraitFadeOutAfter":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"living","v178":true,"text":"차갑게 말하고 돌아섰다. 심장이 몹시 두근거린다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","v178":true,"text":"(부승관, 그는 누구고 어째서 내 정체를 알고 있는 거지?)","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","v178":true,"text":"아니, 지금은 이럴 때가 아니다.","speaker":"주인공","clearPortrait":true},
+ {"kind":"v178-hold","eveningDay2":true,"eveningLocation":"living","v178":true,"v178Hold":"deny"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","v178":true,"text":"…꼭 비밀로 해주셔야 해요.","speaker":"주인공","portrait":"seungkwan-body2-default"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"living","v178":true,"text":"그간의 이야기를 털어놓았다.","portrait":"seungkwan-body2-default"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"living","v178":true,"text":"익명의 제보자에게서 받은 고발 이메일,","portrait":"seungkwan-body2-default"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"living","v178":true,"text":"그리고 이 교단을 취재해 달라는 부탁까지.","portrait":"seungkwan-body2-default"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"living","v178":true,"text":"말을 하는 내내 손끝이 잘게 떨렸다.","portrait":"seungkwan-body2-default"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"living","v178":true,"text":"혹시라도 여길 보는 시선이 없는지 몇 번이나 확인했다.","portrait":"seungkwan-body2-default"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","v178":true,"text":"솔직하게 말씀해주셔서 감사해요.","speaker":"승관","portrait":"seungkwan-body1-eyesmile"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","v178":true,"text":"어려운 선택이었을 거 알아요.","speaker":"승관","portrait":"seungkwan-body1-smile"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","v178":true,"text":"저녁 기도가 끝나고 소등된 뒤에 <은재의 방>으로 오세요.","speaker":"승관","portrait":"seungkwan-body1-smile","boldAll":true,"portraitFadeOutAfter":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"living","v178":true,"text":"승관이 알려준 건 처음 들어보는 호실이었다.","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"living","v178":true,"text":"되묻기도 전에, 승관은 아무 일도 없었다는 듯 신도들 사이로 섞여 멀어져 갔다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","v178":true,"text":"…무슨 일인 걸까.","speaker":"주인공","clearPortrait":true},
+ {"kind":"v178-intertitle","eveningDay2":true,"eveningLocation":"dark","v178":true,"text":"저녁 기도 이후"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"text":"저녁이다. 개인실을 나서기 전 창밖부터 살폈다.","patrolDuo":"in"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"text":"복도 끝에서 순찰하는 승철과 지훈의 그림자가 지나가기를 기다린다.","patrolDuo":"hold"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"어두운 복도로 차가운 달빛이 쏟아진다.","patrolDuo":"out"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"혹시 몰라 다른 신도들에게 ‘은재’에 대해 물어봤다.","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"‘여기에 은재라는 사람은 없는데요?’라는 대답만 돌아왔을 뿐이다."},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"함정일 수도 있겠다는 생각이 스쳤다."},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"하지만 이미 정체를 들킨 거, 끝장은 봐야지.","speaker":"주인공"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"…<은재의 방> 앞에 도착했다."},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"복도는 텅 비어있고, 내 숨소리만 유난히 선명하네...","speaker":"주인공"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"뒤를 한 번 돌아본 뒤, 천천히 노크를 했다.","v178Audio":"knock"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"승관이 알려준 대로...","speaker":"주인공"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"은재… 씨를 찾으러 왔습니다.","speaker":"주인공"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"고요하다."},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"잠금장치가 풀리는 소리가 들린다.","v178Audio":"unlock"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"문이 열렸다. 안에는 승관 외에도 사람이 셋이나 더 있었다."},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"놀라 도망치려는 나를, 그들은 침착하게 붙잡았다."},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"진정하세요. 소리 내시면 안 됩니다.","speaker":"석민","portrait":"seokmin-body1-default","maskUntilMet":"석민","portraitFadeOutAfter":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"문이 닫히자마자 잠금장치가 다시 걸린다.","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"짐이 죄다 빠지고 스산하게 텅 빈 방..."},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"…이어야 하는데."},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"방 안은 서류로 꽉 차 있었다."},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"책상 위는 물론이고 의자와 바닥, 창틀까지도."},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"벽에도 지도와 사진들이 빼곡하게 붙어 있다."},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"손으로 휘갈긴 메모와 줄을 쳐 놓은 명단까지."},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"누가 봐도 쓰고 있는 방이다."},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"아니, 오히려 비밀 본거지처럼 생겼다."},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"자기소개부터 해야 하는 거 아닌가?","speaker":"순영","portrait":"soonyoung-body2-default","maskUntilMet":"순영"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"차분하고 여유로운 ‘윤정한’.","portrait":"jeonghan-body1-default","boldWord":"윤정한","revealName":"정한"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"서늘한 무표정의 ‘권순영’.","portrait":"soonyoung-body1-default","boldWord":"권순영","revealName":"순영"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"긴장한 낯의 ‘이석민’.","portrait":"seokmin-body1-default","boldWord":"이석민","revealName":"석민"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"아까와는 전혀 다른 분위기의 승관까지.","portrait":"seungkwan-body2-default","boldWord":"승관"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"제대로 된 소개가 늦었네요.","speaker":"승관","portrait":"seungkwan-body2-default"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"세븐특별시 경찰청 강력팀 소속 형사 부승관입니다.","speaker":"승관","portrait":"seungkwan-body2-eyesmile","boldWord":"세븐특별시 경찰청 강력팀"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"현재 카밀레교에 동료 형사들과 함께 잠입 수사 중입니다.","speaker":"승관","portrait":"seungkwan-body2-default","boldAll":true,"fontScale":1.2},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"어떻게 저를…","speaker":"주인공","portrait":"seungkwan-body2-eyesmile"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"봉봉 아티클 소속 김봉봉 씨, 예전에 저희 서와 협력하셨잖습니까.","speaker":"석민","portrait":"seokmin-body2-eyesmile"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"…맞아. 그랬던 적이 있었죠.","speaker":"주인공","portrait":"seokmin-body1-eyesmile"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"입사한 지 얼마 안 됐을 때, 강력팀의 야간 단속을 밀착 취재해서 기사를 썼다.","portrait":"seokmin-body1-default"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"나름 애정이 가는 기사다. 크게 주목받진 못했지만.","portrait":"seokmin-body1-default"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"그래서 절 알아본 거군요.","speaker":"주인공","portrait":"seokmin-body1-default"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"내가 처음부터 그랬잖아. 왠지 이상했다니까?","speaker":"순영","portrait":"soonyoung-body2-smile"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"이게 바로 호랑이의 촉이지~","speaker":"순영","portrait":"soonyoung-body1-smile"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"아, 이 형 또 저러네.","speaker":"승관","portrait":"seungkwan-body2-thinking"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"쉿. 벽 얇다.","speaker":"정한","portrait":"jeonghan-body1-subtle"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"정한의 한 마디에 방 안이 순식간에 조용해졌다.","portrait":"jeonghan-body1-subtle"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"강력팀 소속 윤정한 경위입니다.","speaker":"정한","portrait":"jeonghan-body1-default"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"이번 임무에서 팀장을 맡았고요.","speaker":"정한","portrait":"jeonghan-body1-default","boldWord":"팀장"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"본론부터 들어가겠습니다.","speaker":"정한","portrait":"jeonghan-body1-default"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"잠입 취재 중이라고 들었습니다.","speaker":"정한","portrait":"jeonghan-body1-smile"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"이렇게 된 거, 비공식 협력을 요청합니다.","speaker":"정한","portrait":"jeonghan-body1-smile"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"저희 쪽에서도 현재 갖고 있는 정보가 있습니다.","speaker":"정한","portrait":"jeonghan-body2-smile"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"함께하면 카밀레교를 무너트리기는 더 쉬울 겁니다.","speaker":"정한","portrait":"jeonghan-body2-smile"},
+ {"kind":"v178-coop-choice","eveningDay2":true,"eveningLocation":"dark","v178":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"예. 협력에 응하겠습니다.","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"경찰들은 몹시 반가워하며 알아낸 정보를 알려주었다."},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"우선 중요한 건 저녁 활동이고...","speaker":"주인공"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"이곳저곳을 둘러봐야 한다. 비록 오늘은 시간이 너무 늦었지만."},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"결국 수집해야 하는 건 ‘결정적인 물증’이구나.","speaker":"주인공"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"아, 그리고 오전에 여기 오시면 드릴 수 있는 게 있습니다.","speaker":"정한","portrait":"jeonghan-body1-eyesmile","portraitFadeOutAfter":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"<은재의 방>에는 오전에도 와봐야겠다.","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"이미 자정이 넘은 시간이다."},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"text":"개인실로 몰래 돌아가 침대에 몸을 파묻었다."},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"text":"오늘 하루에 너무 많은 일이 있었어...","speaker":"주인공"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"text":"푹 자고 내일도 파이팅해보자…","speaker":"주인공"},
+ {"kind":"v178-hold","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"v178Hold":"accept"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"…아무래도 그건 어려울 것 같습니다.","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"승관은 충격에 빠진 얼굴이고,","portrait":"seungkwan-body1-despair"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"정한은 예상했다는 얼굴이다.","portrait":"jeonghan-body1-default","portraitFadeOutAfter":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"text":"그렇게 말하곤 방으로 돌아왔다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"text":"경찰의 방식이라 해도 어디까지나 바깥세상의 이야기지...","speaker":"주인공"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"text":"여기서까진 통용되지 않아.","speaker":"주인공"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"text":"내 마음대로 취재하고 싶어. 더 위험해지더라도.","speaker":"주인공"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"text":"…올바른 선택이었겠지?","speaker":"주인공"},
+ {"kind":"v178-day3-title","eveningDay2":true,"eveningLocation":"dark","v178":true,"text":"3일차 아침"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"square","v178":true,"text":"김봉봉은 의문의 괴한들에 붙들려 중앙광장으로 끌려갔다.","v178Audio":"bell"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"square","v178":true,"text":"익숙한 얼굴들 사이에서 정한과 눈이 마주쳤다.","portrait":"jeonghan-body1-default","portraitFadeOutAfter":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"square","v178":true,"text":"아, 나를 팔았구나.","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"square","v178":true,"text":"(기자 하나를 넘기면, 경찰을 향한 의심은 걷힐 테니까.)","speaker":"주인공"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"square","v178":true,"text":"오늘도 공양은 성공적으로 끝났다."},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"square","v178":true,"text":"나로 말이지."},
+ {"kind":"v178-ending","eveningDay2":true,"eveningLocation":"dark","v178":true}
+);
+const V178_TARGETS=Object.freeze({"deny": 0, "tell": 5, "accept": 71, "refuse": 83});
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -864,7 +970,7 @@ function getSceneBackdrop(sceneNumber,scene){
  if(scene&&scene.mainHall)return {inside:'bg-sanctuary-inside.png',office:'bg-sanctuary-office.jpg',library:'bg-sanctuary-library.jpg'}[scene.mainLocation||'inside']||'';
  if(scene&&scene.confMorning)return {outside:'bg-confession-outside.png',inside:'bg-confession-inside.png'}[scene.confLocation||'outside']||'bg-confession-outside.png';
  if(scene&&scene.gongyangHall)return {square:'bg-central-square.jpg',outside:'bg-gongyang-outside.jpg'}[scene.gongyangLocation||'square']||'';
- if(scene&&scene.eveningDay2)return {square:'bg-central-square.jpg',outside:'bg-confession-outside.png',inside:'bg-confession-inside.png',dark:'',living:'bg-living-quarters-exterior.png'}[scene.eveningLocation||'square']||'';
+ if(scene&&scene.eveningDay2)return {square:'bg-central-square.jpg',outside:'bg-confession-outside.png',inside:'bg-confession-inside.png',dark:'',living:'bg-living-quarters-exterior.png',bongbong:LIVING_BACKDROPS.bongbong,corridor:LIVING_BACKDROPS.corridor,eunjae:LIVING_BACKDROPS.eunjae}[scene.eveningLocation||'square']||'';
  // V149: keep the sleep/title interstitial entirely black.
  if(scene&&scene.kind==='sleep-transition')return "";
  // V152: optional location photos for Day 2 activities. No scene is inserted,
@@ -887,6 +993,12 @@ function getSceneBackdrop(sceneNumber,scene){
  return "";
 }
 const style=document.createElement('style');style.textContent=`
+#shindo-vn .v178-dogodai-title{font-size:clamp(30px,6vw,60px);font-weight:800;letter-spacing:-.04em;margin:0 0 18px}
+/* V178: independent police patrol silhouettes; fade together on entering / leaving. */
+#shindo-vn .vn-duo.v178-patrol{display:block;opacity:0;transition:opacity 850ms ease;pointer-events:none}
+#shindo-vn .vn-duo.v178-patrol.is-visible{opacity:1}
+#shindo-vn .vn-duo.v178-patrol img{filter:brightness(0)!important}
+#shindo-vn .vn-portrait.v178-fadeout{opacity:0!important;transition:opacity 550ms ease!important}
 /* V114 -- special scene two-character composition and memory presentation */
 #shindo-vn .vn-duo{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;display:none}
 #shindo-vn .vn-duo.is-active{display:block}
@@ -1432,7 +1544,7 @@ function enterEveningLiving(){
  eveningLivingEntered=true;
  stopEveningTick(true);
  stopEveningWalk();
- const steps=playExtraAudio('01-4.mp3',.17); // Day 1 forest footsteps, quietly
+ const steps=playExtraAudio('01-4.mp3',.09); // V178: very quiet forest footsteps on the evening path
  eveningWalkingAudio=steps;
  const finish=()=>{if(eveningWalkingAudio===steps)eveningWalkingAudio=null};
  steps.addEventListener('ended',finish,{once:true});steps.addEventListener('error',finish,{once:true});
@@ -1669,7 +1781,7 @@ function hasCompletedDay1(){
  return (Number.isInteger(n)&&n>=DAY2_START) || localStorage.getItem(KEY)==='complete' || !!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169');
 }
 function flagReplay(){if(hasCompletedDay1())localStorage.setItem(SKIP_REPLAY,'1')}
-const AREA_CHOICE_KINDS=new Set(['choice','day2-prayer-choice','day2-morning-choice','prayer-choice','art-choice','living-choice','main-choice','conf-morning-choice','evening-choice','seungkwan-choice']);
+const AREA_CHOICE_KINDS=new Set(['choice','day2-prayer-choice','day2-morning-choice','prayer-choice','art-choice','living-choice','main-choice','conf-morning-choice','evening-choice','seungkwan-choice','v178-coop-choice']);
 const AREA_END_KINDS=new Set(['prayer-end','art-end','living-end','main-end','conf-morning-end','gongyang-end','evening-end']);
 // V175: Day 2 morning activities flow directly into the evening confession.
 // Only terminal nodes are included: common dialogue and all manual choices are untouched.
@@ -1770,7 +1882,49 @@ function hadMorningConfessionalVisit(){
  // conversation branch with Wonwoo before the evening scene.
  return day2Morning==='고해소' && confMorningBranch>0;
 }
-function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTyping(false);const scene=scenes[index];if(!scene){finish();return}
+let v178BellAudio=null,v178BellGain=null,v178AudioTimers=[];
+function stopV178Bell(){if(v178BellGain)clearInterval(v178BellGain);v178BellGain=null;if(v178BellAudio){v178BellAudio.pause();v178BellAudio=null}}
+function startV178Bell(){stopV178Bell();v178BellAudio=playExtraAudio('gongyang-bell-01.wav',.07);const a=v178BellAudio;let count=0;v178BellGain=setInterval(()=>{if(v178BellAudio!==a){clearInterval(v178BellGain);v178BellGain=null;return}count++;a.volume=Math.min(.9,.07+count*.075);if(count>=11){clearInterval(v178BellGain);v178BellGain=null}},360)}
+function v178Cue(cue){if(cue==='unlock')playExtraAudio('clean_room_sound01.wav',.4);if(cue==='knock'){
+ // Use the already registered first-day knock effect so sound filename stays canonical.
+ sound('knock');
+ }if(cue==='bell'&&!v178BellAudio)startV178Bell()}
+function v178Patrol(mode){
+ if(!mode){duoLayer.classList.remove('v178-patrol','is-visible','is-active');return}
+ if(mode==='in'){
+  duoLayer.classList.add('v178-patrol');duoLeft.hidden=false;duoRight.hidden=false;
+  duoLeft.dataset.portraitKey='seungcheol-body1-default';duoRight.dataset.portraitKey='jihoon-body1-default';
+  duoLeft.dataset.officialShouldShow='1';duoRight.dataset.officialShouldShow='1';
+  assignOfficialPortrait(duoLeft,'seungcheol-body1-default');assignOfficialPortrait(duoRight,'jihoon-body1-default');
+  duoLayer.classList.add('is-active');duoLayer.classList.remove('is-visible');requestAnimationFrame(()=>requestAnimationFrame(()=>duoLayer.classList.add('is-visible')));
+ }else if(mode==='out'){
+  duoLayer.classList.remove('is-visible');const captured=index;setTimeout(()=>{if(index>=captured&&duoLayer.classList.contains('v178-patrol'))v178Patrol(null)},900)
+ }
+}
+function jumpV178(which){const target=V178_TARGETS[which];if(target===undefined)return;const el=overlay.querySelector('.shindo-choices');if(el)el.style.display='none';locked=false;index=V178_OFFSET+target;save();render()}
+function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTyping(false);const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){finish();return}
+ if(scene.v178){
+  // No clock ticks are allowed during the subsequent living-quarters story.
+  stopEveningTick();
+  if(scene.kind==='v178-coop-choice'){areaSkipButton.hidden=true;stopV178Bell();v178Patrol(null);currentPortrait='';applySceneBackdrop(index,scene);showV178CoopChoice();return}
+  if(scene.kind==='v178-ending'){areaSkipButton.hidden=true;showV178Dogodai();return}
+  if(scene.kind==='v178-hold'){areaSkipButton.hidden=true;showV178Holding(scene.v178Hold);return}
+  if(scene.kind==='v178-intertitle'||scene.kind==='v178-day3-title'){
+   areaSkipButton.hidden=true;stopV178Bell();v178Patrol(null);storyBackdrop.style.opacity='0';applySceneBackdrop(index,scene);
+   box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
+   const center=overlay.querySelector('.vn-center')||(()=>{const e=document.createElement('div');e.className='vn-center';overlay.appendChild(e);return e})();
+   center.textContent=scene.text;center.style.display='block';locked=true;if(scene.kind==='v178-day3-title')setTimeout(()=>{if(scenes[index]===scene)startV178Bell()},1750);timer=setTimeout(()=>{center.style.display='none';locked=false;next()},2300);return;
+  }
+  if(scene.v178Audio)v178Cue(scene.v178Audio);
+  if(scene.patrolDuo==='in'||scene.patrolDuo==='out'){currentPortrait='';portrait.hidden=true;v178Patrol(scene.patrolDuo);}
+  else if(scene.patrolDuo!=='hold'&&duoLayer.classList.contains('v178-patrol'))v178Patrol(null);
+  if(scene.revealName){const n=scene.revealName;window.SHINDO_markCharacterMet?.(n);
+   if(n==='정한'){jeonghanRevealed=true;localStorage.setItem('shindo_jeonghan_known_v156','1')}
+   if(n==='순영'){soonyoungRevealed=true;localStorage.setItem('shindo_soonyoung_known_v105','1')}
+   if(n==='석민'){seokminRevealed=true;localStorage.setItem('shindo_seokmin_known_v99','1')}
+  }
+  if(scene.maskUntilMet){const x=scene.maskUntilMet;scene.maskSpeaker=!(x==='석민'?seokminRevealed:x==='순영'?soonyoungRevealed:true)}
+ }
  if(scene.eveningMorningConfessionalOnly&&!hadMorningConfessionalVisit()){
   index++;save();render();return;
  }
@@ -1785,10 +1939,10 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   try{localStorage.setItem('shindo_day2_start_affinity_snapshot_v169',localStorage.getItem('shindo_affinity_v107')||'{"조슈아":100}')}catch(_){}
  }
 const existingChoiceModal=overlay.querySelector('.shindo-choices');if(existingChoiceModal&&scene.kind!=='main-choice'&&scene.kind!=='main-end'&&scene.kind!=='living-choice'&&scene.kind!=='living-end'&&scene.kind!=='art-choice'&&scene.kind!=='art-end'&&scene.kind!=='prayer-choice'&&scene.kind!=='prayer-end'&&scene.kind!=='day2-morning-choice'&&scene.kind!=='day2-prayer-choice'&&scene.kind!=='choice')existingChoiceModal.style.display='none';
-if(!scene.specialMinghao){duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');}
+if(!scene.specialMinghao&&!scene.patrolDuo){duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');}
 const fadingOutOfSquare=scene.kind==='day2-morning-choice'&&currentSceneBackdropKey==='bg-central-square.jpg';
 applySceneBackdrop(index,scene);
- if(scene.eveningDay2){if(scene.eveningLocation==='dark'){eveningLivingEntered=false;startEveningTick()}else if(scene.eveningLocation==='living')enterEveningLiving();else stopEveningTick()}else{stopEveningTick();stopEveningWalk();eveningLivingEntered=false;}
+ if(scene.eveningDay2){if(scene.eveningLocation==='dark'&&!scene.v178){eveningLivingEntered=false;startEveningTick()}else if(scene.eveningLocation==='living'&&!scene.v178)enterEveningLiving();else stopEveningTick()}else{stopEveningTick();stopEveningWalk();eveningLivingEntered=false;}
  if(scene.prayerRoom){overlay.classList.remove('confession-blackout')}else{stopPrayerClock();stopPrayerAudio();stopPrayerBell()}
  if(scene.prayerStart)startPrayerClock();
  if(scene.artHall){stopPrayerClock();stopPrayerAudio();stopPrayerBell();overlay.classList.remove('confession-blackout');setArtSceneArtwork(scene)}else{stopArtAudio();overlay.classList.remove('art-blackout')}
@@ -1997,7 +2151,7 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
 function day2Ring(times,volume){for(let i=0;i<times;i++)setTimeout(()=>{if(overlay.classList.contains('active'))playExtraAudio('oath-bell-05.mp3',volume)},i*3300)}
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
 function restartFromDay1(){
- stopEveningTick();eveningBranch=0;seungkwanTruthBranch=0;localStorage.removeItem('shindo_evening_branch_day2_v173');localStorage.removeItem('shindo_seungkwan_truth_branch_v177');
+ stopV178Bell();v178Patrol(null);stopEveningTick();eveningBranch=0;seungkwanTruthBranch=0;localStorage.removeItem('shindo_evening_branch_day2_v173');localStorage.removeItem('shindo_seungkwan_truth_branch_v177');localStorage.removeItem('shindo_police_coop_v178');
  flagReplay();
  duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');
  clearTimeout(timer);timer=null;clearConfessionQuestionTimers();
@@ -2024,7 +2178,7 @@ window.SHINDO_restartFromDay1=restartFromDay1;
 
 // V169: Test restart at the black "2일차" title, keeping the authenticated mail/browser.
 function restartFromDay2(){
- stopEveningTick();eveningBranch=0;localStorage.removeItem('shindo_evening_branch_day2_v173');
+ stopV178Bell();v178Patrol(null);stopEveningTick();eveningBranch=0;localStorage.removeItem('shindo_evening_branch_day2_v173');
  flagReplay();
  const day2Start=scenes.findIndex(s=>s.kind==='sleep-transition'&&s.day===2);
  if(day2Start<0){console.error('2일차 시작 지점을 찾지 못했습니다.');return}
@@ -2069,7 +2223,7 @@ function restartFromDay2(){
   'shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_joshua_known_v160',
   'shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_soonyoung_known_v105','shindo_minghao_known_v105',
   'shindo_hansol_known_v99','shindo_seokmin_known_v99','shindo_chan_known_v99',
-  'shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_seungkwan_truth_branch_v177','shindo_affinity_unread_v125'
+  'shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_seungkwan_truth_branch_v177','shindo_police_coop_v178','shindo_affinity_unread_v125'
  ];
  resetKeys.forEach(key=>localStorage.removeItem(key));
  try{const names=JSON.parse(localStorage.getItem('shindo_met_characters_v108')||'[]');
@@ -2186,11 +2340,11 @@ function showSeungkwanChoice(){
  locked=true;box.style.display='none';overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
- if(seungkwanTruthBranch){showSeungkwanEnd();return}
+ if(seungkwanTruthBranch){jumpV178(seungkwanTruthBranch===1?'tell':'deny');return}
  const options=['말한다','말하지 않는다'];
  el.innerHTML='<h2>승관에게 진실을 말할까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button type="button" data-seungkwan="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
  el.style.display='flex';
- el.querySelectorAll('[data-seungkwan]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();seungkwanTruthBranch=Number(btn.dataset.seungkwan)||0;localStorage.setItem('shindo_seungkwan_truth_branch_v177',String(seungkwanTruthBranch));window.SHINDO_addPlayRecord?.('선택','2일차 저녁 승관: '+options[seungkwanTruthBranch-1]);showSeungkwanEnd();});
+ el.querySelectorAll('[data-seungkwan]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();seungkwanTruthBranch=Number(btn.dataset.seungkwan)||0;localStorage.setItem('shindo_seungkwan_truth_branch_v177',String(seungkwanTruthBranch));window.SHINDO_addPlayRecord?.('선택','2일차 저녁 승관: '+options[seungkwanTruthBranch-1]);jumpV178(seungkwanTruthBranch===1?'tell':'deny');});
 }
 function showSeungkwanEnd(){
  locked=true;box.style.display='none';overlay.querySelector('.vn-hint').style.display='none';
@@ -2202,6 +2356,32 @@ function showSeungkwanEnd(){
  el.querySelector('.shindo-morning-return').onclick=e=>{e.stopPropagation();returnToMorningActivities()};
 }
 
+function showV178CoopChoice(){
+ locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
+ let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
+ el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
+ const options=['협력 승낙','협력 거절'];
+ el.innerHTML='<h2>어떻게 할까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button type="button" data-v178-coop="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
+ el.style.display='flex';
+ el.querySelectorAll('[data-v178-coop]').forEach(button=>button.onclick=e=>{e.stopPropagation();const value=Number(button.dataset.v178Coop);localStorage.setItem('shindo_police_coop_v178',String(value));window.SHINDO_addPlayRecord?.('선택','2일차 비공식 협력: '+options[value-1]);jumpV178(value===1?'accept':'refuse')});
+}
+function showV178Holding(type){
+ stopV178Bell();v178Patrol(null);locked=true;box.style.display='none';portrait.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
+ let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
+ el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
+ el.innerHTML='<h2>2일차 저녁 스토리</h2><p>'+(type==='deny'?'승관에게 진실을 말하지 않은 이후의 이야기는 다음 업데이트에서 이어집니다.':'협력 승낙 이후의 이야기는 다음 업데이트에서 이어집니다.')+'</p><button type="button" class="shindo-morning-return">오전 활동 선택지 돌아가기 (테스트)</button>';
+ el.style.display='flex';el.querySelector('.shindo-morning-return').onclick=e=>{e.stopPropagation();stopV178Bell();returnToMorningActivities()};
+}
+function showV178Dogodai(){
+ areaSkipButton.hidden=true;stopV178Bell();stopEveningTick();stopEveningWalk();v178Patrol(null);clearTimeout(timer);stopVnTyping(false);
+ box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
+ applySceneBackdrop(index,scenes[index]);locked=true;
+ const end=document.createElement('div');end.className='shindo-ending v178-dogodai';
+ end.innerHTML='<div class="shindo-ending-copy"><h1 class="v178-dogodai-title">독고다이</h1><p>내민 손을 제때 잡는 것도 능력이다.</p></div>';
+ overlay.appendChild(end);
+ endingTimers.push(setTimeout(()=>{end.innerHTML='<div class="shindo-ending-logo">신도<span>神道</span></div>'},2000));
+ endingTimers.push(setTimeout(()=>{const b=document.createElement('button');b.className='shindo-restart';b.textContent='1일차부터 다시 시작';b.onclick=e=>{e.stopPropagation();end.remove();restartFromDay1()};end.appendChild(b)},4000));
+}
 function showMainEnd(){
  locked=true;box.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
@@ -2409,12 +2589,16 @@ function finish(){
 function next(userAdvance=false){
  if(locked)return;
  if(vnTypingTimer!==null){stopVnTyping(true);return;}
+ if(scenes[index]?.portraitFadeOutAfter&&!portrait.hidden&&!portrait.classList.contains('v178-fadeout')){
+  portrait.classList.add('v178-fadeout');locked=true;timer=setTimeout(()=>{portrait.classList.remove('v178-fadeout');locked=false;if(index<scenes.length-1){index++;save();render()}else finish()},560);return;
+ }
+
  if(index>=scenes.length-1){finish();return;}
  index++;save();render();
 }
 overlay.addEventListener('click',()=>{audioContext();next(true)});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(phoneDrawer.classList.contains('is-open'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next(true)}});
 window.SHINDO_startStory=()=>{
- stopEveningTick();eveningBranch=Number(localStorage.getItem('shindo_evening_branch_day2_v173')||0);
+ stopV178Bell();v178Patrol(null);stopEveningTick();eveningBranch=Number(localStorage.getItem('shindo_evening_branch_day2_v173')||0);
  clearConfessionQuestionTimers();stopGongyangBell();stopGongyangApplause();stopPencil();stopConfessionTick();stopEndingBell();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}confessionTickLouder=false;day2Prayer=Number(localStorage.getItem("shindo_day2_prayer")||0);day2Morning=localStorage.getItem("shindo_day2_morning")||"";livingBranch=Number(localStorage.getItem('shindo_living_branch_v156')||0);mainBranch=Number(localStorage.getItem('shindo_main_branch_v160')||0);confMorningBranch=Number(localStorage.getItem('shindo_confession_morning_branch_v163')||0);joshuaRevealed=localStorage.getItem('shindo_joshua_known_v160')==='1';jeonghanRevealed=localStorage.getItem('shindo_jeonghan_known_v156')==='1';mingyuRevealed=localStorage.getItem('shindo_mingyu_known_v156')==='1';junhuiRevealed=localStorage.getItem('shindo_junhui_known_v167')==='1';prayerBranch=Number(localStorage.getItem('shindo_prayer_branch_v99')||0);artBranch=Number(localStorage.getItem('shindo_art_branch_v105')||0);selectedBranch=Number(localStorage.getItem("shindo_confession_branch")||0);overlay.classList.remove("sanctuary","sanctuary-leaving","day","confession-blackout","sleep-fadeout","sleep-fadein");storyBackdrop.style.filter='';storyUnderlay.style.filter='';
  if(localStorage.getItem(KEY)==='complete'&&!localStorage.getItem('shindo_story_v66_sanctuary')){localStorage.setItem(KEY,'66');localStorage.setItem('shindo_story_v66_sanctuary','1')}
 
