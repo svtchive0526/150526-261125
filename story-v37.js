@@ -1384,7 +1384,7 @@ function playDialogueAdvanceClick(){
     const source=ctx.createBufferSource();
     const gain=ctx.createGain();
     source.buffer=dialogueClickBuffer;
-    gain.gain.value=0.75; // V146: half of the V145 click loudness (was 1.5)
+    gain.gain.value=0.375; // V147: half of V146 Web Audio click gain
     source.connect(gain).connect(ctx.destination);
     source.start();
     return;
@@ -1396,7 +1396,7 @@ function playDialogueAdvanceClick(){
  try{
   player.pause();
   player.currentTime=0;
-  player.volume=0.5; // V146: half of the V145 fallback click loudness
+  player.volume=0.25; // V147: half of V146 fallback click volume
   const playback=player.play();
   if(playback&&typeof playback.catch==='function')playback.catch(error=>{
    console.warn('[SHINDO] Dialogue click playback blocked:',error);
