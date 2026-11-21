@@ -468,13 +468,25 @@ const sceneBackdropRanges=[
  {start:95,end:99,file:"bg-confession-outside.png"},
  {start:100,end:133,file:"bg-confession-inside.png"},
  {start:134,end:139,file:"bg-living-quarters-interior.png"},
- {start:140,end:143,file:"bg-central-square.png"},
- {start:150,end:172,file:"bg-central-square.png"}
+ {start:140,end:143,file:"bg-central-square.jpg"},
+ {start:150,end:172,file:"bg-central-square.jpg"}
 ];
 function getSceneBackdrop(sceneNumber,scene){
- // V149: Never show the day-2 dorm photograph during the sleep/title interstitial.
- // The first day-2 morning dialogue owns the dorm interior background.
+ // V149: keep the sleep/title interstitial entirely black.
  if(scene&&scene.kind==='sleep-transition')return "";
+ // V152: optional location photos for Day 2 activities. No scene is inserted,
+ // so previously stored story indices and choices remain valid.
+ if(scene&&scene.artHall){
+  if(scene.artBlackout)return "";
+  const where=scene.artStart?'main':(scene.artLocation||artLocation||'main');
+  return where==='main'?'bg-art-hall-interior.jpg':'';
+ }
+ if(scene&&scene.prayerRoom)return 'bg-prayer-hall-interior.jpg';
+ // Keep the Day 2 square photograph throughout the common square sequence;
+ // the old numeric ranges had gaps that made the photo disappear mid-scene.
+ const squareStart=scenes.findIndex(x=>x.square===true&&String(x.text||'').includes('중앙광장으로 가볼까'));
+ const squareEnd=scenes.findIndex((x,i)=>i>squareStart&&x.kind==='day2-morning-choice');
+ if(scene&&scene.branch===1&&squareStart>=0&&sceneNumber-1>=squareStart&&sceneNumber-1<=squareEnd)return 'bg-central-square.jpg';
  if(scene&&scene.backdrop)return scene.backdrop;
  for(const range of sceneBackdropRanges){
   if(sceneNumber>=range.start && sceneNumber<=range.end)return range.file;
@@ -558,7 +570,7 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .shindo-restart{position:absolute;top:calc(50% + 115px);left:50%;transform:translateX(-50%);background:transparent;border:1px solid #999;color:#fff;padding:14px 26px;font:600 17px Pretendard,sans-serif;cursor:pointer;white-space:nowrap;animation:vn-image-appear 1s ease both}
 
 /* v74: independent opaque backing guarantees the mail UI cannot bleed through transitions. */
-#shindo-story-backdrop{position:fixed;inset:0;z-index:29999;background:#050607 center center / cover no-repeat;display:none;opacity:1;pointer-events:none;transition:opacity .38s ease}
+#shindo-story-backdrop{position:fixed;inset:0;z-index:29999;background:#050607 center center / cover no-repeat;display:none;opacity:1;pointer-events:none;transition:opacity 1.05s ease}
 #shindo-story-backdrop.visible{display:block}
 /* V127: The opaque shield stays visible when only the photograph fades.
    It prevents the underlying mail/login UI from bleeding into scene transitions. */
@@ -611,6 +623,7 @@ const storyUnderlay=document.createElement('div');storyUnderlay.id='shindo-story
 const storyBackdrop=document.createElement('div');storyBackdrop.id='shindo-story-backdrop';document.body.appendChild(storyBackdrop);
 let currentSceneBackdropKey="";
 let backdropSwapTimer=null;
+let backdropChangeToken=0;
 function setSceneBackdropImage(file){
  if(file){
   storyBackdrop.style.backgroundImage=`linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.46)), url("story-backgrounds/${file}")`;
@@ -618,23 +631,63 @@ function setSceneBackdropImage(file){
   storyBackdrop.style.backgroundImage='linear-gradient(rgba(5,6,7,1),rgba(5,6,7,1))';
  }
 }
+function primeBackdrop(file){
+ return new Promise(resolve=>{
+  if(!file){resolve();return;}
+  const img=new Image();
+  img.onload=()=>{if(img.decode){img.decode().catch(()=>{}).then(resolve)}else resolve()};
+  img.onerror=()=>{console.warn('[SHINDO] Background failed to load:',file);resolve()};
+  img.src='story-backgrounds/'+file;
+ });
+}
 function applySceneBackdrop(sceneIndex,scene){
  const file=getSceneBackdrop(sceneIndex+1,scene);
  const key=file||'__none';
  if(currentSceneBackdropKey===key)return;
  currentSceneBackdropKey=key;
- if(backdropSwapTimer){clearTimeout(backdropSwapTimer);backdropSwapTimer=null}
+ const token=++backdropChangeToken;
+ if(backdropSwapTimer){clearTimeout(backdropSwapTimer);backdropSwapTimer=null;}
  if(!storyBackdrop.dataset.backdropReady){
-  setSceneBackdropImage(file);
   storyBackdrop.dataset.backdropReady='1';
+  setSceneBackdropImage(file);
   storyBackdrop.style.opacity='1';
   return;
  }
+ // Fade the old photo away before switching. Preload the next one before
+ // revealing it, preventing a white/black image-load flash.
  storyBackdrop.style.opacity='0';
- backdropSwapTimer=setTimeout(()=>{
+ const started=performance.now();
+ Promise.all([primeBackdrop(file),new Promise(done=>setTimeout(done,500))]).then(()=>{
+  if(token!==backdropChangeToken)return;
   setSceneBackdropImage(file);
-  requestAnimationFrame(()=>{storyBackdrop.style.opacity='1'});
- },220);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   if(token===backdropChangeToken)storyBackdrop.style.opacity='1';
+  }));
+ });
+}
+// Show a new building's exterior briefly before the first interior narration.
+// Keep the scene list unchanged for existing save-data compatibility.
+function enterMorningBuilding(exterior,begin){
+ const token=++backdropChangeToken;
+ if(backdropSwapTimer){clearTimeout(backdropSwapTimer);backdropSwapTimer=null;}
+ currentSceneBackdropKey='__entrance__'+exterior;
+ storyBackdrop.style.opacity='0';
+ box.style.display='none';
+ portrait.hidden=true;
+ illustration.hidden=true;
+ overlay.querySelector('.vn-hint').style.display='none';
+ Promise.all([primeBackdrop(exterior),new Promise(done=>setTimeout(done,400))]).then(()=>{
+  if(token!==backdropChangeToken)return;
+  setSceneBackdropImage(exterior);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   if(token===backdropChangeToken)storyBackdrop.style.opacity='1';
+  }));
+  backdropSwapTimer=setTimeout(()=>{
+   if(token!==backdropChangeToken)return;
+   backdropSwapTimer=null;
+   begin();
+  },1750);
+ });
 }
 const overlay=document.createElement('div');overlay.id='shindo-vn';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-label','1일차 스토리');overlay.innerHTML='<div class="vn-box"><span class="vn-text"></span></div><div class="vn-hint">화면을 터치하거나 클릭하여 진행</div>';document.body.appendChild(overlay);
 const box=overlay.querySelector('.vn-box'),content=overlay.querySelector('.vn-text');
@@ -928,8 +981,8 @@ function setArtSceneArtwork(scene){
  if(scene.artLocation)artLocation=scene.artLocation;
  if(scene.artImageClear)artImage='';
  if(scene.artImage)artImage=scene.artImage;
- // Location/image placeholders: keep a solid dark backing until the images are supplied.
- storyBackdrop.style.backgroundImage='linear-gradient(#080808,#080808)';
+ // V152: the main art hall uses its supplied photograph; unsupplied
+ // corridor/office locations and intentional blackouts stay dark.
  overlay.classList.toggle('art-blackout',!!scene.artBlackout);
  if(scene.artFade){overlay.classList.add('confession-fade');setTimeout(()=>overlay.classList.remove('confession-fade'),1100)}
  if(scene.artAudio)playArtAudio(scene.artAudio);
@@ -1090,7 +1143,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
 const existingChoiceModal=overlay.querySelector('.shindo-choices');if(existingChoiceModal&&scene.kind!=='art-choice'&&scene.kind!=='art-end'&&scene.kind!=='prayer-choice'&&scene.kind!=='prayer-end'&&scene.kind!=='day2-morning-choice'&&scene.kind!=='day2-prayer-choice'&&scene.kind!=='choice')existingChoiceModal.style.display='none';
 if(!scene.specialMinghao){duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');}
 applySceneBackdrop(index,scene);
- if(scene.prayerRoom){storyBackdrop.style.backgroundImage='linear-gradient(#080808,#080808)';overlay.classList.remove('confession-blackout')}else{stopPrayerClock();stopPrayerAudio();stopPrayerBell()}
+ if(scene.prayerRoom){overlay.classList.remove('confession-blackout')}else{stopPrayerClock();stopPrayerAudio();stopPrayerBell()}
  if(scene.prayerStart)startPrayerClock();
  if(scene.artHall){stopPrayerClock();stopPrayerAudio();stopPrayerBell();overlay.classList.remove('confession-blackout');setArtSceneArtwork(scene)}else{stopArtAudio();overlay.classList.remove('art-blackout')}
 
@@ -1284,9 +1337,9 @@ function showDay2Choice(type){locked=true;box.style.display='none';portrait.hidd
  if(!prayer)el.querySelector('.shindo-day1-restart').onclick=e=>{e.stopPropagation();restartFromDay1()};
  el.querySelectorAll('[data-choice]').forEach(b=>b.onclick=e=>{e.stopPropagation();if(prayer){day2Prayer=Number(b.dataset.choice);window.SHINDO_addPlayRecord?.('선택','새벽기도: '+options[day2Prayer-1]);localStorage.setItem('shindo_day2_prayer',String(day2Prayer));window.SHINDO_applyAffinityEvent?.('prayer',day2Prayer===1?'참석':'불참',2);el.style.display='none';locked=false;next()}else{day2Morning=options[Number(b.dataset.choice)-1];window.SHINDO_addPlayRecord?.('선택','오전 활동 장소: '+day2Morning);localStorage.setItem('shindo_day2_morning',day2Morning);window.SHINDO_applyAffinityEvent?.('room',day2Morning,2);
  if(day2Morning==='예술당'){
-  artBranch=0;artLocation='main';artImage='';stopArtAudio();el.style.display='none';currentPortrait='';portrait.hidden=true;index=ART_SCENE_START;locked=false;save();render();
+  artBranch=0;artLocation='main';artImage='';stopArtAudio();el.style.display='none';currentPortrait='';portrait.hidden=true;index=ART_SCENE_START;save();locked=true;enterMorningBuilding('bg-art-hall-exterior.jpg',()=>{locked=false;render()});
  }else if(day2Morning==='기도관'){
-  prayerBranch=0;localStorage.removeItem('shindo_prayer_branch_v99');el.style.display='none';currentPortrait='';portrait.hidden=true;index=PRAYER_SCENE_START;locked=false;save();render();
+  prayerBranch=0;localStorage.removeItem('shindo_prayer_branch_v99');el.style.display='none';currentPortrait='';portrait.hidden=true;index=PRAYER_SCENE_START;save();locked=true;enterMorningBuilding('bg-prayer-hall-exterior.jpg',()=>{locked=false;render()});
  }else{
   el.innerHTML='<h2>'+day2Morning+'</h2><p>이후 이야기는 다음 업데이트에서 이어집니다.</p><button type="button" class="shindo-morning-return">오전 활동 선택지 돌아가기</button><button type="button" class="shindo-day1-restart">↺ 1일차부터 다시 시작 (임시)</button>';el.querySelector('.shindo-morning-return').onclick=e=>{e.stopPropagation();returnToMorningActivities()};el.querySelector('.shindo-day1-restart').onclick=e=>{e.stopPropagation();restartFromDay1()};locked=true;
  }}})
