@@ -1346,70 +1346,8 @@ function finish(){
  try{localStorage.setItem(KEY,'complete');localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}
  window.SHINDO_openFeedback?.();
 }
-// V139: Preload the user-provided click once and play it synchronously on user input.
-// AudioBuffer playback avoids the latency of constructing a fresh Audio element per click.
-const dialogueClickFile='story-audio/dialogue-soft-click.wav';
-const dialogueClickPlayers=Array.from({length:4},()=>{
- const el=new Audio(dialogueClickFile);
- el.preload='auto';
- try{el.load()}catch(_e){}
- return el;
-});
-let dialogueClickPlayerIndex=0;
-let dialogueClickBuffer=null;
-let dialogueClickBytes=null;
-let dialogueClickDecodeStarted=false;
-// Fetch early, without attempting autoplay. Keep the same WAV supplied by the user.
-fetch(dialogueClickFile).then(response=>{
- if(!response.ok)throw new Error('Dialogue click audio HTTP '+response.status);
- return response.arrayBuffer();
-}).then(bytes=>{dialogueClickBytes=bytes;}).catch(error=>{
- console.warn('[SHINDO] Dialogue click WAV could not be preloaded:',error);
-});
-function prepareDialogueClickBuffer(ctx){
- if(!ctx||!dialogueClickBytes||dialogueClickDecodeStarted)return;
- dialogueClickDecodeStarted=true;
- ctx.decodeAudioData(dialogueClickBytes.slice(0)).then(buffer=>{
-  dialogueClickBuffer=buffer;
- }).catch(error=>{
-  console.warn('[SHINDO] Dialogue click decode failed; using HTML audio:',error);
- });
-}
-function playDialogueAdvanceClick(){
- const ctx=audioContext();
- if(ctx){
-  prepareDialogueClickBuffer(ctx);
-  if(dialogueClickBuffer){
-   try{
-    const source=ctx.createBufferSource();
-    const gain=ctx.createGain();
-    source.buffer=dialogueClickBuffer;
-    gain.gain.value=0.375; // V147: half of V146 Web Audio click gain
-    source.connect(gain).connect(ctx.destination);
-    source.start();
-    return;
-   }catch(error){console.warn('[SHINDO] WebAudio click failed; using HTML audio:',error)}
-  }
- }
- // Immediate fallback on the first input, while the preloaded buffer decodes.
- const player=dialogueClickPlayers[dialogueClickPlayerIndex++%dialogueClickPlayers.length];
- try{
-  player.pause();
-  player.currentTime=0;
-  player.volume=0.25; // V147: half of V146 fallback click volume
-  const playback=player.play();
-  if(playback&&typeof playback.catch==='function')playback.catch(error=>{
-   console.warn('[SHINDO] Dialogue click playback blocked:',error);
-  });
- }catch(error){console.warn('[SHINDO] Dialogue click playback error:',error)}
-}
-// V144: Every real dialogue-advance input gets a click, whether it reveals
-// the current typewriter line or advances to the next line.
 function next(userAdvance=false){
  if(locked)return;
- if(userAdvance && ['dialogue','narration','line'].includes(scenes[index]?.kind)){
-  playDialogueAdvanceClick();
- }
  if(vnTypingTimer!==null){stopVnTyping(true);return;}
  if(index>=scenes.length-1){finish();return;}
  index++;save();render();
