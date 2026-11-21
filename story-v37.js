@@ -231,7 +231,7 @@ const scenes=[
  {"kind":"dialogue","speaker":"주인공","text":"하필 오늘.","branch":1},
  {"kind":"dialogue","speaker":"주인공","text":"내가 여기 온 바로 다음 날.","branch":1},
  {"kind":"narration","text":"그리고 언제 끝날지는, 아무도 모른다.","branch":1},
- {"kind":"narration","text":"사방을 찢어놓는 무시무시한 종소리가 울려 퍼졌다.","branch":1,"gongyangBell":"02"},
+ {"kind":"narration","text":"사방을 찢어놓는 무시무시한 종소리가 울려 퍼졌다.","branch":1,"gongyangBell":"01"},
  {"kind":"narration","text":"공양제의 시작이었다.","branch":1},
  {"kind":"narration","text":"속이 메스껍다. 당장에라도 이 미친 사이비 집단에서 탈출하고 싶다.","branch":1},
  {"kind":"dialogue","speaker":"주인공","text":"그렇지만… 어디로 갈 수 있는데? 핸드폰도 안 터지는 이 산속에서.","branch":1},
@@ -948,8 +948,8 @@ function showEvidencePopup(scene){
 }
 function playExtraAudio(filename,volume=.7){const a=new Audio('story-audio/'+filename);a.volume=volume;a.play().catch(()=>{});return a}
 function bell(times){for(let i=0;i<times;i++)setTimeout(()=>playExtraAudio('oath-bell-05.mp3',.75),i*3600)}
-// v87: During the square ceremony, gongyang bell 01 is continuous (up to 60 seconds),
-// including "역경을 지나, 번성으로!". It stops immediately on leaving the square.
+// v141: Both central-square bell cues use gongyang-bell-01.wav.
+// Each cue plays once for no more than 6 seconds, then stops automatically.
 let gongyangBellAudio=null,gongyangApplauseAudio=null,gongyangBellTimer=null,leaderShoutAudio=null;
 function stopLeaderShout(){if(leaderShoutAudio){leaderShoutAudio.pause();leaderShoutAudio.currentTime=0;leaderShoutAudio=null}}
 function playLeaderShout(){stopLeaderShout();const a=playExtraAudio('gongyang-leader-shout.mp3',.85);leaderShoutAudio=a;a.addEventListener('ended',()=>{if(leaderShoutAudio===a)leaderShoutAudio=null},{once:true})}
@@ -960,18 +960,12 @@ function stopGongyangBell(){
 function stopGongyangApplause(){if(gongyangApplauseAudio){gongyangApplauseAudio.pause();gongyangApplauseAudio.currentTime=0;gongyangApplauseAudio=null}}
 function playGongyangBell(id){
  stopGongyangBell();
- // Bell 01 starts only at the square's "그때였다" and survives dialogue progression.
- // The supplied WAV is ~28 seconds, so loop it until the 60-second limit or scene exit.
- const continuous=id==='01';
- if(!continuous)stopGongyangApplause();
- const audio=playExtraAudio('gongyang-bell-'+id+'.wav',.9);
+ // Single official bell source for both central-square cues; never loop.
+ const audio=playExtraAudio('gongyang-bell-01.wav',.9);
  gongyangBellAudio=audio;
- if(continuous){
-  audio.loop=true;
-  gongyangBellTimer=setTimeout(()=>{if(gongyangBellAudio===audio)stopGongyangBell()},60000);
- }else{
-  audio.addEventListener('ended',()=>{if(gongyangBellAudio===audio)gongyangBellAudio=null},{once:true});
- }
+ audio.loop=false;
+ gongyangBellTimer=setTimeout(()=>{if(gongyangBellAudio===audio)stopGongyangBell()},6000);
+ audio.addEventListener('ended',()=>{if(gongyangBellAudio===audio)stopGongyangBell()},{once:true});
 }
 function startGongyangApplause(){
  // Do not cut off the continuous bell when applause begins.
@@ -1097,18 +1091,12 @@ applySceneBackdrop(index,scene);
  if(scene.prayerStart)startPrayerClock();
  if(scene.artHall){stopPrayerClock();stopPrayerAudio();stopPrayerBell();overlay.classList.remove('confession-blackout');setArtSceneArtwork(scene)}else{stopArtAudio();overlay.classList.remove('art-blackout')}
 
-// The central-square bell has TWO cues: looping 01 and one-shot 02.
-// End cue 01 after the outdoor ceremony; end BOTH cues at the morning-activity
-// transition. Checking only audio.loop missed cue 02 and let it bleed into other rooms.
+// Central-square bells: two identical 6-second bell-01 cues.
+// Both stop on leaving the square/morning-activity sequence.
 const squareBellStart=scenes.findIndex(x=>x.text==='그때였다.' && x.gongyangBell==='01');
-const squareBellEnd=scenes.findIndex(x=>x.text&&x.text.startsWith('풀잎 위로 상쾌한 바람이 불었다.'));
 const squareBellExit=scenes.findIndex(x=>x.kind==='day2-morning-choice' && x.branch===1);
 const insideSquareStory=squareBellStart>=0 && squareBellExit>=0 && index>=squareBellStart && index<squareBellExit && selectedBranch===1;
 if(!insideSquareStory){
- stopGongyangBell();
- stopLeaderShout();
-}else if(index>squareBellEnd && gongyangBellAudio && gongyangBellAudio.loop){
- // Cue 01 does not continue into the post-ceremony narration; cue 02 may play there.
  stopGongyangBell();
  stopLeaderShout();
 }
