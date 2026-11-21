@@ -1458,6 +1458,9 @@ function findPrayerBranchStart(branch){
 function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTyping(false);const scene=scenes[index];if(!scene){finish();return}
  // Keep the day in sync with real story progress, including refreshed sessions.
  try{localStorage.setItem('shindo_current_story_day_v109',String(index>=DAY2_START?2:1))}catch(_){}
+ if(index===DAY2_START&&!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169')){
+  try{localStorage.setItem('shindo_day2_start_affinity_snapshot_v169',localStorage.getItem('shindo_affinity_v107')||'{"조슈아":100}')}catch(_){}
+ }
 const existingChoiceModal=overlay.querySelector('.shindo-choices');if(existingChoiceModal&&scene.kind!=='main-choice'&&scene.kind!=='main-end'&&scene.kind!=='living-choice'&&scene.kind!=='living-end'&&scene.kind!=='art-choice'&&scene.kind!=='art-end'&&scene.kind!=='prayer-choice'&&scene.kind!=='prayer-end'&&scene.kind!=='day2-morning-choice'&&scene.kind!=='day2-prayer-choice'&&scene.kind!=='choice')existingChoiceModal.style.display='none';
 if(!scene.specialMinghao){duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');}
 const fadingOutOfSquare=scene.kind==='day2-morning-choice'&&currentSceneBackdropKey==='bg-central-square.jpg';
@@ -1678,11 +1681,74 @@ function restartFromDay1(){
  endingTimers.forEach(clearTimeout);endingTimers=[];
  selectedBranch=0;day2Prayer=0;day2Morning='';livingBranch=0;mainBranch=0;confMorningBranch=0;joshuaRevealed=false;revealed=false;jihoonRevealed=false;soonyoungRevealed=false;minghaoRevealed=false;jeonghanRevealed=false;mingyuRevealed=false;
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;confessionTickLouder=false;
- ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_escape_package_v167','shindo_confession_morning_branch_v163'].forEach(k=>localStorage.removeItem(k));
+ ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_escape_package_v167','shindo_confession_morning_branch_v163','shindo_day2_start_affinity_snapshot_v169'].forEach(k=>localStorage.removeItem(k));
  const day1Start=scenes.findIndex(s=>s.kind==='transition'&&s.text==='1일차 아침');
  index=day1Start>=0?day1Start:0;
+ storyUnderlay.classList.add('visible');storyBackdrop.classList.add('visible');overlay.classList.add('active');refreshInventoryVisibility();
  locked=false;save();render();
 }
+window.SHINDO_restartFromDay1=restartFromDay1;
+
+// V169: Test restart at the black "2일차" title, keeping the authenticated mail/browser.
+function restartFromDay2(){
+ const day2Start=scenes.findIndex(s=>s.kind==='sleep-transition'&&s.day===2);
+ if(day2Start<0){console.error('2일차 시작 지점을 찾지 못했습니다.');return}
+ duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');
+ clearTimeout(timer);timer=null;clearConfessionQuestionTimers();stopVnTyping(false);
+ stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopPencil();
+ stopConfessionTick();stopEndingBell();stopSanctuaryTick();stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopArtAudio();
+ if(confessionTickStartTimer){clearTimeout(confessionTickStartTimer);confessionTickStartTimer=null}
+ if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}
+ if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}
+ if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}
+ const choices=overlay.querySelector('.shindo-choices');if(choices)choices.style.display='none';
+ overlay.querySelector('.shindo-ending')?.remove();overlay.querySelectorAll('.shindo-evidence-overlay').forEach(el=>el.remove());
+ endingTimers.forEach(clearTimeout);endingTimers=[];
+ overlay.classList.remove('sanctuary','sanctuary-leaving','day','confession-blackout','confession-fade','day2-shake','sleep-fadeout','sleep-fadein');
+ box.classList.remove('box-shake-soft');
+ // Preserve the successful Day 1 confession path, because Day 2 is reached through it.
+ selectedBranch=1;localStorage.setItem('shindo_confession_branch','1');
+ day2Prayer=0;day2Morning='';prayerBranch=0;artBranch=0;livingBranch=0;mainBranch=0;confMorningBranch=0;
+ artLocation='main';artImage='';
+ // Day 2 choices must be grantable again: keep Day 1 events, discard Day 2+.
+ const affinityKey='shindo_affinity_v107',eventKey='shindo_affinity_events_v111';
+ const snapshotKey='shindo_day2_start_affinity_snapshot_v169';
+ try{
+  const snapshot=JSON.parse(localStorage.getItem(snapshotKey)||'null');
+  // Existing saves predate snapshots. Day 1 has no afternoon affinity grants;
+  // restore Day 1 base affinity if a snapshot was never captured.
+  const baseline=snapshot&&typeof snapshot==='object'&&!Array.isArray(snapshot)?snapshot:{'조슈아':100};
+  localStorage.setItem(affinityKey,JSON.stringify(baseline));
+  const events=JSON.parse(localStorage.getItem(eventKey)||'[]');
+  if(Array.isArray(events))localStorage.setItem(eventKey,JSON.stringify(events.filter(id=>typeof id==='string'&&Number(id.split('|')[0])<2)));
+  const history=JSON.parse(localStorage.getItem('shindo_play_history_v107')||'[]');
+  if(Array.isArray(history))localStorage.setItem('shindo_play_history_v107',JSON.stringify(history.filter(item=>{
+   const day=Number(item?.day);return Number.isFinite(day)&&day<2;
+  })));
+ }catch(err){console.warn('2일차 저장 데이터 정리 중 오류',err)}
+ // Evidence and character discoveries authored on Day 2 reset; Day 1 encounters stay unlocked.
+ const resetKeys=[
+  'shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_art_branch_v105',
+  'shindo_living_branch_v156','shindo_main_branch_v160','shindo_confession_morning_branch_v163',
+  'shindo_jihoon_bad_conditions_v156','shindo_evidence_items_v105',
+  'shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_joshua_known_v160',
+  'shindo_junhui_known_v167','shindo_soonyoung_known_v105','shindo_minghao_known_v105',
+  'shindo_hansol_known_v99','shindo_seokmin_known_v99','shindo_chan_known_v99',
+  'shindo_escape_package_v167','shindo_affinity_unread_v125'
+ ];
+ resetKeys.forEach(key=>localStorage.removeItem(key));
+ try{const names=JSON.parse(localStorage.getItem('shindo_met_characters_v108')||'[]');
+  if(Array.isArray(names))localStorage.setItem('shindo_met_characters_v108',JSON.stringify(names.filter(name=>['승철','지훈','원우'].includes(name))));
+ }catch(_){}
+ hansolRevealed=false;seokminRevealed=false;chanRevealed=false;soonyoungRevealed=false;minghaoRevealed=false;
+ jeonghanRevealed=false;mingyuRevealed=false;joshuaRevealed=false;junhuiRevealed=false;
+ currentPortrait='';portrait.hidden=true;illustration.hidden=true;confessionTickLouder=false;
+ index=day2Start;
+ localStorage.setItem('shindo_current_story_day_v109','2');
+ storyUnderlay.classList.add('visible');storyBackdrop.classList.add('visible');overlay.classList.add('active');refreshInventoryVisibility();
+ locked=false;save();document.dispatchEvent(new Event('shindo-inventory-change'));render();
+}
+window.SHINDO_restartFromDay2=restartFromDay2;
 function getMorningAffinityDay(){
  const stored=Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||2);
  return Math.max(2,Math.min(13,stored));

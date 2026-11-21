@@ -109,7 +109,7 @@
   '생활관':['정한','지훈','민규'],
   '본당':['조슈아'],
   '고해소':['원우'],
-  '공양실':['준휘']
+  '공양실':[]
  };
  const PERSON_EVENTS={
   '기도관 활동: 단상 위 청소':'한솔',
@@ -123,8 +123,7 @@
   '생활관 활동: 빨래 수거':'민규',
   '본당 탐색: 사무실':'조슈아',
   '고해소 대응: 임재범의 「고해」를 부른다.':'원우',
-  '고해소 대응: 미쳤냐? 가만히 있는다.':'원우',
-  '공양실 활동: 준휘와 대화':'준휘'
+  '고해소 대응: 미쳤냐? 가만히 있는다.':'원우'
  };
  // All participants start at zero except Joshua. Do not wipe existing scores on upgrades.
  function getAffinity(){const result=load(AFFINITY,{});if(!result||typeof result!=='object'||Array.isArray(result))return {};
@@ -202,7 +201,7 @@
    }
    if(label.startsWith('오전 활동 장소: '))grantAffinity('room',label.slice('오전 활동 장소: '.length),day);
    if(PERSON_EVENTS[label]){
-    const room=label.startsWith('기도관')?'기도관':label.startsWith('예술당')?'예술당':label.startsWith('생활관')?'생활관':label.startsWith('본당')?'본당':label.startsWith('공양실')?'공양실':'고해소';
+    const room=label.startsWith('기도관')?'기도관':label.startsWith('예술당')?'예술당':label.startsWith('생활관')?'생활관':label.startsWith('본당')?'본당':'고해소';
     grantAffinity('room',room,day);
     grantAffinity('person',label,day);
    }
@@ -371,7 +370,14 @@
    content.append(card)
   });
  }
- function feedback(){empty('기존 베타테스트 피드백 페이지로 이동합니다. 진행 중인 게임 기록은 유지됩니다.');const btn=make('button','inv-feedback','피드백 페이지 열기');btn.type='button';btn.addEventListener('click',()=>{if(typeof window.SHINDO_openFeedback!=='function'){empty('현재 피드백 페이지를 열 수 없습니다.');return}drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');window.SHINDO_openFeedback()});content.append(btn);const restart=make('button','inv-feedback inv-feedback-reset','아예 처음부터 다시 하기');restart.type='button';restart.addEventListener('click',()=>window.SHINDO_restartFromOpening?.());content.append(restart)}
+ function feedback(){empty('기존 베타테스트 피드백 페이지로 이동합니다. 진행 중인 게임 기록은 유지됩니다.');const btn=make('button','inv-feedback','피드백 페이지 열기');btn.type='button';btn.addEventListener('click',()=>{if(typeof window.SHINDO_openFeedback!=='function'){empty('현재 피드백 페이지를 열 수 없습니다.');return}drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');window.SHINDO_openFeedback()});content.append(btn);for(const [day,label] of [[1,'1일차부터 다시 시작'],[2,'2일차부터 다시 시작']]){
+  const restart=make('button','inv-feedback inv-feedback-reset',label);restart.type='button';
+  restart.addEventListener('click',()=>{
+   if(!window.confirm(day+'일차부터 다시 시작할까요?\n해당 날짜부터 진행한 게임 기록과 친밀도/증거품이 초기화됩니다.'))return;
+   drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');
+   (day===1?window.SHINDO_restartFromDay1:window.SHINDO_restartFromDay2)?.();
+  });content.append(restart);
+ }const restart=make('button','inv-feedback inv-feedback-reset','아예 처음부터 다시 하기');restart.type='button';restart.addEventListener('click',()=>window.SHINDO_restartFromOpening?.());content.append(restart)}
  function render(){panel.querySelectorAll('.inv-tab').forEach(b=>{b.setAttribute('aria-selected',String(b.dataset.tab===active))});refreshUnreadIndicators();content.replaceChildren();({evidence,people,history,feedback})[active]()}
  panel.querySelectorAll('.inv-tab').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();active=b.dataset.tab;render()}));
  document.addEventListener('shindo-inventory-change',render);
