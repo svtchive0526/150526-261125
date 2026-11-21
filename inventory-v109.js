@@ -47,7 +47,7 @@
   document.dispatchEvent(new Event('shindo-inventory-change'));
  };
  const evidenceInfo={
-  'destroyed-document-2':{name:'파기된 문서2',description:'마을의 내부 지도다. 밖으로 이어지는 길마다 전부 X자가 쳐진 채다.'},
+  'destroyed-document-2':{name:'파기된 문서2',description:'마을의 내부 지도다. 밖으로 이어지는 길마다 전부 X자가 쳐진 채다. 공양실 옆 쓰레기장에만 작게 동그라미가 있다. 이건 뭘까?'},
   'destroyed-document-3':{name:'파기된 문서3',description:'누군가의 일기. 심하게 훼손되어 읽을 수 있는 페이지가 거의 없다.'}
  };
  function load(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v===null?fallback:v}catch(_){return fallback}}
@@ -255,6 +255,8 @@
  }
  #shindo-phone-panel .inv-content{min-height:0;flex:1;overflow-y:auto;overscroll-behavior:contain;padding:9px 3px 14px;margin-top:7px}
  #shindo-phone-panel .inv-muted{color:#bbb;font-size:12px;line-height:1.65}
+ /* V162: Evidence item descriptions only, reduced by 10% (12px → 10.8px). */
+ #shindo-phone-panel .inv-item-description{font-size:10.8px}
  #shindo-phone-panel .inv-card{border:1px solid #575757;background:#252525;border-radius:8px;padding:12px;margin-bottom:9px}
  #shindo-phone-panel .inv-item-name{font-size:15px;font-weight:700;margin-bottom:5px}
  #shindo-phone-panel .inv-person{display:flex;gap:12px;align-items:center}
@@ -277,7 +279,7 @@
  function make(tag,klass,txt){const el=document.createElement(tag);if(klass)el.className=klass;if(txt!==undefined)el.textContent=txt;return el}
  function empty(message){content.appendChild(make('p','inv-muted',message))}
  function evidence(){const items=load(EVIDENCE,[]);if(!Array.isArray(items)||!items.length){empty('아직 획득한 증거품이 없습니다.');return}
-  items.forEach(id=>{const info=evidenceInfo[id]||{name:id,description:'획득한 증거품'};const card=make('div','inv-card');card.append(make('div','inv-item-name',info.name),make('div','inv-muted',info.description));content.append(card)})
+  items.forEach(id=>{const info=evidenceInfo[id]||{name:id,description:'획득한 증거품'};const card=make('div','inv-card');card.append(make('div','inv-item-name',info.name),make('div','inv-muted inv-item-description',info.description));content.append(card)})
  }
  function people(){const values=getAffinity();const unread=new Set(getUnread());PEOPLE.forEach(([name,portrait])=>{
   const known=isMet(name);

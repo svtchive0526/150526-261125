@@ -597,7 +597,7 @@ scenes.push(
  {"kind":"narration","mainHall":true,"mainLocation":"library","text":"안에는 아무도 없다.","mainBranch":2,"clearPortrait":true},
  {"kind":"dialogue","mainHall":true,"mainLocation":"library","text":"현대인 독서량이 부족하다더니, 진짜네.","mainBranch":2,"speaker":"주인공","clearPortrait":true},
  {"kind":"dialogue","mainHall":true,"mainLocation":"library","text":"오히려 좋지.","mainBranch":2,"speaker":"주인공","clearPortrait":true},
- {"kind":"narration","mainHall":true,"mainLocation":"library","text":"자유롭게 도서실 내부 자료들을 뒤져본다.","mainBranch":2,"illustration":"destroyed-document-2"},
+ {"kind":"narration","mainHall":true,"mainLocation":"library","text":"자유롭게 도서실 내부 자료들을 뒤져본다.","mainBranch":2},
  {"kind":"evidence-popup","mainHall":true,"mainLocation":"library","mainBranch":2,"evidenceId":"destroyed-document-2","evidenceTitle":"파기된 문서2","evidenceDescription":"마을의 내부 지도다. 밖으로 이어지는 길마다 전부 X자가 쳐진 채다.","evidenceArt":"destroyed-document-2"},
  {"kind":"dialogue","mainHall":true,"mainLocation":"library","text":"공양실 옆 쓰레기장에만 작게 동그라미가 있다. 이건 뭘까?","mainBranch":2,"speaker":"주인공","illustration":"destroyed-document-2"},
  {"kind":"dialogue","mainHall":true,"mainLocation":"library","text":"…저 길들은 전부 막혔다는 뜻이겠지.","mainBranch":2,"speaker":"주인공"},
@@ -777,6 +777,8 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .shindo-evidence-kicker{font-size:13px;color:#aaa;letter-spacing:-.02em}
 #shindo-vn .shindo-evidence-title{font-size:clamp(22px,4vw,31px);font-weight:750;line-height:1.5;letter-spacing:-.055em}
 #shindo-vn .shindo-evidence-desc{font-size:clamp(14px,1.7vw,17px);color:#ccc;line-height:1.8;letter-spacing:-.045em}
+/* V162: Put the map description on two lines only on mobile. */
+@media(max-width:750px){#shindo-vn .shindo-evidence-mobile-line{display:block}}
 #shindo-vn .shindo-evidence-confirm{background:#252529;border:1px solid #666;border-radius:6px;padding:12px 34px;color:#fff;font:inherit;cursor:pointer}
 #shindo-vn .shindo-evidence-confirm:hover{background:#333}
 #shindo-vn .art-branch-options{display:grid;grid-template-columns:1fr;gap:11px}
@@ -1197,7 +1199,19 @@ function showEvidencePopup(scene){
  const pop=document.createElement('div');pop.className='shindo-evidence-overlay';
  pop.innerHTML='<div class="shindo-evidence-card"><div class="shindo-evidence-kicker">증거품을 획득했다.</div><div class="shindo-evidence-title"></div><div class="shindo-evidence-desc"></div><button class="shindo-evidence-confirm" type="button">확인</button></div>';
  pop.querySelector('.shindo-evidence-title').textContent='['+scene.evidenceTitle+' 획득]';
- pop.querySelector('.shindo-evidence-desc').textContent=scene.evidenceDescription;
+ const evidenceDesc=pop.querySelector('.shindo-evidence-desc');
+ if(scene.evidenceId==='destroyed-document-2'){
+  // Desktop: one flowing sentence; mobile: break immediately after the first sentence.
+  const sentence='마을의 내부 지도다.';
+  const remainder=String(scene.evidenceDescription||'').slice(sentence.length).trimStart();
+  evidenceDesc.append(document.createTextNode(sentence));
+  if(remainder){
+   const secondLine=document.createElement('span');
+   secondLine.className='shindo-evidence-mobile-line';
+   secondLine.textContent=' '+remainder;
+   evidenceDesc.append(secondLine);
+  }
+ }else evidenceDesc.textContent=scene.evidenceDescription;
  if(scene.evidenceArt){const art=document.createElement('img');art.alt=scene.evidenceTitle;art.src='story-illustrations/'+scene.evidenceArt+'.png';art.style.cssText='width:min(100%,430px);max-height:46vh;object-fit:contain';pop.querySelector('.shindo-evidence-desc').before(art)}
  overlay.appendChild(pop);
  pop.querySelector('button').onclick=e=>{e.stopPropagation();pop.remove();locked=false;next()};
