@@ -642,6 +642,66 @@ scenes.push(
  {"kind":"conf-morning-end","confMorning":true,"confLocation":"inside"}
 );
 
+// V167: 2일차 오전 공양실 분기
+const GONGYANG_SCENE_START=scenes.length;
+scenes.push(
+ {"kind":"narration","gongyangHall":true,"gongyangLocation":"square","text":"...공양실","clearPortrait":true},
+ {"kind":"narration","gongyangHall":true,"gongyangLocation":"square","text":"매일 사람이 하나씩 죽어 나가는 곳. 생각만 해도 무섭다.","clearPortrait":true},
+ {"kind":"narration","gongyangHall":true,"gongyangLocation":"square","text":"하지만 가장 큰 비밀이 거기 숨겨져 있을지도 모른다.","clearPortrait":true},
+ {"kind":"narration","gongyangHall":true,"gongyangLocation":"outside","text":"공양실에 가까워지자, 옆으로 난 작은 샛길이 눈에 들어온다.","clearPortrait":true},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"차라리 저기로 가볼까...","speaker":"주인공","portrait":"junhui-body1-의심","silhouette":true},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"어라, 여기서 뭐 해요?","speaker":"준휘","portrait":"junhui-body1-의심","maskSpeaker":true},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"(…젠장. 하필 공양실에서 나오던 사제랑 마주쳤잖아.)","speaker":"주인공","portrait":"junhui-body1-의심"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"이상하다, 여기는 다들 무서워서 잘 안 오던데~","speaker":"준휘","portrait":"junhui-body2-의심","maskSpeaker":true},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"아, 그… 길을 잃어서.","speaker":"주인공","portrait":"junhui-body2-의심"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"엉? 지훈이 정도가 아닌 이상 여기 길은 잘 안 잃던데.","speaker":"준휘","portrait":"junhui-body2-의심","maskSpeaker":true},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"이상하다, 이상해~","speaker":"준휘","portrait":"junhui-body1-의심","maskSpeaker":true},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"...아! 알았다. 새로 온 신도분이죠?","speaker":"준휘","portrait":"junhui-body1-의심","maskSpeaker":true},
+ {"kind":"narration","gongyangHall":true,"gongyangLocation":"outside","text":"(끄덕였다.)","portrait":"junhui-body1-의심"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"그럼... 그럴 수 있어요.","speaker":"준휘","portrait":"junhui-body1-default","maskSpeaker":true},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"이름 엄청 귀엽다고 생각했어~ 봉봉 씨.","speaker":"준휘","portrait":"junhui-body1-smile","maskSpeaker":true},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"초콜릿 봉봉! 그거 알아요? 비슷하다고 생각했어요.","speaker":"준휘","portrait":"junhui-body1-smile","maskSpeaker":true},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"초콜릿 좋아해요?","speaker":"준휘","portrait":"junhui-body1-eyesmile","maskSpeaker":true},
+ {"kind":"narration","gongyangHall":true,"gongyangLocation":"outside","text":"엄청난 미남이 숨도 안 쉬고 말을 우다다 쏘아붙인다","portrait":"junhui-body1-eyesmile"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"(나를 의심했다 말았다, 천당과 지옥을 자유자재로 넘나드는 기분이다.)","speaker":"주인공","portrait":"junhui-body1-eyesmile"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"내 이름은 문준휘예요.","speaker":"준휘","portrait":"junhui-body1-smile","revealJunhui":true},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"준휘 사제님…은 처음 뵈는 거 같아요.","speaker":"주인공","portrait":"junhui-body1-smile"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"아무래도 그렇죠!","speaker":"준휘","portrait":"junhui-body1-eyesmile"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"왜냐하면 저는, 음… 아! 그거다. 외출 담당.","speaker":"준휘","portrait":"junhui-body2-smile","boldWord":"외출 담당"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"마을에서 나가고 싶으면 저한테 허락 맡으러 오세요.","speaker":"준휘","portrait":"junhui-body2-smile"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"그럼 저는 교주님한테 가서 허락을 맡고~","speaker":"준휘","portrait":"junhui-body1-smile","boldWord":"교주님"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"교주님한테서 오케이! 가 떨어지면 그때 나갈 수 있어요.","speaker":"준휘","portrait":"junhui-body1-eyesmile","boldWord":"교주님"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"물론 뭐, 온지 얼마 안 됐는데 나가고 싶다고 할 리는 없고…?","speaker":"준휘","portrait":"junhui-body1-default"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"…에이 설마?!","speaker":"준휘","portrait":"junhui-body2-의심"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"미안해요. 밍하오는 저보고 의심 좀 덜 하라던데.","speaker":"준휘","portrait":"junhui-body2-smile","boldWord":"밍하오"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"그게 말이 쉽지.","speaker":"준휘","portrait":"junhui-body1-default"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"여기 좋아요. 고양이도 많고. 단 것도 많고.","speaker":"준휘","portrait":"junhui-body1-eyesmile"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"바깥은 별로지~ 여기서 오래오래 함께 해요, 우리랑.","speaker":"준휘","portrait":"junhui-body1-smile","boldWord":"바깥은 별로지~"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"(겠냐고.)","speaker":"주인공","portrait":"junhui-body1-smile"},
+ {"kind":"narration","gongyangHall":true,"gongyangLocation":"outside","text":"하지만 일단은 웃어 보였다. 하하.","portrait":"junhui-body1-eyesmile"},
+ {"kind":"narration","gongyangHall":true,"gongyangLocation":"outside","text":"이 사람이야말로 정말 위험해 보인다.","portrait":"junhui-body1-eyesmile"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"(혹시, 단 걸 주면 호의적으로 반응할지도 모른다.)","speaker":"주인공","portrait":"junhui-body1-smile"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","text":"나한테 먹을 게 있나?","speaker":"주인공","portrait":"junhui-body1-smile"},
+ {"kind":"gongyang-item-check","gongyangHall":true,"gongyangLocation":"outside"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":1,"text":"아, 탈출패키지!","speaker":"주인공","portrait":"junhui-body1-smile"},
+ {"kind":"narration","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":1,"text":"혹시 몰라 패키지의 비상식량 중 초코바를 들고 다녔다.","portrait":"junhui-body1-smile"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":1,"text":"(이게 유용하게 쓰일 줄이야.)","speaker":"주인공","portrait":"junhui-body1-smile"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":1,"text":"이거… 드실래요? 전 단 건 별로라.","speaker":"주인공","portrait":"junhui-body1-smile"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":1,"text":"와!","speaker":"준휘","portrait":"junhui-body2-smile"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":1,"text":"진짜 감동이에요, 고마워요!","speaker":"준휘","portrait":"junhui-body3-eyesmile"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":1,"text":"한솔이가 그랬어요. 먹을 거 주는 사람, 좋은 사람이라고.","speaker":"준휘","portrait":"junhui-body3-snacking","boldWord":"한솔이"},
+ {"kind":"narration","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":1,"text":"활짝 웃으며 초코바를 먹는 준휘다.","portrait":"junhui-body3-snacking"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":1,"text":"(그럼, 나가다 잡혀도 한 번은 봐주나?)","speaker":"주인공","portrait":"junhui-body3-snacking"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":1,"text":"그래도, 나쁜 짓 하다가 잡히면 못 봐줘요!","speaker":"준휘","portrait":"junhui-body3-eyesmile"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":1,"text":"(에라이, 얄짤없네.)","speaker":"주인공","portrait":"junhui-body3-eyesmile"},
+ {"kind":"gongyang-end","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":1},
+ {"kind":"narration","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":2,"text":"(…아쉽게도 지금으로서는 없다.)","portrait":"junhui-body1-smile"},
+ {"kind":"narration","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":2,"text":"나중에 구하게 되면, 여기 다시 와서 준휘 사제에게 줘도 좋을 듯 하다.","portrait":"junhui-body1-eyesmile"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":2,"text":"(혹시 모르지.)","speaker":"주인공","portrait":"junhui-body1-eyesmile"},
+ {"kind":"dialogue","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":2,"text":"(어떤 표정을 지을지.)","speaker":"주인공","portrait":"junhui-body1-eyesmile","boldAll":true},
+ {"kind":"gongyang-end","gongyangHall":true,"gongyangLocation":"outside","gongyangItemBranch":2}
+);
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -671,6 +731,7 @@ function getSceneBackdrop(sceneNumber,scene){
  }
  if(scene&&scene.mainHall)return {inside:'bg-sanctuary-inside.png',office:'bg-sanctuary-office.jpg',library:'bg-sanctuary-library.jpg'}[scene.mainLocation||'inside']||'';
  if(scene&&scene.confMorning)return {outside:'bg-confession-outside.png',inside:'bg-confession-inside.png'}[scene.confLocation||'outside']||'bg-confession-outside.png';
+ if(scene&&scene.gongyangHall)return {square:'bg-central-square.jpg',outside:'bg-gongyang-outside.jpg'}[scene.gongyangLocation||'square']||'';
  // V149: keep the sleep/title interstitial entirely black.
  if(scene&&scene.kind==='sleep-transition')return "";
  // V152: optional location photos for Day 2 activities. No scene is inserted,
@@ -1164,6 +1225,7 @@ let mainBranch=Number(localStorage.getItem('shindo_main_branch_v160')||0);
 let joshuaRevealed=localStorage.getItem('shindo_joshua_known_v160')==='1';
 let jeonghanRevealed=localStorage.getItem('shindo_jeonghan_known_v156')==='1';
 let mingyuRevealed=localStorage.getItem('shindo_mingyu_known_v156')==='1';
+let junhuiRevealed=localStorage.getItem('shindo_junhui_known_v167')==='1';
 let prayerBranch=Number(localStorage.getItem("shindo_prayer_branch_v99")||0),hansolRevealed=localStorage.getItem("shindo_hansol_known_v99")==="1",seokminRevealed=localStorage.getItem("shindo_seokmin_known_v99")==="1",chanRevealed=localStorage.getItem("shindo_chan_known_v99")==="1";
 let index=0,locked=false, timer=null, audio=null,ambient=null;let selectedBranch=Number(localStorage.getItem("shindo_confession_branch")||0),endingTimers=[],endingBell=null,endingBellTimer=null;let storySfx=null,storySfxTimer=null;
 let sanctuaryTickTimer=null,sanctuaryTickAudio=null,confessionDoorAudio=null,confessionTickStartTimer=null;
@@ -1514,6 +1576,7 @@ if(scene.revealJihoon)jihoonRevealed=true;
  if(scene.revealJeonghan){jeonghanRevealed=true;localStorage.setItem('shindo_jeonghan_known_v156','1');window.SHINDO_markCharacterMet?.('정한')}
  if(scene.revealMingyu){mingyuRevealed=true;localStorage.setItem('shindo_mingyu_known_v156','1');window.SHINDO_markCharacterMet?.('민규')}
  if(scene.revealJoshua){joshuaRevealed=true;localStorage.setItem('shindo_joshua_known_v160','1');window.SHINDO_markCharacterMet?.('조슈아')}
+ if(scene.revealJunhui){junhuiRevealed=true;localStorage.setItem('shindo_junhui_known_v167','1');window.SHINDO_markCharacterMet?.('준휘')}
  // Character slots unlock only on an actual introduction/encounter.
  const metByReveal={reveal:'승철',revealJihoon:'지훈',revealHansol:'한솔',revealSeokmin:'석민',revealChan:'찬',revealSoonyoung:'순영',revealMinghao:'명호'};
  for(const [flag,name] of Object.entries(metByReveal)){if(scene[flag])window.SHINDO_markCharacterMet?.(name)}
@@ -1551,14 +1614,14 @@ if(scene.specialMinghao){
   window.SHINDO_markCharacterMet?.('한솔');
  }
 }
-if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.artHall||scene.livingHall||scene.mainHall||scene.confMorning)&&(scene.portrait||duoVisible))){
+if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.artHall||scene.livingHall||scene.mainHall||scene.confMorning||scene.gongyangHall)&&(scene.portrait||duoVisible))){
  if(scene.clearPortrait){currentPortrait='';portrait.hidden=true}
  if(duoVisible){currentPortrait='';portrait.dataset.officialRequest=String((Number(portrait.dataset.officialRequest)||0)+1);portrait.hidden=true;portrait.removeAttribute('src');} // V116: prevent lingering solo portrait behind two-person scene
  if(inDay2Square && !scene.portrait)currentPortrait='';
  if((scene.livingHall||scene.mainHall)&&!scene.portrait)currentPortrait='';
  if(scene.portrait)currentPortrait=scene.portrait;
  if(scene.portraitPlaceholder)currentPortrait='';
- speakerTag.textContent=scene.kind==='narration'||scene.inner?'':(scene.maskSpeaker||scene.speaker==='한솔'&&!hansolRevealed||scene.speaker==='석민'&&!seokminRevealed||scene.speaker==='찬'&&!chanRevealed?'??':scene.speaker==='순영'&&!soonyoungRevealed?'??':scene.speaker==='명호'&&!minghaoRevealed?'??':scene.speaker==='조슈아'&&!joshuaRevealed?'??':scene.speaker==='정한'&&!jeonghanRevealed?'??':scene.speaker==='민규'&&!mingyuRevealed?'??':scene.speaker==='주인공'?'김봉봉':scene.speaker==='승철'&&!revealed?'??':scene.speaker==='지훈'&&!jihoonRevealed?'??':scene.speaker);
+ speakerTag.textContent=scene.kind==='narration'||scene.inner?'':(scene.maskSpeaker||scene.speaker==='한솔'&&!hansolRevealed||scene.speaker==='석민'&&!seokminRevealed||scene.speaker==='찬'&&!chanRevealed?'??':scene.speaker==='순영'&&!soonyoungRevealed?'??':scene.speaker==='명호'&&!minghaoRevealed?'??':scene.speaker==='조슈아'&&!joshuaRevealed?'??':scene.speaker==='정한'&&!jeonghanRevealed?'??':scene.speaker==='민규'&&!mingyuRevealed?'??':scene.speaker==='준휘'&&!junhuiRevealed?'??':scene.speaker==='주인공'?'김봉봉':scene.speaker==='승철'&&!revealed?'??':scene.speaker==='지훈'&&!jihoonRevealed?'??':scene.speaker);
  content.classList.toggle('vn-inner',!!scene.inner);
  if(currentPortrait){
   const specialSolo=!!(scene.specialMinghao&&scene.portrait&&!duoVisible);
@@ -1612,7 +1675,7 @@ function restartFromDay1(){
  endingTimers.forEach(clearTimeout);endingTimers=[];
  selectedBranch=0;day2Prayer=0;day2Morning='';livingBranch=0;mainBranch=0;confMorningBranch=0;joshuaRevealed=false;revealed=false;jihoonRevealed=false;soonyoungRevealed=false;minghaoRevealed=false;jeonghanRevealed=false;mingyuRevealed=false;
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;confessionTickLouder=false;
- ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_confession_morning_branch_v163'].forEach(k=>localStorage.removeItem(k));
+ ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_confession_morning_branch_v163'].forEach(k=>localStorage.removeItem(k));
  const day1Start=scenes.findIndex(s=>s.kind==='transition'&&s.text==='1일차 아침');
  index=day1Start>=0?day1Start:0;
  locked=false;save();render();
@@ -1643,6 +1706,11 @@ function showDay2Choice(type){locked=true;box.style.display='none';portrait.hidd
   confMorningBranch=0;localStorage.removeItem('shindo_confession_morning_branch_v163');
   el.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;
   index=CONFESSIONAL_MORNING_START;save();locked=false;render();
+ }else if(day2Morning==='공양실'){
+  window.SHINDO_addPlayRecord?.('선택','공양실 활동: 준휘와 대화');
+  window.SHINDO_applyAffinityEvent?.('person','공양실 활동: 준휘와 대화',getMorningAffinityDay());
+  el.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+  index=GONGYANG_SCENE_START;save();locked=false;render();
  }else{
   el.innerHTML='<h2>'+day2Morning+'</h2><p>이후 이야기는 다음 업데이트에서 이어집니다.</p><button type="button" class="shindo-morning-return">오전 활동 선택지 돌아가기</button><button type="button" class="shindo-day1-restart">↺ 1일차부터 다시 시작 (임시)</button>';el.querySelector('.shindo-morning-return').onclick=e=>{e.stopPropagation();returnToMorningActivities()};el.querySelector('.shindo-day1-restart').onclick=e=>{e.stopPropagation();restartFromDay1()};locked=true;
  }}})
@@ -1692,6 +1760,41 @@ function showConfMorningEnd(){
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
  el.innerHTML='<h2>고해소에서의 대화를 마쳤다.</h2><button type="button" class="shindo-morning-return">오전 활동 선택지 돌아가기</button>';
+ el.style.display='flex';
+ el.querySelector('.shindo-morning-return').onclick=e=>{e.stopPropagation();returnToMorningActivities()};
+}
+
+function hasEscapePackage(){
+ const flagKeys=['shindo_escape_package_owned','shindo_escape_package_v167','shindo_has_escape_package'];
+ for(const key of flagKeys){const value=localStorage.getItem(key);if(value==='1'||value==='true')return true}
+ const match=(value)=>{
+  if(value==null)return false;
+  if(typeof value==='string')return ['escape-package','탈출패키지','탈출 패키지','escape_package','escapePackage'].includes(value);
+  if(Array.isArray(value))return value.some(match);
+  if(typeof value==='object')return match(value.id)||match(value.key)||match(value.slug)||match(value.name);
+  return false;
+ };
+ const collectionKeys=['shindo_inventory_items_v167','shindo_items_v1','shindo_item_items_v1','shindo_evidence_items_v105'];
+ for(const key of collectionKeys){
+  try{const parsed=JSON.parse(localStorage.getItem(key)||'null');if(match(parsed))return true}catch(_){/* ignore malformed saves */}
+ }
+ try{
+  const history=JSON.parse(localStorage.getItem('shindo_play_history_v107')||'[]');
+  if(Array.isArray(history)&&history.some(entry=>typeof entry?.label==='string'&&entry.label.includes('탈출패키지')))return true;
+ }catch(_){/* ignore malformed saves */}
+ return false;
+}
+function showGongyangItemCheck(){
+ const hasItem=hasEscapePackage();
+ const target=scenes.findIndex((x,i)=>i>GONGYANG_SCENE_START&&x.gongyangItemBranch===(hasItem?1:2));
+ if(target>=0){index=target;save();locked=false;render();return}
+ locked=false;next();
+}
+function showGongyangEnd(){
+ locked=true;box.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
+ let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
+ el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
+ el.innerHTML='<h2>공양실 인근을 둘러봤다.</h2><button type="button" class="shindo-morning-return">오전 활동 선택지 돌아가기</button>';
  el.style.display='flex';
  el.querySelector('.shindo-morning-return').onclick=e=>{e.stopPropagation();returnToMorningActivities()};
 }
@@ -1832,7 +1935,7 @@ function next(userAdvance=false){
 }
 overlay.addEventListener('click',()=>{audioContext();next(true)});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(phoneDrawer.classList.contains('is-open'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next(true)}});
 window.SHINDO_startStory=()=>{
- clearConfessionQuestionTimers();stopGongyangBell();stopGongyangApplause();stopPencil();stopConfessionTick();stopEndingBell();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}confessionTickLouder=false;day2Prayer=Number(localStorage.getItem("shindo_day2_prayer")||0);day2Morning=localStorage.getItem("shindo_day2_morning")||"";livingBranch=Number(localStorage.getItem('shindo_living_branch_v156')||0);mainBranch=Number(localStorage.getItem('shindo_main_branch_v160')||0);confMorningBranch=Number(localStorage.getItem('shindo_confession_morning_branch_v163')||0);joshuaRevealed=localStorage.getItem('shindo_joshua_known_v160')==='1';jeonghanRevealed=localStorage.getItem('shindo_jeonghan_known_v156')==='1';mingyuRevealed=localStorage.getItem('shindo_mingyu_known_v156')==='1';prayerBranch=Number(localStorage.getItem('shindo_prayer_branch_v99')||0);artBranch=Number(localStorage.getItem('shindo_art_branch_v105')||0);selectedBranch=Number(localStorage.getItem("shindo_confession_branch")||0);overlay.classList.remove("sanctuary","sanctuary-leaving","day","confession-blackout","sleep-fadeout","sleep-fadein");
+ clearConfessionQuestionTimers();stopGongyangBell();stopGongyangApplause();stopPencil();stopConfessionTick();stopEndingBell();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}confessionTickLouder=false;day2Prayer=Number(localStorage.getItem("shindo_day2_prayer")||0);day2Morning=localStorage.getItem("shindo_day2_morning")||"";livingBranch=Number(localStorage.getItem('shindo_living_branch_v156')||0);mainBranch=Number(localStorage.getItem('shindo_main_branch_v160')||0);confMorningBranch=Number(localStorage.getItem('shindo_confession_morning_branch_v163')||0);joshuaRevealed=localStorage.getItem('shindo_joshua_known_v160')==='1';jeonghanRevealed=localStorage.getItem('shindo_jeonghan_known_v156')==='1';mingyuRevealed=localStorage.getItem('shindo_mingyu_known_v156')==='1';junhuiRevealed=localStorage.getItem('shindo_junhui_known_v167')==='1';prayerBranch=Number(localStorage.getItem('shindo_prayer_branch_v99')||0);artBranch=Number(localStorage.getItem('shindo_art_branch_v105')||0);selectedBranch=Number(localStorage.getItem("shindo_confession_branch")||0);overlay.classList.remove("sanctuary","sanctuary-leaving","day","confession-blackout","sleep-fadeout","sleep-fadein");
  if(localStorage.getItem(KEY)==='complete'&&!localStorage.getItem('shindo_story_v66_sanctuary')){localStorage.setItem(KEY,'66');localStorage.setItem('shindo_story_v66_sanctuary','1')}
 
  // Players who finished the previous release continue at the newly added dialogue.

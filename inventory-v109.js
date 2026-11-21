@@ -109,7 +109,7 @@
   '생활관':['정한','지훈','민규'],
   '본당':['조슈아'],
   '고해소':['원우'],
-  '공양실':[]
+  '공양실':['준휘']
  };
  const PERSON_EVENTS={
   '기도관 활동: 단상 위 청소':'한솔',
@@ -123,7 +123,8 @@
   '생활관 활동: 빨래 수거':'민규',
   '본당 탐색: 사무실':'조슈아',
   '고해소 대응: 임재범의 「고해」를 부른다.':'원우',
-  '고해소 대응: 미쳤냐? 가만히 있는다.':'원우'
+  '고해소 대응: 미쳤냐? 가만히 있는다.':'원우',
+  '공양실 활동: 준휘와 대화':'준휘'
  };
  // All participants start at zero except Joshua. Do not wipe existing scores on upgrades.
  function getAffinity(){const result=load(AFFINITY,{});if(!result||typeof result!=='object'||Array.isArray(result))return {};
@@ -201,7 +202,7 @@
    }
    if(label.startsWith('오전 활동 장소: '))grantAffinity('room',label.slice('오전 활동 장소: '.length),day);
    if(PERSON_EVENTS[label]){
-    const room=label.startsWith('기도관')?'기도관':label.startsWith('예술당')?'예술당':label.startsWith('생활관')?'생활관':label.startsWith('본당')?'본당':'고해소';
+    const room=label.startsWith('기도관')?'기도관':label.startsWith('예술당')?'예술당':label.startsWith('생활관')?'생활관':label.startsWith('본당')?'본당':label.startsWith('공양실')?'공양실':'고해소';
     grantAffinity('room',room,day);
     grantAffinity('person',label,day);
    }
