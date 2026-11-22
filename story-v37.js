@@ -1364,6 +1364,44 @@ for(let day=3;day<=13;day++){
  scenes.push(...v218CreateOfferingScenes(day));
 }
 
+
+// V219: New Day 3 main-hall library conversation; appended to preserve saved indices.
+const V219_DAY3_LIBRARY_START=scenes.length;
+scenes.push(
+ {"kind":"narration","text":"본당 도서실로 향했다. 작지만 고즈넉한 공간.","v219Library":true,"mainHall":true,"mainLocation":"library","clearPortrait":true},
+ {"kind":"narration","text":"햇빛이 가장 잘 드는 자리에서 누군가가 책을 읽는 중이다.","v219Library":true,"mainHall":true,"mainLocation":"library","clearPortrait":true},
+ {"kind":"dialogue","text":"어라? 아는 얼굴...?","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"주인공","portrait":"seungkwan-body2-default","mainSilhouette":true},
+ {"kind":"dialogue","text":"부승관...씨...?","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"주인공","portrait":"seungkwan-body2-default"},
+ {"kind":"dialogue","text":"책을 읽… 아니, 졸고 있는 건가?","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"주인공","portrait":"seungkwan-body2-thinking"},
+ {"kind":"narration","text":"책 옆에는 필기 흔적이 역력한 노트가 있다.","v219Library":true,"mainHall":true,"mainLocation":"library","portrait":"seungkwan-body2-thinking"},
+ {"kind":"narration","text":"휴먼 졸림체 사이로 한 문장이 눈에 띈다.","v219Library":true,"mainHall":true,"mainLocation":"library","portrait":"seungkwan-body2-thinking"},
+ {"kind":"dialogue","text":"…강제 공양-사라진 사람이 몇 명?","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"주인공","portrait":"seungkwan-body2-default","boldAll":true,"fontScale":1.2},
+ {"kind":"narration","text":"그 순간 승관이 눈을 떴다.","v219Library":true,"mainHall":true,"mainLocation":"library","portrait":"seungkwan-body2-eyesmile"},
+ {"kind":"dialogue","text":"(내 표정, 들킨 거 같은데.)","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"주인공","portrait":"seungkwan-body2-eyesmile"},
+ {"kind":"dialogue","text":"아, 아이고 잠깐 졸았네….","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body2-eyesmile"},
+ {"kind":"dialogue","text":"어! 봉봉 씨는 여기 웬일이에요?","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body2-eyesmile","v219Truth":"told"},
+ {"kind":"dialogue","text":"어... 봉봉 씨는 여기 웬일로...?","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body1-default","v219Truth":"not-told"},
+ {"kind":"dialogue","text":"…책 읽으러 왔죠?","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"주인공","portrait":"seungkwan-body2-eyesmile","v219Truth":"told"},
+ {"kind":"dialogue","text":"…책 읽으러 왔죠?","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"주인공","portrait":"seungkwan-body2-default","v219Truth":"not-told"},
+ {"kind":"dialogue","text":"우와 책 읽는 거 좋아해요? 멋있다.","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body2-eyesmile","v219Truth":"told"},
+ {"kind":"dialogue","text":"우와 책 읽는 거 좋아해요? 멋있다.","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body2-default","v219Truth":"not-told"},
+ {"kind":"dialogue","text":"책 읽는 사람들 멋있잖아요.","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body3-eyesmile","v219Truth":"told"},
+ {"kind":"dialogue","text":"책 읽는 사람들 멋있잖아요.","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body3-default","v219Truth":"not-told"},
+ {"kind":"dialogue","text":"본인도 도서실에 있으면서….","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"주인공","portrait":"seungkwan-body3-eyesmile","v219Truth":"told"},
+ {"kind":"dialogue","text":"본인도 도서실에 있으면서….","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"주인공","portrait":"seungkwan-body3-default","v219Truth":"not-told"},
+ {"kind":"dialogue","text":"아, 봉봉 씨. 뭐 하나 알려줄까요?","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body2-eyesmile","v219Truth":"told"},
+ {"kind":"dialogue","text":"쩝, 뭐 하나 알려드릴까요?","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body1-default","v219Truth":"not-told"},
+ {"kind":"dialogue","text":"이건 비밀인데, 여기 사서 사제님이 엄청 친절하시거든요.","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body3-eyesmile","v219Truth":"told"},
+ {"kind":"dialogue","text":"이건 비밀인데, 여기 사서 사제님이 엄청 친절하시거든요.","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body3-default","v219Truth":"not-told"},
+ {"kind":"dialogue","text":"좀만 더 읽고 싶다고 애교부리면, 더 오래 빌려 갈 수 있게 해주세요.","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body2-eyesmile"},
+ {"kind":"dialogue","text":"대신 제가 말했다고 하면 안 돼요!","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body2-eyesmile","portraitFadeOutAfter":true},
+ {"kind":"dialogue","text":"(근데 그건 그쪽이라서 가능한 게 아닐까….)","v219Library":true,"mainHall":true,"mainLocation":"library","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","text":"그러곤 승관은 사라졌다.","v219Library":true,"mainHall":true,"mainLocation":"library","clearPortrait":true},
+ {"kind":"narration","text":"어제의 일 때문인지 수고하라는 듯 파이팅! 자세를 힘껏 외치고 갔다.","v219Library":true,"mainHall":true,"mainLocation":"library","clearPortrait":true,"v219Truth":"told"},
+ {"kind":"narration","text":"뭔가 어제보단 좀 뾰로통한 느낌...?","v219Library":true,"mainHall":true,"mainLocation":"library","clearPortrait":true,"v219Truth":"not-told"}
+);
+scenes.push({kind:'v219-library-end',v219Morning:true,mainHall:true,mainLocation:'library',clearPortrait:true});
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -1936,9 +1974,11 @@ let jihoonRevealed=false,pencilAudio=null;
 function stopPencil(){if(pencilAudio){pencilAudio.pause();pencilAudio.currentTime=0;pencilAudio=null}}
 function keepPencil(){if(pencilAudio)return;pencilAudio=new Audio('story-audio/pencil-17s.mp3');pencilAudio.loop=true;pencilAudio.volume=.65;pencilAudio.play().catch(()=>{})}
 
-let day2Prayer=Number(localStorage.getItem("shindo_day2_prayer")||0),day2Morning=localStorage.getItem("shindo_day2_morning")||"";
-let livingBranch=Number(localStorage.getItem('shindo_living_branch_v156')||0);
-let mainBranch=Number(localStorage.getItem('shindo_main_branch_v160')||0);
+let day2Prayer=Number(localStorage.getItem("shindo_day2_prayer")||0),day2Morning=v219IsDay3Activity()?(localStorage.getItem("shindo_day3_location_v219")||""):(localStorage.getItem("shindo_day2_morning")||"");
+const V219_MODE_KEY='shindo_day3_activity_v219';
+const V219_MAIN_KEY='shindo_day3_main_branch_v219';
+let livingBranch=Number(localStorage.getItem(v219IsDay3Activity()?'shindo_day3_living_branch_v219':'shindo_living_branch_v156')||0);
+let mainBranch=Number(localStorage.getItem(v219IsDay3Activity()?V219_MAIN_KEY:'shindo_main_branch_v160')||0);
 let joshuaRevealed=localStorage.getItem('shindo_joshua_known_v160')==='1';
 let jeonghanRevealed=localStorage.getItem('shindo_jeonghan_known_v156')==='1';
 let mingyuRevealed=localStorage.getItem('shindo_mingyu_known_v156')==='1';
@@ -2387,6 +2427,7 @@ function findV216Day2ActivitySkipTarget(){
  return -1; // No safe checkpoint in this area.
 }
 function findCurrentAreaSkipTarget(){
+ if(v219IsDay3Activity())return -1;
  if(localStorage.getItem(SKIP_REPLAY)!=='1')return -1;
  const scene=scenes[index];if(!scene||AREA_CHOICE_KINDS.has(scene.kind)||AREA_END_KINDS.has(scene.kind)||scene.kind==='ending'||scene.kind==='sleep-transition'||scene.kind==='evidence-popup'||scene.kind==='living-recall')return -1;
  // V180: replay-only skipping is scoped to a single Day 2 evening/night section.
@@ -2627,11 +2668,12 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  // V207: Resume BGM only inside the escape scene; never restart it per line.
  if(index>=V205_ESCAPE_START && index<V205_ESCAPE_LIE+100 && scene?.eveningLocation==='village' && !v207EscapeMusicFading)v207StartEscapeMusic();
  if(!scene.v213Day1Bedtime)v183SyncPoliceIdentityAt(index);
- if(scene.day3Morning||scene.v218GongyangDay)areaSkipButton.hidden=true;
+ if(scene.day3Morning||scene.v218GongyangDay||v219IsDay3Activity())areaSkipButton.hidden=true;
  // Players already saved at V214's temporary Day 3 scenes resume the full script.
  if(index===V214_DAY3_MORNING_START || scene.v178Hold==='day3-morning-await-script'){
   index=V215_DAY3_COMMON_START;save();render();return;
  }
+ if(scene.v219Truth){const told=localStorage.getItem('shindo_seungkwan_truth_branch_v177')==='1';if((scene.v219Truth==='told')!==told){index++;save();render();return;}}
  // Only show self-introduction if Joshua was unknown at morning entry.
  if(scene.v215JoshuaIntroOnly && localStorage.getItem('shindo_day3_joshua_intro_needed_v215')!=='1'){
   index++;save();render();return;
@@ -2694,9 +2736,9 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  }
  // V175: no interim selection screen after a completed Day 2 morning branch.
  // This also resumes correctly when an older save is parked on a branch-end node.
- if(DAY2_MORNING_AUTO_EVENING_ENDS.has(scene.kind)){enterEveningDay2();return}
+ if(DAY2_MORNING_AUTO_EVENING_ENDS.has(scene.kind)){if(v219IsDay3Activity()){v219ShowMorningEnd('오전 활동을 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return;}enterEveningDay2();return}
  // Keep the day in sync with real story progress, including refreshed sessions.
- try{localStorage.setItem('shindo_current_story_day_v109',String(scene.v218GongyangDay|| (scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1)))}catch(_){}
+ try{localStorage.setItem('shindo_current_story_day_v109',String(scene.v218GongyangDay|| (v219IsDay3Activity()?3:scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1)))}catch(_){}
  if(index===DAY2_START)localStorage.setItem(SKIP_REACHED,'1');
  updateAreaSkipButton();
  if(index===DAY2_START&&!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169')){
@@ -2787,8 +2829,8 @@ if(scene.kind==='sleep-transition'){
 }
 if(scene.kind==='choice'){showChoice();return}
 if(scene.kind==='day2-prayer-choice'){showDay2Choice('prayer');return}
-if(scene.prayerStart)window.SHINDO_applyAffinityEvent?.('room','기도관',2);
-if(index===ART_SCENE_START)window.SHINDO_applyAffinityEvent?.('room','예술당',2);
+if(scene.prayerStart&&!v219IsDay3Activity())window.SHINDO_applyAffinityEvent?.('room','기도관',2);
+if(index===ART_SCENE_START&&!v219IsDay3Activity())window.SHINDO_applyAffinityEvent?.('room','예술당',2);
 if(scene.kind==='day2-morning-choice'){
   if(fadingOutOfSquare){
    locked=true;
@@ -2798,6 +2840,7 @@ if(scene.kind==='day2-morning-choice'){
   }else showDay2Choice('morning');
   return;
  }
+ if(scene.kind==='v219-library-end'){v219ShowMorningEnd('승관과의 도서실 대화를 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return}
  if(scene.kind==='main-choice'){showMainChoice();return}
  if(scene.kind==='main-end'){showMainEnd();return}
  if(scene.kind==='conf-morning-choice'){showConfMorningChoice();return}
@@ -2967,7 +3010,7 @@ function restartFromDay1(){
  endingTimers.forEach(clearTimeout);endingTimers=[];
  selectedBranch=0;day2Prayer=0;day2Morning='';livingBranch=0;mainBranch=0;confMorningBranch=0;seungkwanTruthBranch=0;joshuaRevealed=false;revealed=false;jihoonRevealed=false;soonyoungRevealed=false;minghaoRevealed=false;jeonghanRevealed=false;mingyuRevealed=false;seungkwanRevealed=false;
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;confessionTickLouder=false;
- ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_seungkwan_truth_branch_v177','shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_evening_branch_day2_v173','shindo_confession_morning_branch_v163','shindo_day2_start_affinity_snapshot_v169','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215'].forEach(k=>localStorage.removeItem(k));
+ ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_seungkwan_truth_branch_v177','shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_evening_branch_day2_v173','shindo_confession_morning_branch_v163','shindo_day2_start_affinity_snapshot_v169','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person'].forEach(k=>localStorage.removeItem(k));
  const day1Start=scenes.findIndex(s=>s.kind==='transition'&&s.text==='1일차 아침');
  index=day1Start>=0?day1Start:0;
  storyUnderlay.classList.add('visible');storyBackdrop.classList.add('visible');overlay.classList.add('active');refreshInventoryVisibility();
@@ -3025,7 +3068,7 @@ function restartFromDay2(){
   'shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_joshua_known_v160',
   'shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_soonyoung_known_v105','shindo_minghao_known_v105',
   'shindo_hansol_known_v99','shindo_seokmin_known_v99','shindo_chan_known_v99',
-  'shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_seungkwan_truth_branch_v177','shindo_police_coop_v178','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_unread_v125','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215'
+  'shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_seungkwan_truth_branch_v177','shindo_police_coop_v178','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_unread_v125','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person'
  ];
  resetKeys.forEach(key=>localStorage.removeItem(key));
  try{const names=JSON.parse(localStorage.getItem('shindo_met_characters_v108')||'[]');
@@ -3104,7 +3147,114 @@ function restartFromDay2Afternoon(){
  locked=false;save();document.dispatchEvent(new Event('shindo-inventory-change'));render();
 }
 window.SHINDO_restartFromDay2Afternoon=restartFromDay2Afternoon;
+
+// V219: distinguish a Day 2 morning encounter from a name known since Day 1.
+function v219IsDay3Activity(){return localStorage.getItem(V219_MODE_KEY)==='1'}
+function v219WasMetDay2(name){
+ const room=localStorage.getItem('shindo_day2_morning')||'';
+ const mapped={한솔:['기도관','shindo_prayer_branch_v99','1'],승철:['기도관','shindo_prayer_branch_v99','2'],석민:['기도관','shindo_prayer_branch_v99','3'],찬:['기도관','shindo_prayer_branch_v99','4'],
+  순영:['예술당','shindo_art_branch_v105','1'],명호:['예술당','shindo_art_branch_v105','2'],정한:['생활관','shindo_living_branch_v156','2'],지훈:['생활관','shindo_living_branch_v156','3'],민규:['생활관','shindo_living_branch_v156','4'],조슈아:['본당','shindo_main_branch_v160','1']};
+ if(name==='원우')return room==='고해소';
+ if(name==='준휘')return room==='공양실';
+ const rule=mapped[name];return !!rule&&room===rule[0]&&localStorage.getItem(rule[1])===rule[2];
+}
+function v219GetAffinity(name){
+ try{const state=JSON.parse(localStorage.getItem('shindo_affinity_v107')||'{}');return Number(state?.[name]||0)}catch(_){return 0}
+}
+// The existing generic room/person handler predates Seungkwan's Day 3 library choice.
+// Award any uncovered portion only, and preserve the main affinity storage format.
+function v219EnsureSeungkwanDelta(delta,token,action){
+ const done='shindo_v219_seungkwan_'+token;
+ if(localStorage.getItem(done)==='1')return;
+ const before=v219GetAffinity('승관');
+ if(action)window.SHINDO_applyAffinityEvent?.(...action);
+ const after=v219GetAffinity('승관');
+ const missing=Math.max(0,delta-(after-before));
+ if(missing){
+  let all={};try{all=JSON.parse(localStorage.getItem('shindo_affinity_v107')||'{}')||{}}catch(_){all={}}
+  all['승관']=Math.max(0,Math.min(100,after+missing));
+  localStorage.setItem('shindo_affinity_v107',JSON.stringify(all));
+  document.dispatchEvent(new Event('shindo-affinity-change'));
+ }
+ localStorage.setItem(done,'1');
+}
+function v219MarkMorningRoom(room){
+ if(room==='본당'){
+  v219EnsureSeungkwanDelta(5,'room',[ 'room','본당',3 ]);
+ }else if(room==='공양실' && localStorage.getItem('shindo_junhui_affinity_locked_v205')==='1'){
+  // Junhui was locked after the Day 2 escape attempt; no +20 is allowed.
+ }else{
+  window.SHINDO_applyAffinityEvent?.('room',room,3);
+ }
+}
+function v219ShowMorningEnd(message){
+ locked=true;areaSkipButton.hidden=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;
+ overlay.querySelector('.vn-hint').style.display='none';
+ let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
+ el.classList.remove('shindo-prayer-grid','shindo-morning-grid','shindo-art-grid');
+ el.innerHTML='<h2>3일차 오전 활동</h2><p>'+message+'</p>';
+ el.style.display='flex';
+}
+function v219StartLocation(room){
+ localStorage.setItem(V219_MODE_KEY,'1');
+ localStorage.setItem('shindo_day3_location_v219',room);
+ localStorage.setItem('shindo_current_story_day_v109','3');
+ day2Morning=room;
+ v219MarkMorningRoom(room);
+ const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
+ currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+ artLocation='main';artImage='';prayerBranch=artBranch=livingBranch=mainBranch=confMorningBranch=0;
+ const points={'기도관':PRAYER_SCENE_START,'예술당':ART_SCENE_START,'생활관':LIVING_SCENE_START,'본당':MAIN_SCENE_START,'고해소':CONFESSIONAL_MORNING_START,'공양실':GONGYANG_SCENE_START};
+ const dest=points[room];
+ if(!Number.isInteger(dest))return;
+ if((room==='고해소'&&v219WasMetDay2('원우'))||(room==='공양실'&&v219WasMetDay2('준휘'))){
+  v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;
+ }
+ index=dest;locked=false;save();render();
+}
+function v219ShowDay3MorningMenu(){
+ locked=true;areaSkipButton.hidden=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
+ let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
+ const places=['기도관','예술당','생활관','본당','고해소','공양실'];
+ el.classList.remove('shindo-prayer-grid','shindo-art-grid');el.classList.add('shindo-morning-grid');
+ el.innerHTML='<h2>오전 활동이다. 어디로 가볼까?</h2><div class="shindo-morning-options">'+places.map((name,i)=>'<button type="button" data-v219-room="'+i+'">'+name+'</button>').join('')+'</div>';
+ el.style.display='flex';
+ for(const b of el.querySelectorAll('[data-v219-room]'))b.onclick=e=>{
+  e.stopPropagation();const place=places[Number(b.dataset.v219Room)];
+  window.SHINDO_addPlayRecord?.('선택','3일차 오전 활동 장소: '+place);
+  v219StartLocation(place);
+ };
+}
+function v219ShowMainChoice(){
+ locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
+ let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
+ const options=[['1','사무실'],['3','도서실']];
+ if(!hasEvidenceItem('destroyed-document-2'))options.push(['2','도서실 조사']);
+ el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
+ el.innerHTML='<h2>어디부터 살펴볼까?</h2><div class="shindo-morning-options">'+options.map(([id,title])=>'<button type="button" data-v219-main="'+id+'">'+title+'</button>').join('')+'</div>';
+ el.style.display='flex';
+ for(const b of el.querySelectorAll('[data-v219-main]'))b.onclick=e=>{
+  e.stopPropagation();const branch=Number(b.dataset.v219Main);
+  if(branch===2&&hasEvidenceItem('destroyed-document-2')){v219ShowMainChoice();return;}
+  mainBranch=branch;localStorage.setItem(V219_MAIN_KEY,String(branch));
+  window.SHINDO_addPlayRecord?.('선택','3일차 본당: '+({1:'사무실',2:'도서실 조사',3:'도서실'}[branch]));
+  if(branch===3){
+   v219EnsureSeungkwanDelta(10,'person',['person','본당 탐색: 도서실',3]);
+   index=V219_DAY3_LIBRARY_START;
+  }else if(branch===1){
+   window.SHINDO_applyAffinityEvent?.('person','본당 탐색: 사무실',3);
+   if(v219WasMetDay2('조슈아')){v219ShowMorningEnd('사무실 재방문 대화는 추후 추가됩니다.');return;}
+   index=scenes.findIndex((x,i)=>i>MAIN_SCENE_START&&x.mainBranch===1);
+  }else{
+   index=scenes.findIndex((x,i)=>i>MAIN_SCENE_START&&x.mainBranch===2);
+  }
+  el.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+  locked=false;save();render();
+ };
+}
+
 function getMorningAffinityDay(){
+ if(v219IsDay3Activity())return 3;
  const stored=Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||2);
  return Math.max(2,Math.min(13,stored));
 }
@@ -3159,6 +3309,7 @@ function showDay2Choice(type){locked=true;box.style.display='none';portrait.hidd
  }}})
 }
 function showMainChoice(){
+ if(v219IsDay3Activity()){v219ShowMainChoice();return;}
  locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
@@ -3454,6 +3605,7 @@ function showV215MorningBoundary(day=3){
  let el=overlay.querySelector('.shindo-choices');
  if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
+ if(day===3){v219ShowDay3MorningMenu();return;}
  el.innerHTML='<h2>'+day+'일차 오전 활동</h2><p>공양제가 끝났습니다. 오전 활동 스토리는 다음 업데이트에서 이어집니다.</p>';
  el.style.display='flex';
 }
@@ -3599,7 +3751,7 @@ function showLivingChoice(){
  el.style.display='flex';
  el.querySelectorAll('[data-living]').forEach(b=>b.onclick=e=>{
   e.stopPropagation();livingBranch=Number(b.dataset.living);
-  localStorage.setItem('shindo_living_branch_v156',String(livingBranch));
+  localStorage.setItem(v219IsDay3Activity()?'shindo_day3_living_branch_v219':'shindo_living_branch_v156',String(livingBranch));
   window.SHINDO_addPlayRecord?.('선택','생활관 활동: '+options[livingBranch-1]);
   if(livingBranch!==1)window.SHINDO_applyAffinityEvent?.('person','생활관 활동: '+options[livingBranch-1],getMorningAffinityDay());
   if(livingBranch===1){
@@ -3608,6 +3760,7 @@ function showLivingChoice(){
    const count=Number(localStorage.getItem('shindo_jihoon_bad_conditions_v156')||0);
    localStorage.setItem('shindo_jihoon_bad_conditions_v156',String(Math.min(3,count+1)));
   }
+  if(v219IsDay3Activity()&&v219WasMetDay2(({2:'정한',3:'지훈',4:'민규'})[livingBranch])){v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;}
   const target=scenes.findIndex((x,i)=>i>LIVING_SCENE_START&&x.livingBranch===livingBranch);
   el.style.display='none';currentPortrait='';portrait.hidden=true;
   if(target>=0){index=target;locked=false;save();render()}
@@ -3651,7 +3804,7 @@ function showPrayerChoice(){
  el.classList.remove('shindo-morning-grid');el.classList.add('shindo-prayer-grid');
  const options=['단상 위 청소','자는 사람 깨우기','성경 한 장 넘기기','청소 돕기'];
  el.innerHTML='<h2>뭐부터 거들어 볼까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button data-prayer="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
- el.style.display='flex';el.querySelectorAll('[data-prayer]').forEach(b=>b.onclick=e=>{e.stopPropagation();stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopVnTyping(false);prayerBranch=Number(b.dataset.prayer);window.SHINDO_addPlayRecord?.('선택','기도관 활동: '+options[prayerBranch-1]);localStorage.setItem('shindo_prayer_branch_v99',String(prayerBranch));window.SHINDO_applyAffinityEvent?.('person','기도관 활동: '+options[prayerBranch-1],getMorningAffinityDay());const branchStart=findPrayerBranchStart(prayerBranch);el.style.display='none';el.classList.remove('shindo-prayer-grid');currentPortrait='';portrait.hidden=true;illustration.hidden=true;if(branchStart!==-1){index=branchStart;locked=false;save();render();return}locked=false;next()});
+ el.style.display='flex';el.querySelectorAll('[data-prayer]').forEach(b=>b.onclick=e=>{e.stopPropagation();stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopVnTyping(false);prayerBranch=Number(b.dataset.prayer);window.SHINDO_addPlayRecord?.('선택','기도관 활동: '+options[prayerBranch-1]);localStorage.setItem(v219IsDay3Activity()?'shindo_day3_prayer_branch_v219':'shindo_prayer_branch_v99',String(prayerBranch));window.SHINDO_applyAffinityEvent?.('person','기도관 활동: '+options[prayerBranch-1],getMorningAffinityDay());const branchStart=findPrayerBranchStart(prayerBranch);if(v219IsDay3Activity()&&v219WasMetDay2(({1:'한솔',2:'승철',3:'석민',4:'찬'})[prayerBranch])){v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;}el.style.display='none';el.classList.remove('shindo-prayer-grid');currentPortrait='';portrait.hidden=true;illustration.hidden=true;if(branchStart!==-1){index=branchStart;locked=false;save();render();return}locked=false;next()});
 }
 
 function returnToMorningActivities(){
@@ -3689,8 +3842,9 @@ function showArtChoice(){
  el.querySelector('.shindo-special-test').onclick=e=>{e.stopPropagation();startMinghaoSpecial(true)};
  el.querySelectorAll('[data-art]').forEach(b=>b.onclick=e=>{
   e.stopPropagation();stopArtAudio();stopVnTyping(false);artBranch=Number(b.dataset.art);window.SHINDO_addPlayRecord?.('선택','예술당 활동: '+options[artBranch-1]);artLocation='main';artImage='';
-  localStorage.setItem('shindo_art_branch_v105',String(artBranch));window.SHINDO_applyAffinityEvent?.('person','예술당 활동: '+options[artBranch-1],getMorningAffinityDay());
+  localStorage.setItem(v219IsDay3Activity()?'shindo_day3_art_branch_v219':'shindo_art_branch_v105',String(artBranch));window.SHINDO_applyAffinityEvent?.('person','예술당 활동: '+options[artBranch-1],getMorningAffinityDay());
   if(artBranch===2&&getMinghaoAffinity()>=60){startMinghaoSpecial(false);return}
+  if(v219IsDay3Activity()&&v219WasMetDay2(({1:'순영',2:'명호'})[artBranch])){v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;}
   const target=scenes.findIndex((x,i)=>i>ART_SCENE_START&&x.artBranch===artBranch);
   currentPortrait='';portrait.hidden=true;illustration.hidden=true;el.style.display='none';
   if(target>=0){index=target;locked=false;save();render()}
@@ -3761,7 +3915,7 @@ window.SHINDO_startStory=()=>{
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  v207StopEscapeMusic();
  stopV178Bell();v178Patrol(null);stopEveningTick();eveningBranch=Number(localStorage.getItem('shindo_evening_branch_day2_v173')||0);
- clearConfessionQuestionTimers();stopGongyangBell();stopGongyangApplause();stopPencil();stopConfessionTick();stopEndingBell();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}confessionTickLouder=false;day2Prayer=Number(localStorage.getItem("shindo_day2_prayer")||0);day2Morning=localStorage.getItem("shindo_day2_morning")||"";livingBranch=Number(localStorage.getItem('shindo_living_branch_v156')||0);mainBranch=Number(localStorage.getItem('shindo_main_branch_v160')||0);confMorningBranch=Number(localStorage.getItem('shindo_confession_morning_branch_v163')||0);joshuaRevealed=localStorage.getItem('shindo_joshua_known_v160')==='1';jeonghanRevealed=localStorage.getItem('shindo_jeonghan_known_v156')==='1';mingyuRevealed=localStorage.getItem('shindo_mingyu_known_v156')==='1';junhuiRevealed=localStorage.getItem('shindo_junhui_known_v167')==='1';prayerBranch=Number(localStorage.getItem('shindo_prayer_branch_v99')||0);artBranch=Number(localStorage.getItem('shindo_art_branch_v105')||0);selectedBranch=Number(localStorage.getItem("shindo_confession_branch")||0);overlay.classList.remove("sanctuary","sanctuary-leaving","day","confession-blackout","sleep-fadeout","sleep-fadein");storyBackdrop.style.filter='';storyUnderlay.style.filter='';
+ clearConfessionQuestionTimers();stopGongyangBell();stopGongyangApplause();stopPencil();stopConfessionTick();stopEndingBell();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}confessionTickLouder=false;day2Prayer=Number(localStorage.getItem("shindo_day2_prayer")||0);day2Morning=v219IsDay3Activity()?(localStorage.getItem("shindo_day3_location_v219")||""):(localStorage.getItem("shindo_day2_morning")||"");livingBranch=Number(localStorage.getItem(v219IsDay3Activity()?'shindo_day3_living_branch_v219':'shindo_living_branch_v156')||0);mainBranch=Number(localStorage.getItem(v219IsDay3Activity()?V219_MAIN_KEY:'shindo_main_branch_v160')||0);confMorningBranch=Number(localStorage.getItem('shindo_confession_morning_branch_v163')||0);joshuaRevealed=localStorage.getItem('shindo_joshua_known_v160')==='1';jeonghanRevealed=localStorage.getItem('shindo_jeonghan_known_v156')==='1';mingyuRevealed=localStorage.getItem('shindo_mingyu_known_v156')==='1';junhuiRevealed=localStorage.getItem('shindo_junhui_known_v167')==='1';prayerBranch=Number(localStorage.getItem(v219IsDay3Activity()?'shindo_day3_prayer_branch_v219':'shindo_prayer_branch_v99')||0);artBranch=Number(localStorage.getItem(v219IsDay3Activity()?'shindo_day3_art_branch_v219':'shindo_art_branch_v105')||0);selectedBranch=Number(localStorage.getItem("shindo_confession_branch")||0);overlay.classList.remove("sanctuary","sanctuary-leaving","day","confession-blackout","sleep-fadeout","sleep-fadein");storyBackdrop.style.filter='';storyUnderlay.style.filter='';
  if(localStorage.getItem(KEY)==='complete'&&!localStorage.getItem('shindo_story_v66_sanctuary')){localStorage.setItem(KEY,'66');localStorage.setItem('shindo_story_v66_sanctuary','1')}
 
  // Players who finished the previous release continue at the newly added dialogue.
