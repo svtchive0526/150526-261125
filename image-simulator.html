@@ -31,7 +31,7 @@
 <p class="small full">100%는 실제 게임의 배경 cover 배치와 같아. 100% 초과 시 확대·잘림, 미만 시 축소·검은 여백이 생길 수 있어. 시뮬레이션에만 반영돼.</p>
 <label>배경 어두워짐 <span id="bgdim-value">0%</span><input id="bgdim" type="range" min="0" max="50" step="10" value="0"></label>
 <div class="divider full"></div>
-<label>두 번째 캐릭터 (2인 장면)<input id="upload-right" type="file" accept="image/*"></label>
+<h2 class="full">배경 위치 조절</h2><label>PC 배경 X <span id="pc-bgx-value">0px</span><input id="pc-bgx" type="range" min="-500" max="500" step="1" value="0"></label><label>PC 배경 Y <span id="pc-bgy-value">0px</span><input id="pc-bgy" type="range" min="-500" max="500" step="1" value="0"></label><label>모바일 배경 X <span id="mobile-bgx-value">0px</span><input id="mobile-bgx" type="range" min="-500" max="500" step="1" value="0"></label><label>모바일 배경 Y <span id="mobile-bgy-value">0px</span><input id="mobile-bgy" type="range" min="-500" max="500" step="1" value="0"></label><div class="full buttons"><button type="button" id="reset-bgpos">배경 위치 복원 (X 0 / Y 0)</button></div><p class="small full">배경 이미지를 좌우·상하로 이동해 실제 구도에 가깝게 맞출 수 있어. 시뮬레이션에만 반영돼.</p><div class="divider full"></div><h2 class="full">캐릭터 위치 조절</h2><label>PC 캐릭터 X <span id="pc-px-value">0px</span><input id="pc-px" type="range" min="-400" max="400" step="1" value="0"></label><label>PC 캐릭터 Y <span id="pc-py-value">0px</span><input id="pc-py" type="range" min="-400" max="400" step="1" value="0"></label><label>모바일 캐릭터 X <span id="mobile-px-value">0px</span><input id="mobile-px" type="range" min="-400" max="400" step="1" value="0"></label><label>모바일 캐릭터 Y <span id="mobile-py-value">0px</span><input id="mobile-py" type="range" min="-400" max="400" step="1" value="0"></label><div class="full buttons"><button type="button" id="reset-ppos">캐릭터 위치 복원 (X 0 / Y 0)</button></div><p class="small full">단독 캐릭터 장면에서만 반영돼. 2인 장면은 아래 개별 조절 항목을 써줘.</p><div class="divider full"></div><h2 class="full">2인 장면 개별 조절</h2><div class="small full">왼쪽 인물</div><label>PC 왼쪽 X <span id="pc-duolx-value">0px</span><input id="pc-duolx" type="range" min="-400" max="400" step="1" value="0"></label><label>PC 왼쪽 Y <span id="pc-duoly-value">0px</span><input id="pc-duoly" type="range" min="-400" max="400" step="1" value="0"></label><label>PC 왼쪽 사이즈 <span id="pc-duolscale-value">100%</span><input id="pc-duolscale" type="range" min="50" max="200" step="1" value="100"></label><label>모바일 왼쪽 X <span id="mobile-duolx-value">0px</span><input id="mobile-duolx" type="range" min="-400" max="400" step="1" value="0"></label><label>모바일 왼쪽 Y <span id="mobile-duoly-value">0px</span><input id="mobile-duoly" type="range" min="-400" max="400" step="1" value="0"></label><label>모바일 왼쪽 사이즈 <span id="mobile-duolscale-value">100%</span><input id="mobile-duolscale" type="range" min="50" max="200" step="1" value="100"></label><div class="small full">오른쪽 인물</div><label>PC 오른쪽 X <span id="pc-duorx-value">0px</span><input id="pc-duorx" type="range" min="-400" max="400" step="1" value="0"></label><label>PC 오른쪽 Y <span id="pc-duory-value">0px</span><input id="pc-duory" type="range" min="-400" max="400" step="1" value="0"></label><label>PC 오른쪽 사이즈 <span id="pc-duorscale-value">100%</span><input id="pc-duorscale" type="range" min="50" max="200" step="1" value="100"></label><label>모바일 오른쪽 X <span id="mobile-duorx-value">0px</span><input id="mobile-duorx" type="range" min="-400" max="400" step="1" value="0"></label><label>모바일 오른쪽 Y <span id="mobile-duory-value">0px</span><input id="mobile-duory" type="range" min="-400" max="400" step="1" value="0"></label><label>모바일 오른쪽 사이즈 <span id="mobile-duorscale-value">100%</span><input id="mobile-duorscale" type="range" min="50" max="200" step="1" value="100"></label><div class="full buttons"><button type="button" id="reset-duo">2인 장면 개별값 복원</button></div><p class="small full">2인 장면에서 각 인물을 따로 움직이고 크기도 따로 조절할 수 있어. 위의 캐릭터 공통 사이즈 배율과 함께 곱해서 적용돼.</p><div class="divider full"></div><label>두 번째 캐릭터 (2인 장면)<input id="upload-right" type="file" accept="image/*"></label>
 <label class="row">두 인물 실루엣 <input id="duo-silhouette" type="checkbox"></label>
 <label>화자 이름<input id="speaker" value="김봉봉" maxlength="28"></label>
 <label>대사 미리보기<textarea id="dialogue">업로드한 이미지가 실제 화면에 어떻게 배치되는지 확인할 수 있어요.</textarea></label>
@@ -46,15 +46,54 @@
 const $=id=>document.getElementById(id);
 const urls={background:'',portrait:'',illustration:'',duoRight:''},names={background:'',portrait:'',illustration:'',duoRight:''};
 const frames=[{id:'pc',width:1280,height:800},{id:'mobile',width:390,height:844}];
+const inputIds=[
+  'type','device','character','portrait-style','pc-height','mobile-height','pc-pscale','mobile-pscale','pc-bgscale','mobile-bgscale',
+  'pc-bgx','pc-bgy','mobile-bgx','mobile-bgy','pc-px','pc-py','mobile-px','mobile-py',
+  'pc-duolx','pc-duoly','pc-duolscale','mobile-duolx','mobile-duoly','mobile-duolscale',
+  'pc-duorx','pc-duory','pc-duorscale','mobile-duorx','mobile-duory','mobile-duorscale',
+  'dim','bgdim','duo-silhouette','speaker','dialogue','evidence-title','evidence-description'
+];
 function renderScale(){for(const f of frames){const stage=$(f.id+'-stage');const iframe=$(f.id+'-frame');const visible=stage.getBoundingClientRect().width||390;const s=visible/f.width;stage.style.height=(f.height*s)+'px';iframe.style.width=f.width+'px';iframe.style.height=f.height+'px';iframe.style.transform=`scale(${s})`;}}
 function payload(){return{...urls,portraitFilename:names.portrait,type:$('type').value,character:$('character').value==='auto'?'':$('character').value,portraitStyle:$('portrait-style').value,dim:Number($('dim').value)/100,bgShade:Number($('bgdim').value)/100,duoSilhouette:$('duo-silhouette').checked,speaker:$('speaker').value,dialogue:$('dialogue').value,evidenceTitle:$('evidence-title').value,evidenceDescription:$('evidence-description').value,duoLeft:urls.portrait};}
-function update(){frames.forEach(f=>{const data={type:'shindo-image-sim:update',payload:{...payload(),baseHeightPct:Number($(f.id+'-height').value),backgroundScalePct:Number($(f.id+'-bgscale').value),portraitScalePct:Number($(f.id+'-pscale').value)}};$(f.id+'-frame').contentWindow?.postMessage(data,'*')});$('pc-height-value').textContent=$('pc-height').value+'%';$('mobile-height-value').textContent=$('mobile-height').value+'%';$('pc-pscale-value').textContent=$('pc-pscale').value+'%';$('mobile-pscale-value').textContent=$('mobile-pscale').value+'%';$('pc-bgscale-value').textContent=$('pc-bgscale').value+'%';$('mobile-bgscale-value').textContent=$('mobile-bgscale').value+'%';$('dim-value').textContent=$('dim').value+'%';$('bgdim-value').textContent=$('bgdim').value+'%';renderScale()}
+function framePayload(id){
+  return {
+    ...payload(),
+    baseHeightPct:Number($(id+'-height').value),
+    backgroundScalePct:Number($(id+'-bgscale').value),
+    portraitScalePct:Number($(id+'-pscale').value),
+    backgroundOffsetX:Number($(id+'-bgx').value),
+    backgroundOffsetY:Number($(id+'-bgy').value),
+    portraitOffsetX:Number($(id+'-px').value),
+    portraitOffsetY:Number($(id+'-py').value),
+    duoLeftX:Number($(id+'-duolx').value),
+    duoLeftY:Number($(id+'-duoly').value),
+    duoLeftScalePct:Number($(id+'-duolscale').value),
+    duoRightX:Number($(id+'-duorx').value),
+    duoRightY:Number($(id+'-duory').value),
+    duoRightScalePct:Number($(id+'-duorscale').value)
+  };
+}
+function reflectValues(){
+  const valuePairs=[
+    ['pc-height-value','pc-height','%'],['mobile-height-value','mobile-height','%'],['pc-pscale-value','pc-pscale','%'],['mobile-pscale-value','mobile-pscale','%'],
+    ['pc-bgscale-value','pc-bgscale','%'],['mobile-bgscale-value','mobile-bgscale','%'],['dim-value','dim','%'],['bgdim-value','bgdim','%'],
+    ['pc-bgx-value','pc-bgx','px'],['pc-bgy-value','pc-bgy','px'],['mobile-bgx-value','mobile-bgx','px'],['mobile-bgy-value','mobile-bgy','px'],
+    ['pc-px-value','pc-px','px'],['pc-py-value','pc-py','px'],['mobile-px-value','mobile-px','px'],['mobile-py-value','mobile-py','px'],
+    ['pc-duolx-value','pc-duolx','px'],['pc-duoly-value','pc-duoly','px'],['pc-duolscale-value','pc-duolscale','%'],['mobile-duolx-value','mobile-duolx','px'],['mobile-duoly-value','mobile-duoly','px'],['mobile-duolscale-value','mobile-duolscale','%'],
+    ['pc-duorx-value','pc-duorx','px'],['pc-duory-value','pc-duory','px'],['pc-duorscale-value','pc-duorscale','%'],['mobile-duorx-value','mobile-duorx','px'],['mobile-duory-value','mobile-duory','px'],['mobile-duorscale-value','mobile-duorscale','%']
+  ];
+  valuePairs.forEach(([out,input,suffix])=>{$(out).textContent=$(input).value+suffix;});
+}
+function update(){frames.forEach(f=>{const data={type:'shindo-image-sim:update',payload:framePayload(f.id)};$(f.id+'-frame').contentWindow?.postMessage(data,'*')});reflectValues();renderScale()}
 function loadImage(input,key){const file=input.files&&input.files[0];if(!file)return;if(!file.type.startsWith('image/')){$('status').textContent='이미지 파일을 선택해줘.';return} const reader=new FileReader();reader.onload=()=>{urls[key]=reader.result;names[key]=file.name.normalize('NFC');$('status').textContent=file.name+' 로딩 완료';update()};reader.onerror=()=>{$('status').textContent='이미지를 읽지 못했어.'};reader.readAsDataURL(file)}
 [['upload-bg','background'],['upload-portrait','portrait'],['upload-art','illustration'],['upload-right','duoRight']].forEach(([id,k])=>$(id).addEventListener('change',e=>loadImage(e.target,k)));
-['type','device','character','portrait-style','pc-height','mobile-height','pc-pscale','mobile-pscale','pc-bgscale','mobile-bgscale','dim','bgdim','duo-silhouette','speaker','dialogue','evidence-title','evidence-description'].forEach(id=>$(id).addEventListener(id==='pc-height'||id==='mobile-height'||id==='pc-pscale'||id==='mobile-pscale'||id==='pc-bgscale'||id==='mobile-bgscale'||id==='speaker'||id==='dialogue'||id==='evidence-title'||id==='evidence-description'?'input':'change',()=>{if(id==='device')document.body.className='mode-'+$('device').value;update()}));
+inputIds.forEach(id=>$(id).addEventListener(['speaker','dialogue','evidence-title','evidence-description'].includes(id)||id.includes('height')||id.includes('scale')||id.endsWith('px')||id.endsWith('py')||id.endsWith('bgx')||id.endsWith('bgy')||id.endsWith('duolx')||id.endsWith('duoly')||id.endsWith('duorx')||id.endsWith('duory')||id==='dim'||id==='bgdim'?'input':'change',()=>{if(id==='device')document.body.className='mode-'+$('device').value;update()}));
 document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{const p=b.dataset.preset;$('type').value=p==='silhouette'?'portrait':p;$('portrait-style').value=p==='silhouette'?'silhouette':'normal';update()}));
 $('reset-height').addEventListener('click',()=>{$('pc-height').value='66';$('mobile-height').value='60';update()});
 $('reset-pscale').addEventListener('click',()=>{$('pc-pscale').value='100';$('mobile-pscale').value='100';update()});
 $('reset-bgscale').addEventListener('click',()=>{$('pc-bgscale').value='100';$('mobile-bgscale').value='100';update()});
-window.addEventListener('message',e=>{if(e.data?.type==='shindo-image-sim:ready')update()});window.addEventListener('resize',renderScale);new ResizeObserver(renderScale).observe($('screens'));renderScale();
+$('reset-bgpos').addEventListener('click',()=>{['pc-bgx','pc-bgy','mobile-bgx','mobile-bgy'].forEach(id=>$(id).value='0');update()});
+$('reset-ppos').addEventListener('click',()=>{['pc-px','pc-py','mobile-px','mobile-py'].forEach(id=>$(id).value='0');update()});
+$('reset-duo').addEventListener('click',()=>{['pc-duolx','pc-duoly','mobile-duolx','mobile-duoly','pc-duorx','pc-duory','mobile-duorx','mobile-duory'].forEach(id=>$(id).value='0');['pc-duolscale','mobile-duolscale','pc-duorscale','mobile-duorscale'].forEach(id=>$(id).value='100');update()});
+window.addEventListener('message',e=>{if(e.data?.type==='shindo-image-sim:ready')update()});window.addEventListener('resize',renderScale);new ResizeObserver(renderScale).observe($('screens'));reflectValues();renderScale();
 </script></body></html>

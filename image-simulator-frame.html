@@ -12,8 +12,8 @@
 #sim-vn .vn-duo{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;display:none}
 #sim-vn .vn-duo.is-active{display:block}
 #sim-vn .vn-duo img{position:absolute;bottom:clamp(155px,23vh,245px);height:min(47vh,560px);width:auto;max-width:48vw;object-fit:contain;object-position:bottom;transform-origin:center bottom}
-#sim-vn .vn-duo .duo-left{left:31%;transform:translateX(-50%) scale(var(--duo-scale,1))}
-#sim-vn .vn-duo .duo-right{left:69%;transform:translateX(-50%) scale(var(--duo-scale,1))}
+#sim-vn .vn-duo .duo-left{left:31%;transform:translate(calc(-50% + var(--duo-left-x,0px)),var(--duo-left-y,0px)) scale(calc(var(--duo-scale,1) * var(--duo-left-scale,1)))}
+#sim-vn .vn-duo .duo-right{left:69%;transform:translate(calc(-50% + var(--duo-right-x,0px)),var(--duo-right-y,0px)) scale(calc(var(--duo-scale,1) * var(--duo-right-scale,1)))}
 #sim-vn .vn-duo img.is-shadow{filter:brightness(0)!important}
 #sim-vn.is-recall .vn-portrait{filter:grayscale(1) brightness(.75)!important}
 #sim-vn.is-recall .vn-box{filter:grayscale(1)}
@@ -36,7 +36,7 @@
 #sim-vn .vn-box{z-index:2;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding-top:38px}
 #sim-vn .vn-speaker{position:absolute;top:-18px;left:25px;padding:5px 19px;border:1px solid #777;border-radius:6px;background:#202124;font-weight:700;font-size:16px;min-width:54px;text-align:center}
 #sim-vn .vn-speaker:empty{display:none}
-#sim-vn .vn-portrait{position:absolute;bottom:clamp(160px,23vh,245px);left:50%;transform:translate(var(--portrait-offset-x,-50%),var(--portrait-offset-y,0px)) scale(var(--portrait-scale,1));transform-origin:center bottom;height:min(66vh,740px);width:auto;max-width:95vw;object-fit:contain;object-position:center bottom;pointer-events:none;z-index:1}
+#sim-vn .vn-portrait{position:absolute;bottom:clamp(160px,23vh,245px);left:50%;transform:translate(calc(var(--portrait-offset-x,-50%) + var(--portrait-manual-x,0px)),calc(var(--portrait-offset-y,0px) + var(--portrait-manual-y,0px))) scale(var(--portrait-scale,1));transform-origin:center bottom;height:min(66vh,740px);width:auto;max-width:95vw;object-fit:contain;object-position:center bottom;pointer-events:none;z-index:1}
 #sim-vn .vn-portrait[hidden]{display:none}
 /* v91: Fade Wonwoo's portrait after the complete question, then cut the background to black. */
 #sim-vn .vn-portrait.vn-question-fade{opacity:0;transition:opacity .75s ease-in-out}
@@ -85,7 +85,7 @@
 #sim-vn .shindo-restart{position:absolute;top:calc(50% + 115px);left:50%;transform:translateX(-50%);background:transparent;border:1px solid #999;color:#fff;padding:14px 26px;font:600 17px Pretendard,sans-serif;cursor:pointer;white-space:nowrap;animation:vn-image-appear 1s ease both}
 
 /* v74: independent opaque backing guarantees the mail UI cannot bleed through transitions. */
-#sim-story-backdrop{position:fixed;inset:0;z-index:29999;background:#050607 center center / cover no-repeat;display:none;opacity:1;pointer-events:none;transition:opacity 1.05s ease}
+#sim-story-backdrop{position:fixed;inset:0;z-index:29999;background:#050607 center center / cover no-repeat;display:none;opacity:1;pointer-events:none;transition:opacity 1.05s ease;will-change:transform}
 #sim-story-backdrop.visible{display:block}
 /* V127: The opaque shield stays visible when only the photograph fades.
    It prevents the underlying mail/login UI from bleeding into scene transitions. */
@@ -144,7 +144,7 @@
 @media(max-width:750px){#sim-vn .vn-box .shindo-area-skip{right:9px;top:6px;font-size:11px;min-width:70px;padding:3px 7px}}
 #sim-vn .vn-portrait.evening-shadow{filter:brightness(var(--evening-portrait-brightness,1))!important;transition:filter .35s ease!important}
 
-#sim-vn{display:flex!important;background:transparent!important;cursor:default!important;pointer-events:none}#sim-vn .vn-box{pointer-events:none}#sim-story-underlay,#sim-story-backdrop{display:block!important}#sim-story-backdrop{background-position:center center;background-size:cover}
+#sim-vn{display:flex!important;background:transparent!important;cursor:default!important;pointer-events:none}#sim-vn .vn-box{pointer-events:none}#sim-story-underlay,#sim-story-backdrop{display:block!important}#sim-story-backdrop{background-position:center center;background-size:cover;transform-origin:center center}
 #sim-vn .vn-portrait{transition:opacity .65s ease}#sim-vn .vn-illustration{transition:opacity .65s ease}#sim-vn .vn-duo{display:block}
 #sim-vn .vn-hint{display:block;white-space:nowrap;user-select:none}
 #sim-vn .vn-evidence-demo{position:absolute;inset:0;background:#000;display:none;align-items:center;justify-content:center;z-index:45}
@@ -157,7 +157,7 @@
 const $=id=>document.getElementById(id);
 const names={junhui:/^준휘/,hansol:/^한솔/,soonyoung:/^순영/,minghao:/^명호/,wonwoo:/^원우/,jihoon:/^지훈/,seungcheol:/^승철/,seokmin:/^석민/,chan:/^찬/,elder:/^노인네/};
 const profiles={junhui:{scale:1,maxWidth:'none'},hansol:{scale:1.04,y:'0px',height:'min(60vh,620px)'},soonyoung:{scale:1.02},minghao:{scale:1.04,y:'0px',height:'min(60vh,620px)'},wonwoo:{scale:1.08},jihoon:{scale:1.03},seungcheol:{scale:.97},seokmin:{scale:1},chan:{scale:1},elder:{scale:1.02}};
-const current={};let currentData={};
+let currentData={};
 function detectKey(filename){const name=(filename||'').normalize('NFC');for(const [id,rx] of Object.entries(names))if(rx.test(name))return id;return '';}
 function junhuiCenterCompensation(filename,baseHeightPct){
  const name=(filename||'').normalize('NFC');if(!name.startsWith('준휘_'))return 0;
@@ -177,6 +177,8 @@ function applyProfile(el,filename,opts={}){
  const correction=id==='junhui'?junhuiCenterCompensation(filename,opts.baseHeightPct):0;
  el.style.setProperty('--portrait-offset-x', correction?`calc(-50% + ${correction}px)`:'-50%');
  el.style.setProperty('--portrait-offset-y',p.y||'0px');
+ el.style.setProperty('--portrait-manual-x',`${Number(opts.manualX)||0}px`);
+ el.style.setProperty('--portrait-manual-y',`${Number(opts.manualY)||0}px`);
  el.style.bottom=p.bottom||'';el.style.removeProperty('height');el.style.height=p.height||'';if(Number.isFinite(opts.baseHeightPct))el.style.setProperty('height',opts.baseHeightPct+'vh','important');el.style.maxWidth=p.maxWidth||'';el.style.width='auto';
  el.classList.toggle('special-solo',opts.style==='special');
  if(opts.style==='special')el.style.setProperty('--portrait-scale',String(manualScalePct/100));
@@ -188,20 +190,33 @@ function applyProfile(el,filename,opts={}){
  el.style.setProperty('--evening-portrait-brightness',String(1-(opts.dim||0)));
  if(opts.style==='normal'||opts.style==='special'||opts.style==='duo')el.style.filter='';
 }
+function setDuoAdjustments(d){
+ const left=$('left'), right=$('right'), duo=$('duo');
+ duo.style.setProperty('--duo-scale',String((Number(d.portraitScalePct)||100)/100));
+ left.style.setProperty('--duo-left-x',`${Number(d.duoLeftX)||0}px`);
+ left.style.setProperty('--duo-left-y',`${Number(d.duoLeftY)||0}px`);
+ left.style.setProperty('--duo-left-scale',String((Number(d.duoLeftScalePct)||100)/100));
+ right.style.setProperty('--duo-right-x',`${Number(d.duoRightX)||0}px`);
+ right.style.setProperty('--duo-right-y',`${Number(d.duoRightY)||0}px`);
+ right.style.setProperty('--duo-right-scale',String((Number(d.duoRightScalePct)||100)/100));
+}
 function update(d){currentData=d;const bg=$('sim-story-backdrop');const shade=(d.bgShade??0);
  bg.style.backgroundImage=d.background?`linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.46)), url(${JSON.stringify(d.background)})`:'linear-gradient(#050607,#050607)';
  bg.style.filter=shade?'brightness('+(1-shade)+')':'';
  const bgScale=Math.min(200,Math.max(50,Number(d.backgroundScalePct)||100));
- bg.style.transform=`scale(${bgScale/100})`;bg.style.transformOrigin='center center';
+ bg.style.transform=`translate(${Number(d.backgroundOffsetX)||0}px, ${Number(d.backgroundOffsetY)||0}px) scale(${bgScale/100})`;
+ bg.style.transformOrigin='center center';
  $('speaker').textContent=d.speaker||'';$('dialogue').textContent=d.dialogue||'일러스트 크기와 배경의 실제 배치를 확인합니다.';
  const portrait=$('portrait'),art=$('art'),duo=$('duo');
  portrait.hidden=!d.portrait||d.type==='illustration'||d.type==='duo'||d.type==='evidence';
- if(d.portrait){portrait.src=d.portrait;applyProfile(portrait,d.portraitFilename,{style:d.portraitStyle,character:d.character,manualScalePct:Number(d.portraitScalePct)||100,dim:d.dim,baseHeightPct:d.baseHeightPct});}
+ if(d.portrait){portrait.src=d.portrait;applyProfile(portrait,d.portraitFilename,{style:d.portraitStyle,character:d.character,manualScalePct:Number(d.portraitScalePct)||100,manualX:Number(d.portraitOffsetX)||0,manualY:Number(d.portraitOffsetY)||0,dim:d.dim,baseHeightPct:d.baseHeightPct});}
  art.hidden=!(d.type==='illustration' && d.illustration);if(d.illustration)art.src=d.illustration;
- duo.classList.toggle('is-active',d.type==='duo');duo.style.setProperty('--duo-scale',String((Number(d.portraitScalePct)||100)/100));for(const [key,el] of [['duoLeft',$('left')],['duoRight',$('right')]]){el.hidden=!d[key];if(d[key])el.src=d[key];el.classList.toggle('is-shadow',!!d.duoSilhouette);}
+ duo.classList.toggle('is-active',d.type==='duo');
+ setDuoAdjustments(d);
+ for(const [key,el] of [['duoLeft',$('left')],['duoRight',$('right')]]){el.hidden=!d[key];if(d[key])el.src=d[key];el.classList.toggle('is-shadow',!!d.duoSilhouette);}
  $('evidence').classList.toggle('visible',d.type==='evidence');if(d.type==='evidence'){$('evidence-img').src=d.illustration||d.portrait||'';$('evidence-title').textContent=d.evidenceTitle||'증거품 획득';$('evidence-desc').textContent=d.evidenceDescription||'여기에 아이템 설명이 나타납니다.'}
 }
 window.addEventListener('message',e=>{if(e.data?.type==='shindo-image-sim:update')update(e.data.payload)});
-window.addEventListener('resize',()=>{if(currentData.portrait)update(currentData)});
+window.addEventListener('resize',()=>{if(currentData && Object.keys(currentData).length)update(currentData)});
 parent.postMessage({type:'shindo-image-sim:ready'},'*');
 </script></body></html>
