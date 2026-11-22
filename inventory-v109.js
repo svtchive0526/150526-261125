@@ -47,8 +47,12 @@
   document.dispatchEvent(new Event('shindo-inventory-change'));
  };
  const evidenceInfo={
+  'destroyed-document-1':{name:'파기된 문서1',description:'신도들의 기부 이력이다. 이 명단에 있는 이름은 거주지에 없는 사람들의 이름같다.'},
   'destroyed-document-2':{name:'파기된 문서2',description:'마을의 내부 지도다. 밖으로 이어지는 길마다 전부 X자가 쳐진 채다. 공양실 옆 쓰레기장에만 작게 동그라미가 있다. 이건 뭘까?'},
-  'destroyed-document-3':{name:'파기된 문서3',description:'누군가의 일기. 심하게 훼손되어 읽을 수 있는 페이지가 거의 없다.'}
+  'destroyed-document-3':{name:'파기된 문서3',description:'누군가의 일기. 심하게 훼손되어 읽을 수 있는 페이지가 거의 없다.'},
+  'destroyed-document-4':{name:'파기된 문서4',description:'카밀레교의 교리에 대한 내용이지만 현재의 교리와 조금 다른 부분이 있다.'},
+  'escape-route':{name:'탈출로',description:'믿기지 않겠지만, 탈출로처럼 생겼다. 누군가 도망치려 했던걸까?'},
+  'missing-bracelet':{name:'실종자의 팔찌',description:'제보자 동생의 팔찌다. 분명한 증거품이 되어줄 터이다.'}
  };
  function load(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v===null?fallback:v}catch(_){return fallback}}
  function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}}

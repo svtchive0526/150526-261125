@@ -940,6 +940,75 @@ scenes.push(
 );
 const V178_TARGETS=Object.freeze({"deny": 0, "tell": 5, "accept": 71, "refuse": 83});
 
+// V197: Day 2 evening deny route — night-activity branches and trash-yard investigation.
+const V197_DENY_TRASH_OFFSET=scenes.length;
+scenes.push(
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"공양실 옆 샛길을 따라가자 쓰레기장이 나왔다.","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"쪼그려 앉아 이리저리 뒤지고 있다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"웬 문이지?","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"높디높은 철조망 울타리 사이로, 덤불에 가려진 낡은 나무 쪽문.","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"빗장은 허술하다 못해 한번 세게 치면 바로 바스라질 것처럼 생겼다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"문틈 너머는...","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"숲이잖아?","speaker":"주인공","clearPortrait":true},
+ {"kind":"evidence-popup","eveningDay2":true,"eveningLocation":"trash","v178":true,"evidenceId":"escape-route","evidenceTitle":"탈출로","evidenceDescription":"믿기지 않겠지만, 탈출로처럼 생겼다. 누군가 도망치려 했던걸까?","evidenceArt":"escape-route"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"탈출로도 재수 좋게 확보했고, 그 다음은...","speaker":"주인공","clearPortrait":true},
+ {"kind":"v178-hold","eveningDay2":true,"eveningLocation":"trash","v178":true,"v178Hold":"trash-choice"}
+);
+const V197_DENY_RECYCLING_OFFSET=scenes.length;
+scenes.push(
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"분리수거함 앞에 쭈그려 앉았다.","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"정리하는 척 종이 더미 사이를 헤집는 중이다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"구겨진 왕천파닭 전단지...","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"훠궈 곤약 포장지…","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"어?","speaker":"주인공","clearPortrait":true},
+ {"kind":"evidence-popup","eveningDay2":true,"eveningLocation":"trash","v178":true,"evidenceId":"destroyed-document-4","evidenceTitle":"파기된 문서4","evidenceDescription":"카밀레교의 교리에 대한 내용이지만 현재의 교리와 조금 다른 부분이 있다.","evidenceArt":"destroyed-document-4"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"찾았다. 너절하지만 읽을 수 있는 서류 한 장이다.","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"서류는 몰래 안주머니에 숨겼다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"오늘은 이만하면 됐어.","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"trash","v178":true,"text":"생활관으로 돌아가자.","speaker":"주인공","clearPortrait":true},
+ {"kind":"v178-hold","eveningDay2":true,"eveningLocation":"living","v178":true,"v178Hold":"trash-return"}
+);
+const V197_DENY_INCINERATOR_CHECK_OFFSET=scenes.length;
+scenes.push({"kind":"v197-incinerator-check","eveningDay2":true,"eveningLocation":"incinerator","v178":true});
+const V197_DENY_BRACELET_OFFSET=scenes.length;
+scenes.push(
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"소각장은 안쪽으로 더 깊이 들어가야 있구나..","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"옆에 놓인 쇠집게와 빗자루로 재 사이를 헤집었다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"그러고 보니...","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"이 재의 정체는… 아...","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"매캐한 냄새에 구역질이 치민다.","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"억지로 참으며 잔해 사이를 수색하는 중이다.","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"쇠집게 끝에 뭔가 반짝이는 게 걸린다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"어? 이건...","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"그을음이 묻은 작은 팔찌다.","clearPortrait":true},
+ {"kind":"evidence-popup","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"evidenceId":"missing-bracelet","evidenceTitle":"실종자의 팔찌","evidenceDescription":"제보자 동생의 팔찌다. 분명한 증거품이 되어줄 터이다.","evidenceArt":"missing-bracelet"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"…익숙한 팔찌. 분명한 증거품이 되어줄거야.","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"속으로 명복을 빌며 팔찌를 주머니에 넣었다.","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"오늘은 이만하면 됐다. 생활관으로 돌아가자.","clearPortrait":true},
+ {"kind":"v178-hold","eveningDay2":true,"eveningLocation":"living","v178":true,"v178Hold":"trash-return"}
+);
+const V197_DENY_DOCUMENT1_OFFSET=scenes.length;
+scenes.push(
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"오늘은 또 다른 무언가를 얻을 수 있을까...","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"오늘도 쇠집게와 빗자루로 재 사이를 헤집었다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"이 냄새는 도대체 익숙해지질 않는군.","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"억지로 참으며 잔해 사이를 쇠집게로 수색하는 중이다.","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"그때, 쇠집게 끝에 반쯤 타다 만 무언가 걸렸다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"종이 뭉치?","speaker":"주인공","clearPortrait":true},
+ {"kind":"evidence-popup","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"evidenceId":"destroyed-document-1","evidenceTitle":"파기된 문서1","evidenceDescription":"신도들의 기부 이력이다. 이 명단에 있는 이름은 거주지에 없는 사람들의 이름같다.","evidenceArt":"destroyed-document-1"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"가장자리가 그을려 있긴 하지만...","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"글자 대부분은 알아볼 수 있어.","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"이게 안 타고 온전히 남은 건 기적이다.","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"incinerator","v178":true,"text":"오늘은 이만하면 됐다. 생활관으로 돌아가자.","clearPortrait":true},
+ {"kind":"v178-hold","eveningDay2":true,"eveningLocation":"living","v178":true,"v178Hold":"trash-return"}
+);
+const V197_DENY_PATROL_OFFSET=scenes.length;
+scenes.push({"kind":"v178-hold","eveningDay2":true,"eveningLocation":"living","v178":true,"v178Hold":"night-patrol"});
+const V197_DENY_ESCAPE_OFFSET=scenes.length;
+scenes.push({"kind":"v178-hold","eveningDay2":true,"eveningLocation":"living","v178":true,"v178Hold":"escape-attempt"});
+const V197_DENY_SLEEP_OFFSET=scenes.length;
+scenes.push({"kind":"v178-hold","eveningDay2":true,"eveningLocation":"living","v178":true,"v178Hold":"sleep-now"});
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -970,7 +1039,7 @@ function getSceneBackdrop(sceneNumber,scene){
  if(scene&&scene.mainHall)return {inside:'bg-sanctuary-inside.png',office:'bg-sanctuary-office.jpg',library:'bg-sanctuary-library.jpg'}[scene.mainLocation||'inside']||'';
  if(scene&&scene.confMorning)return {outside:'bg-confession-outside.png',inside:'bg-confession-inside.png'}[scene.confLocation||'outside']||'bg-confession-outside.png';
  if(scene&&scene.gongyangHall)return {square:'bg-central-square.jpg',outside:'bg-gongyang-outside.jpg'}[scene.gongyangLocation||'square']||'';
- if(scene&&scene.eveningDay2)return {square:'bg-central-square.jpg',outside:'bg-confession-outside.png',inside:'bg-confession-inside.png',dark:'',living:'bg-living-quarters-exterior.png',bongbong:LIVING_BACKDROPS.bongbong,corridor:LIVING_BACKDROPS.corridor,eunjae:LIVING_BACKDROPS.eunjae}[scene.eveningLocation||'square']||'';
+ if(scene&&scene.eveningDay2)return {square:'bg-central-square.jpg',outside:'bg-confession-outside.png',inside:'bg-confession-inside.png',dark:'',living:'bg-living-quarters-exterior.png',bongbong:LIVING_BACKDROPS.bongbong,corridor:LIVING_BACKDROPS.corridor,eunjae:LIVING_BACKDROPS.eunjae,trash:'bg-trash-yard.jpg',incinerator:'bg-trash-yard.jpg'}[scene.eveningLocation||'square']||'';
  // V149: keep the sleep/title interstitial entirely black.
  if(scene&&scene.kind==='sleep-transition')return "";
  // V152: optional location photos for Day 2 activities. No scene is inserted,
@@ -1618,6 +1687,12 @@ function collectEvidence(id){
  try{existing=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(existing))existing=[]}catch(e){}
  if(!existing.includes(id)){existing.push(id);localStorage.setItem(key,JSON.stringify(existing));window.SHINDO_addPlayRecord?.('증거품','증거품 획득: '+id);document.dispatchEvent(new Event('shindo-inventory-change'))}
 }
+function hasEvidenceItem(id){
+ try{
+  const items=JSON.parse(localStorage.getItem('shindo_evidence_items_v105')||'[]');
+  return Array.isArray(items)&&items.includes(id);
+ }catch(_){return false}
+}
 function showEvidencePopup(scene){
  locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  collectEvidence(scene.evidenceId);
@@ -2077,6 +2152,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   if(scene.kind==='v178-coop-choice'){areaSkipButton.hidden=true;stopV178Bell();v178Patrol(null);currentPortrait='';applySceneBackdrop(index,scene);showV178CoopChoice();return}
   if(scene.kind==='v178-ending'){areaSkipButton.hidden=true;showV178Dogodai();return}
   if(scene.kind==='v178-hold'){areaSkipButton.hidden=true;showV178Holding(scene.v178Hold);return}
+  if(scene.kind==='v197-incinerator-check'){areaSkipButton.hidden=true;showV197IncineratorCheck();return}
   if(scene.kind==='v178-intertitle'||scene.kind==='v178-day3-title'){
    areaSkipButton.hidden=true;stopV178Bell();v178Patrol(null);storyBackdrop.style.opacity='0';applySceneBackdrop(index,scene);
    box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
@@ -2614,7 +2690,28 @@ function showV178Holding(type){
  stopV178Bell();v178Patrol(null);locked=true;box.style.display='none';portrait.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
- el.innerHTML='<h2>2일차 저녁 스토리</h2><p>'+(type==='deny'?'승관에게 진실을 말하지 않은 이후의 이야기는 다음 업데이트에서 이어집니다.':'협력 승낙 이후의 이야기는 다음 업데이트에서 이어집니다.')+'</p><button type="button" class="shindo-morning-return">오전 활동 선택지 돌아가기 (테스트)</button>';
+ if(type==='deny'){
+  const options=['쓰레기장','야간순찰 지원','탈출 시도','그냥 자자'];
+  el.innerHTML='<h2>일단 저녁 시간이니까, 움직이자.</h2><p>저녁 활동이다. 어디로 가볼까?</p><div class="shindo-morning-options">'+options.map((t,i)=>'<button type="button" data-v197-night="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
+  el.style.display='flex';
+  el.querySelectorAll('[data-v197-night]').forEach(button=>button.onclick=e=>{e.stopPropagation();const value=Number(button.dataset.v197Night)||0;window.SHINDO_addPlayRecord?.('선택','2일차 저녁 활동: '+options[value-1]);const targets={1:V197_DENY_TRASH_OFFSET,2:V197_DENY_PATROL_OFFSET,3:V197_DENY_ESCAPE_OFFSET,4:V197_DENY_SLEEP_OFFSET};const target=targets[value];if(Number.isInteger(target)){el.style.display='none';locked=false;index=target;save();render();}});
+  return;
+ }
+ if(type==='trash-choice'){
+  const options=['분리수거함 수색','소각로 청소'];
+  el.innerHTML='<h2>…더는 뭐가 나오지 않는다. 다른 데로 가볼까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button type="button" data-v197-trash="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
+  el.style.display='flex';
+  el.querySelectorAll('[data-v197-trash]').forEach(button=>button.onclick=e=>{e.stopPropagation();const value=Number(button.dataset.v197Trash)||0;window.SHINDO_addPlayRecord?.('선택','2일차 쓰레기장: '+options[value-1]);const target=value===1?V197_DENY_RECYCLING_OFFSET:V197_DENY_INCINERATOR_CHECK_OFFSET;if(Number.isInteger(target)){el.style.display='none';locked=false;index=target;save();render();}});
+  return;
+ }
+ const messages={
+  'accept':'협력 승낙 이후의 이야기는 다음 업데이트에서 이어집니다.',
+  'night-patrol':'야간순찰 지원 루트는 다음 업데이트에서 이어집니다.',
+  'escape-attempt':'탈출 시도 루트는 다음 업데이트에서 이어집니다.',
+  'sleep-now':'그냥 자자 루트는 다음 업데이트에서 이어집니다.',
+  'trash-return':'쓰레기장 조사를 마쳤다. 이후 이야기는 다음 업데이트에서 이어집니다.'
+ };
+ el.innerHTML='<h2>2일차 저녁 스토리</h2><p>'+(messages[type]||(type==='deny'?'승관에게 진실을 말하지 않은 이후의 이야기는 다음 업데이트에서 이어집니다.':'이후 이야기는 다음 업데이트에서 이어집니다.'))+'</p><button type="button" class="shindo-morning-return">오전 활동 선택지 돌아가기 (테스트)</button>';
  el.style.display='flex';el.querySelector('.shindo-morning-return').onclick=e=>{e.stopPropagation();stopV178Bell();returnToMorningActivities()};
 }
 function showV178Dogodai(){
@@ -2626,6 +2723,11 @@ function showV178Dogodai(){
  overlay.appendChild(end);
  endingTimers.push(setTimeout(()=>{end.innerHTML='<div class="shindo-ending-logo">신도<span>神道</span></div>'},2000));
  endingTimers.push(setTimeout(()=>{const b=document.createElement('button');b.className='shindo-restart';b.textContent='1일차부터 다시 시작';b.onclick=e=>{e.stopPropagation();end.remove();restartFromDay1()};end.appendChild(b)},4000));
+}
+function showV197IncineratorCheck(){
+ const target=hasEvidenceItem('missing-bracelet')?V197_DENY_DOCUMENT1_OFFSET:V197_DENY_BRACELET_OFFSET;
+ if(Number.isInteger(target)){locked=false;index=target;save();render();return}
+ locked=false;next();
 }
 function showMainEnd(){
  locked=true;box.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
