@@ -918,8 +918,8 @@ scenes.push(
  {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"<은재의 방>에는 오전에도 와봐야겠다.","clearPortrait":true},
  {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"이미 자정이 넘은 시간이다."},
  {"kind":"narration","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"text":"개인실로 몰래 돌아가 침대에 몸을 파묻었다."},
- {"kind":"dialogue","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"text":"오늘 하루에 너무 많은 일이 있었어...","speaker":"주인공"},
- {"kind":"dialogue","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"text":"푹 자고 내일도 파이팅해보자…","speaker":"주인공"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"text":"아, 너무 힘든 하루였어.","speaker":"주인공"},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"text":"들어온지 이틀만에... 여기도 이미 경찰이 잠입하고 있었다니.","speaker":"주인공"},
  {"kind":"v178-hold","eveningDay2":true,"eveningLocation":"bongbong","v178":true,"v178Hold":"accept"},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"…아무래도 그건 어려울 것 같습니다.","speaker":"주인공","clearPortrait":true},
  {"kind":"narration","eveningDay2":true,"eveningLocation":"eunjae","v178":true,"text":"승관은 충격에 빠진 얼굴이고,","portrait":"seungkwan-body1-despair"},
@@ -1165,6 +1165,48 @@ scenes.push(
  {"kind":"dialogue","v178":true,"eveningDay2":true,"eveningLocation":"bongbong","speaker":"주인공","text":"시간은 많으니까, 내일 또 찾아내보자.","clearPortrait":true,"v205FadeAfter":true},
  {"kind":"v205-day3","v178":true,"eveningDay2":true,"eveningLocation":"dark","text":"3일차"},
  {"kind":"v178-hold","v178":true,"eveningDay2":true,"eveningLocation":"dark","v178Hold":"day3-after-sleep"}
+);
+
+// V209: all living-quarters endings converge on a normal 3rd-day title.
+// Appended only: earlier saved scene indices and branch offsets remain unchanged.
+const v209BedroomLine=(text,extra={})=>({kind:'dialogue',v178:true,eveningDay2:true,eveningLocation:'bongbong',speaker:'주인공',text,clearPortrait:true,...extra});
+const v209Day3End=()=>[
+ {kind:'v205-day3',v178:true,eveningDay2:true,eveningLocation:'dark',text:'3일차'},
+ {kind:'v178-hold',v178:true,eveningDay2:true,eveningLocation:'dark',v178Hold:'day3-after-sleep'}
+];
+const V209_ACCEPT_BEDROOM=scenes.length;
+scenes.push(
+ v209BedroomLine('그래도 같은 편이 생긴 것 같아 다행이야.'),
+ v209BedroomLine('단서도 좀 얻었고.'),
+ v209BedroomLine('오늘은 일찍 자야겠다.'),
+ v209BedroomLine('시간은 많으니까, 내일 또 찾아내보자.',{v205FadeAfter:true}),
+ ...v209Day3End()
+);
+const V209_TRASH_BEDROOM=scenes.length;
+scenes.push(
+ v209BedroomLine('아, 너무 힘든 하루였어.'),
+ v209BedroomLine('들어온지 이틀만에... 아까 그 사람은 뭐지?'),
+ v209BedroomLine("이름이... '부승관'이랬나?",{boldWord:'부승관'}),
+ v209BedroomLine('머리가 너무 복잡하군.'),
+ v209BedroomLine('그래도 쓸 수 있는 증거품도 얻었으니.'),
+ v209BedroomLine('분석은 내일 시간 날 때 해볼까나.'),
+ v209BedroomLine('시간은 많으니까, 내일 또 찾아내보자.'),
+ v209BedroomLine('오늘은 그만 자야겠다.',{v205FadeAfter:true}),
+ ...v209Day3End()
+);
+const V209_PATROL_BEDROOM=scenes.length;
+scenes.push(
+ v209BedroomLine('아, 너무 힘든 하루였어.'),
+ v209BedroomLine('들어온지 이틀만에... 아까 그 사람은 뭐지?'),
+ v209BedroomLine("이름이... '부승관'이랬나?",{boldWord:'부승관'}),
+ v209BedroomLine('머리가 너무 복잡하군.'),
+ v209BedroomLine('그래도 쓸 수 있는 증거품도 얻었으니.'),
+ v209BedroomLine('아, 근데 왜 이렇게 꺼림칙하지..?'),
+ v209BedroomLine('이 정도 교회의 보안이 이렇게나 쉽게...?'),
+ v209BedroomLine('물론 CCTV 위치는 기존에 다 봐서, 사각지대로만 다녔다지만.'),
+ v209BedroomLine('머리가 너무 아프네...'),
+ v209BedroomLine('오늘은 그냥 자야지.',{v205FadeAfter:true}),
+ ...v209Day3End()
 );
 
 const sceneBackdropRanges=[
@@ -2374,7 +2416,12 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   if(scene.kind==='v205-timed-choice'){applySceneBackdrop(index,scene);showV205TimedChoice();return}
   if(scene.kind==='v205-bad-ending'){showV205BadEnding();return}
   if(scene.kind==='v205-day3'){showV205Day3();return}
-  if(scene.kind==='v178-hold'){if(scene.v178Hold==='sleep-now'){index=V208_SLEEP_START;save();render();return}areaSkipButton.hidden=true;showV178Holding(scene.v178Hold);return}
+  if(scene.kind==='v178-hold'){
+   const v209Targets={'sleep-now':V208_SLEEP_START,'accept':V209_ACCEPT_BEDROOM,'trash-return':V209_TRASH_BEDROOM,'patrol-return':V209_PATROL_BEDROOM};
+   const target=v209Targets[scene.v178Hold];
+   if(Number.isInteger(target)){index=target;save();render();return}
+   areaSkipButton.hidden=true;showV178Holding(scene.v178Hold);return;
+  }
   if(scene.kind==='v197-incinerator-check'){areaSkipButton.hidden=true;showV197IncineratorCheck();return}
   if(scene.kind==='v178-intertitle'||scene.kind==='v178-day3-title'){
    areaSkipButton.hidden=true;stopV178Bell();v178Patrol(null);storyBackdrop.style.opacity='0';applySceneBackdrop(index,scene);
@@ -2934,12 +2981,22 @@ function v207StopEscapeMusic(){
  if(a){a.pause();try{a.currentTime=0}catch(_){}}
 }
 function v207StartEscapeMusic(){
- if(v207EscapeMusic){return} // Do not restart on dialogue advance or when resuming the scene.
+ // No duplicate BGM: a paused sound retries on the next user gesture.
+ if(v207EscapeMusic){
+  if(v207EscapeMusic.paused&&!v207EscapeMusicFading){
+   const active=v207EscapeMusic;
+   active.play().catch(err=>{console.warn('탈출 시도 BGM 재생 재시도 실패',err)});
+  }
+  return;
+ }
  v207ClearEscapeFade();v207EscapeMusicFading=false;
- const a=new Audio(V207_ESCAPE_MUSIC_FILE);a.preload='auto';a.loop=false;a.volume=V207_ESCAPE_MUSIC_VOLUME;
+ const a=new Audio();a.preload='auto';a.loop=false;a.volume=V207_ESCAPE_MUSIC_VOLUME;
+ a.src=new URL(V207_ESCAPE_MUSIC_FILE,document.baseURI).href;
  v207EscapeMusic=a;
  a.addEventListener('ended',()=>{if(v207EscapeMusic===a){v207ClearEscapeFade();v207EscapeMusic=null;v207EscapeMusicFading=false}},{once:true});
- a.play().catch(err=>{console.warn('탈출 시도 BGM 재생 실패',err)});
+ a.addEventListener('error',()=>{if(v207EscapeMusic===a)console.warn('탈출 시도 BGM 음원 로딩 오류:',a.error?.code,a.currentSrc)});
+ a.load();
+ a.play().catch(err=>{console.warn('탈출 시도 BGM 재생 실패, 다음 터치에 재시도',err)});
 }
 function v207FadeEscapeMusic(durationMs=1200){
  const a=v207EscapeMusic;if(!a||v207EscapeMusicFading)return;
@@ -3350,7 +3407,7 @@ function next(userAdvance=false){
  if(index>=scenes.length-1){finish();return;}
  index++;save();render();
 }
-overlay.addEventListener('click',()=>{audioContext();if(v178BellWanted&&!v178BellStarted){prepareV178BellFromGesture();if(v178BellBuffer)startV178Bell();}next(true)});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(phoneDrawer.classList.contains('is-open'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next(true)}});
+overlay.addEventListener('click',()=>{audioContext();if(scenes[index]?.eveningLocation==='village'&&!v207EscapeMusicFading)v207StartEscapeMusic();if(v178BellWanted&&!v178BellStarted){prepareV178BellFromGesture();if(v178BellBuffer)startV178Bell();}next(true)});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(phoneDrawer.classList.contains('is-open'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next(true)}});
 window.SHINDO_startStory=()=>{
  v207StopEscapeMusic();
  stopV178Bell();v178Patrol(null);stopEveningTick();eveningBranch=Number(localStorage.getItem('shindo_evening_branch_day2_v173')||0);
