@@ -1215,6 +1215,10 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .vn-portrait.v205-pale-silhouette{filter:brightness(0)!important;opacity:.10!important}
 #shindo-vn .vn-portrait.v205-dark-silhouette{filter:brightness(0)!important;opacity:1!important}
 #shindo-vn.v205-fade-out::after{content:"";position:absolute;inset:0;background:#000;z-index:50;pointer-events:none;animation:v205-fade-to-black 1.15s ease-in both}
+/* V206: Never reveal the prior village background during the execution ending. */
+#shindo-vn .v206-ending-black-cover{position:absolute;inset:0;z-index:110;background:#000;opacity:0;pointer-events:none;transition:opacity 1150ms ease;will-change:opacity}
+#shindo-vn .v206-ending-black-cover.is-black{opacity:1}
+#shindo-vn .v206-ending-black-cover.is-revealing{transition-duration:1200ms;opacity:0}
 @keyframes v205-fade-to-black{from{opacity:0}to{opacity:1}}
 /* V178: independent police patrol silhouettes; fade together on entering / leaving. */
 #shindo-vn .vn-duo.v178-patrol{display:block;opacity:0;transition:opacity 850ms ease;pointer-events:none}
@@ -2901,8 +2905,14 @@ function showV178CoopChoice(){
 }
 // V205 audio lives independently from the scene index. The successful hammer
 // strike continues across dialogue; the fatal one blocks advance until it ends.
-let v205ChoiceInterval=null,v205TickInterval=null,v205TickAudio=null,v205HammerAudio=null,v205HammerBlocked=false,v205ChoiceDeadline=0;
-function v205StopChoice(){if(v205ChoiceInterval!==null){clearInterval(v205ChoiceInterval);v205ChoiceInterval=null}if(v205TickInterval!==null){clearInterval(v205TickInterval);v205TickInterval=null}if(v205TickAudio){v205TickAudio.pause();v205TickAudio.currentTime=0;v205TickAudio=null}}
+let v205ChoiceInterval=null,v205TickInterval=null,v205HammerAudio=null,v205HammerBlocked=false,v205ChoiceDeadline=0;
+const v206TickPlayers=new Set();
+function v205StopChoice(){
+ if(v205ChoiceInterval!==null){clearInterval(v205ChoiceInterval);v205ChoiceInterval=null}
+ if(v205TickInterval!==null){clearInterval(v205TickInterval);v205TickInterval=null}
+ for(const player of v206TickPlayers){player.pause();player.currentTime=0}
+ v206TickPlayers.clear();
+}
 function v205PlayHammer(block){
  if(v205HammerAudio){v205HammerAudio.pause();v205HammerAudio=null}
  const clip=new Audio('story-audio/hammer_attack.wav');clip.volume=1;v205HammerAudio=clip;v205HammerBlocked=!!block;
@@ -2935,10 +2945,51 @@ function showV205TimedChoice(){
  });
  v205ChoiceDeadline=performance.now()+10000;
  const update=()=>{const remain=Math.max(0,(v205ChoiceDeadline-performance.now())/1000);el.querySelector('#v205-seconds').textContent=Math.ceil(remain)+'초';el.querySelector('#v205-progress').style.width=(remain*10)+'%';if(remain<=0){window.SHINDO_addPlayRecord?.('선택','2일차 탈출 시도: 제한시간 초과',2);v205Jump(V205_ESCAPE_LIE)}};
- const tick=()=>{if(v205ChoiceInterval===null)return;const a=new Audio('story-audio/clock_tick_single.mp3');a.volume=1;a.play().catch(()=>{});if(v205TickAudio&&v205TickAudio!==a){v205TickAudio.pause();v205TickAudio.currentTime=0}v205TickAudio=a};
+ // V206: a dedicated short, strongly normalized clock strike. No previous tick
+ // is cut off; nine more identical ticks follow at 1-second spacing (0..9 s).
+ const tick=()=>{
+  if(v205ChoiceInterval===null || performance.now()>=v205ChoiceDeadline)return;
+  const player=new Audio('story-audio/v206_escape_clock_tick.wav');
+  player.volume=1;player.preload='auto';v206TickPlayers.add(player);
+  const dispose=()=>v206TickPlayers.delete(player);
+  player.addEventListener('ended',dispose,{once:true});
+  player.addEventListener('error',dispose,{once:true});
+  player.play().catch(dispose);
+ };
  update();v205ChoiceInterval=setInterval(update,70);tick();
- // play one loud clock tick every second until a choice or timeout
  v205TickInterval=setInterval(tick,1000);
+}
+// V206: Keep the scene black throughout loading of the Junhui ending artwork.
+// Swap the village photo under the opaque cover, then reveal the new scene.
+let v206EndingTransitionToken=0;
+function v206TransitionToJunhuiEnding(){
+ const token=++v206EndingTransitionToken;
+ locked=true;
+ const cover=document.createElement('div');cover.className='v206-ending-black-cover';
+ overlay.appendChild(cover);
+ // A separate overlay stays mounted even while the next scene is rendered.
+ requestAnimationFrame(()=>requestAnimationFrame(()=>cover.classList.add('is-black')));
+ setTimeout(()=>{
+  if(token!==v206EndingTransitionToken){cover.remove();return}
+  // Do not expose the outgoing dialogue or village image.
+  box.style.display='none';portrait.hidden=true;illustration.hidden=true;
+  primeBackdrop('bg-junhui-ending.png').then(()=>{
+   if(token!==v206EndingTransitionToken){cover.remove();return}
+   // Invalidate any pending backdrop swap before setting the new image.
+   ++backdropChangeToken;
+   if(backdropSwapTimer){clearTimeout(backdropSwapTimer);backdropSwapTimer=null}
+   currentSceneBackdropKey='bg-junhui-ending.png';
+   setSceneBackdropImage('bg-junhui-ending.png');
+   storyBackdrop.style.opacity='1';
+   index++;save();render();
+   // render() keeps the cover in place. Only reveal after the next frame paints.
+   requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    if(token!==v206EndingTransitionToken){cover.remove();return}
+    cover.classList.add('is-revealing');cover.classList.remove('is-black');
+    setTimeout(()=>{cover.remove();locked=false},1250);
+   }));
+  });
+ },1175);
 }
 function showV205BadEnding(){
  v205StopChoice();areaSkipButton.hidden=true;stopEveningTick();stopEveningWalk();stopVnTyping(false);stopV178Bell();
@@ -3233,6 +3284,10 @@ function next(userAdvance=false){
  }
 
  if(scenes[index]?.v205FadeAfter){
+  // Fatal branch: hold full black until Junhui's ending art is ready.
+  if(scenes[index+1]?.eveningLocation==='junhuiEnding'){
+   v206TransitionToJunhuiEnding();return;
+  }
   locked=true;overlay.classList.add('v205-fade-out');
   timer=setTimeout(()=>{overlay.classList.remove('v205-fade-out');locked=false;index++;save();render()},1150);return;
  }
