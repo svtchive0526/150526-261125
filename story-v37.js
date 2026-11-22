@@ -1234,6 +1234,102 @@ scenes.push(
  {kind:'dialogue',speaker:'주인공',text:'오늘은 그만 자야겠다.',branch:1,backdrop:'bg-bongbong-room.jpg',clearPortrait:true,v213Day1Bedtime:true,v213BedtimeFinal:true}
 );
 
+// V214: Shared third-day morning entry for normal Day 2 overnight routes.
+// Appended scenes preserve V213 and earlier saved indices and branch offsets.
+// The authored Day 3 morning dialogue/choices will be inserted into this block
+// once supplied; no unapproved story events or affinity awards are introduced.
+const V214_DAY3_MORNING_START=scenes.length;
+scenes.push(
+ {kind:'narration',text:'3일차 아침.',v178:true,day3Morning:true,backdrop:'bg-bongbong-room.jpg',clearPortrait:true,wakeFadeIn:true},
+ {kind:'v178-hold',v178:true,day3Morning:true,backdrop:'bg-bongbong-room.jpg',v178Hold:'day3-morning-await-script'}
+);
+
+// V215: Day 3 morning branches. Append-only saves all V214 and prior scene indices.
+const V215_DAY3_COMMON_START=scenes.length;
+scenes.push(
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"새벽 어스름이 방을 가득 채운다.","backdrop":"bg-bongbong-room.jpg","clearPortrait":true,"wakeFadeIn":true},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"...지금이 몇 시지?","backdrop":"bg-bongbong-room.jpg","speaker":"주인공"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"오늘은 새벽기도를... 가야하나 말아야하나.","backdrop":"bg-bongbong-room.jpg","speaker":"주인공"},
+ {"kind":"v215-day3-branch","v178":true,"day3Morning":true,"backdrop":"bg-bongbong-room.jpg"}
+);
+const V215_DAY3_JOSHUA_START=scenes.length;
+scenes.push(
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"이불 속에서 뒤척이는데-","backdrop":"bg-bongbong-room.jpg","clearPortrait":true},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"어?","backdrop":"bg-bongbong-room.jpg","speaker":"주인공"},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"불현듯 시선이 느껴진다.","backdrop":"bg-bongbong-room.jpg","portrait":"joshua-바디-member-미소","day3Silhouette":true},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"눈이 번쩍 떠진다.","backdrop":"bg-bongbong-room.jpg","portrait":"joshua-바디-member-미소","day3Silhouette":true},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"여긴 나 혼자만 쓰는 방인데, 대체 누가-","backdrop":"bg-bongbong-room.jpg","portrait":"joshua-바디-member-미소","speaker":"주인공","day3Silhouette":true},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"일어났어요?","backdrop":"bg-bongbong-room.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"처음 보죠?","backdrop":"bg-bongbong-room.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아","v215JoshuaIntroOnly":true},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"사무실에서 일하는 '조슈아'라고 해요.","backdrop":"bg-bongbong-room.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아","v215JoshuaIntroOnly":true,"revealJoshua":true},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"같이 새벽기도 갈까요?","backdrop":"bg-bongbong-room.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"어.. 그러죠.","backdrop":"bg-bongbong-room.jpg","portrait":"joshua-바디-member-기본-member","speaker":"주인공"},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"새벽기도 가자며 깨워주는 사람이 늘 있긴 하다는데..","backdrop":"bg-bongbong-room.jpg","portrait":"joshua-바디-member-기본-member"},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"이런 경우가 있을거라곤 설명해주지 않았잖아.","backdrop":"bg-bongbong-room.jpg","portrait":"joshua-바디-member-기본-member"},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"졸린 척 눈을 비비며 시간을 벌었다. 침착하자.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"아, 피곤하시구나.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"네, 뭐.. 조금.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"주인공"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"아무래도 그러시겠죠.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member","speaker":"조슈아","boldAll":true,"fontScale":1.15},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"어제 순찰자 명단에 이름이 적혀 계시더라고요?","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아","boldAll":true,"fontScale":1.2},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"순찰 차례가 아니셨을텐데...","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member","speaker":"조슈아","boldAll":true,"fontScale":1.3},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"와, 하품하는 척하지 않았다면 분명 비명이 나왔을거다.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"아, 보셨군요!","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member","speaker":"주인공"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"잠도 너무 안 오고, 적응이라도 빨리 하고 싶어서.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member","speaker":"주인공"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"제가 부탁해서 대신 했습니다.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"주인공"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"아~ 열정이 넘치신거 보기 좋아요.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"힘들진 않으세요?","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member","speaker":"조슈아","boldAll":true,"fontScale":1.2},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"뭐...가요?","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member","speaker":"주인공"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"입교하신지 얼마 되지도 않았는데.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member","speaker":"조슈아","boldAll":true},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"이렇게 열심히...","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아","boldAll":true,"fontScale":1.4},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"일하시는 거요.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아","boldAll":true,"fontScale":1.5},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"여, 영광이죠 저는. 열심히 할 수만 있다면.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"주인공"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"그래도 쉬엄쉬엄하세요.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member","speaker":"조슈아"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"은은하게 타올라야지,","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member","speaker":"조슈아"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"한순간에 꺼져버리면 좀 슬프잖아요.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아","boldAll":true,"fontScale":1.5},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"새벽 댓바람부터 뭔, 사람 심장 떨리는 말만 하네.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"(나를... 의심하는 걸까?)","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"주인공"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"(정체가 뭐지?)","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"주인공"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"(그냥 열렬한 신도겠지 뭐.)","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member","speaker":"주인공"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"(여긴 다 저런 사람들뿐이니까.)","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member","speaker":"주인공"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"이제 잠 다 깨셨죠?","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"너무 오래 안 보이면 다들 걱정하거든요~","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아"},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"…홀린 듯이 나와버렸다.","backdrop":"bg-village-front.png","portrait":"joshua-바디-member-기본-member"},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"미남이 팔을 살살 잡아끄는데, 별수 있나.","backdrop":"bg-village-front.png","portrait":"joshua-바디-member-기본-member"},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"예배당으로 가는 길목에서 조슈아가 나지막이 탄성을 터트렸다.","backdrop":"bg-village-front.png","portrait":"joshua-바디-member-미소"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"와- 요즘 들꽃이 참 예쁘게 폈죠. 아이 예뻐라.","backdrop":"bg-prayer-hall-exterior.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"(캐모마일이다. 여기서 지겹도록 보는 꽃.)","backdrop":"bg-prayer-hall-exterior.jpg","portrait":"joshua-바디-member-미소","speaker":"주인공"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"봉봉 씨는 신도 생활이 잘 맞으세요?","backdrop":"bg-prayer-hall-exterior.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"뭐… 적응해나가는 중이죠.","backdrop":"bg-prayer-hall-exterior.jpg","portrait":"joshua-바디-member-미소","speaker":"주인공"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"조슈아 씨도 그렇고, 다들 행복해 보이던데요.","backdrop":"bg-prayer-hall-exterior.jpg","portrait":"joshua-바디-member-미소","speaker":"주인공"},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"나름의 낚시였는데, 의외의 대답이 돌아왔다.","backdrop":"bg-prayer-hall-exterior.jpg","portrait":"joshua-바디-member-미소"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"그렇지만은 않아요. 여기도 사람 사는 곳이니까요.","backdrop":"bg-prayer-hall-exterior.jpg","portrait":"joshua-바디-member-기본-member","speaker":"조슈아"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"이곳을 지키고 싶어 하는 사람들이 있는 만큼이나,","backdrop":"bg-prayer-hall-exterior.jpg","portrait":"joshua-바디-member-기본-member","speaker":"조슈아"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"지친 사제도 있고, 바깥을 궁금해하는 신도도 있죠.","backdrop":"bg-prayer-hall-exterior.jpg","portrait":"joshua-바디-member-기본-member","speaker":"조슈아"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"그런 건… 불경한 게 아닌가요?","backdrop":"bg-prayer-hall-exterior.jpg","portrait":"joshua-바디-member-미소","speaker":"주인공"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"그렇긴 하죠.","backdrop":"bg-prayer-hall-exterior.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"하지만 저는 변화를 믿어요. 흐름을 믿듯이.","backdrop":"bg-prayer-hall-exterior.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아","boldAll":true,"fontScale":1.2},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"기다리는 거죠. 올바른 품으로 돌아오기까지.","backdrop":"bg-prayer-hall-exterior.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아","boldAll":true,"fontScale":1.2},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"그러니 다 품어주는 곳이에요, 여긴.","backdrop":"bg-prayer-hall-exterior.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아","boldAll":true,"fontScale":1.3},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"좁은 바깥세상보단 훨씬 넓죠.","backdrop":"bg-prayer-hall-exterior.jpg","portrait":"joshua-바디-member-기본-member","speaker":"조슈아"},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"봉봉 씨도 그걸 신뢰했으면 좋겠어요.","backdrop":"bg-prayer-hall-exterior.jpg","portrait":"joshua-바디-member-기본-member","speaker":"조슈아","portraitFadeOutAfter":true},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"듣고보니 혼란스럽다.","backdrop":"bg-prayer-hall-interior.jpg","clearPortrait":true},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"인정사정없는 바깥세상이 떠오른다.","backdrop":"bg-prayer-hall-interior.jpg","clearPortrait":true},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"사람의 변화를 믿는다니, 올바른 선택을 하기까지 인도하고 기다려준다니…","backdrop":"bg-prayer-hall-interior.jpg","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"이렇게만 들으면 순진하고, 순수하고,","backdrop":"bg-prayer-hall-interior.jpg","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"정말 좋은 곳 같잖아.","backdrop":"bg-prayer-hall-interior.jpg","speaker":"주인공","clearPortrait":true,"boldAll":true},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"새벽기도 내내 마음이 복잡했다.","backdrop":"bg-prayer-hall-interior.jpg","clearPortrait":true},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"세상이 조금 다르게 보이는 것... 같기도.","backdrop":"bg-prayer-hall-interior.jpg","clearPortrait":true},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"그러나 그중 가장 낯선 건,","backdrop":"bg-prayer-hall-interior.jpg","clearPortrait":true},
+ {"kind":"narration","v178":true,"day3Morning":true,"text":"며칠 있었다고 벌써 이 생활이 익숙해진 나 자신이다.","backdrop":"bg-prayer-hall-interior.jpg","clearPortrait":true,"v215PrayerAuto":true},
+ {"kind":"v178-hold","v178":true,"day3Morning":true,"backdrop":"bg-prayer-hall-interior.jpg","v178Hold":"day3-morning-joshua-complete"}
+);
+const V215_DAY3_NORMAL_START=scenes.length;
+scenes.push(
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"새벽기도 안 가세요??","backdrop":"bg-bongbong-room.jpg","speaker":"??","boxShakeSoft":true},
+ {"kind":"v215-day3-prayer-choice","v178":true,"day3Morning":true,"backdrop":"bg-bongbong-room.jpg"},
+ {"kind":"v178-hold","v178":true,"day3Morning":true,"backdrop":"bg-bongbong-room.jpg","v178Hold":"day3-morning-normal-complete"}
+);
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -1307,6 +1403,7 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .vn-duo.v178-patrol.is-visible{opacity:1}
 #shindo-vn .vn-duo.v178-patrol img{filter:brightness(0)!important}
 #shindo-vn .vn-portrait.v178-fadeout{opacity:0!important;transition:opacity 550ms ease!important}
+#shindo-vn .vn-portrait.v215-silhouette{filter:brightness(0)!important}
 /* V114 -- special scene two-character composition and memory presentation */
 #shindo-vn .vn-duo{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;display:none}
 #shindo-vn .vn-duo.is-active{display:block}
@@ -2432,20 +2529,46 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  // V207: Resume BGM only inside the escape scene; never restart it per line.
  if(index>=V205_ESCAPE_START && index<V205_ESCAPE_LIE+100 && scene?.eveningLocation==='village' && !v207EscapeMusicFading)v207StartEscapeMusic();
  if(!scene.v213Day1Bedtime)v183SyncPoliceIdentityAt(index);
+ if(scene.day3Morning)areaSkipButton.hidden=true;
+ // Players already saved at V214's temporary Day 3 scenes resume the full script.
+ if(index===V214_DAY3_MORNING_START || scene.v178Hold==='day3-morning-await-script'){
+  index=V215_DAY3_COMMON_START;save();render();return;
+ }
+ // Only show self-introduction if Joshua was unknown at morning entry.
+ if(scene.v215JoshuaIntroOnly && localStorage.getItem('shindo_day3_joshua_intro_needed_v215')!=='1'){
+  index++;save();render();return;
+ }
+ if(scene.v215PrayerAuto)v215ApplyDay3Prayer(true);
  if(scene.v178){
   // No clock ticks are allowed during the subsequent living-quarters story.
   stopEveningTick();
   if(scene.kind==='v178-coop-choice'){areaSkipButton.hidden=true;stopV178Bell();v178Patrol(null);currentPortrait='';applySceneBackdrop(index,scene);showV178CoopChoice();return}
   if(scene.kind==='v178-ending'){areaSkipButton.hidden=true;showV178Dogodai();return}
+  if(scene.kind==='v215-day3-branch'){
+   const officeEvidence=hasEvidenceItem('accounting-ledger');
+   if(officeEvidence)localStorage.setItem('shindo_day3_joshua_intro_needed_v215',joshuaRevealed?'0':'1');
+   index=officeEvidence?V215_DAY3_JOSHUA_START:V215_DAY3_NORMAL_START;
+   save();render();return;
+  }
+  if(scene.kind==='v215-day3-prayer-choice'){showV215Day3PrayerChoice();return}
   if(scene.escapeSeen!==undefined && scene.escapeSeen!==v205SkipSeen()){index++;save();render();return}
   if(scene.kind==='v205-timed-choice'){applySceneBackdrop(index,scene);showV205TimedChoice();return}
   if(scene.kind==='v205-bad-ending'){showV205BadEnding();return}
   if(scene.kind==='v205-day3'){showV205Day3();return}
   if(scene.kind==='v178-hold'){
+   // V214: Only the successful night/sleep outcomes join the normal Day 3
+   // morning. Refusal/other fatal routes retain their existing endings.
+   if(scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'){
+    index=V214_DAY3_MORNING_START;save();render();return;
+   }
    const v209Targets={'sleep-now':V208_SLEEP_START,'accept':V209_ACCEPT_BEDROOM,'trash-return':V209_TRASH_BEDROOM,'patrol-return':V209_PATROL_BEDROOM,'patrol-library-return':V210_PATROL_LIBRARY_BEDROOM};
    const target=v209Targets[scene.v178Hold];
    if(Number.isInteger(target)){index=target;save();render();return}
-   areaSkipButton.hidden=true;showV178Holding(scene.v178Hold);return;
+   areaSkipButton.hidden=true;
+   if(scene.v178Hold==='day3-morning-joshua-complete'||scene.v178Hold==='day3-morning-normal-complete'){
+    showV215MorningBoundary();return;
+   }
+   showV178Holding(scene.v178Hold);return;
   }
   if(scene.kind==='v197-incinerator-check'){areaSkipButton.hidden=true;showV197IncineratorCheck();return}
   if(scene.kind==='v178-intertitle'||scene.kind==='v178-day3-title'){
@@ -2473,7 +2596,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  // This also resumes correctly when an older save is parked on a branch-end node.
  if(DAY2_MORNING_AUTO_EVENING_ENDS.has(scene.kind)){enterEveningDay2();return}
  // Keep the day in sync with real story progress, including refreshed sessions.
- try{localStorage.setItem('shindo_current_story_day_v109',String(scene.v213Day1Bedtime?1:scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1))}catch(_){}
+ try{localStorage.setItem('shindo_current_story_day_v109',String(scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1))}catch(_){}
  if(index===DAY2_START)localStorage.setItem(SKIP_REACHED,'1');
  updateAreaSkipButton();
  if(index===DAY2_START&&!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169')){
@@ -2656,7 +2779,7 @@ if(scene.specialMinghao){
   window.SHINDO_markCharacterMet?.('한솔');
  }
 }
-if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.artHall||scene.livingHall||scene.mainHall||scene.confMorning||scene.gongyangHall||scene.eveningDay2)&&(scene.portrait||duoVisible))){
+if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.artHall||scene.livingHall||scene.mainHall||scene.confMorning||scene.gongyangHall||scene.eveningDay2||scene.day3Morning)&&(scene.portrait||duoVisible))){
  if(scene.clearPortrait){currentPortrait='';portrait.hidden=true}
  if(duoVisible){currentPortrait='';portrait.dataset.officialRequest=String((Number(portrait.dataset.officialRequest)||0)+1);portrait.hidden=true;portrait.removeAttribute('src');} // V116: prevent lingering solo portrait behind two-person scene
  if(inDay2Square && !scene.portrait)currentPortrait='';
@@ -2682,6 +2805,7 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
   portrait.classList.toggle('main-silhouette',!!scene.mainSilhouette);
   portrait.classList.toggle('v205-pale-silhouette',!!scene.escapePale);
   portrait.classList.toggle('v205-dark-silhouette',!!(scene.silhouette&&!scene.escapePale&&scene.v178));
+  portrait.classList.toggle('v215-silhouette',!!scene.day3Silhouette);
   portrait.classList.toggle('evening-shadow',scene.eveningShade!=null);
   portrait.style.setProperty('--evening-portrait-brightness',String(1-(scene.eveningShade||0)));
  }else{portrait.style.opacity='';portrait.style.transition='';portrait.classList.remove('special-solo','evening-shadow');portrait.dataset.officialRequest=String((Number(portrait.dataset.officialRequest)||0)+1);portrait.hidden=true;portrait.removeAttribute('src')}
@@ -2726,7 +2850,7 @@ function restartFromDay1(){
  endingTimers.forEach(clearTimeout);endingTimers=[];
  selectedBranch=0;day2Prayer=0;day2Morning='';livingBranch=0;mainBranch=0;confMorningBranch=0;seungkwanTruthBranch=0;joshuaRevealed=false;revealed=false;jihoonRevealed=false;soonyoungRevealed=false;minghaoRevealed=false;jeonghanRevealed=false;mingyuRevealed=false;seungkwanRevealed=false;
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;confessionTickLouder=false;
- ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_seungkwan_truth_branch_v177','shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_evening_branch_day2_v173','shindo_confession_morning_branch_v163','shindo_day2_start_affinity_snapshot_v169','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205'].forEach(k=>localStorage.removeItem(k));
+ ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_seungkwan_truth_branch_v177','shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_evening_branch_day2_v173','shindo_confession_morning_branch_v163','shindo_day2_start_affinity_snapshot_v169','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215'].forEach(k=>localStorage.removeItem(k));
  const day1Start=scenes.findIndex(s=>s.kind==='transition'&&s.text==='1일차 아침');
  index=day1Start>=0?day1Start:0;
  storyUnderlay.classList.add('visible');storyBackdrop.classList.add('visible');overlay.classList.add('active');refreshInventoryVisibility();
@@ -2783,7 +2907,7 @@ function restartFromDay2(){
   'shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_joshua_known_v160',
   'shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_soonyoung_known_v105','shindo_minghao_known_v105',
   'shindo_hansol_known_v99','shindo_seokmin_known_v99','shindo_chan_known_v99',
-  'shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_seungkwan_truth_branch_v177','shindo_police_coop_v178','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_unread_v125'
+  'shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_seungkwan_truth_branch_v177','shindo_police_coop_v178','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_unread_v125','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215'
  ];
  resetKeys.forEach(key=>localStorage.removeItem(key));
  try{const names=JSON.parse(localStorage.getItem('shindo_met_characters_v108')||'[]');
@@ -2803,6 +2927,8 @@ window.SHINDO_restartFromDay2=restartFromDay2;
 // erasing morning activity, evidence, affinity, or the morning Wonwoo meeting.
 function restartFromDay2Afternoon(){
  localStorage.removeItem('shindo_junhui_affinity_locked_v205');
+ localStorage.removeItem('shindo_day3_prayer_result_v215');
+ localStorage.removeItem('shindo_day3_joshua_intro_needed_v215');
  v205StopChoice();v205HammerBlocked=false;if(v205HammerAudio){v205HammerAudio.pause();v205HammerAudio=null}
  flagReplay();
  clearTimeout(timer);timer=null;clearConfessionQuestionTimers();stopVnTyping(false);
@@ -3143,6 +3269,40 @@ function showV205Day3(){
  center.textContent='3일차';center.style.display='block';localStorage.setItem('shindo_current_story_day_v109','3');
  timer=setTimeout(()=>{center.style.display='none';locked=false;next()},2300);
 }
+// V215: Shared day-based prayer outcome uses the existing affection rules.
+function v215ApplyDay3Prayer(attend){
+ const key='shindo_day3_prayer_result_v215';
+ if(localStorage.getItem(key))return;
+ if(typeof window.SHINDO_applyAffinityEvent==='function'){
+  window.SHINDO_applyAffinityEvent('prayer',attend?'참석':'불참',3);
+  localStorage.setItem(key,attend?'참석':'불참');
+ }
+ window.SHINDO_addPlayRecord?.('선택','3일차 새벽기도: '+(attend?'참석':'불참'));
+}
+function showV215Day3PrayerChoice(){
+ locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;
+ overlay.querySelector('.vn-hint').style.display='none';
+ let el=overlay.querySelector('.shindo-choices');
+ if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
+ el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
+ el.innerHTML='<h2>새벽기도에 참석할까?</h2><button type="button" data-v215-prayer="1">새벽기도를 간다.</button><button type="button" data-v215-prayer="2">새벽기도를 가지 않는다.</button>';
+ el.style.display='flex';
+ for(const b of el.querySelectorAll('[data-v215-prayer]')){
+  b.onclick=e=>{
+   e.stopPropagation();v215ApplyDay3Prayer(b.dataset.v215Prayer==='1');
+   el.style.display='none';locked=false;index++;save();render();
+  };
+ }
+}
+function showV215MorningBoundary(){
+ locked=true;areaSkipButton.hidden=true;box.style.display='none';
+ portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
+ let el=overlay.querySelector('.shindo-choices');
+ if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
+ el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
+ el.innerHTML='<h2>3일차 아침</h2><p>여기까지 구현된 스토리입니다. 이후 오전 활동은 다음 업데이트에서 이어집니다.</p>';
+ el.style.display='flex';
+}
 function showV178Holding(type){
  stopV178Bell();v178Patrol(null);locked=true;box.style.display='none';portrait.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
@@ -3183,9 +3343,10 @@ function showV178Holding(type){
   'sleep-now':'그냥 자자 루트는 다음 업데이트에서 이어집니다.',
   'trash-return':'쓰레기장 조사를 마쳤다. 이후 이야기는 다음 업데이트에서 이어집니다.',
   'day3-after-escape':'3일차 이후 스토리는 다음 업데이트에서 이어집니다.',
-  'day3-after-sleep':'3일차 이후 스토리는 다음 업데이트에서 이어집니다.'
+  'day3-after-sleep':'3일차 이후 스토리는 다음 업데이트에서 이어집니다.',
+  'day3-morning-await-script':'3일차 아침 스크립트가 아직 등록되지 않았습니다.'
  };
- el.innerHTML='<h2>2일차 저녁 스토리</h2><p>'+(messages[type]||(type==='deny'?'승관에게 진실을 말하지 않은 이후의 이야기는 다음 업데이트에서 이어집니다.':'이후 이야기는 다음 업데이트에서 이어집니다.'))+'</p><button type="button" class="shindo-morning-return">오전 활동 선택지 돌아가기 (테스트)</button>';
+ el.innerHTML='<h2>'+(type==='day3-morning-await-script'?'3일차 아침':'2일차 저녁 스토리')+'</h2><p>'+(messages[type]||(type==='deny'?'승관에게 진실을 말하지 않은 이후의 이야기는 다음 업데이트에서 이어집니다.':'이후 이야기는 다음 업데이트에서 이어집니다.'))+'</p><button type="button" class="shindo-morning-return">오전 활동 선택지 돌아가기 (테스트)</button>';
  el.style.display='flex';el.querySelector('.shindo-morning-return').onclick=e=>{e.stopPropagation();stopV178Bell();returnToMorningActivities()};
 }
 function showV178Dogodai(){v207StopEscapeMusic();
