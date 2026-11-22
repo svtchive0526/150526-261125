@@ -12,7 +12,24 @@
  const HISTORY_DAY='shindo_current_story_day_v109';
  const AFFINITY_UNREAD='shindo_affinity_unread_v125';
  const JUNHUI_LOCK='shindo_junhui_affinity_locked_v205';
- const isAffinityLocked=name=>name==='준휘'&&localStorage.getItem(JUNHUI_LOCK)==='1';
+ // V222: One lock gate for every affinity write, including future locked characters.
+ // Existing Junhui saves keep using their original lock key.
+ const AFFINITY_LOCKS='shindo_affinity_locks_v222';
+ const isAffinityLocked=name=>{
+  if(name==='준휘'&&localStorage.getItem(JUNHUI_LOCK)==='1')return true;
+  const stored=load(AFFINITY_LOCKS,{});
+  return Array.isArray(stored)?stored.includes(name):!!(stored&&typeof stored==='object'&&stored[name]);
+ };
+ // Future story branches can lock a character without bypassing affinity rules.
+ window.SHINDO_isAffinityLocked=isAffinityLocked;
+ window.SHINDO_lockAffinity=name=>{
+  if(!PEOPLE.some(p=>p[0]===name))return false;
+  const current=load(AFFINITY_LOCKS,{});
+  const locks=current&&typeof current==='object'&&!Array.isArray(current)?current:{};
+  locks[name]=true;save(AFFINITY_LOCKS,locks);
+  document.dispatchEvent(new Event('shindo-inventory-change'));
+  return true;
+ };
  const AFFINITY_BLINK_MS=1100;
  const AFFINITY_BLINK_COUNT=5;
  const affinityNoticeTimers=new Map();
@@ -192,6 +209,11 @@
   '고해소':['원우'],
   '공양실':['준휘']
  };
+ // Day-specific cast additions must reflect authored stories, not assumptions.
+ function morningRoomCast(room,day){
+  const cast=ROOMS[room]||[];
+  return room==='본당'&&day===3?[...cast,'승관']:cast;
+ }
  // V204: Day 2 afternoon encounter / night investigation events. Each unique
  // action is recorded once per day and can be earned again after a day restart.
  const AFTERNOON_EVENTS={
@@ -219,13 +241,14 @@
   '생활관 활동: 말 걸기':'지훈',
   '생활관 활동: 빨래 수거':'민규',
   '본당 탐색: 사무실':'조슈아',
+  '본당 탐색: 도서실':'승관',
   '고해소 대응: 임재범의 「고해」를 부른다.':'원우',
   '고해소 대응: 미쳤냐? 가만히 있는다.':'원우',
   '공양실 활동: 준휘와 대화':'준휘'
  };
  // All participants start at zero except Joshua. Do not wipe existing scores on upgrades.
  function getAffinity(){const result=load(AFFINITY,{});if(!result||typeof result!=='object'||Array.isArray(result))return {};
-  if(!Object.prototype.hasOwnProperty.call(result,'조슈아') || Number(result['조슈아'])===0)result['조슈아']=100;
+  if(!isAffinityLocked('조슈아')&&(!Object.prototype.hasOwnProperty.call(result,'조슈아') || Number(result['조슈아'])===0))result['조슈아']=100;
   return result;
  }
  function updateAffinity(person,score){if(isAffinityLocked(person))return;const values=getAffinity();const before=Number(values[person])||0;const after=Math.max(0,Math.min(100,Math.round(Number(score)||0)));values[person]=after;save(AFFINITY,values);if(before!==after)addUnread([person])}
@@ -245,7 +268,7 @@
    eventId=d+'|장소|'+label;
    // 고해소/공양실에는 추가 캐릭터 선택 없이 바로 1:1 대화가 시작된다.
    // 따라서 입장 즉시 +20, 별도 개별 대화 +15는 지급하지 않는다.
-   changes=ROOMS[label].map(name=>[name,(label==='고해소'||label==='공양실')?20:5]);
+   changes=morningRoomCast(label,d).map(name=>[name,(label==='고해소'||label==='공양실')?20:5]);
   }else if(kind==='afternoon'){
    if(d!==2||!Object.prototype.hasOwnProperty.call(AFTERNOON_EVENTS,label))return false;
    eventId=d+'|오후친밀도|'+label;
@@ -255,7 +278,8 @@
    if(label.startsWith('고해소 대응: ')||label==='공양실 활동: 준휘와 대화')return false;
    const person=PERSON_EVENTS[label];if(!person)return false;
    eventId=d+'|개별인물|'+person;
-   changes=[[person,15]];
+   // The selected person has already received the room's +5, so only +10 here.
+   changes=[[person,10]];
   }else return false;
   const ledger=load(AFFINITY_EVENTS,[]);if(!Array.isArray(ledger))return false;
   if(ledger.includes(eventId))return false;
@@ -282,6 +306,16 @@
   return true;
  }
  window.SHINDO_applyAffinityEvent=grantAffinity;
+ // V219 awarded Seungkwan's day-3 library selection directly to the score,
+ // without an event-ledger entry. Record that old award without re-awarding it.
+ // This protects existing saves when the common +10 handler replaces that shim.
+ (function migrateV219Seungkwan(){
+  if(localStorage.getItem('shindo_v219_seungkwan_person')!=='1')return;
+  const ledger=load(AFFINITY_EVENTS,[]);
+  if(!Array.isArray(ledger))return;
+  const id='3|개별인물|승관';
+  if(!ledger.includes(id)){ledger.push(id);save(AFFINITY_EVENTS,ledger)}
+ })();
  // Repair existing V107-V110 saves using only recorded, actually selected actions.
  // Inferred progress positions are NOT sufficient evidence for an affinity grant.
  function restoreAffinityFromHistory(){
@@ -342,7 +376,7 @@
    }else if(parts[1]==='장소'&&ROOMS[parts.slice(2).join('|')]){
     hasRoom=true;
     const room=parts.slice(2).join('|');
-    changes=ROOMS[room].map(n=>[n,(room==='고해소'||room==='공양실')?20:5]);
+    changes=morningRoomCast(room,Number(parts[0])).map(n=>[n,(room==='고해소'||room==='공양실')?20:5]);
    }else if(parts[1]==='오후친밀도'){
     changes=AFTERNOON_EVENTS[parts.slice(2).join('|')]||[];
    }else if(parts[1]==='개별인물'){
@@ -350,11 +384,11 @@
     const specialRoom=person==='원우'?'고해소':person==='준휘'?'공양실':null;
     // 과거 버전 +5/+15 이력은 특수 장소의 +20 한 번으로 해석한다.
     const creditedByRoom=specialRoom&&ledger.includes(parts[0]+'|장소|'+specialRoom);
-    if(!creditedByRoom&&PEOPLE.some(p=>p[0]===person))changes=[[person,15]];
+    if(!creditedByRoom&&PEOPLE.some(p=>p[0]===person))changes=[[person,10]];
    }else if(parts[1]==='개별'){
     const person=PERSON_EVENTS[parts.slice(2).join('|')];
     const specialRoom=person==='원우'?'고해소':person==='준휘'?'공양실':null;
-    if(person&&!(specialRoom&&ledger.includes(parts[0]+'|장소|'+specialRoom)))changes=[[person,15]];
+    if(person&&!(specialRoom&&ledger.includes(parts[0]+'|장소|'+specialRoom)))changes=[[person,10]];
    }
    for(const [name,delta] of changes){
     if(parts[1]==='개별'||parts[1]==='개별인물'){

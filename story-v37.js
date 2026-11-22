@@ -3038,7 +3038,7 @@ function restartFromDay1(){
  endingTimers.forEach(clearTimeout);endingTimers=[];
  selectedBranch=0;day2Prayer=0;day2Morning='';livingBranch=0;mainBranch=0;confMorningBranch=0;seungkwanTruthBranch=0;joshuaRevealed=false;revealed=false;jihoonRevealed=false;soonyoungRevealed=false;minghaoRevealed=false;jeonghanRevealed=false;mingyuRevealed=false;seungkwanRevealed=false;
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;confessionTickLouder=false;
- ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_seungkwan_truth_branch_v177','shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_evening_branch_day2_v173','shindo_confession_morning_branch_v163','shindo_day2_start_affinity_snapshot_v169','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person'].forEach(k=>localStorage.removeItem(k));
+ ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_seungkwan_truth_branch_v177','shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_evening_branch_day2_v173','shindo_confession_morning_branch_v163','shindo_day2_start_affinity_snapshot_v169','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person'].forEach(k=>localStorage.removeItem(k));
  const day1Start=scenes.findIndex(s=>s.kind==='transition'&&s.text==='1일차 아침');
  index=day1Start>=0?day1Start:0;
  storyUnderlay.classList.add('visible');storyBackdrop.classList.add('visible');overlay.classList.add('active');refreshInventoryVisibility();
@@ -3096,7 +3096,7 @@ function restartFromDay2(){
   'shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_joshua_known_v160',
   'shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_soonyoung_known_v105','shindo_minghao_known_v105',
   'shindo_hansol_known_v99','shindo_seokmin_known_v99','shindo_chan_known_v99',
-  'shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_seungkwan_truth_branch_v177','shindo_police_coop_v178','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_unread_v125','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person'
+  'shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_seungkwan_truth_branch_v177','shindo_police_coop_v178','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_affinity_unread_v125','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person'
  ];
  resetKeys.forEach(key=>localStorage.removeItem(key));
  try{const names=JSON.parse(localStorage.getItem('shindo_met_characters_v108')||'[]');
@@ -3117,6 +3117,7 @@ window.SHINDO_restartFromDay2=restartFromDay2;
 function restartFromDay2Afternoon(){
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  localStorage.removeItem('shindo_junhui_affinity_locked_v205');
+ localStorage.removeItem('shindo_affinity_locks_v222');
  localStorage.removeItem('shindo_day3_prayer_result_v215');
  localStorage.removeItem('shindo_day3_joshua_intro_needed_v215');
  v205StopChoice();v205HammerBlocked=false;if(v205HammerAudio){v205HammerAudio.pause();v205HammerAudio=null}
@@ -3196,34 +3197,10 @@ function v219WasMetDay2(name){
  if(name==='준휘')return room==='공양실';
  const rule=mapped[name];return !!rule&&room===rule[0]&&localStorage.getItem(rule[1])===rule[2];
 }
-function v219GetAffinity(name){
- try{const state=JSON.parse(localStorage.getItem('shindo_affinity_v107')||'{}');return Number(state?.[name]||0)}catch(_){return 0}
-}
-// The existing generic room/person handler predates Seungkwan's Day 3 library choice.
-// Award any uncovered portion only, and preserve the main affinity storage format.
-function v219EnsureSeungkwanDelta(delta,token,action){
- const done='shindo_v219_seungkwan_'+token;
- if(localStorage.getItem(done)==='1')return;
- const before=v219GetAffinity('승관');
- if(action)window.SHINDO_applyAffinityEvent?.(...action);
- const after=v219GetAffinity('승관');
- const missing=Math.max(0,delta-(after-before));
- if(missing){
-  let all={};try{all=JSON.parse(localStorage.getItem('shindo_affinity_v107')||'{}')||{}}catch(_){all={}}
-  all['승관']=Math.max(0,Math.min(100,after+missing));
-  localStorage.setItem('shindo_affinity_v107',JSON.stringify(all));
-  document.dispatchEvent(new Event('shindo-affinity-change'));
- }
- localStorage.setItem(done,'1');
-}
+// V222: Seungkwan is now part of the authored Day-3 main-hall roster.
+// All grants use one common handler; locked characters cannot be modified.
 function v219MarkMorningRoom(room){
- if(room==='본당'){
-  v219EnsureSeungkwanDelta(5,'room',[ 'room','본당',3 ]);
- }else if(room==='공양실' && localStorage.getItem('shindo_junhui_affinity_locked_v205')==='1'){
-  // Junhui was locked after the Day 2 escape attempt; no +20 is allowed.
- }else{
-  window.SHINDO_applyAffinityEvent?.('room',room,3);
- }
+ window.SHINDO_applyAffinityEvent?.('room',room,3);
 }
 function v219ShowMorningEnd(message){
  locked=true;areaSkipButton.hidden=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;
@@ -3277,7 +3254,7 @@ function v219ShowMainChoice(){
   mainBranch=branch;localStorage.setItem(V219_MAIN_KEY,String(branch));
   window.SHINDO_addPlayRecord?.('선택','3일차 본당: '+({1:'사무실',2:'도서실 조사',3:'도서실'}[branch]));
   if(branch===3){
-   v219EnsureSeungkwanDelta(10,'person',['person','본당 탐색: 도서실',3]);
+   window.SHINDO_applyAffinityEvent?.('person','본당 탐색: 도서실',3);
    index=V219_DAY3_LIBRARY_START;
   }else if(branch===1){
    window.SHINDO_applyAffinityEvent?.('person','본당 탐색: 사무실',3);
