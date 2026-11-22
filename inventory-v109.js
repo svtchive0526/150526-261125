@@ -380,19 +380,14 @@
    content.append(card)
   });
  }
- function feedback(){empty('기존 베타테스트 피드백 페이지로 이동합니다. 진행 중인 게임 기록은 유지됩니다.');const btn=make('button','inv-feedback','피드백 페이지 열기');btn.type='button';btn.addEventListener('click',()=>{if(typeof window.SHINDO_openFeedback!=='function'){empty('현재 피드백 페이지를 열 수 없습니다.');return}drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');window.SHINDO_openFeedback()});content.append(btn);for(const [day,label] of [[1,'1일차부터 다시 시작'],[2,'2일차부터 다시 시작']]){
+ function feedback(){empty('피드백 및 이미지 배치 확인 도구입니다. 진행 중인 게임 기록은 유지됩니다.');const simButton=make('button','inv-feedback','PC · 모바일 이미지 배치 시뮬레이터');simButton.type='button';simButton.addEventListener('click',()=>{const url=new URL('image-simulator.html',window.location.href).href;window.open(url,'_blank','noopener')});content.append(simButton);const btn=make('button','inv-feedback','피드백 페이지 열기');btn.type='button';btn.addEventListener('click',()=>{if(typeof window.SHINDO_openFeedback!=='function'){empty('현재 피드백 페이지를 열 수 없습니다.');return}drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');window.SHINDO_openFeedback()});content.append(btn);for(const [day,label] of [[1,'1일차부터 다시 시작'],[2,'2일차부터 다시 시작']]){
   const restart=make('button','inv-feedback inv-feedback-reset',label);restart.type='button';
   restart.addEventListener('click',()=>{
    if(!window.confirm(day+'일차부터 다시 시작할까요?\n해당 날짜부터 진행한 게임 기록과 친밀도/증거품이 초기화됩니다.'))return;
    drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');
    (day===1?window.SHINDO_restartFromDay1:window.SHINDO_restartFromDay2)?.();
   });content.append(restart);
- }const afternoonRestart=make('button','inv-feedback inv-feedback-reset','2일차 오후 활동부터 다시 시작');afternoonRestart.type='button';afternoonRestart.addEventListener('click',()=>{
-  if(typeof window.SHINDO_restartFromDay2Afternoon!=='function')return;
-  if(!window.confirm('2일차 오후 활동(저녁 고해소)부터 다시 시작할까요?\n오전 활동 기록과 친밀도·증거품은 유지됩니다.'))return;
-  drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');
-  window.SHINDO_restartFromDay2Afternoon();
- });content.append(afternoonRestart);const restart=make('button','inv-feedback inv-feedback-reset','아예 처음부터 다시 하기');restart.type='button';restart.addEventListener('click',()=>window.SHINDO_restartFromOpening?.());content.append(restart)}
+ }const restart=make('button','inv-feedback inv-feedback-reset','아예 처음부터 다시 하기');restart.type='button';restart.addEventListener('click',()=>window.SHINDO_restartFromOpening?.());content.append(restart)}
  function render(){panel.querySelectorAll('.inv-tab').forEach(b=>{b.setAttribute('aria-selected',String(b.dataset.tab===active))});refreshUnreadIndicators();content.replaceChildren();({evidence,people,history,feedback})[active]()}
  panel.querySelectorAll('.inv-tab').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();active=b.dataset.tab;render()}));
  document.addEventListener('shindo-inventory-change',render);

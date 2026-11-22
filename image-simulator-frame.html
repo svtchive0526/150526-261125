@@ -1,0 +1,202 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>신도 사진 배치 프레임</title>
+<style>html,body{height:100%;margin:0;background:#000;overflow:hidden}*{box-sizing:border-box}
+/* The following rules are copied from the V190 story CSS with local ID substitution. */
+
+#sim-vn .v178-dogodai-title{font-size:clamp(30px,6vw,60px);font-weight:800;letter-spacing:-.04em;margin:0 0 18px}
+/* V178: independent police patrol silhouettes; fade together on entering / leaving. */
+#sim-vn .vn-duo.v178-patrol{display:block;opacity:0;transition:opacity 850ms ease;pointer-events:none}
+#sim-vn .vn-duo.v178-patrol.is-visible{opacity:1}
+#sim-vn .vn-duo.v178-patrol img{filter:brightness(0)!important}
+#sim-vn .vn-portrait.v178-fadeout{opacity:0!important;transition:opacity 550ms ease!important}
+/* V114 -- special scene two-character composition and memory presentation */
+#sim-vn .vn-duo{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;display:none}
+#sim-vn .vn-duo.is-active{display:block}
+#sim-vn .vn-duo img{position:absolute;bottom:clamp(155px,23vh,245px);height:min(47vh,560px);width:auto;max-width:48vw;object-fit:contain;object-position:bottom;transform-origin:center bottom}
+#sim-vn .vn-duo .duo-left{left:31%;transform:translateX(-50%)}
+#sim-vn .vn-duo .duo-right{left:69%;transform:translateX(-50%)}
+#sim-vn .vn-duo img.is-shadow{filter:brightness(0)!important}
+#sim-vn.is-recall .vn-portrait{filter:grayscale(1) brightness(.75)!important}
+#sim-vn.is-recall .vn-box{filter:grayscale(1)}
+#sim-vn.is-recall .vn-text{color:#b9b9b9!important}
+#sim-vn .special-memory-kicker{position:absolute;top:11%;left:50%;transform:translateX(-50%);color:#888;letter-spacing:.24em;font-size:12px;z-index:8;display:none}
+#sim-vn.is-recall .special-memory-kicker{display:block}
+#sim-vn .art-branch-options .shindo-special-test{border:1px dashed #956868!important;color:#e0b0b0!important;margin-top:13px}
+@media(max-width:650px){#sim-vn .vn-duo img{height:min(32vh,375px);width:auto;max-width:47vw;bottom:clamp(165px,21vh,230px)}#sim-vn .vn-duo .duo-left{left:29%}#sim-vn .vn-duo .duo-right{left:71%}}
+
+#sim-vn{position:fixed;inset:0;z-index:30000;background:transparent;color:#fff;display:none;align-items:flex-end;justify-content:center;font-family:Pretendard,'Pretendard Variable',system-ui,sans-serif;cursor:pointer;touch-action:manipulation;user-select:none}
+#sim-vn.active{display:flex;animation:shindo-story-fade-in 1.1s ease both}@keyframes shindo-story-fade-in{from{opacity:0}to{opacity:1}}
+#sim-vn.day{background:transparent;transition:background 2s}
+#sim-vn .vn-box{width:min(1000px,calc(100% - 36px));min-height:155px;margin:0 auto clamp(40px,10vh,110px);border:1px solid #777;background:rgba(15,16,18,.985);border-radius:8px;padding:30px 34px 27px;box-sizing:border-box;display:flex;align-items:center;position:relative;line-height:1.85;font-size:clamp(16px,1.65vw,20px);letter-spacing:-.055em}
+#sim-vn .vn-box:after{content:'▼';position:absolute;right:20px;bottom:10px;font-size:11px;color:#aaa;animation:vn-pulse 1.2s infinite}
+#sim-vn .vn-center{align-self:center;margin:auto;text-align:center;font-size:clamp(27px,5vw,52px);font-weight:700;letter-spacing:-.055em}
+#sim-vn .vn-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);color:#aaa;font-size:12px;white-space:nowrap}
+@keyframes vn-pulse{50%{opacity:.25}}
+@media(max-width:750px){#sim-vn .vn-box{padding:19px 17px 26px;min-height:145px;margin-bottom:calc(35px + env(safe-area-inset-bottom));font-size:14px;letter-spacing:-.065em;line-height:1.7}#sim-vn .vn-center{font-size:clamp(27px,8vw,40px);letter-spacing:-.065em}#sim-vn .vn-hint{font-size:10px}}
+
+#sim-vn .vn-box{z-index:2;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding-top:38px}
+#sim-vn .vn-speaker{position:absolute;top:-18px;left:25px;padding:5px 19px;border:1px solid #777;border-radius:6px;background:#202124;font-weight:700;font-size:16px;min-width:54px;text-align:center}
+#sim-vn .vn-speaker:empty{display:none}
+#sim-vn .vn-portrait{position:absolute;bottom:clamp(160px,23vh,245px);left:50%;transform:translate(var(--portrait-offset-x,-50%),var(--portrait-offset-y,0px)) scale(var(--portrait-scale,1));transform-origin:center bottom;height:min(66vh,740px);width:auto;max-width:95vw;object-fit:contain;object-position:center bottom;pointer-events:none;z-index:1}
+#sim-vn .vn-portrait[hidden]{display:none}
+/* v91: Fade Wonwoo's portrait after the complete question, then cut the background to black. */
+#sim-vn .vn-portrait.vn-question-fade{opacity:0;transition:opacity .75s ease-in-out}
+#sim-vn .vn-box{position:relative}
+#sim-vn.confession-blackout .vn-box{z-index:6!important}
+#sim-vn.confession-blackout .vn-hint{z-index:6!important}
+#sim-vn .vn-text{position:relative;z-index:2}
+#sim-vn.sanctuary{background:transparent!important;color:#fff;transition:background 1.2s ease;isolation:isolate}
+#sim-vn.sanctuary::before{content:none!important}
+#sim-vn.sanctuary .vn-box,#sim-vn.sanctuary .vn-portrait,#sim-vn.sanctuary .vn-illustration,#sim-vn.sanctuary .vn-hint{z-index:2}
+#sim-vn.sanctuary-leaving{transition:background 1.5s ease}
+#sim-vn .vn-text.vn-inner{font-style:italic;color:#e3e3e3}
+@media(max-width:750px){#sim-vn .vn-portrait{height:min(60vh,620px);bottom:170px}#sim-vn .vn-speaker{top:-17px;left:12px;font-size:13px;padding:4px 13px}#sim-vn .vn-box{padding-top:29px}}
+
+#sim-vn .vn-illustration{position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);width:min(92vw,960px);max-height:70vh;object-fit:contain;z-index:1;pointer-events:none}
+#sim-vn .vn-illustration[hidden]{display:none}
+#sim-vn .vn-illustration.vn-fade{animation:vn-image-appear 1s ease-out both}
+#sim-vn .vn-illustration.vn-mail-zoom{animation:vn-mail-zoom-out 6s ease-in-out both;transform-origin:center center}
+@keyframes vn-mail-zoom-out{0%{opacity:0;transform:translate(-50%,-50%) scale(1)}12%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.22)}}
+@keyframes vn-image-appear{from{opacity:0}to{opacity:1}}
+@media(max-width:750px){#sim-vn .vn-illustration{width:98vw;max-height:63vh;top:41%}}
+
+/* v71: The story layer must remain fully opaque during the confession flash.
+   Otherwise the underlying SVTER mail-login screen can bleed through. */
+#sim-vn.active{animation:none!important;opacity:1!important}
+#sim-vn.confession-blackout{background-color:#000!important;background-image:none!important;opacity:1!important;isolation:isolate}
+#sim-vn.confession-blackout{background:#000!important}
+#sim-vn.confession-fade:before{content:"";position:absolute;inset:0;background:#000;z-index:5;animation:shindo-confession-flash 1.1s ease both;pointer-events:none}
+@keyframes shindo-confession-flash{0%{opacity:0}45%{opacity:1}100%{opacity:0}}
+@keyframes day2-screen-shake{0%,100%{transform:translate(0,0)}20%{transform:translate(-9px,5px)}40%{transform:translate(8px,-5px)}60%{transform:translate(-5px,-4px)}80%{transform:translate(5px,3px)}}
+#sim-vn.day2-shake .vn-box{animation:day2-screen-shake .32s linear 5}
+#sim-vn .shindo-choices{position:absolute;z-index:8;left:50%;top:50%;transform:translate(-50%,-50%);width:min(610px,calc(100vw - 36px));padding:30px 28px;background:#141414;border:1px solid #555;border-radius:8px;display:none;flex-direction:column;gap:14px;animation:vn-image-appear 1.2s ease both;box-sizing:border-box;text-align:center}
+#sim-vn .shindo-choices h2{font-size:clamp(22px,3vw,32px);margin:0;color:white}
+#sim-vn .shindo-choices p{font-size:15px;color:#bbb;margin:0 0 12px}
+#sim-vn .shindo-choices button{border:1px solid #555;border-radius:5px;background:#202020;color:white;text-align:left;padding:16px;font:inherit;font-size:clamp(14px,1.6vw,17px);cursor:pointer}
+#sim-vn .shindo-choices button:hover{background:#333;border-color:#999}
+#sim-vn .shindo-choices .shindo-gongyang-package-test{margin-top:8px;text-align:center;font-size:clamp(12px,1.4vw,14px);color:#c9c9c9;background:#242424;border:1px dashed #777;padding:12px 10px;letter-spacing:-.045em}
+#sim-vn .shindo-choices .shindo-day1-restart{margin-top:8px;text-align:center;font-size:clamp(12px,1.4vw,14px);color:#bbb;background:#242424;border:1px dashed #666;padding:12px 10px;letter-spacing:-.045em}
+#sim-vn .shindo-ending{position:absolute;inset:0;z-index:15;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:24px;box-sizing:border-box;cursor:default}
+#sim-vn .shindo-ending-copy{animation:vn-image-appear 1s ease both;max-width:900px}
+#sim-vn .shindo-ending h1{font-family:serif;font-size:clamp(72px,12vw,140px);color:#c00000;margin:0 0 28px;line-height:1.2}
+#sim-vn .shindo-ending-title-image{display:block;width:min(32vw,240px);max-width:100%;height:auto;margin:0 auto 10px;animation:vn-image-appear 1s ease both}
+#sim-vn .shindo-ending p{font-size:clamp(14px,1.6vw,19px);line-height:1.8;color:#fff;margin:0}
+#sim-vn .shindo-ending-logo{font-family:serif;font-size:clamp(64px,12vw,145px);font-weight:800;color:#bd0000;animation:vn-image-appear 1s ease both}
+#sim-vn .shindo-ending-logo span{font-size:.65em;margin-left:.08em}
+#sim-vn .shindo-restart{position:absolute;top:calc(50% + 115px);left:50%;transform:translateX(-50%);background:transparent;border:1px solid #999;color:#fff;padding:14px 26px;font:600 17px Pretendard,sans-serif;cursor:pointer;white-space:nowrap;animation:vn-image-appear 1s ease both}
+
+/* v74: independent opaque backing guarantees the mail UI cannot bleed through transitions. */
+#sim-story-backdrop{position:fixed;inset:0;z-index:29999;background:#050607 center center / cover no-repeat;display:none;opacity:1;pointer-events:none;transition:opacity 1.05s ease}
+#sim-story-backdrop.visible{display:block}
+/* V127: The opaque shield stays visible when only the photograph fades.
+   It prevents the underlying mail/login UI from bleeding into scene transitions. */
+#sim-story-underlay{position:fixed;inset:0;z-index:29998;background:#000;pointer-events:none;display:none;opacity:1}
+#sim-story-underlay.visible{display:block}
+#sim-vn.sleep-fadeout::after,#sim-vn.sleep-fadein::after{content:"";position:absolute;inset:0;background:#000;pointer-events:none}
+#sim-vn.sleep-fadeout::after{z-index:6;animation:shindo-sleep-fadeout .95s ease forwards}
+#sim-vn.sleep-fadein::after{z-index:1;animation:shindo-sleep-fadein .95s ease forwards}
+@keyframes shindo-sleep-fadeout{from{opacity:0}to{opacity:1}}
+@keyframes shindo-sleep-fadein{from{opacity:1}to{opacity:0}}
+#sim-vn,#sim-vn.active{opacity:1!important;filter:none!important;mix-blend-mode:normal!important}
+/* v84: Keep the story overlay transparent so scene photography in #sim-story-backdrop remains visible. */
+#sim-vn.day:not(.confession-blackout){background-color:transparent!important;background-image:none!important}
+#sim-vn.confession-fade:before{background:#000!important}
+/* v78: Fade only the scene/background artwork, never the dialogue UI.
+   Keep the blackout opaque so the underlying SVTER login stays hidden. */
+#sim-vn.confession-fade::before{z-index:1!important}
+#sim-vn.confession-fade .vn-portrait,
+#sim-vn.confession-fade .vn-illustration{z-index:0!important}
+#sim-vn.confession-fade .vn-box,
+#sim-vn.confession-fade .vn-hint,
+#sim-vn.confession-fade .vn-center{z-index:6!important}
+
+
+#sim-vn .vn-portrait.prayer-silhouette{filter:brightness(0) invert(.18)!important;opacity:.95}
+#sim-vn .shindo-prayer-grid{width:min(660px,calc(100vw - 36px))}
+#sim-vn .shindo-prayer-grid .shindo-morning-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#sim-vn .shindo-prayer-grid .shindo-morning-options button{text-align:center;min-width:0}
+@media(max-width:450px){#sim-vn .shindo-prayer-grid .shindo-morning-options{gap:8px}#sim-vn .shindo-prayer-grid .shindo-morning-options button{font-size:13px;padding:14px 8px}}
+
+/* v105: Art Hall and reusable evidence acquisition UI */
+
+/* V119: Normalized portraits for the Minghao special branch, without changing other story characters. */
+#sim-vn .vn-portrait.special-solo{height:min(56vh,650px)!important;max-width:none!important;width:auto!important;--portrait-scale:1!important;--portrait-offset-x:-50%!important;--portrait-offset-y:0px!important;bottom:clamp(160px,23vh,245px)!important;object-fit:contain}
+@media(max-width:750px){#sim-vn .vn-portrait.special-solo{height:min(49vh,600px)!important;bottom:170px!important}}
+
+#sim-vn .vn-portrait.art-silhouette{filter:brightness(0)!important}
+#sim-vn .vn-portrait.living-silhouette{filter:brightness(0)!important}
+#sim-vn .vn-portrait.main-silhouette{filter:brightness(0)!important}
+#sim-vn .shindo-evidence-overlay{position:absolute;inset:0;z-index:32;background:#000;display:flex;align-items:center;justify-content:center;padding:22px;box-sizing:border-box;cursor:default}
+#sim-vn .shindo-evidence-card{width:min(560px,100%);background:#101012;border:1px solid #5a5a5d;border-radius:9px;padding:30px 25px;color:#fff;text-align:center;display:flex;flex-direction:column;align-items:center;gap:19px;box-sizing:border-box;animation:vn-image-appear .65s ease both}
+#sim-vn .shindo-evidence-kicker{font-size:13px;color:#aaa;letter-spacing:-.02em}
+#sim-vn .shindo-evidence-title{font-size:clamp(22px,4vw,31px);font-weight:750;line-height:1.5;letter-spacing:-.055em}
+#sim-vn .shindo-evidence-desc{font-size:clamp(14px,1.7vw,17px);color:#ccc;line-height:1.8;letter-spacing:-.045em}
+/* V162: Put the map description on two lines only on mobile. */
+@media(max-width:750px){#sim-vn .shindo-evidence-mobile-line{display:block}}
+#sim-vn .shindo-evidence-confirm{background:#252529;border:1px solid #666;border-radius:6px;padding:12px 34px;color:#fff;font:inherit;cursor:pointer}
+#sim-vn .shindo-evidence-confirm:hover{background:#333}
+#sim-vn .art-branch-options{display:grid;grid-template-columns:1fr;gap:11px}
+#sim-vn .art-branch-options button{text-align:center}
+#sim-vn .shindo-choices .shindo-morning-return{font-size:clamp(13px,1.6vw,16px);text-align:center}
+#sim-vn .vn-box.box-shake-soft{animation:shindo-soft-box-shake .26s ease-in-out 1}
+@keyframes shindo-soft-box-shake{0%,100%{transform:translate(0,0)}20%{transform:translate(-1.5px,.5px)}40%{transform:translate(1.5px,-.5px)}60%{transform:translate(-1px,-.5px)}80%{transform:translate(1px,.5px)}}
+#sim-vn .vn-box .shindo-area-skip{position:absolute;right:14px;top:8px;z-index:18;min-width:82px;padding:4px 10px;background:rgba(40,42,46,.96);border:1px solid #777;border-radius:7px;color:#f5f5f5;font-size:12px;font-weight:700;letter-spacing:-.04em;cursor:pointer;line-height:1.5}
+#sim-vn .vn-box .shindo-area-skip[hidden]{display:none!important}
+@media(max-width:750px){#sim-vn .vn-box .shindo-area-skip{right:9px;top:6px;font-size:11px;min-width:70px;padding:3px 7px}}
+#sim-vn .vn-portrait.evening-shadow{filter:brightness(var(--evening-portrait-brightness,1))!important;transition:filter .35s ease!important}
+
+#sim-vn{display:flex!important;background:transparent!important;cursor:default!important;pointer-events:none}#sim-vn .vn-box{pointer-events:none}#sim-story-underlay,#sim-story-backdrop{display:block!important}#sim-story-backdrop{background-position:center center;background-size:cover}
+#sim-vn .vn-portrait{transition:opacity .65s ease}#sim-vn .vn-illustration{transition:opacity .65s ease}#sim-vn .vn-duo{display:block}
+#sim-vn .vn-hint{display:block;white-space:nowrap;user-select:none}
+#sim-vn .vn-evidence-demo{position:absolute;inset:0;background:#000;display:none;align-items:center;justify-content:center;z-index:45}
+#sim-vn .vn-evidence-demo.visible{display:flex}#sim-vn .shindo-evidence-card{max-height:94vh;overflow:auto}
+#sim-vn .vn-evidence-demo img{width:min(75vw,360px);max-height:46vh;object-fit:contain}
+</style></head><body>
+<div id="sim-story-underlay"></div><div id="sim-story-backdrop"></div>
+<div id="sim-vn" class="active day"><img class="vn-illustration" id="art" alt="" hidden><div class="vn-duo" id="duo"><img class="duo-left" id="left" alt="" hidden><img class="duo-right" id="right" alt="" hidden></div><img class="vn-portrait" id="portrait" alt="" hidden><div class="vn-box"><div class="vn-speaker" id="speaker">김봉봉</div><span class="vn-text" id="dialogue">업로드한 이미지가 실제 화면에 어떻게 배치되는지 확인할 수 있어요.</span></div><div class="vn-hint">화면을 터치하거나 클릭하여 진행</div><div class="vn-evidence-demo" id="evidence"><div class="shindo-evidence-card"><div class="shindo-evidence-kicker">증거품 획득</div><img id="evidence-img" alt="증거품"><div class="shindo-evidence-title" id="evidence-title">파기된 문서</div><div class="shindo-evidence-desc" id="evidence-desc">증거품 설명</div><button type="button" class="shindo-evidence-confirm">확인</button></div></div></div>
+<script>
+const $=id=>document.getElementById(id);
+const names={junhui:/^준휘/,hansol:/^한솔/,soonyoung:/^순영/,minghao:/^명호/,wonwoo:/^원우/,jihoon:/^지훈/,seungcheol:/^승철/,seokmin:/^석민/,chan:/^찬/,elder:/^노인네/};
+const profiles={junhui:{scale:1,maxWidth:'none'},hansol:{scale:1.04,y:'0px',height:'min(60vh,620px)'},soonyoung:{scale:1.02},minghao:{scale:1.04,y:'0px',height:'min(60vh,620px)'},wonwoo:{scale:1.08},jihoon:{scale:1.03},seungcheol:{scale:.97},seokmin:{scale:1},chan:{scale:1},elder:{scale:1.02}};
+const current={};let currentData={};
+function detectKey(filename){const name=(filename||'').normalize('NFC');for(const [id,rx] of Object.entries(names))if(rx.test(name))return id;return '';}
+function junhuiCenterCompensation(filename){
+ const name=(filename||'').normalize('NFC');if(!name.startsWith('준휘_'))return 0;
+ let ratio=0;
+ if(/준휘_바디2_(?:기본|미소|의심)/.test(name))ratio=-64/2002;
+ else if(/준휘_바디2_(?:눈웃음|간식먹음이)/.test(name)||/준휘_바디3_간식먹음이/.test(name))ratio=123.5/2021;
+ else if(/준휘_바디1_/.test(name))ratio=3/2020;
+ else if(/준휘_바디3_/.test(name))ratio=3.5/2020;
+ return Math.round(-ratio*Math.min(innerHeight*(innerWidth<=750?.60:.66),innerWidth<=750?620:740)*100)/100;
+}
+function applyProfile(el,filename,opts={}){
+ const id=opts.character||detectKey(filename), p=profiles[id]||{}, scale=opts.manualScale || p.scale || 1;
+ el.style.setProperty('--portrait-scale',String(scale));
+ const correction=id==='junhui'?junhuiCenterCompensation(filename):0;
+ el.style.setProperty('--portrait-offset-x', correction?`calc(-50% + ${correction}px)`:'-50%');
+ el.style.setProperty('--portrait-offset-y',p.y||'0px');
+ el.style.bottom=p.bottom||'';el.style.height=p.height||'';el.style.maxWidth=p.maxWidth||'';el.style.width='auto';
+ el.classList.toggle('special-solo',opts.style==='special');
+ if(opts.style==='special')el.style.setProperty('--portrait-scale','1');
+ el.classList.toggle('prayer-silhouette',opts.style==='prayer');
+ el.classList.toggle('art-silhouette',opts.style==='silhouette');
+ el.classList.toggle('living-silhouette',opts.style==='silhouette');
+ el.classList.toggle('main-silhouette',opts.style==='silhouette');
+ el.classList.toggle('evening-shadow',opts.style==='dim');
+ el.style.setProperty('--evening-portrait-brightness',String(1-(opts.dim||0)));
+ if(opts.style==='normal'||opts.style==='special'||opts.style==='duo')el.style.filter='';
+}
+function update(d){currentData=d;const bg=$('sim-story-backdrop');const shade=(d.bgShade??0);
+ bg.style.backgroundImage=d.background?`linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.46)), url(${JSON.stringify(d.background)})`:'linear-gradient(#050607,#050607)';
+ bg.style.filter=shade?'brightness('+(1-shade)+')':'';
+ $('speaker').textContent=d.speaker||'';$('dialogue').textContent=d.dialogue||'일러스트 크기와 배경의 실제 배치를 확인합니다.';
+ const portrait=$('portrait'),art=$('art'),duo=$('duo');
+ portrait.hidden=!d.portrait||d.type==='illustration'||d.type==='duo'||d.type==='evidence';
+ if(d.portrait){portrait.src=d.portrait;applyProfile(portrait,d.portraitFilename,{style:d.portraitStyle,character:d.character,manualScale:d.manualScale,dim:d.dim});}
+ art.hidden=!(d.type==='illustration' && d.illustration);if(d.illustration)art.src=d.illustration;
+ duo.classList.toggle('is-active',d.type==='duo');for(const [key,el] of [['duoLeft',$('left')],['duoRight',$('right')]]){el.hidden=!d[key];if(d[key])el.src=d[key];el.classList.toggle('is-shadow',!!d.duoSilhouette);}
+ $('evidence').classList.toggle('visible',d.type==='evidence');if(d.type==='evidence'){$('evidence-img').src=d.illustration||d.portrait||'';$('evidence-title').textContent=d.evidenceTitle||'증거품 획득';$('evidence-desc').textContent=d.evidenceDescription||'여기에 아이템 설명이 나타납니다.'}
+}
+window.addEventListener('message',e=>{if(e.data?.type==='shindo-image-sim:update')update(e.data.payload)});
+window.addEventListener('resize',()=>{if(currentData.portrait)update(currentData)});
+parent.postMessage({type:'shindo-image-sim:ready'},'*');
+</script></body></html>
