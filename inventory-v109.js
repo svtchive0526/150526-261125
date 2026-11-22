@@ -117,6 +117,22 @@
   '고해소':['원우'],
   '공양실':['준휘']
  };
+ // V204: Day 2 afternoon encounter / night investigation events. Each unique
+ // action is recorded once per day and can be earned again after a day restart.
+ const AFTERNOON_EVENTS={
+  '승관 첫 만남':[['승관',10]],
+  '승관 기자 신분 공개':[['승관',10]],
+  '쓰레기장 수색':null,
+  '분리수거함 수색':null,
+  '소각로 청소':null,
+  '본당 도서실 수사':null,
+  '본당 사무실 수사':null
+ };
+ const AFTERNOON_PENALTY=[
+  ...GROUPS['사제'].map(name=>[name,-10]),
+  ...GROUPS['신도'].map(name=>[name,-5])
+ ];
+ for(const name of ['쓰레기장 수색','분리수거함 수색','소각로 청소','본당 도서실 수사','본당 사무실 수사'])AFTERNOON_EVENTS[name]=AFTERNOON_PENALTY;
  const PERSON_EVENTS={
   '기도관 활동: 단상 위 청소':'한솔',
   '기도관 활동: 자는 사람 깨우기':'승철',
@@ -155,6 +171,10 @@
    // 고해소/공양실에는 추가 캐릭터 선택 없이 바로 1:1 대화가 시작된다.
    // 따라서 입장 즉시 +20, 별도 개별 대화 +15는 지급하지 않는다.
    changes=ROOMS[label].map(name=>[name,(label==='고해소'||label==='공양실')?20:5]);
+  }else if(kind==='afternoon'){
+   if(d!==2||!Object.prototype.hasOwnProperty.call(AFTERNOON_EVENTS,label))return false;
+   eventId=d+'|오후친밀도|'+label;
+   changes=AFTERNOON_EVENTS[label];
   }else if(kind==='person'){
    // 특수 장소는 장소 선택 보너스 +20에 대화를 포함한다.
    if(label.startsWith('고해소 대응: ')||label==='공양실 활동: 준휘와 대화')return false;
@@ -247,6 +267,8 @@
     hasRoom=true;
     const room=parts.slice(2).join('|');
     changes=ROOMS[room].map(n=>[n,(room==='고해소'||room==='공양실')?20:5]);
+   }else if(parts[1]==='오후친밀도'){
+    changes=AFTERNOON_EVENTS[parts.slice(2).join('|')]||[];
    }else if(parts[1]==='개별인물'){
     const person=parts.slice(2).join('|');
     const specialRoom=person==='원우'?'고해소':person==='준휘'?'공양실':null;

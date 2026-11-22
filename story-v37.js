@@ -737,7 +737,7 @@ scenes.push(
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"dark","text":"(...섣불렀던 걸까?)","speaker":"주인공","portrait":"wonwoo-body2-eyesclosed","eveningShade":0.5,"eveningBranch":1},
  {"kind":"narration","eveningDay2":true,"eveningLocation":"living","text":"생활관으로 돌아가는 내내 불안감에 시달렸다.","eveningBranch":1,"clearPortrait":true},
  {"kind":"ending","eveningDay2":true,"eveningLocation":"dark","eveningBranch":1,"endingRoute":"doksil-day2-info"},
- {"kind":"narration","eveningDay2":true,"eveningLocation":"living","text":"서늘한 저녁 공기 사이로 누군가의 어깨가 툭 와 부딪혔다.","eveningBranch":1,"portrait":"seungkwan-body1-sweating","livingSilhouette":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"living","text":"서늘한 저녁 공기 사이로 누군가의 어깨가 툭 와 부딪혔다.","afternoonAffinity":"승관 첫 만남","eveningBranch":1,"portrait":"seungkwan-body1-sweating","livingSilhouette":true},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","text":"아이고, 죄송합니다!","speaker":"승관","portrait":"seungkwan-body1-sweating","eveningBranch":1,"maskSpeaker":true},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","text":"어떡하지, 다친 데는 없으시죠?","speaker":"승관","portrait":"seungkwan-body1-sweating","eveningBranch":1,"maskSpeaker":true},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","text":"(방금 이거… 일부러 부딪힌 거 같은데?)","speaker":"주인공","portrait":"seungkwan-body1-sweating","eveningBranch":1},
@@ -789,7 +789,7 @@ scenes.push(
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","text":"(그래, 괜히 대놓고 책잡힐 짓 하기보다는...)","speaker":"주인공","eveningBranch":2,"clearPortrait":true},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","text":"(차라리 오늘 밤, 몰래 행동을 하자.)","speaker":"주인공","eveningBranch":2,"clearPortrait":true},
  {"kind":"narration","eveningDay2":true,"eveningLocation":"living","text":"생활관으로 가는 중인데...","eveningBranch":2,"clearPortrait":true},
- {"kind":"narration","eveningDay2":true,"eveningLocation":"living","text":"서늘한 저녁 공기 사이로 누군가의 어깨가 툭 와 부딪혔다.","eveningBranch":2,"portrait":"seungkwan-body1-sweating","livingSilhouette":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"living","text":"서늘한 저녁 공기 사이로 누군가의 어깨가 툭 와 부딪혔다.","afternoonAffinity":"승관 첫 만남","eveningBranch":2,"portrait":"seungkwan-body1-sweating","livingSilhouette":true},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","text":"아이고, 죄송합니다!","speaker":"승관","portrait":"seungkwan-body1-sweating","eveningBranch":2,"maskSpeaker":true},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","text":"어떡하지, 다친 데는 없으시죠?","speaker":"승관","portrait":"seungkwan-body1-sweating","eveningBranch":2,"maskSpeaker":true},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","text":"(방금 이거… 일부러 부딪힌 거 같은데?)","speaker":"주인공","portrait":"seungkwan-body1-sweating","eveningBranch":2},
@@ -2133,6 +2133,7 @@ function runSkippedSceneState(from,to){
   }
   if(s.enterSanctuary)overlay.classList.add('sanctuary');
   if(s.leaveSanctuary)overlay.classList.remove('sanctuary');
+  if(s.afternoonAffinity)window.SHINDO_applyAffinityEvent?.('afternoon',s.afternoonAffinity,2);
   if(s.kind==='evidence-popup'&&s.evidenceId)collectEvidence(s.evidenceId);
  }
 }
@@ -2376,6 +2377,7 @@ if(scene.kind==='day2-morning-choice'){
  if(scene.kind==='conf-morning-choice'){showConfMorningChoice();return}
  if(scene.kind==='conf-morning-shared-start'){index++;save();render();return}
  if(scene.kind==='conf-morning-end'){showConfMorningEnd();return}
+ if(scene.afternoonAffinity)window.SHINDO_applyAffinityEvent?.('afternoon',scene.afternoonAffinity,2);
  if(scene.kind==='evening-choice'){startEveningTick();showEveningChoice();return}
  if(scene.kind==='evening-end'){stopEveningTick();showEveningEnd();return}
  if(scene.kind==='seungkwan-choice'){showSeungkwanChoice();return}
@@ -2771,7 +2773,7 @@ function showSeungkwanChoice(){
  const options=['말한다','말하지 않는다'];
  el.innerHTML='<h2>승관에게 진실을 말할까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button type="button" data-seungkwan="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
  el.style.display='flex';
- el.querySelectorAll('[data-seungkwan]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();seungkwanTruthBranch=Number(btn.dataset.seungkwan)||0;localStorage.setItem('shindo_seungkwan_truth_branch_v177',String(seungkwanTruthBranch));window.SHINDO_addPlayRecord?.('선택','2일차 저녁 승관: '+options[seungkwanTruthBranch-1]);jumpV178(seungkwanTruthBranch===1?'tell':'deny');});
+ el.querySelectorAll('[data-seungkwan]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();seungkwanTruthBranch=Number(btn.dataset.seungkwan)||0;localStorage.setItem('shindo_seungkwan_truth_branch_v177',String(seungkwanTruthBranch));window.SHINDO_addPlayRecord?.('선택','2일차 저녁 승관: '+options[seungkwanTruthBranch-1]);if(seungkwanTruthBranch===1)window.SHINDO_applyAffinityEvent?.('afternoon','승관 기자 신분 공개',2);jumpV178(seungkwanTruthBranch===1?'tell':'deny');});
 }
 function showSeungkwanEnd(){
  locked=true;box.style.display='none';overlay.querySelector('.vn-hint').style.display='none';
@@ -2801,7 +2803,7 @@ function showV178Holding(type){
   const options=['쓰레기장','야간순찰 자원','탈출 시도','그냥 자자'];
   el.innerHTML='<h2>일단 저녁 시간이니까, 움직이자.</h2><p>저녁 활동이다. 어디로 가볼까?</p><div class="shindo-morning-options">'+options.map((t,i)=>'<button type="button" data-v197-night="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
   el.style.display='flex';
-  el.querySelectorAll('[data-v197-night]').forEach(button=>button.onclick=e=>{e.stopPropagation();const value=Number(button.dataset.v197Night)||0;window.SHINDO_addPlayRecord?.('선택','2일차 저녁 활동: '+options[value-1]);const targets={1:V197_DENY_TRASH_OFFSET,2:V201_PATROL_START,3:V197_DENY_ESCAPE_OFFSET,4:V197_DENY_SLEEP_OFFSET};const target=targets[value];if(Number.isInteger(target)){el.style.display='none';locked=false;index=target;save();render();}});
+  el.querySelectorAll('[data-v197-night]').forEach(button=>button.onclick=e=>{e.stopPropagation();const value=Number(button.dataset.v197Night)||0;window.SHINDO_addPlayRecord?.('선택','2일차 저녁 활동: '+options[value-1]);if(value===1)window.SHINDO_applyAffinityEvent?.('afternoon','쓰레기장 수색',2);const targets={1:V197_DENY_TRASH_OFFSET,2:V201_PATROL_START,3:V197_DENY_ESCAPE_OFFSET,4:V197_DENY_SLEEP_OFFSET};const target=targets[value];if(Number.isInteger(target)){el.style.display='none';locked=false;index=target;save();render();}});
   return;
  }
  if(type==='patrol-choice'){
@@ -2813,6 +2815,7 @@ function showV178Holding(type){
    const target=value===1?V201_PATROL_LIBRARY:value===2?V201_PATROL_OFFICE:-1;
    if(target<0)return;
    window.SHINDO_addPlayRecord?.('선택','2일차 야간순찰 자원: '+options[value-1]);
+   window.SHINDO_applyAffinityEvent?.('afternoon',value===1?'본당 도서실 수사':'본당 사무실 수사',2);
    el.style.display='none';locked=false;index=target;save();render();
   });
   return;
@@ -2821,7 +2824,7 @@ function showV178Holding(type){
   const options=['분리수거함 수색','소각로 청소'];
   el.innerHTML='<h2>…더는 뭐가 나오지 않는다.<span style="display:block">다른 데로 가볼까?</span></h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button type="button" data-v197-trash="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
   el.style.display='flex';
-  el.querySelectorAll('[data-v197-trash]').forEach(button=>button.onclick=e=>{e.stopPropagation();const value=Number(button.dataset.v197Trash)||0;window.SHINDO_addPlayRecord?.('선택','2일차 쓰레기장: '+options[value-1]);const target=value===1?V197_DENY_RECYCLING_OFFSET:V197_DENY_INCINERATOR_CHECK_OFFSET;if(Number.isInteger(target)){el.style.display='none';locked=false;index=target;save();render();}});
+  el.querySelectorAll('[data-v197-trash]').forEach(button=>button.onclick=e=>{e.stopPropagation();const value=Number(button.dataset.v197Trash)||0;window.SHINDO_addPlayRecord?.('선택','2일차 쓰레기장: '+options[value-1]);window.SHINDO_applyAffinityEvent?.('afternoon',value===1?'분리수거함 수색':'소각로 청소',2);const target=value===1?V197_DENY_RECYCLING_OFFSET:V197_DENY_INCINERATOR_CHECK_OFFSET;if(Number.isInteger(target)){el.style.display='none';locked=false;index=target;save();render();}});
   return;
  }
  const messages={
