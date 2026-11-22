@@ -1009,6 +1009,67 @@ scenes.push({"kind":"v178-hold","eveningDay2":true,"eveningLocation":"living","v
 const V197_DENY_SLEEP_OFFSET=scenes.length;
 scenes.push({"kind":"v178-hold","eveningDay2":true,"eveningLocation":"living","v178":true,"v178Hold":"sleep-now"});
 
+// V201: 2일차 저녁 [야간순찰 자원] 추가. 저장 인덱스를 안정적으로 유지하기 위해 배열 끝에 추가.
+const V201_PATROL_START=scenes.length;
+scenes.push(
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"충분히 쉬었고... 이제 일 좀 해볼까.","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"자정에 가까운 시각, 몰래 생활관 1층으로 내려왔다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"1층은 야간순찰자들이 있군.","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"오늘 당번은...","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"다행히 내 얼굴을 모르는 신자같네.","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"아유 이걸 언제까지 해야 돼~","speaker":"순찰당번","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"야간순찰, 제가 대신 할게요.","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"들어가서 좀 쉬시죠.","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"안 그래도 잠이 안 와서…","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"기왕이면 수행도 하고 싶고요.","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"아유 그래요?! 저야 고맙죠! 잘 부탁할게요~","speaker":"순찰당번","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"열혈 신도처럼 눈을 반짝이니 냉큼 허락이 떨어졌다.","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"손전등과 순찰일지, 그리고 열쇠 꾸러미를 건네받았다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"이것만 있으면 어지간한 곳은 죄다 갈 수 있겠군.","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"아무리 서로 믿는다지만, 너무 순진한거 아냐?","speaker":"주인공","clearPortrait":true},
+ {"kind":"v178-hold","eveningDay2":true,"eveningLocation":"corridor","v178":true,"v178Hold":"patrol-choice"}
+);
+const V201_PATROL_LIBRARY=scenes.length;
+scenes.push(
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"열쇠로 본당 도서실의 문을 열었다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"낮에는 고즈넉하던 곳이던데...","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"밤엔 으스스하기가 짝이 없네.","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"손전등에만 의지해서 그런가.","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"안락의자 옆, 사서 사제 자리로 향했다.","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"낮에는 가까이 갈 수 없던 곳이니까.","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"손전등으로 자리 옆 책장을 훑었다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"유독 먼지가 없는 책등이 있을까...","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"하나하나 비춰보다가…","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"찾았다.","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"책등만 책처럼 보이게 덮어 두다니.","speaker":"주인공","clearPortrait":true},
+ {"kind":"evidence-popup","eveningDay2":true,"eveningLocation":"library","v178":true,"evidenceId":"believer-register","evidenceTitle":"신도관리명부","evidenceDescription":"신도 명부와 절대 복종을 강요하는 불공정 서약서다.","evidenceArt":"believer-register"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"파일철을 품에 넣고 빈자리는 옆 책을 밀어 메웠다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"순찰일지엔 ‘이상 없음’...이라 적고.","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"서둘러 도서실을 나왔다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"이만하면 수확은 충분해.","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"생활관으로 돌아가 하루를 마무리하자.","clearPortrait":true},
+ {"kind":"v178-hold","eveningDay2":true,"eveningLocation":"living","v178":true,"v178Hold":"patrol-return"}
+);
+const V201_PATROL_OFFICE=scenes.length;
+scenes.push(
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"office","v178":true,"text":"열쇠로 본당 사무실의 문을 열었다.","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"office","v178":true,"text":"서늘한 적막. 복사기의 초록 불빛만 규칙적으로 깜빡인다.","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"office","v178":true,"text":"줄지어 놓인 서류 캐비닛에는 칸마다 라벨이 붙어 있다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"office","v178":true,"text":"민원, 생활, 행사,","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"office","v178":true,"text":"그리고… 회계.","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"office","v178":true,"text":"자료가 그득그득한게 금광이나 다름없네.","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"office","v178":true,"text":"자주 꺼내 보는 건 없어지면 금방 티가 나니까...","speaker":"주인공","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"office","v178":true,"text":"그래, 이걸로 해야겠다.","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"office","v178":true,"text":"안쪽으로 손을 뻗어, 오랫동안 건드리지 않은 티가 역력한 걸로 골라 집었다.","clearPortrait":true},
+ {"kind":"evidence-popup","eveningDay2":true,"eveningLocation":"office","v178":true,"evidenceId":"accounting-ledger","evidenceTitle":"회계장부","evidenceDescription":"회계 및 송금 내역에 실종자(공양 희생자)들의 인적 사항이 있다.","evidenceArt":"accounting-ledger"},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"office","v178":true,"text":"재빨리 옷 속에 숨기고, 빈자리는 아무 일도 없던 것처럼 메웠다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"office","v178":true,"text":"순찰일지엔 ‘이상 없음’...이라 적고.","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"office","v178":true,"text":"서둘러 사무실을 나왔다.","clearPortrait":true},
+ {"kind":"dialogue","eveningDay2":true,"eveningLocation":"office","v178":true,"text":"이만하면 수확은 충분해.","speaker":"주인공","clearPortrait":true},
+ {"kind":"narration","eveningDay2":true,"eveningLocation":"office","v178":true,"text":"생활관으로 돌아가 하루를 마무리하자.","clearPortrait":true},
+ {"kind":"v178-hold","eveningDay2":true,"eveningLocation":"living","v178":true,"v178Hold":"patrol-return"}
+);
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -1039,7 +1100,7 @@ function getSceneBackdrop(sceneNumber,scene){
  if(scene&&scene.mainHall)return {inside:'bg-sanctuary-inside.png',office:'bg-sanctuary-office.jpg',library:'bg-sanctuary-library.jpg'}[scene.mainLocation||'inside']||'';
  if(scene&&scene.confMorning)return {outside:'bg-confession-outside.png',inside:'bg-confession-inside.png'}[scene.confLocation||'outside']||'bg-confession-outside.png';
  if(scene&&scene.gongyangHall)return {square:'bg-central-square.jpg',outside:'bg-gongyang-outside.jpg'}[scene.gongyangLocation||'square']||'';
- if(scene&&scene.eveningDay2)return {square:'bg-central-square.jpg',outside:'bg-confession-outside.png',inside:'bg-confession-inside.png',dark:'',living:'bg-living-quarters-exterior.png',bongbong:LIVING_BACKDROPS.bongbong,corridor:LIVING_BACKDROPS.corridor,eunjae:LIVING_BACKDROPS.eunjae,trash:'bg-trash-yard.jpg',incinerator:'bg-trash-yard.jpg'}[scene.eveningLocation||'square']||'';
+ if(scene&&scene.eveningDay2)return {square:'bg-central-square.jpg',outside:'bg-confession-outside.png',inside:'bg-confession-inside.png',dark:'',living:'bg-living-quarters-exterior.png',bongbong:LIVING_BACKDROPS.bongbong,corridor:LIVING_BACKDROPS.corridor,eunjae:LIVING_BACKDROPS.eunjae,trash:'bg-trash-yard.jpg',incinerator:'bg-trash-yard.jpg',library:'bg-sanctuary-library.jpg',office:'bg-sanctuary-office.jpg'}[scene.eveningLocation||'square']||'';
  // V149: keep the sleep/title interstitial entirely black.
  if(scene&&scene.kind==='sleep-transition')return "";
  // V152: optional location photos for Day 2 activities. No scene is inserted,
@@ -2736,10 +2797,23 @@ function showV178Holding(type){
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
  if(type==='deny'){
-  const options=['쓰레기장','야간순찰 지원','탈출 시도','그냥 자자'];
+  const options=['쓰레기장','야간순찰 자원','탈출 시도','그냥 자자'];
   el.innerHTML='<h2>일단 저녁 시간이니까, 움직이자.</h2><p>저녁 활동이다. 어디로 가볼까?</p><div class="shindo-morning-options">'+options.map((t,i)=>'<button type="button" data-v197-night="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
   el.style.display='flex';
-  el.querySelectorAll('[data-v197-night]').forEach(button=>button.onclick=e=>{e.stopPropagation();const value=Number(button.dataset.v197Night)||0;window.SHINDO_addPlayRecord?.('선택','2일차 저녁 활동: '+options[value-1]);const targets={1:V197_DENY_TRASH_OFFSET,2:V197_DENY_PATROL_OFFSET,3:V197_DENY_ESCAPE_OFFSET,4:V197_DENY_SLEEP_OFFSET};const target=targets[value];if(Number.isInteger(target)){el.style.display='none';locked=false;index=target;save();render();}});
+  el.querySelectorAll('[data-v197-night]').forEach(button=>button.onclick=e=>{e.stopPropagation();const value=Number(button.dataset.v197Night)||0;window.SHINDO_addPlayRecord?.('선택','2일차 저녁 활동: '+options[value-1]);const targets={1:V197_DENY_TRASH_OFFSET,2:V201_PATROL_START,3:V197_DENY_ESCAPE_OFFSET,4:V197_DENY_SLEEP_OFFSET};const target=targets[value];if(Number.isInteger(target)){el.style.display='none';locked=false;index=target;save();render();}});
+  return;
+ }
+ if(type==='patrol-choice'){
+  const options=['본당 도서실','본당 사무실'];
+  el.innerHTML='<h2>어디로 가볼까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button type="button" data-v201-patrol="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
+  el.style.display='flex';
+  el.querySelectorAll('[data-v201-patrol]').forEach(button=>button.onclick=e=>{
+   e.stopPropagation();const value=Number(button.dataset.v201Patrol)||0;
+   const target=value===1?V201_PATROL_LIBRARY:value===2?V201_PATROL_OFFICE:-1;
+   if(target<0)return;
+   window.SHINDO_addPlayRecord?.('선택','2일차 야간순찰 자원: '+options[value-1]);
+   el.style.display='none';locked=false;index=target;save();render();
+  });
   return;
  }
  if(type==='trash-choice'){
@@ -2751,7 +2825,8 @@ function showV178Holding(type){
  }
  const messages={
   'accept':'협력 승낙 이후의 이야기는 다음 업데이트에서 이어집니다.',
-  'night-patrol':'야간순찰 지원 루트는 다음 업데이트에서 이어집니다.',
+  'night-patrol':'야간순찰 자원 루트는 다음 업데이트에서 이어집니다.',
+  'patrol-return':'야간순찰 조사를 마쳤다. 이후 이야기는 다음 업데이트에서 이어집니다.',
   'escape-attempt':'탈출 시도 루트는 다음 업데이트에서 이어집니다.',
   'sleep-now':'그냥 자자 루트는 다음 업데이트에서 이어집니다.',
   'trash-return':'쓰레기장 조사를 마쳤다. 이후 이야기는 다음 업데이트에서 이어집니다.'

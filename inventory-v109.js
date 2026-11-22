@@ -52,7 +52,9 @@
   'destroyed-document-3':{name:'파기된 문서3',description:'누군가의 일기. 심하게 훼손되어 읽을 수 있는 페이지가 거의 없다.'},
   'destroyed-document-4':{name:'파기된 문서4',description:'카밀레교의 교리에 대한 내용이지만 현재의 교리와 조금 다른 부분이 있다.'},
   'escape-route':{name:'탈출로',description:'믿기지 않겠지만, 탈출로처럼 생겼다. 누군가 도망치려 했던걸까?'},
-  'missing-bracelet':{name:'실종자의 팔찌',description:'제보자 동생의 팔찌다. 분명한 증거품이 되어줄 터이다.'}
+  'missing-bracelet':{name:'실종자의 팔찌',description:'제보자 동생의 팔찌다. 분명한 증거품이 되어줄 터이다.'},
+  'believer-register':{name:'신도관리명부',description:'신도 명부와 절대 복종을 강요하는 불공정 서약서다.'},
+  'accounting-ledger':{name:'회계장부',description:'회계 및 송금 내역에 실종자(공양 희생자)들의 인적 사항이 있다.'}
  };
  function load(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v===null?fallback:v}catch(_){return fallback}}
  function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}}
