@@ -17,6 +17,12 @@
 <div class="full buttons"><button type="button" id="reset-height">기본 높이 복원 (PC 66% / 모바일 60%)</button></div>
 <p class="small full">미리보기만 조절돼. 캐릭터별 크기 보정은 유지되고, 게임 실제 배치값은 변경되지 않아. 일반·실루엣·특별 대화의 단독 일러스트에 적용돼.</p>
 <label>일러스트 어두워짐 <span id="dim-value">0%</span><input id="dim" type="range" min="0" max="50" step="10" value="0"></label>
+<div class="divider full"></div>
+<h2 class="full">배경 크기 · 기본 cover 기준 확대율</h2>
+<label>PC 배경 크기 <span id="pc-bgscale-value">100%</span><input id="pc-bgscale" type="range" min="50" max="200" step="1" value="100"></label>
+<label>모바일 배경 크기 <span id="mobile-bgscale-value">100%</span><input id="mobile-bgscale" type="range" min="50" max="200" step="1" value="100"></label>
+<div class="full buttons"><button type="button" id="reset-bgscale">기본 배경 크기 복원 (PC 100% / 모바일 100%)</button></div>
+<p class="small full">100%는 실제 게임의 배경 cover 배치와 같아. 100% 초과 시 확대·잘림, 미만 시 축소·검은 여백이 생길 수 있어. 시뮬레이션에만 반영돼.</p>
 <label>배경 어두워짐 <span id="bgdim-value">0%</span><input id="bgdim" type="range" min="0" max="50" step="10" value="0"></label>
 <div class="divider full"></div>
 <label>두 번째 캐릭터 (2인 장면)<input id="upload-right" type="file" accept="image/*"></label>
@@ -36,11 +42,12 @@ const urls={background:'',portrait:'',illustration:'',duoRight:''},names={backgr
 const frames=[{id:'pc',width:1280,height:800},{id:'mobile',width:390,height:844}];
 function renderScale(){for(const f of frames){const stage=$(f.id+'-stage');const iframe=$(f.id+'-frame');const visible=stage.getBoundingClientRect().width||390;const s=visible/f.width;stage.style.height=(f.height*s)+'px';iframe.style.width=f.width+'px';iframe.style.height=f.height+'px';iframe.style.transform=`scale(${s})`;}}
 function payload(){return{...urls,portraitFilename:names.portrait,type:$('type').value,character:$('character').value==='auto'?'':$('character').value,portraitStyle:$('portrait-style').value,dim:Number($('dim').value)/100,bgShade:Number($('bgdim').value)/100,duoSilhouette:$('duo-silhouette').checked,speaker:$('speaker').value,dialogue:$('dialogue').value,evidenceTitle:$('evidence-title').value,evidenceDescription:$('evidence-description').value,duoLeft:urls.portrait};}
-function update(){frames.forEach(f=>{const data={type:'shindo-image-sim:update',payload:{...payload(),baseHeightPct:Number($(f.id+'-height').value)}};$(f.id+'-frame').contentWindow?.postMessage(data,'*')});$('pc-height-value').textContent=$('pc-height').value+'%';$('mobile-height-value').textContent=$('mobile-height').value+'%';$('dim-value').textContent=$('dim').value+'%';$('bgdim-value').textContent=$('bgdim').value+'%';renderScale()}
+function update(){frames.forEach(f=>{const data={type:'shindo-image-sim:update',payload:{...payload(),baseHeightPct:Number($(f.id+'-height').value),backgroundScalePct:Number($(f.id+'-bgscale').value)}};$(f.id+'-frame').contentWindow?.postMessage(data,'*')});$('pc-height-value').textContent=$('pc-height').value+'%';$('mobile-height-value').textContent=$('mobile-height').value+'%';$('pc-bgscale-value').textContent=$('pc-bgscale').value+'%';$('mobile-bgscale-value').textContent=$('mobile-bgscale').value+'%';$('dim-value').textContent=$('dim').value+'%';$('bgdim-value').textContent=$('bgdim').value+'%';renderScale()}
 function loadImage(input,key){const file=input.files&&input.files[0];if(!file)return;if(!file.type.startsWith('image/')){$('status').textContent='이미지 파일을 선택해줘.';return} const reader=new FileReader();reader.onload=()=>{urls[key]=reader.result;names[key]=file.name.normalize('NFC');$('status').textContent=file.name+' 로딩 완료';update()};reader.onerror=()=>{$('status').textContent='이미지를 읽지 못했어.'};reader.readAsDataURL(file)}
 [['upload-bg','background'],['upload-portrait','portrait'],['upload-art','illustration'],['upload-right','duoRight']].forEach(([id,k])=>$(id).addEventListener('change',e=>loadImage(e.target,k)));
-['type','device','character','portrait-style','pc-height','mobile-height','dim','bgdim','duo-silhouette','speaker','dialogue','evidence-title','evidence-description'].forEach(id=>$(id).addEventListener(id==='pc-height'||id==='mobile-height'||id==='speaker'||id==='dialogue'||id==='evidence-title'||id==='evidence-description'?'input':'change',()=>{if(id==='device')document.body.className='mode-'+$('device').value;update()}));
+['type','device','character','portrait-style','pc-height','mobile-height','pc-bgscale','mobile-bgscale','dim','bgdim','duo-silhouette','speaker','dialogue','evidence-title','evidence-description'].forEach(id=>$(id).addEventListener(id==='pc-height'||id==='mobile-height'||id==='pc-bgscale'||id==='mobile-bgscale'||id==='speaker'||id==='dialogue'||id==='evidence-title'||id==='evidence-description'?'input':'change',()=>{if(id==='device')document.body.className='mode-'+$('device').value;update()}));
 document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{const p=b.dataset.preset;$('type').value=p==='silhouette'?'portrait':p;$('portrait-style').value=p==='silhouette'?'silhouette':'normal';update()}));
 $('reset-height').addEventListener('click',()=>{$('pc-height').value='66';$('mobile-height').value='60';update()});
+$('reset-bgscale').addEventListener('click',()=>{$('pc-bgscale').value='100';$('mobile-bgscale').value='100';update()});
 window.addEventListener('message',e=>{if(e.data?.type==='shindo-image-sim:ready')update()});window.addEventListener('resize',renderScale);new ResizeObserver(renderScale).observe($('screens'));renderScale();
 </script></body></html>

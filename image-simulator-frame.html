@@ -188,6 +188,8 @@ function applyProfile(el,filename,opts={}){
 function update(d){currentData=d;const bg=$('sim-story-backdrop');const shade=(d.bgShade??0);
  bg.style.backgroundImage=d.background?`linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.46)), url(${JSON.stringify(d.background)})`:'linear-gradient(#050607,#050607)';
  bg.style.filter=shade?'brightness('+(1-shade)+')':'';
+ const bgScale=Math.min(200,Math.max(50,Number(d.backgroundScalePct)||100));
+ bg.style.transform=`scale(${bgScale/100})`;bg.style.transformOrigin='center center';
  $('speaker').textContent=d.speaker||'';$('dialogue').textContent=d.dialogue||'일러스트 크기와 배경의 실제 배치를 확인합니다.';
  const portrait=$('portrait'),art=$('art'),duo=$('duo');
  portrait.hidden=!d.portrait||d.type==='illustration'||d.type==='duo'||d.type==='evidence';
