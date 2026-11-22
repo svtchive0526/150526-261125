@@ -1711,12 +1711,27 @@ function showEvidencePopup(scene){
    secondLine.textContent=' '+remainder;
    evidenceDesc.append(secondLine);
   }
+ }else if(scene.evidenceId==='escape-route'){
+  // V199: escape-route acquisition description is two explicit lines on every device.
+  const first='믿기지 않겠지만, 탈출로처럼 생겼다.';
+  const second='누군가 도망치려 했던걸까?';
+  evidenceDesc.append(document.createTextNode(first));
+  const line=document.createElement('span');
+  line.style.display='block';
+  line.textContent=second;
+  evidenceDesc.append(line);
  }else evidenceDesc.textContent=scene.evidenceDescription;
- // V193: Keep the full-screen blackout opaque while the evidence image loads.
- // Otherwise the image/card can briefly flash before the acquisition UI settles.
+ // V193: Keep the card hidden until the image is ready.
+ // V199: Escape route only: fade the existing background to black before showing
+ // the card; fade the card out, then instantly uncover the original background.
+ const escapeRoutePopup=scene.evidenceId==='escape-route';
  const card=pop.querySelector('.shindo-evidence-card');
  card.style.animation='none';
  card.style.opacity='0';
+ if(escapeRoutePopup){
+  pop.style.backgroundColor='rgba(0,0,0,0)';
+  pop.style.transition='background-color .5s ease';
+ }
  let evidenceImage=null;
  if(scene.evidenceArt){
   evidenceImage=document.createElement('img');
@@ -1725,25 +1740,55 @@ function showEvidencePopup(scene){
   pop.querySelector('.shindo-evidence-desc').before(evidenceImage);
  }
  overlay.appendChild(pop);
- let disposed=false;
+ let disposed=false, imageReady=!scene.evidenceArt, blackoutReady=!escapeRoutePopup;
  const reveal=()=>{
-  if(disposed||!pop.isConnected)return;
+  if(disposed||!pop.isConnected||!imageReady||!blackoutReady)return;
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
    if(disposed||!pop.isConnected)return;
    card.style.transition='opacity .38s ease';
    card.style.opacity='1';
+   pop.querySelector('button').disabled=false;
   }));
  };
+ const button=pop.querySelector('button');
+ button.disabled=true;
+ if(escapeRoutePopup){
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   if(disposed||!pop.isConnected)return;
+   pop.style.backgroundColor='#000';
+  }));
+  // The story background remains rendered beneath the overlay throughout.
+  // Display the loaded item card only after the 500ms blackout transition.
+  const onBlackout=event=>{
+   if(event.target!==pop||event.propertyName!=='background-color')return;
+   pop.removeEventListener('transitionend',onBlackout);
+   blackoutReady=true;reveal();
+  };
+  pop.addEventListener('transitionend',onBlackout);
+  setTimeout(()=>{if(disposed||blackoutReady)return;pop.removeEventListener('transitionend',onBlackout);blackoutReady=true;reveal()},600);
+ }
  if(evidenceImage){
-  evidenceImage.addEventListener('load',reveal,{once:true});
-  evidenceImage.addEventListener('error',reveal,{once:true});
+  const onImageReady=()=>{imageReady=true;reveal()};
+  evidenceImage.addEventListener('load',onImageReady,{once:true});
+  evidenceImage.addEventListener('error',onImageReady,{once:true});
   evidenceImage.src='story-illustrations/'+scene.evidenceArt+'.png';
   if(evidenceImage.complete){
-   if(evidenceImage.decode)evidenceImage.decode().catch(()=>{}).then(reveal);
-   else reveal();
+   if(evidenceImage.decode)evidenceImage.decode().catch(()=>{}).then(onImageReady);
+   else onImageReady();
   }
  }else reveal();
- pop.querySelector('button').onclick=e=>{e.stopPropagation();disposed=true;pop.remove();locked=false;next()};
+ button.onclick=e=>{
+  e.stopPropagation();
+  if(disposed||!imageReady||!blackoutReady)return;
+  disposed=true;button.disabled=true;
+  if(escapeRoutePopup){
+   // No background fade-in: keep black until the card is fully gone, then
+   // remove the cover in one frame and render the next trash-yard line.
+   card.style.transition='opacity .35s ease';
+   card.style.opacity='0';
+   setTimeout(()=>{pop.remove();locked=false;next()},360);
+  }else{pop.remove();locked=false;next()}
+ };
 }
 function playExtraAudio(filename,volume=.7){const a=new Audio('story-audio/'+filename);a.volume=volume;a.play().catch(()=>{});return a}
 function bell(times){for(let i=0;i<times;i++)setTimeout(()=>playExtraAudio('oath-bell-05.mp3',.75),i*3600)}
@@ -2699,7 +2744,7 @@ function showV178Holding(type){
  }
  if(type==='trash-choice'){
   const options=['분리수거함 수색','소각로 청소'];
-  el.innerHTML='<h2>…더는 뭐가 나오지 않는다. 다른 데로 가볼까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button type="button" data-v197-trash="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
+  el.innerHTML='<h2>…더는 뭐가 나오지 않는다.<span style="display:block">다른 데로 가볼까?</span></h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button type="button" data-v197-trash="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
   el.style.display='flex';
   el.querySelectorAll('[data-v197-trash]').forEach(button=>button.onclick=e=>{e.stopPropagation();const value=Number(button.dataset.v197Trash)||0;window.SHINDO_addPlayRecord?.('선택','2일차 쓰레기장: '+options[value-1]);const target=value===1?V197_DENY_RECYCLING_OFFSET:V197_DENY_INCINERATOR_CHECK_OFFSET;if(Number.isInteger(target)){el.style.display='none';locked=false;index=target;save();render();}});
   return;
