@@ -1974,9 +1974,11 @@ let jihoonRevealed=false,pencilAudio=null;
 function stopPencil(){if(pencilAudio){pencilAudio.pause();pencilAudio.currentTime=0;pencilAudio=null}}
 function keepPencil(){if(pencilAudio)return;pencilAudio=new Audio('story-audio/pencil-17s.mp3');pencilAudio.loop=true;pencilAudio.volume=.65;pencilAudio.play().catch(()=>{})}
 
-let day2Prayer=Number(localStorage.getItem("shindo_day2_prayer")||0),day2Morning=v219IsDay3Activity()?(localStorage.getItem("shindo_day3_location_v219")||""):(localStorage.getItem("shindo_day2_morning")||"");
+// V220: Define Day 3 storage keys before any initialization reads them.
+// V219 had used v219IsDay3Activity() before the const declaration, stopping the entire story script on load.
 const V219_MODE_KEY='shindo_day3_activity_v219';
 const V219_MAIN_KEY='shindo_day3_main_branch_v219';
+let day2Prayer=Number(localStorage.getItem("shindo_day2_prayer")||0),day2Morning=v219IsDay3Activity()?(localStorage.getItem("shindo_day3_location_v219")||""):(localStorage.getItem("shindo_day2_morning")||"");
 let livingBranch=Number(localStorage.getItem(v219IsDay3Activity()?'shindo_day3_living_branch_v219':'shindo_living_branch_v156')||0);
 let mainBranch=Number(localStorage.getItem(v219IsDay3Activity()?V219_MAIN_KEY:'shindo_main_branch_v160')||0);
 let joshuaRevealed=localStorage.getItem('shindo_joshua_known_v160')==='1';
