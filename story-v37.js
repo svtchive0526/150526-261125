@@ -1402,6 +1402,29 @@ scenes.push(
 );
 scenes.push({kind:'v219-library-end',v219Morning:true,mainHall:true,mainLocation:'library',clearPortrait:true});
 
+// V223: Locked-Junhui Gongyang Hall first visit. This is ONE shared event
+// across Days 3–13, never one copy per day. Old scene indices remain stable.
+const V223_LOCKED_JUNHUI_FIRST_START=scenes.length;
+scenes.push(
+ {kind:'narration',v223JunhuiLockedFirst:true,gongyangHall:true,gongyangLocation:'outside',text:'사람, 아니 공양이 끌려가 최후를 맞이하는 그곳.',clearPortrait:true},
+ {kind:'narration',v223JunhuiLockedFirst:true,gongyangHall:true,gongyangLocation:'outside',text:'애석하게도 경비가 늘 삼엄하다.',clearPortrait:true},
+ {kind:'dialogue',v223JunhuiLockedFirst:true,gongyangHall:true,gongyangLocation:'outside',speaker:'주인공',text:'몰래 숨어들기엔 어려워 보이네...',clearPortrait:true},
+ {kind:'narration',v223JunhuiLockedFirst:true,gongyangHall:true,gongyangLocation:'outside',text:'공양실을 자주 오가는 사제 둘이 특히 눈에 띈다.',clearPortrait:true},
+ {kind:'dialogue',v223JunhuiLockedFirst:true,gongyangHall:true,gongyangLocation:'outside',speaker:'주인공',text:'(그중 하나가...)',clearPortrait:true},
+ {kind:'dialogue',v223JunhuiLockedFirst:true,gongyangHall:true,gongyangLocation:'outside',speaker:'주인공',text:'문준휘 사제.',boldWord:'문준휘',clearPortrait:true},
+ {kind:'dialogue',v223JunhuiLockedFirst:true,gongyangHall:true,gongyangLocation:'outside',speaker:'주인공',text:"('외출'을 관리한다고 하는 사제다.)",boldWord:'외출',clearPortrait:true},
+ {kind:'dialogue',v223JunhuiLockedFirst:true,gongyangHall:true,gongyangLocation:'outside',speaker:'주인공',text:'(망치를 든 모습이 잊혀지지 않는군...)',clearPortrait:true},
+ {kind:'narration',v223JunhuiLockedFirst:true,gongyangHall:true,gongyangLocation:'outside',text:'비록 지금은 고양이들에게 밥을 주고 있지만,',clearPortrait:true},
+ {kind:'narration',v223JunhuiLockedFirst:true,gongyangHall:true,gongyangLocation:'outside',text:'저 모습은 그의 전부가 아니다.',clearPortrait:true},
+ {kind:'dialogue',v223JunhuiLockedFirst:true,gongyangHall:true,gongyangLocation:'outside',speaker:'주인공',text:'저런 사람과는 친해질 수 없겠지.',clearPortrait:true},
+ {kind:'narration',v223JunhuiLockedFirst:true,gongyangHall:true,gongyangLocation:'outside',text:'걸음을 돌려 생활관으로 돌아가야겠다.',clearPortrait:true},
+ {kind:'v223-locked-junhui-first-end',v223JunhuiLockedFirst:true,gongyangHall:true,gongyangLocation:'outside',clearPortrait:true}
+);
+// Placeholder until the separate later-visit dialogue is supplied.
+// A real checkpoint keeps Continue on the same state after reload.
+const V223_LOCKED_JUNHUI_REVISIT_WAIT=scenes.length;
+scenes.push({kind:'v223-locked-junhui-revisit-wait',v223JunhuiLockedFirst:true,gongyangHall:true,gongyangLocation:'outside',clearPortrait:true});
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -2696,7 +2719,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  // V207: Resume BGM only inside the escape scene; never restart it per line.
  if(index>=V205_ESCAPE_START && index<V205_ESCAPE_LIE+100 && scene?.eveningLocation==='village' && !v207EscapeMusicFading)v207StartEscapeMusic();
  if(!scene.v213Day1Bedtime)v183SyncPoliceIdentityAt(index);
- if(scene.day3Morning||scene.v218GongyangDay||v219IsDay3Activity())areaSkipButton.hidden=true;
+ if(scene.day3Morning||scene.v218GongyangDay||scene.v223JunhuiLockedFirst||v219IsDay3Activity())areaSkipButton.hidden=true;
  // Players already saved at V214's temporary Day 3 scenes resume the full script.
  if(index===V214_DAY3_MORNING_START || scene.v178Hold==='day3-morning-await-script'){
   index=V215_DAY3_COMMON_START;save();render();return;
@@ -2868,6 +2891,8 @@ if(scene.kind==='day2-morning-choice'){
   }else showDay2Choice('morning');
   return;
  }
+ if(scene.kind==='v223-locked-junhui-first-end'){v223FinishLockedJunhuiMorning();return;}
+ if(scene.kind==='v223-locked-junhui-revisit-wait'){v219ShowMorningEnd('준휘와의 공양실 재방문 대화는 추후 추가됩니다.');return;}
  if(scene.kind==='v219-library-end'){v219ShowMorningEnd('승관과의 도서실 대화를 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return}
  if(scene.kind==='main-choice'){showMainChoice();return}
  if(scene.kind==='main-end'){showMainEnd();return}
@@ -3038,7 +3063,7 @@ function restartFromDay1(){
  endingTimers.forEach(clearTimeout);endingTimers=[];
  selectedBranch=0;day2Prayer=0;day2Morning='';livingBranch=0;mainBranch=0;confMorningBranch=0;seungkwanTruthBranch=0;joshuaRevealed=false;revealed=false;jihoonRevealed=false;soonyoungRevealed=false;minghaoRevealed=false;jeonghanRevealed=false;mingyuRevealed=false;seungkwanRevealed=false;
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;confessionTickLouder=false;
- ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_seungkwan_truth_branch_v177','shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_evening_branch_day2_v173','shindo_confession_morning_branch_v163','shindo_day2_start_affinity_snapshot_v169','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person'].forEach(k=>localStorage.removeItem(k));
+ ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_seungkwan_truth_branch_v177','shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_evening_branch_day2_v173','shindo_confession_morning_branch_v163','shindo_day2_start_affinity_snapshot_v169','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person','shindo_junhui_locked_morning_seen_v223'].forEach(k=>localStorage.removeItem(k));
  const day1Start=scenes.findIndex(s=>s.kind==='transition'&&s.text==='1일차 아침');
  index=day1Start>=0?day1Start:0;
  storyUnderlay.classList.add('visible');storyBackdrop.classList.add('visible');overlay.classList.add('active');refreshInventoryVisibility();
@@ -3096,7 +3121,7 @@ function restartFromDay2(){
   'shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_joshua_known_v160',
   'shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_soonyoung_known_v105','shindo_minghao_known_v105',
   'shindo_hansol_known_v99','shindo_seokmin_known_v99','shindo_chan_known_v99',
-  'shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_seungkwan_truth_branch_v177','shindo_police_coop_v178','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_affinity_unread_v125','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person'
+  'shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_seungkwan_truth_branch_v177','shindo_police_coop_v178','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_affinity_unread_v125','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person','shindo_junhui_locked_morning_seen_v223'
  ];
  resetKeys.forEach(key=>localStorage.removeItem(key));
  try{const names=JSON.parse(localStorage.getItem('shindo_met_characters_v108')||'[]');
@@ -3118,6 +3143,7 @@ function restartFromDay2Afternoon(){
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  localStorage.removeItem('shindo_junhui_affinity_locked_v205');
  localStorage.removeItem('shindo_affinity_locks_v222');
+ localStorage.removeItem('shindo_junhui_locked_morning_seen_v223');
  localStorage.removeItem('shindo_day3_prayer_result_v215');
  localStorage.removeItem('shindo_day3_joshua_intro_needed_v215');
  v205StopChoice();v205HammerBlocked=false;if(v205HammerAudio){v205HammerAudio.pause();v205HammerAudio=null}
@@ -3188,6 +3214,31 @@ function restartFromDay2Afternoon(){
 window.SHINDO_restartFromDay2Afternoon=restartFromDay2Afternoon;
 
 // V219: distinguish a Day 2 morning encounter from a name known since Day 1.
+// V223: This flag is shared by Days 3–13 and is written only after
+// the final line has been read. Refresh mid-scene resumes at the saved line.
+const V223_JUNHUI_LOCKED_FIRST_SEEN='shindo_junhui_locked_morning_seen_v223';
+function v223JunhuiIsLocked(){
+ if(localStorage.getItem('shindo_junhui_affinity_locked_v205')==='1')return true;
+ return window.SHINDO_isAffinityLocked?.('준휘')===true;
+}
+function v223OpenLockedJunhuiMorning(){
+ // Called only for a Day 3–13 morning Gongyang Hall selection.
+ if(localStorage.getItem(V223_JUNHUI_LOCKED_FIRST_SEEN)==='1'){
+  const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
+  index=V223_LOCKED_JUNHUI_REVISIT_WAIT;
+  locked=false;save();render();return;
+ }
+ const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
+ currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+ index=V223_LOCKED_JUNHUI_FIRST_START;
+ locked=false;save();render();
+}
+function v223FinishLockedJunhuiMorning(){
+ // Do not mark completed on entering, only after player finishes all 12 lines.
+ localStorage.setItem(V223_JUNHUI_LOCKED_FIRST_SEEN,'1');
+ save();
+ v219ShowMorningEnd('공양실을 둘러봤습니다. 이후 오전 활동 이야기는 추후 추가됩니다.');
+}
 function v219IsDay3Activity(){return localStorage.getItem(V219_MODE_KEY)==='1'}
 function v219WasMetDay2(name){
  const room=localStorage.getItem('shindo_day2_morning')||'';
@@ -3222,6 +3273,8 @@ function v219StartLocation(room){
  const points={'기도관':PRAYER_SCENE_START,'예술당':ART_SCENE_START,'생활관':LIVING_SCENE_START,'본당':MAIN_SCENE_START,'고해소':CONFESSIONAL_MORNING_START,'공양실':GONGYANG_SCENE_START};
  const dest=points[room];
  if(!Number.isInteger(dest))return;
+ // V223: Locked-Junhui special conversation overrides the prior Day 2 encounter flag.
+ if(room==='공양실'&&v223JunhuiIsLocked()){v223OpenLockedJunhuiMorning();return;}
  if((room==='고해소'&&v219WasMetDay2('원우'))||(room==='공양실'&&v219WasMetDay2('준휘'))){
   v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;
  }
