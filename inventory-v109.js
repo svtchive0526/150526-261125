@@ -58,6 +58,19 @@
   'believer-register':{name:'신도관리명부',description:'신도 명부와 절대 복종을 강요하는 불공정 서약서다.'},
   'accounting-ledger':{name:'회계장부',description:'회계 및 송금 내역에 실종자(공양 희생자)들의 인적 사항이 있다.'}
  };
+ // V211: item thumbnails and large artwork in the detail popup.
+ const EVIDENCE_IMAGES={
+  'destroyed-document-1':'story-illustrations/destroyed-document-1.png',
+  'destroyed-document-2':'story-illustrations/destroyed-document-2.png',
+  'destroyed-document-3':'story-illustrations/destroyed-document-3.png',
+  'destroyed-document-4':'story-illustrations/destroyed-document-4.png',
+  'escape-route':'story-illustrations/escape-route.png',
+  'missing-bracelet':'story-illustrations/missing-bracelet.png',
+  'believer-register':'story-illustrations/believer-register.png',
+  'accounting-ledger':'story-illustrations/accounting-ledger.png',
+ };
+ // Extended descriptions will be provided later. Keep them separate from the short summaries.
+ const EVIDENCE_DETAILS={};
  function load(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v===null?fallback:v}catch(_){return fallback}}
  function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}}
  function getUnread(){
@@ -338,6 +351,38 @@
  #shindo-phone-panel .inv-item-description{font-size:10.8px}
  #shindo-phone-panel .inv-card{border:1px solid #575757;background:#252525;border-radius:8px;padding:12px;margin-bottom:9px}
  #shindo-phone-panel .inv-item-name{font-size:15px;font-weight:700;margin-bottom:5px}
+ #shindo-phone-panel .inv-evidence-card{width:100%;display:flex;align-items:center;gap:12px;text-align:left;min-height:90px;transition:background .15s,border-color .15s;cursor:pointer;touch-action:manipulation}
+ #shindo-phone-panel .inv-evidence-card:hover{background:#303035;border-color:#85858b}
+ #shindo-phone-panel .inv-evidence-card:focus-visible{outline:2px solid #eee;outline-offset:2px}
+ #shindo-phone-panel .inv-evidence-thumbnail{flex:0 0 74px;width:74px;height:82px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:#3b3b3f;border:1px solid #4a4a51;overflow:hidden}
+ #shindo-phone-panel .inv-evidence-thumbnail img{display:block;width:100%;height:100%;object-fit:contain}
+ #shindo-phone-panel .inv-evidence-thumbnail-fallback{font-size:11px;color:#bbb;text-align:center;padding:6px}
+ #shindo-phone-panel .inv-evidence-text{min-width:0;flex:1}
+ #shindo-phone-panel .inv-evidence-open{font-size:10px;color:#999;white-space:nowrap;margin-top:5px}
+ #shindo-phone-panel .inv-evidence-chevron{flex:none;color:#aaa;font-size:23px;line-height:1}
+ .shindo-evidence-modal{position:fixed;inset:0;z-index:40010;display:flex;justify-content:center;align-items:center;padding:16px;background:rgba(0,0,0,.82);overscroll-behavior:contain;font-family:Pretendard,system-ui,sans-serif;color:#f5f5f6;box-sizing:border-box;animation:shindo-evidence-backdrop-in .2s ease both}
+ .shindo-evidence-modal[hidden]{display:none!important}
+ .shindo-evidence-modal *{box-sizing:border-box}
+ .shindo-evidence-detail{width:min(480px,100%);max-height:min(88dvh,750px);display:flex;flex-direction:column;background:#202125;border:1px solid #6c6c73;border-radius:13px;box-shadow:0 20px 75px rgba(0,0,0,.58);overflow:hidden;animation:shindo-evidence-dialog-in .22s ease both}
+ .shindo-evidence-detail-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px;border-bottom:1px solid #45464d;font-size:14px;font-weight:700}
+ .shindo-evidence-close{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid #666870;border-radius:7px;background:#323338;color:#fff;font-size:22px;cursor:pointer;flex:none}
+ .shindo-evidence-close:focus-visible{outline:2px solid #fff;outline-offset:2px}
+ .shindo-evidence-detail-body{overflow-y:auto;overscroll-behavior:contain;padding:18px;min-height:0}
+ .shindo-evidence-large-image{display:flex;justify-content:center;align-items:center;min-height:140px;height:min(38dvh,300px);padding:9px;background:#35363a;border-radius:9px;overflow:hidden}
+ .shindo-evidence-large-image img{display:block;width:100%;height:100%;object-fit:contain}
+ .shindo-evidence-large-image img[hidden],.shindo-evidence-large-placeholder[hidden]{display:none!important}
+ .shindo-evidence-large-placeholder{font-size:13px;color:#aaa;text-align:center}
+ .shindo-evidence-detail-name{margin:17px 0 12px;font-size:20px;font-weight:750;text-align:center;letter-spacing:-.04em}
+ .shindo-evidence-detail-divider{border-top:1px solid #55565c;margin:0 0 14px}
+ .shindo-evidence-detail-label{font-size:13px;font-weight:700;margin-bottom:8px}
+ .shindo-evidence-detail-description{font-size:13px;color:#c9c9ce;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
+ .shindo-evidence-detail-footer{padding:11px 18px 16px;border-top:1px solid #45464d}
+ .shindo-evidence-detail-footer button{width:100%;padding:11px;border:1px solid #71717a;border-radius:7px;background:#35363b;color:#fff;font:inherit;cursor:pointer}
+ @keyframes shindo-evidence-backdrop-in{from{opacity:0}to{opacity:1}}
+ @keyframes shindo-evidence-dialog-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+ @media(max-width:750px){#shindo-phone-panel .inv-evidence-card{gap:9px;min-height:75px;padding:9px}#shindo-phone-panel .inv-evidence-thumbnail{flex-basis:56px;width:56px;height:66px}#shindo-phone-panel .inv-evidence-chevron{font-size:19px}.shindo-evidence-modal{padding:12px}.shindo-evidence-detail{max-height:calc(100dvh - 24px)}.shindo-evidence-large-image{height:min(34dvh,250px)}.shindo-evidence-detail-name{font-size:18px}.shindo-evidence-detail-body{padding:14px}}
+ @media(prefers-reduced-motion:reduce){.shindo-evidence-modal,.shindo-evidence-detail{animation:none!important}}
+
  #shindo-phone-panel .inv-person{display:flex;gap:12px;align-items:center}
  #shindo-phone-panel .inv-avatar{width:66px;height:78px;flex:none;object-fit:cover;object-position:top;background:#3f3f3f;border-radius:5px}
  #shindo-phone-panel .inv-avatar-unknown{display:flex;align-items:center;justify-content:center;font-weight:700;font-size:21px;color:#aaa;border:1px solid #555}
@@ -357,8 +402,67 @@
  const content=panel.querySelector('.inv-content');let active='evidence';
  function make(tag,klass,txt){const el=document.createElement(tag);if(klass)el.className=klass;if(txt!==undefined)el.textContent=txt;return el}
  function empty(message){content.appendChild(make('p','inv-muted',message))}
- function evidence(){const items=load(EVIDENCE,[]);if(!Array.isArray(items)||!items.length){empty('아직 획득한 증거품이 없습니다.');return}
-  items.forEach(id=>{const info=evidenceInfo[id]||{name:id,description:'획득한 증거품'};const card=make('div','inv-card');card.append(make('div','inv-item-name',info.name),make('div','inv-muted inv-item-description',info.description));content.append(card)})
+ // V211: mount above the phone drawer to avoid clipping by its overflow/transform.
+ const evidenceModal=make('div','shindo-evidence-modal');evidenceModal.hidden=true;
+ evidenceModal.setAttribute('role','dialog');evidenceModal.setAttribute('aria-modal','true');
+ evidenceModal.setAttribute('aria-labelledby','shindo-evidence-detail-name');
+ evidenceModal.innerHTML='<div class="shindo-evidence-detail"><div class="shindo-evidence-detail-header"><span>증거품 상세 정보</span><button type="button" class="shindo-evidence-close" aria-label="상세 정보 닫기">×</button></div><div class="shindo-evidence-detail-body"><div class="shindo-evidence-large-image"><img alt="" hidden><div class="shindo-evidence-large-placeholder" hidden>아이템 이미지를 불러올 수 없습니다.</div></div><h2 id="shindo-evidence-detail-name" class="shindo-evidence-detail-name"></h2><div class="shindo-evidence-detail-divider"></div><div class="shindo-evidence-detail-label">상세 정보</div><div class="shindo-evidence-detail-description"></div></div><div class="shindo-evidence-detail-footer"><button type="button">닫기</button></div></div>';
+ document.body.appendChild(evidenceModal);
+ const detailClose=evidenceModal.querySelector('.shindo-evidence-close');
+ let detailReturnFocus=null;
+ function closeEvidenceDetail(){
+  if(evidenceModal.hidden)return;
+  evidenceModal.hidden=true;
+  if(detailReturnFocus?.isConnected){detailReturnFocus.focus({preventScroll:true})}
+  detailReturnFocus=null;
+ }
+ function openEvidenceDetail(id,trigger){
+  const info=evidenceInfo[id]||{name:id,description:'획득한 증거품'};
+  detailReturnFocus=trigger;
+  evidenceModal.querySelector('.shindo-evidence-detail-name').textContent=info.name;
+  evidenceModal.querySelector('.shindo-evidence-detail-description').textContent=EVIDENCE_DETAILS[id]||'상세 정보는 준비 중입니다.';
+  const img=evidenceModal.querySelector('.shindo-evidence-large-image img');
+  const fallback=evidenceModal.querySelector('.shindo-evidence-large-placeholder');
+  img.onload=()=>{img.hidden=false;fallback.hidden=true};
+  img.onerror=()=>{img.hidden=true;fallback.hidden=false};
+  img.hidden=true;fallback.hidden=true;
+  if(EVIDENCE_IMAGES[id]){img.alt=info.name+' 이미지';img.src=EVIDENCE_IMAGES[id]}
+  else{img.removeAttribute('src');fallback.hidden=false}
+  evidenceModal.hidden=false;
+  detailClose.focus({preventScroll:true});
+ }
+ evidenceModal.addEventListener('click',e=>{e.stopPropagation();if(e.target===evidenceModal)closeEvidenceDetail()});
+ detailClose.addEventListener('click',closeEvidenceDetail);
+ evidenceModal.querySelector('.shindo-evidence-detail-footer button').addEventListener('click',closeEvidenceDetail);
+ document.addEventListener('keydown',e=>{
+  if(evidenceModal.hidden)return;
+  if(e.key==='Escape'){e.preventDefault();e.stopPropagation();closeEvidenceDetail()}
+  else if(e.key==='Tab'){
+   const controls=[detailClose,evidenceModal.querySelector('.shindo-evidence-detail-footer button')];
+   const ix=controls.indexOf(document.activeElement);
+   if(e.shiftKey && ix<=0){e.preventDefault();controls[controls.length-1].focus()}
+   else if(!e.shiftKey && ix===controls.length-1){e.preventDefault();controls[0].focus()}
+  }
+ },true);
+ function evidence(){
+  const saved=load(EVIDENCE,[]),items=Array.isArray(saved)?[...new Set(saved)]:[];
+  if(!items.length){empty('아직 획득한 증거품이 없습니다.');return}
+  items.forEach(id=>{
+   const info=evidenceInfo[id]||{name:id,description:'획득한 증거품'};
+   const card=make('button','inv-card inv-evidence-card');card.type='button';
+   card.setAttribute('aria-label',info.name+' 상세 정보 보기');
+   const thumbnail=make('div','inv-evidence-thumbnail');
+   if(EVIDENCE_IMAGES[id]){
+    const img=make('img');img.src=EVIDENCE_IMAGES[id];img.alt=info.name;img.loading='lazy';
+    img.onerror=()=>{img.replaceWith(make('div','inv-evidence-thumbnail-fallback','이미지 없음'))};
+    thumbnail.append(img);
+   }else thumbnail.append(make('div','inv-evidence-thumbnail-fallback','이미지 없음'));
+   const body=make('div','inv-evidence-text');
+   body.append(make('div','inv-item-name',info.name),make('div','inv-muted inv-item-description',info.description),make('div','inv-evidence-open','눌러서 자세히 보기'));
+   card.append(thumbnail,body,make('span','inv-evidence-chevron','›'));
+   card.addEventListener('click',e=>{e.stopPropagation();openEvidenceDetail(id,card)});
+   content.append(card);
+  });
  }
  function people(){const values=getAffinity();const unread=new Set(getUnread());PEOPLE.forEach(([name,portrait])=>{
   const known=isMet(name);
@@ -423,8 +527,9 @@
   });content.append(restart);
  }const restart=make('button','inv-feedback inv-feedback-reset','아예 처음부터 다시 하기');restart.type='button';restart.addEventListener('click',()=>window.SHINDO_restartFromOpening?.());content.append(restart)}
  function render(){panel.querySelectorAll('.inv-tab').forEach(b=>{b.setAttribute('aria-selected',String(b.dataset.tab===active))});refreshUnreadIndicators();content.replaceChildren();({evidence,people,history,feedback})[active]()}
- panel.querySelectorAll('.inv-tab').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();active=b.dataset.tab;render()}));
+ panel.querySelectorAll('.inv-tab').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();closeEvidenceDetail();active=b.dataset.tab;render()}));
  document.addEventListener('shindo-inventory-change',render);
+ document.getElementById('shindo-phone-putaway')?.addEventListener('click',closeEvidenceDetail);
  document.getElementById('shindo-phone-toggle')?.addEventListener('click',()=>{render()});
  window.addEventListener('storage',render);render();
 })();
