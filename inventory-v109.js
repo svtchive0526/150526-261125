@@ -56,7 +56,10 @@
   'escape-route':{name:'탈출로',description:'믿기지 않겠지만, 탈출로처럼 생겼다. 누군가 도망치려 했던걸까?'},
   'missing-bracelet':{name:'실종자의 팔찌',description:'제보자 동생의 팔찌다. 분명한 증거품이 되어줄 터이다.'},
   'believer-register':{name:'신도관리명부',description:'신도 명부와 절대 복종을 강요하는 불공정 서약서다.'},
-  'accounting-ledger':{name:'회계장부',description:'회계 및 송금 내역에 실종자(공양 희생자)들의 인적 사항이 있다.'}
+  'accounting-ledger':{name:'회계장부',description:'회계 및 송금 내역에 실종자(공양 희생자)들의 인적 사항이 있다.'},
+  'escape-package':{name:'탈출 패키지',description:'탈출을 준비하며 꾸려둔 낡은 가방이다.'},
+  'wonwoo-chat':{name:'전원우의 공기계 카톡 내역',description:'원우가 교주와 나눈 업무 보고 내역이다.'},
+  'conversation-recording':{name:'대화녹음',description:'사제들과 교주의 대화가 녹음되어 있다.'}
  };
  // V211: item thumbnails and large artwork in the detail popup.
  const EVIDENCE_IMAGES={
@@ -69,8 +72,65 @@
   'believer-register':'story-illustrations/believer-register.png',
   'accounting-ledger':'story-illustrations/accounting-ledger.png',
  };
- // Extended descriptions will be provided later. Keep them separate from the short summaries.
- const EVIDENCE_DETAILS={};
+ // V212: Full, authored item text. Stored for all items, but only unlocked items are shown.
+ const EVIDENCE_DETAILS={
+  "escape-package": "누군가가 탈출을 꿈꾸며 구려둔 패키지다. 갈색의 낡은 가방. 안에는 손전등, 장갑, 간식거리, 포켓나이프, 나침반이 들어있다. 산 속 깊은 곳에 있는 카밀레교에서 탈출하려면 꼭 필요한 것들이긴 하다.",
+  "missing-bracelet": "김제보가 보낸 동생의 팔찌와 동일하다. 큰 다이아몬드 장식이 있고 은색 체인으로 되어있다. 피인지 재인지 모를 거무튀튀한 것들이 잔뜩 묻어 지저분해졌다.",
+  "destroyed-document-1": "xx년 x월 신도 기부 명단. 김명철 일백오십, 안광수 일백구십, 유은결 이백오십 이한강 삼백... 아래로 내려갈 수록 금액이 커지고 있다. 가장 마지막에는 억단위가 넘는 금액을 기부한 신도가 있다. 중간중간 페이지가 끊어져있고 찢어져있긴 하지만 신도들이 말도 안 되는 금액을 기부한 것은 확실하다. 심지어 금액이 낮은 사람에게는 건질 게 없었다는 메모까지 있다. 건질 게 없다니, 대체 뭐를? 이 거주지에 들어오기 위해서는 기부를 해야하는걸까...? 자세히 읽어보니 이 이름들... 생활관의 거주자 리스트에서 본 적 없는 이름들이다. 거주지에 있는 사람들의 이름도 없다. 잠깐, 박민우 구천팔백... 이 사람은 내가 여기에 온 첫날에 공양된 사람의 이름이다. 설마, 이 명단. 공양된 자들의 자산을 적어둔 건가...?",
+  "destroyed-document-2": "**마을 내부 지도**다. 근처까지는 표시되어있지만 카밀레교가 산속 깊숙히 처박혀 있는 탓에 유의미하게 쓸 수 있는 지도는 아닌 것 같다. 군데군데 붉은 색으로 x자가 쳐져있다. 기억을 잘 되짚어보니 지도에는 없는, 하지만 동물들이 지나다녀 풀이 조금 정리된 그런 곳들이었다. 그 곳들에 전부 x자가 쳐져있다. 누군가가 탈출을 시도했다가 실패한 것일까? 아니면....",
+  "destroyed-document-3": "거의 십년 전의 일기다. 누구의 일기인지 명확하지 않다.\n\n**xx년 2월 19일,** (무언가가 묻어 이름이 가려져 있다) ...정도로 화를 내는 건 처음이다. 자기 교리가 부정당했다고, 그것도 가장 믿고 사랑했던 사람이 자신의 생각을 부정했다고. 우리는 그럴 리 없다며 말렸다. 하지만 화가 진정됐을 무렵 정말 처음 볼 정도로 우울한 상태가 되더니 꼬박 일주일을 방에 처박혀 코빼기도 보이지 않았다.\n\n**xx년 2월 21일,** 방에 처박힌 지 열흘째가 되었다. 오늘 갑자기 문을 열고 나와선 자기는 깨달았다고 소리치며 기뻐했다. 무슨 얘기를 하는 건지 하나도 못 알아들었다.\n\n**xx년 2월 28일,** 우리를 모아놓고 하는 말이 가관이다. 우리는 하나였고 교주는 그 하나에서 떨어져나와 살면서 삐뚤어졌다나 뭐라나. 자기 가족한테 무슨 말을 하는 건진 알고 있는 건가...? 그러고선 공양을 해야한다고 한다. 캐모마일 꽃이 자라려면 어쩌고 저쩌고, 무슨 말인지 반은 이해 못 했다. 그냥 우리가 아끼는 형이니 그러려니 했을 뿐. 공양은 일주일 뒤에 하겠댄다. 우리에게 꼭 참여해서 증인이 되어달라는데... 진짜 뭐라는 건지 하나도 모르겠다.\n\n**xx년 3월 7일,** 씨발.\n\n**xx년 3월 8일,** (얼룩이 묻고 물에 번진 자국이 많아 군데군데  끊겨있다) 독한 술을 구해왔다. 어디서 구했냐고 물어보니 ..... 면 쉽게 구한댄다. 그걸 교주에게 선물하고 우리를 끼고 가서는 같이 식사를 했다. 교주는 술을 처먹고 골아떨어졌고, .... 로 묶어 침대에서 움직이지 못하게 했다. ...... 유를 가져와 불을 붙였다. ...... 타는 냄새가 지독했다. 계속해서 말렸지만 들은 체도 안했다. 다른 애들도 그냥, 그 형이 좋다고, 가족이라면 당연히 해야하지 않냐며 따랐다. 앞으로의 카밀레교에서는 주기적으로 공양을 할거라고 했다. ......들을 처단하고 ......확실해지기 위해선 어쩔......다. 토악질이 나온다. 활활 타버렸던 그 집을, 내일부터 정리해야한다.\n\n**xx년 3월 9일,** ...우리의 첫번째 공양은 ......다. 우리는 한 배를 탔다. 사람을 죽인 자들이 되었다. 그것도, 산채로 불구덩이에 집어넣어서 죽인, 최악의 살인마들이 됐다.\n\n**xx년 3월 21일,** 증인이 되어준 우리에는 ......를 충실......한다. ......는 우리에게 사제의 역할을 준다고 했다. 이 미친 짓이 놀이인 줄 알았는데, 엄마도 아빠도 여긴 좋은 곳이라고 했는데. ...우형은 ......의 귀가 되었고 준휘 형은 눈이 되었다. ......의 역할은 아직 정해지지 않았다. .....길 ......다.",
+  "destroyed-document-4": "[3대 소명 선언문]\n\n**첫째, 자연 섭리로의 회귀**입니다. 오늘날 인간은 섭리에서 벗어나 세속의 죄악 속에서 방황합니다. 그러나 우리는 헛된 고립을 내려놓고 성스러운 자연의 흐름에 몸을 맡깁니다. 그리하여 세속의 죄악인 물욕에서 벗어나 신께서 허락하신 하나 됨 속에서 사랑과 온기를 나누는 공동체를 이룹니다.\n\n**둘째, 살아 숨 쉬는 계시의 복음**입니다. 머무르는 관념이 아닌 지금 이 순간의 생동하는 순수로 일어섭니다. 성도들은 아침저녁으로 새롭게 피어나는 진리의 말씀을 마주합니다. 성실한 신앙 활동으로 물욕에 갇힌 내부의 한계를 깨고 영적 부흥으로 나아갑니다.\n\n**셋째, 삶의 현장에서 이뤄내는 실천과 사역**입니다. 진정한 구원은 세속의 죄악인 물욕을 내려놓고 기부를 행함으로써 완성됩니다. 성도들은 베풂의 마음으로 성소의 흙을 정성껏 일구며, 하루도 쉬지 않으며 헌신합니다. 정체란 곧 부패입니다. 탁한 피를 빼면 낫는 몸처럼, 공양과 기부, 헌신과 시련으로 스스로를 채찍질하며 묵묵히 나아갑니다.\n\n과거의 카밀레교 교리인 듯 하다. 하지만 자세히 보니 군데군데 다른 곳들이 있다. 지금의 교리는 좀 더 자연추구적인 느낌이었던 것 같은데... 이상할 정도로 물욕과 기부에 집착하는 것 같다. 신도들을 무급노동시켜 고혈을 빼먹으려고 했던 건가?",
+  "escape-route": "쓰레기장에 있는 유일한 탈출구다. 이것만 자물쇠도 없이 하루 종일 열려있다. 누군가가 탈출을 꿈꾸었던 것 같다. ...자세히 살펴보니 실밥이나 핏자국같은게 조금 묻어 있다. 바닥엔 무거운 걸 끌고 온 것인지 끌린 자국도 있다. 쓰레기를 옮겼다기엔... 조금 부자연스러워 보인다. 어쩌면 인신공양된 사람들을 여기를 통해 옮기고 처리하고 있었던 걸까...?",
+  "believer-register": "신도 관리 명부다. 명부에는 신도들의 이름, 생년월일, 직업, 주소, 동거인 여부, 교주의 한줄 평이 적혀있다. 내가 아는 신도들을 확인 해 보니 가장 최근의 변화까지 꼼꼼하게 체크한 듯 하다. 심지어 어떤 신도들은 오늘 나눈 대화까지 적혀있다. 안에는 빈 내부 서약서가 몇 장 들어있다.\n\n**서약서**\n\n신도는 카밀레교에 투신함으로써 교에 대한 절대적인 복종과 헌신을 약속합니다.\n신도는 카밀레교의 교리를 충실히 익히고 이행하며 교리에 따른 인도의 길을 걸을 것을 약속합니다.\n신도는 카밀레교의 어떤 규칙에도 반항하지 않고 충실히 따를 것을 약속합니다.\n신도는 교단의 부정, 불온한 자를 발견시 즉시 고발하여 교단의 평온을 지킬 것을 약속합니다.\n신도는 공양되는 것에 기뻐할 것을 약속합니다.\n\n서약자 :    (서명)\n카밀레교 교주\n\n...나도 서약서를 쓰긴 했지만 이 정도면 그냥 신체포기를 하라는 것과 다를 게 없는 것 같다.",
+  "accounting-ledger": "모든 신도들의 금전 내역이 적혀있다. 국세청인가 싶을 정도로 꼼꼼하게 1원 단위까지 적혀있다. 심지어 주식을 하는 신도들은 어느 종목에 몇 주를 투자했고 얼마의 손해를 봤는지도 적혀있다. 공양된 사람들의 금전 이력도 적혀있다. 자세히 살펴보니 마지막에 '**회수 완료**'라고 적혀있다. 돈 뜯어내는게 없는 종교가 어떻게 유지되는건가 했더니... 유산갈취였냐.",
+  "wonwoo-chat": "[원우]\n금일 고해성사 내용입니다.\n불온자로 추정되는 이는 아래 4명입니다.\n\n이재원 - 사제를 통해 교단의 중요 정보를 캐내려는 시도를 함\n김소영 - 거주지의 신도들을 선동하여 특정 신도를 따돌림\n박유상 - 금지물품(술)을 밀반입하여 신도들에게 배부\n한시혁 - 교단 활동에 충실하지 못함, 이지훈 신도의 고발\n방성수 - 교리집 훼손\n\n추가로 신입 신도인 김봉봉에 대한 행적 보고입니다.\n-교단 활동에 충실히 임하고 있으나 신실함이 느껴지지 않음.\n-특종을 여러번 잡아낸 기자였음.\n-근무중이던 곳에서 평소 회의감을 느끼는 모습은 없었다고 함.\n\n다른 정보를 더 입수하면 추가 보고 드리겠습니다.\n\n[교주]\n확인.\n\n[교주]\n공양은 김소영. 이재원에겐 탈출로가 있다고 흘려.\n\n[원우]\n명령대로 하겠습니다.\n\n[원우]\n번견에게 전달 완료했습니다.\n내일 중 처리 후 보고드리겠습니다.",
+  "conversation-recording": "[명호] 준 형, 그... 내일 바빠?\n\n[준휘] 응? 아직은 일정 없을 걸?!\n\n[명호] 갔다오고 싶은 데가 있는데... 나 며칠 전에도 나갔다 왔어서. 혹시 대신 갈 수 있나 해서 물어보려 했어.\n\n[한솔] 엥? 형이 우리 혼낸 적 없잖아.\n\n[준휘] 맞아~ 슈아 형 우리한텐 늘 친절했는데\n\n[교주?] 사제님들, 지금 밖에 신도들이 돌아다니고 있습니다...!\n\n[조슈아] 그래 얘들아. 낮에는 조심해야 한대도.\n\n[한솔] 지송~. 근데 솔직히 입에 안 붙어. 저 영감탱이가 더 교주같이 생겨서.\n\n[교주?] 죄, 죄송합니다...\n\n[조슈아] 죄송할 것 까지야. 그러려고 뽑은 건데, 역할에 충실한 게 뭐가 나쁘겠어.\n\n[준휘] 그래서 교주님, 명호 나갔다 와도 돼요? 되면 나도 같이 갔다 오고 싶은데!\n\n[조슈아] 상관은 없는데, 뭐 때문에 나가려는 거야?\n\n[명호] ...차. 이번에 박람회가 열린대서. 새로 사오고 싶어. 먹던 게 다 떨어졌거든.\n\n[조슈아] 아하. (살짝 웃는 소리) 하긴 명호는 잎차를 더 좋아하긴 했지.\n\n[조슈아] 다녀와, 대신에 준휘 말고 한솔이가 같이 갔다 와.\n\n[준휘] 에엥~~? (폴짝폴짝 뛰는 것인지 나무바닥이 끽끽거리는 소리) 그럼 나 간식 사다줘! 마라곤약! 훠궈곤약!\n\n[한솔] 와 그거 개맛있었는데. (씁, 하고 침을 삼키는 소리) 보이면 쓸어와야지. 아니 안보이면 내가 간다.\n\n[한솔] (급히 다가오는 듯한 발소리, 이어서 책상을 탕 치는 소리) 교주형, 저거 곤약 형도 먹어봐야해. 저거 훠궈 곤약이랑 마라 곤약이랑 같이 먹으면 (박수소리가 한번 크게) 땅콩 소스에 훠궈 찍어먹는 맛임.\n\n[조슈아] ...너 땅콩 알러지 있잖아.\n\n[명호] 어쨌든 나갔다 와도 되는 거지? (상기된 듯 기쁜 목소리) 많이 사와도 돼? 아, 교주님은 필요한 거 없어?\n\n[조슈아] 내가 너희를 위해서 뭘 못해주겠니. 먹고 싶은 만큼 사와. (서류뭉치를 책상에 탁탁 치는 소리) 글쎄, 나는 딱히 필요한 게 없네. 준휘한테 필요한 거나 많이 사와줘. 이번 주 내내 바쁠 예정이거든.\n\n[준휘] 진짜...? 어휴 다들 왜 이렇게 나가려고 하는 거야?\n\n[준휘] 여기 있으면 삼시세끼 다 주고, 따듯한 방에서 자고, 일도 안 해도 되는데! 바보들! 바보바보!\n\n[한솔] 내말이. 아 형, 오늘 석식 돈까쓰래.\n\n[준휘] 1등으로 가야지.\n\n[조슈아] 준아, 원우가 보고한 거 너한테도 보냈어. 잘 할 수 있지?\n\n[준휘] 당연하지~! 우리는 교주님 위해서면 뭐든 완벽하게 할 수 있어!"
+};
+ // Render only Markdown bold; all other characters are inserted as safe text nodes.
+ // The existing white-space:pre-wrap preserves newlines and paragraph spacing.
+ function renderEvidenceDescription(target,raw){
+  target.replaceChildren();
+  const parts=String(raw).split(/(\*\*[\s\S]+?\*\*)/g);
+  for(const part of parts){
+   if(!part)continue;
+   if(part.startsWith('**')&&part.endsWith('**')&&part.length>4){
+    const strong=document.createElement('strong');
+    strong.textContent=part.slice(2,-2);
+    target.appendChild(strong);
+   }else target.appendChild(document.createTextNode(part));
+  }
+ }
+ const EVIDENCE_ITEM_ALIASES={
+  '탈출패키지':'escape-package', '탈출 패키지':'escape-package', 'escape_package':'escape-package',
+  'escapePackage':'escape-package',
+  '전원우의 공기계 카톡 내역':'wonwoo-chat', '전원우 공기계 카톡 내역':'wonwoo-chat',
+  'wonwoo-chat-log':'wonwoo-chat', 'wonwoo-kakaotalk':'wonwoo-chat',
+  '대화녹음':'conversation-recording', '대화 녹음':'conversation-recording', 'audio-recording':'conversation-recording'
+ };
+ const canonicalEvidenceId=id=>EVIDENCE_ITEM_ALIASES[id]||id;
+ function inventoryItemId(value){
+  if(typeof value==='string')return canonicalEvidenceId(value);
+  if(value&&typeof value==='object')return inventoryItemId(value.id||value.key||value.slug||value.name);
+  return '';
+ }
+ function ownedEvidenceIds(){
+  const seen=new Set();
+  const result=[];
+  const append=value=>{
+   if(Array.isArray(value)){value.forEach(append);return}
+   const id=inventoryItemId(value);
+   if(id&&evidenceInfo[id]&&!seen.has(id)){seen.add(id);result.push(id)}
+  };
+  // Original evidence acquisition/storage remains authoritative.
+  append(load(EVIDENCE,[]));
+  // Existing separate inventory keys are read-only compatibility sources.
+  ['shindo_inventory_items_v167','shindo_items_v1','shindo_item_items_v1'].forEach(key=>append(load(key,[])));
+  // The escape package is also owned through these existing story keys.
+  if(localStorage.getItem('shindo_escape_package_owned')==='1'||localStorage.getItem('shindo_escape_package_owned')==='true'||
+     localStorage.getItem('shindo_has_escape_package')==='1'||localStorage.getItem('shindo_has_escape_package')==='true')append('escape-package');
+  return result;
+ }
+
  function load(k,fallback){try{const v=JSON.parse(localStorage.getItem(k));return v===null?fallback:v}catch(_){return fallback}}
  function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}}
  function getUnread(){
@@ -376,6 +436,7 @@
  .shindo-evidence-detail-divider{border-top:1px solid #55565c;margin:0 0 14px}
  .shindo-evidence-detail-label{font-size:13px;font-weight:700;margin-bottom:8px}
  .shindo-evidence-detail-description{font-size:13px;color:#c9c9ce;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
+ .shindo-evidence-detail-description strong{font-weight:750;color:#f1f1f3}
  .shindo-evidence-detail-footer{padding:11px 18px 16px;border-top:1px solid #45464d}
  .shindo-evidence-detail-footer button{width:100%;padding:11px;border:1px solid #71717a;border-radius:7px;background:#35363b;color:#fff;font:inherit;cursor:pointer}
  @keyframes shindo-evidence-backdrop-in{from{opacity:0}to{opacity:1}}
@@ -420,7 +481,7 @@
   const info=evidenceInfo[id]||{name:id,description:'획득한 증거품'};
   detailReturnFocus=trigger;
   evidenceModal.querySelector('.shindo-evidence-detail-name').textContent=info.name;
-  evidenceModal.querySelector('.shindo-evidence-detail-description').textContent=EVIDENCE_DETAILS[id]||'상세 정보는 준비 중입니다.';
+  renderEvidenceDescription(evidenceModal.querySelector('.shindo-evidence-detail-description'),EVIDENCE_DETAILS[id]||'상세 정보는 준비 중입니다.');
   const img=evidenceModal.querySelector('.shindo-evidence-large-image img');
   const fallback=evidenceModal.querySelector('.shindo-evidence-large-placeholder');
   img.onload=()=>{img.hidden=false;fallback.hidden=true};
@@ -445,7 +506,7 @@
   }
  },true);
  function evidence(){
-  const saved=load(EVIDENCE,[]),items=Array.isArray(saved)?[...new Set(saved)]:[];
+  const items=ownedEvidenceIds();
   if(!items.length){empty('아직 획득한 증거품이 없습니다.');return}
   items.forEach(id=>{
    const info=evidenceInfo[id]||{name:id,description:'획득한 증거품'};
