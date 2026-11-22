@@ -2293,6 +2293,59 @@ const AREA_END_KINDS=new Set(['prayer-end','art-end','living-end','main-end','co
 // Only terminal nodes are included: common dialogue and all manual choices are untouched.
 const DAY2_MORNING_AUTO_EVENING_ENDS=new Set(['prayer-end','art-end','living-end','main-end','conf-morning-end','gongyang-end']);
 function findBranchEnd(prefix,branch){return scenes.findIndex((x,i)=>i>0 && x[prefix]===branch && AREA_END_KINDS.has(x.kind))}
+// V216: Replay-only area skip for Day 2 afternoon/evening activity branches.
+// Each span is one chosen location/action. The segments are intentionally
+// separate: skip must never select an option, leave the chosen area, or cross
+// an evidence acquisition, timed choice, ending, or Day 3 transition.
+const V216_DAY2_ACTIVITY_SEGMENTS=[
+ [V197_DENY_TRASH_OFFSET,V197_DENY_RECYCLING_OFFSET],      // 쓰레기장 → 탈출로/다음 조사 선택
+ [V197_DENY_RECYCLING_OFFSET,V197_DENY_INCINERATOR_CHECK_OFFSET], // 분리수거함
+ [V197_DENY_BRACELET_OFFSET,V197_DENY_DOCUMENT1_OFFSET], // 소각로 · 팔찌
+ [V197_DENY_DOCUMENT1_OFFSET,V197_DENY_PATROL_OFFSET],   // 소각로 · 문서 1
+ [V201_PATROL_START,V201_PATROL_LIBRARY],                // 야간순찰 자원 → 조사 장소 선택
+ [V201_PATROL_LIBRARY,V201_PATROL_OFFICE],               // 본당 도서실
+ [V201_PATROL_OFFICE,V205_ESCAPE_START],                 // 본당 사무실
+ [V205_ESCAPE_START,V205_ESCAPE_TRUTH],                  // 탈출 시도 → 10초 선택지
+ [V205_ESCAPE_TRUTH,V205_ESCAPE_LIE],                    // 탈출 성공 (준휘 조우)
+ [V205_ESCAPE_LIE,V208_SLEEP_START],                     // 탈출 실패 (결렬)
+ [V208_SLEEP_START,V209_ACCEPT_BEDROOM],                 // 그냥 자자
+ [V209_ACCEPT_BEDROOM,V209_TRASH_BEDROOM],              // 경찰 협력 후 취침
+ [V209_TRASH_BEDROOM,V209_PATROL_BEDROOM],              // 쓰레기장 조사 후 취침
+ [V209_PATROL_BEDROOM,V210_PATROL_LIBRARY_BEDROOM],     // 순찰 사무실 후 취침
+ [V210_PATROL_LIBRARY_BEDROOM,V213_DAY1_BEDTIME_EXTRA_START] // 순찰 도서실 후 취침
+];
+const V216_SKIP_CHECKPOINT_KINDS=new Set([
+ 'evidence-popup','v178-hold','v197-incinerator-check',
+ 'v205-timed-choice','v205-day3','v205-bad-ending',
+ 'v178-intertitle','v178-day3-title','v178-ending','v178-coop-choice',
+ 'ending','sleep-transition'
+]);
+function findV216Day2ActivitySkipTarget(){
+ const here=scenes[index];
+ if(!here || !here.eveningDay2 || !here.v178 ||
+    !['dialogue','narration'].includes(here.kind) ||
+    here.v205Hammer || here.v205HammerWait || here.v205FadeAfter ||
+    here.patrolDuo || here.v178Audio)return -1;
+ const segment=V216_DAY2_ACTIVITY_SEGMENTS.find(([start,end])=>index>=start&&index<end);
+ if(!segment)return -1;
+ const [,end]=segment;
+ for(let j=index+1;j<end;j++){
+  const nextScene=scenes[j];if(!nextScene)break;
+  // Play these critical moments normally. Never silently award an item:
+  // the original evidence pop-up must be shown and confirmed by the player.
+  if(V216_SKIP_CHECKPOINT_KINDS.has(nextScene.kind)){
+   if(nextScene.kind==='v205-bad-ending' || nextScene.kind==='v178-ending')
+    return j-1>index?j-1:-1; // Show the last line before an ending.
+   return j;
+  }
+  if(AREA_CHOICE_KINDS.has(nextScene.kind))return j;
+  // Preserve the sound, state change, character reveal and fade at these beats.
+  if(nextScene.v205Hammer || nextScene.v205FreezeJunhui ||
+     nextScene.v205FadeAfter || nextScene.patrolDuo ||
+     nextScene.v178Audio)return j;
+ }
+ return -1; // No safe checkpoint in this area.
+}
 function findCurrentAreaSkipTarget(){
  if(localStorage.getItem(SKIP_REPLAY)!=='1')return -1;
  const scene=scenes[index];if(!scene||AREA_CHOICE_KINDS.has(scene.kind)||AREA_END_KINDS.has(scene.kind)||scene.kind==='ending'||scene.kind==='sleep-transition'||scene.kind==='evidence-popup'||scene.kind==='living-recall')return -1;
@@ -2300,6 +2353,11 @@ function findCurrentAreaSkipTarget(){
  // Never cross a manual choice, the evening intertitle, the room threshold,
  // the Day 3 title or the ending. The first replay never unlocks full-story skip.
  if(scene.eveningDay2){
+  // V216: previously unskippable Day 2 evening activities, one zone at a time.
+  // The existing confession, Seungkwan and police skips below stay unchanged.
+  if(scene.v178 && index>=V197_DENY_TRASH_OFFSET){
+   return findV216Day2ActivitySkipTarget();
+  }
   const eveningChoice=scenes.findIndex((x,i)=>i>=EVENING_DAY2_START&&i<V178_OFFSET&&x.kind==='evening-choice');
   if(index<eveningChoice)return eveningChoice;
   if(!scene.v178){
@@ -2413,7 +2471,7 @@ function runSkippedSceneState(from,to){
 function skipCurrentArea(e){
  e.stopPropagation();e.preventDefault();
  if(!overlay.classList.contains('active'))return;
- const target=findCurrentAreaSkipTarget();if(target<=index)return;
+ const target=findCurrentAreaSkipTarget();if(target<=index || v205HammerBlocked)return;
  if(scenes[target]?.kind==='v178-day3-title')prepareV178BellFromGesture();
  // Nothing may silently cross a player decision, ending, or protected common-scene boundary.
  for(let i=index+1;i<target;i++)if(AREA_CHOICE_KINDS.has(scenes[i]?.kind)||scenes[i]?.kind==='ending')return;
