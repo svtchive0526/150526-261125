@@ -978,7 +978,9 @@ function getSceneBackdrop(sceneNumber,scene){
  if(scene&&scene.artHall){
   if(scene.artBlackout)return "";
   const where=scene.artStart?'main':(scene.artLocation||artLocation||'main');
-  return where==='main'?'bg-art-hall-interior.jpg':'';
+  // V195: 서명호 집무실은 예술당 조사 분기의 office 장면에서 계속 유지한다.
+  // 미제공된 복도 배경은 기존처럼 검은 화면을 유지한다.
+  return where==='main'?'bg-art-hall-interior.jpg':where==='office'?'bg-minghao-office.jpg':'';
  }
  if(scene&&scene.prayerRoom)return 'bg-prayer-hall-interior.jpg';
  // Keep the Day 2 square photograph throughout the common square sequence;
