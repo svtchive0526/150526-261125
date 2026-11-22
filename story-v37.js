@@ -168,9 +168,9 @@ const scenes=[
  {kind:"narration",text:"고해성사가 끝난 듯 하다. 무사히 잘 넘겼을까?",branch:1},
  {kind:"dialogue",speaker:"원우",text:"이로써 당신의 죄는 모두 토해져, 신께 닿아 사해졌습니다. 당신의 생활에 행복과 안식이 있기를.",portrait:"wonwoo-body1-smile",branch:1},
  {kind:"narration",text:"다행히 의심은 피했다. 이제 생활관으로 넘어가 하루를 마무리하자.",branch:1,stopTick:true,backdrop:"bg-living-quarters-exterior.png"},
- {kind:"dialogue",speaker:"주인공",text:"정말 힘든 하루였어.. 이제 자고 내일을 시작해야겠다.",branch:1,backdrop:"bg-living-quarters-exterior.png",clearPortrait:true},
+ {kind:"dialogue",speaker:"주인공",text:"첫날부터 힘들다...",branch:1,backdrop:"bg-bongbong-room.jpg",clearPortrait:true,v213Day1Bedtime:true,v213BedtimeEntry:true},
  {kind:"sleep-transition",text:"2일차",branch:1,day:2},
- {kind:"dialogue",speaker:"주인공",text:"어, 지금 몇 시지..?",branch:1,backdrop:"bg-living-quarters-interior.png",wakeFadeIn:true},
+ {kind:"dialogue",speaker:"주인공",text:"어, 지금 몇 시지..?",branch:1,backdrop:"bg-bongbong-room.jpg",wakeFadeIn:true},
  {kind:"narration",text:"고해소의 사제라면 신도들의 모든 정보를 알고 있으리라.",branch:2,tickSpeed:1},
  {kind:"dialogue",speaker:"주인공",text:"(그를 내 편으로 포섭한다면 이곳에서 살아남기 수월할지도 모른다.)",inner:true,branch:2},
  {kind:"narration",text:"나는 그에게 이곳에 들어온 목적을 솔직하게 털어놓았다.",branch:2},
@@ -186,12 +186,12 @@ const scenes=[
  {kind:"dialogue",speaker:"원우",text:"우리는 굳건하고 흔들리지 않을 것입니다. 제가 그리 만들 것입니다.",largeText:true,redText:true,portrait:"wonwoo-body2-default",branch:2},
  {kind:"dialogue",speaker:"주인공",text:"(그가 카밀레교의 누구보다도 신실한 신도였다니...)",inner:true,branch:2,bellLoud:true},
  {kind:"ending",branch:2},
- {"kind":"dialogue","speaker":"??","text":"봉봉 씨! 새벽기도 안 가세요?","branch":1,"wakeShake":true,"portraitPlaceholder":true,"backdrop":"bg-living-quarters-interior.png"},
- {"kind":"dialogue","speaker":"주인공","text":"맞다, 여기 새벽기도가 있지…","branch":1,"backdrop":"bg-living-quarters-interior.png"},
- {"kind":"narration","text":"참석은 자율이다. 지금은 꼭두새벽. 하품이 마구 터져 나온다. 피곤하다.","branch":1,"backdrop":"bg-living-quarters-interior.png"},
- {kind:"day2-prayer-choice",branch:1,backdrop:"bg-living-quarters-interior.png"},
- {"kind":"narration","text":"일어난다. 신실한 모습을 보이면 누군가의 호감을 살지도 모른다.","branch":1,"prayer":1,"backdrop":"bg-living-quarters-interior.png"},
- {"kind":"narration","text":"다시 잔다. 기도는 개뿔. 체력이나 아끼자.","branch":1,"prayer":2,"backdrop":"bg-living-quarters-interior.png"},
+ {"kind":"dialogue","speaker":"??","text":"봉봉 씨! 새벽기도 안 가세요?","branch":1,"wakeShake":true,"portraitPlaceholder":true,"backdrop":"bg-bongbong-room.jpg"},
+ {"kind":"dialogue","speaker":"주인공","text":"맞다, 여기 새벽기도가 있지…","branch":1,"backdrop":"bg-bongbong-room.jpg"},
+ {"kind":"narration","text":"참석은 자율이다. 지금은 꼭두새벽. 하품이 마구 터져 나온다. 피곤하다.","branch":1,"backdrop":"bg-bongbong-room.jpg"},
+ {kind:"day2-prayer-choice",branch:1,backdrop:"bg-bongbong-room.jpg"},
+ {"kind":"narration","text":"일어난다. 신실한 모습을 보이면 누군가의 호감을 살지도 모른다.","branch":1,"prayer":1,"backdrop":"bg-bongbong-room.jpg"},
+ {"kind":"narration","text":"다시 잔다. 기도는 개뿔. 체력이나 아끼자.","branch":1,"prayer":2,"backdrop":"bg-bongbong-room.jpg"},
  {"kind":"narration","text":"아침이 밝았다. 중앙광장으로 가볼까...","branch":1,"sound":"footsteps","square":true},
  {"kind":"narration","text":"중앙 광장은 이미 사람들로 가득했다. 발소리와 옷깃 스치는 소리만 간간이 들렸다.","branch":1},
  {"kind":"narration","text":"기이한 정적 위로 새소리가 들려왔다.","branch":1,"sound":"birds"},
@@ -1223,6 +1223,17 @@ scenes.push(
  ...v209Day3End()
 );
 
+// V213: Day 1 post-confession bedroom script, appended to protect all preexisting
+// scene indices and players' saved story positions. After the fifth line,
+// next() returns to the original Day 2 sleep-transition node.
+const V213_DAY1_BEDTIME_EXTRA_START=scenes.length;
+scenes.push(
+ {kind:'dialogue',speaker:'주인공',text:'여기서 앞으로 지낼 생각을 하니 막막해지는군.',branch:1,backdrop:'bg-bongbong-room.jpg',clearPortrait:true,v213Day1Bedtime:true},
+ {kind:'dialogue',speaker:'주인공',text:'조금 더 빨리 적응할 필요가 있겠어.',branch:1,backdrop:'bg-bongbong-room.jpg',clearPortrait:true,v213Day1Bedtime:true},
+ {kind:'dialogue',speaker:'주인공',text:'아, 눈이 감긴다.',branch:1,backdrop:'bg-bongbong-room.jpg',clearPortrait:true,v213Day1Bedtime:true},
+ {kind:'dialogue',speaker:'주인공',text:'오늘은 그만 자야겠다.',branch:1,backdrop:'bg-bongbong-room.jpg',clearPortrait:true,v213Day1Bedtime:true,v213BedtimeFinal:true}
+);
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -2156,7 +2167,7 @@ const SKIP_REPLAY='shindo_area_skip_replay_v171';
 function hasCompletedDay1(){
  if(localStorage.getItem(SKIP_REACHED)==='1')return true;
  const n=Number(localStorage.getItem(KEY));
- return (Number.isInteger(n)&&n>=DAY2_START) || localStorage.getItem(KEY)==='complete' || !!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169');
+ return (Number.isInteger(n)&&n>=DAY2_START&&!scenes[n]?.v213Day1Bedtime) || localStorage.getItem(KEY)==='complete' || !!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169');
 }
 function flagReplay(){if(hasCompletedDay1())localStorage.setItem(SKIP_REPLAY,'1')}
 // V183: Resolve police introductions from reached story position as well as
@@ -2420,7 +2431,7 @@ function jumpV178(which){const target=V178_TARGETS[which];if(target===undefined)
 function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTyping(false);const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){finish();return}
  // V207: Resume BGM only inside the escape scene; never restart it per line.
  if(index>=V205_ESCAPE_START && index<V205_ESCAPE_LIE+100 && scene?.eveningLocation==='village' && !v207EscapeMusicFading)v207StartEscapeMusic();
- v183SyncPoliceIdentityAt(index);
+ if(!scene.v213Day1Bedtime)v183SyncPoliceIdentityAt(index);
  if(scene.v178){
   // No clock ticks are allowed during the subsequent living-quarters story.
   stopEveningTick();
@@ -2462,7 +2473,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  // This also resumes correctly when an older save is parked on a branch-end node.
  if(DAY2_MORNING_AUTO_EVENING_ENDS.has(scene.kind)){enterEveningDay2();return}
  // Keep the day in sync with real story progress, including refreshed sessions.
- try{localStorage.setItem('shindo_current_story_day_v109',String(scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1))}catch(_){}
+ try{localStorage.setItem('shindo_current_story_day_v109',String(scene.v213Day1Bedtime?1:scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1))}catch(_){}
  if(index===DAY2_START)localStorage.setItem(SKIP_REACHED,'1');
  updateAreaSkipButton();
  if(index===DAY2_START&&!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169')){
@@ -3418,6 +3429,9 @@ function next(userAdvance=false){
   locked=true;overlay.classList.add('v205-fade-out');
   timer=setTimeout(()=>{overlay.classList.remove('v205-fade-out');locked=false;index++;save();render()},1150);return;
  }
+ // V213: play the expanded Day 1 bedtime lines without renumbering saved scenes.
+ if(scenes[index]?.v213BedtimeEntry){index=V213_DAY1_BEDTIME_EXTRA_START;save();render();return;}
+ if(scenes[index]?.v213BedtimeFinal){index=DAY2_START;save();render();return;}
  if(index>=scenes.length-1){finish();return;}
  index++;save();render();
 }
