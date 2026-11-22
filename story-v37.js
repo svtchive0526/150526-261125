@@ -346,7 +346,7 @@ scenes.push(
  {"kind":"dialogue","text":"(신도들에게 예술을 통해 신앙심을 기른다나 뭐라나.)","artHall":true,"speaker":"주인공","inner":true},
  {"kind":"narration","text":"붓통과 물감 상자, 흩어진 비품을 정리하며 안을 둘러봐야 겠다.","artHall":true},
  {"kind":"art-choice","artHall":true},
- {"kind":"dialogue","text":"웬 생뚱맞은 호랑이 그림이?","artHall":true,"speaker":"주인공","inner":false,"artBranch":1,"artImage":"tiger","artFade":true,"clearPortrait":true},
+ {"kind":"dialogue","text":"웬 생뚱맞은 호랑이 그림이?","artHall":true,"speaker":"주인공","inner":false,"artBranch":1,"artImage":"tiger","artFade":true,"clearPortrait":true,"illustration":"tiger-painting"},
  {"kind":"narration","text":"자동으로 몸이 이끌렸다.","artHall":true,"artBranch":1,"artImage":"tiger"},
  {"kind":"narration","text":"멍하니 구경하고 있는데 옆으로 웬 남자가 다가왔다.","artHall":true,"artBranch":1,"portrait":"soonyoung-body2-smile","silhouette":true},
  {"kind":"dialogue","text":"와! 여기 들어와서 이 그림부터 보는 사람이 있다니!","artHall":true,"speaker":"순영","artBranch":1,"portrait":"soonyoung-body2-smile","maskSpeaker":true},
@@ -2211,7 +2211,7 @@ if(scene.eventFootsteps){if(!scene.silentFootsteps)sound('footsteps');portrait.h
 if(scene.pencil)keepPencil();else stopPencil();
 // v97: ignore volume-up cue for the removed confession clock.
 illustration.hidden=!scene.illustration;
-illustration.classList.toggle('vn-fade',scene.kind==='image'&&scene.illustration!=='mail-01');
+illustration.classList.toggle('vn-fade',!!scene.illustration&&(scene.kind==='image'&&scene.illustration!=='mail-01'||scene.illustration==='tiger-painting'));
 illustration.classList.toggle('vn-mail-zoom',scene.kind==='image'&&scene.illustration==='mail-01');
 if(scene.illustration)illustration.src='story-illustrations/'+scene.illustration+'.png';
 if(scene.kind==='image'){
