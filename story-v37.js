@@ -1192,7 +1192,8 @@ const style=document.createElement('style');style.textContent=`
 @keyframes day2-screen-shake{0%,100%{transform:translate(0,0)}20%{transform:translate(-9px,5px)}40%{transform:translate(8px,-5px)}60%{transform:translate(-5px,-4px)}80%{transform:translate(5px,3px)}}
 #shindo-vn.day2-shake .vn-box{animation:day2-screen-shake .32s linear 5}
 #shindo-vn .shindo-choices{position:absolute;z-index:8;left:50%;top:50%;transform:translate(-50%,-50%);width:min(610px,calc(100vw - 36px));padding:30px 28px;background:#141414;border:1px solid #555;border-radius:8px;display:none;flex-direction:column;gap:14px;animation:vn-image-appear 1.2s ease both;box-sizing:border-box;text-align:center}
-#shindo-vn .shindo-choices h2{font-size:clamp(22px,3vw,32px);margin:0;color:white}
+/* V203: Every in-game choice popup title uses the same 15%-smaller size. */
+#shindo-vn .shindo-choices h2{font-size:clamp(18.7px,2.55vw,27.2px);margin:0;color:white}
 #shindo-vn .shindo-choices p{font-size:15px;color:#bbb;margin:0 0 12px}
 #shindo-vn .shindo-choices button{border:1px solid #555;border-radius:5px;background:#202020;color:white;text-align:left;padding:16px;font:inherit;font-size:clamp(14px,1.6vw,17px);cursor:pointer}
 #shindo-vn .shindo-choices button:hover{background:#333;border-color:#999}
