@@ -402,7 +402,7 @@ scenes.push(
  {"kind":"narration","text":"이럴 때가 아니지. 시선을 떼고 서둘러 주변을 훑는게 좋겠다.","artHall":true,"artBranch":3},
  {"kind":"narration","text":"물건이 빼곡한 선반이 눈에 들어온다.","artHall":true,"artBranch":3},
  {"kind":"narration","text":"그중 유독 낡은 일기장 하나를 집어 든다.","artHall":true,"artBranch":3,"artBlackout":true,"artFade":true},
- {"kind":"evidence-popup","artHall":true,"artBranch":3,"evidenceId":"destroyed-document-3","evidenceTitle":"파기된 문서3","evidenceDescription":"누군가의 일기. 심하게 훼손되어 읽을 수 있는 페이지가 거의 없다.","evidenceArt":"destroyed-document-3"},
+ {"kind":"evidence-popup","artHall":true,"artBranch":3,"evidenceId":"destroyed-document-3","evidenceTitle":"파기된 문서3","evidenceDescription":"누군가의 일기. 심하게 훼손되어 읽을 수 있는 페이지가 거의 없다.","evidenceArt":"destroyed-document-3","artBlackout":true},
  {"kind":"narration","text":"멀쩡한 장을 찾아 넘겨 보았다.","artHall":true,"artBranch":3,"artImage":"diary-cover","illustration":"destroyed-document-3"},
  {"kind":"narration","text":"첫 장에는 이렇게 적혀 있었다.","artHall":true,"artBranch":3,"artImage":"diary-cover","illustration":"destroyed-document-3"},
  {"kind":"dialogue","text":"첫 번째 공양은 …다. 우리 모두 한배를 탔다...?","artHall":true,"speaker":"주인공","inner":false,"artBranch":3,"artImage":"diary-evidence","illustration":"destroyed-document-3"},
@@ -1635,9 +1635,38 @@ function showEvidencePopup(scene){
    evidenceDesc.append(secondLine);
   }
  }else evidenceDesc.textContent=scene.evidenceDescription;
- if(scene.evidenceArt){const art=document.createElement('img');art.alt=scene.evidenceTitle;art.src='story-illustrations/'+scene.evidenceArt+'.png';art.style.cssText='width:min(100%,430px);max-height:46vh;object-fit:contain';pop.querySelector('.shindo-evidence-desc').before(art)}
+ // V193: Keep the full-screen blackout opaque while the evidence image loads.
+ // Otherwise the image/card can briefly flash before the acquisition UI settles.
+ const card=pop.querySelector('.shindo-evidence-card');
+ card.style.animation='none';
+ card.style.opacity='0';
+ let evidenceImage=null;
+ if(scene.evidenceArt){
+  evidenceImage=document.createElement('img');
+  evidenceImage.alt=scene.evidenceTitle;
+  evidenceImage.style.cssText='width:min(100%,430px);max-height:46vh;object-fit:contain;display:block';
+  pop.querySelector('.shindo-evidence-desc').before(evidenceImage);
+ }
  overlay.appendChild(pop);
- pop.querySelector('button').onclick=e=>{e.stopPropagation();pop.remove();locked=false;next()};
+ let disposed=false;
+ const reveal=()=>{
+  if(disposed||!pop.isConnected)return;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   if(disposed||!pop.isConnected)return;
+   card.style.transition='opacity .38s ease';
+   card.style.opacity='1';
+  }));
+ };
+ if(evidenceImage){
+  evidenceImage.addEventListener('load',reveal,{once:true});
+  evidenceImage.addEventListener('error',reveal,{once:true});
+  evidenceImage.src='story-illustrations/'+scene.evidenceArt+'.png';
+  if(evidenceImage.complete){
+   if(evidenceImage.decode)evidenceImage.decode().catch(()=>{}).then(reveal);
+   else reveal();
+  }
+ }else reveal();
+ pop.querySelector('button').onclick=e=>{e.stopPropagation();disposed=true;pop.remove();locked=false;next()};
 }
 function playExtraAudio(filename,volume=.7){const a=new Audio('story-audio/'+filename);a.volume=volume;a.play().catch(()=>{});return a}
 function bell(times){for(let i=0;i<times;i++)setTimeout(()=>playExtraAudio('oath-bell-05.mp3',.75),i*3600)}
