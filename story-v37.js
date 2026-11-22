@@ -3321,6 +3321,8 @@ function showV205BadEnding(){
 function showV205Day3(){
  v207StopEscapeMusic(); // Audio was faded during the preceding 1.15-second blackout.
  v205StopChoice();areaSkipButton.hidden=true;stopEveningTick();stopEveningWalk();stopVnTyping(false);stopV178Bell();
+ // V217: also protect direct resume on the title, not only normal sleep flow.
+ overlay.classList.add('confession-blackout');
  storyBackdrop.style.opacity='0';applySceneBackdrop(index,scenes[index]);
  box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';locked=true;
  const center=overlay.querySelector('.vn-center')||(()=>{const n=document.createElement('div');n.className='vn-center';overlay.appendChild(n);return n})();
@@ -3646,7 +3648,12 @@ function next(userAdvance=false){
   }
   if(scenes[index+1]?.kind==='v205-day3')v207FadeEscapeMusic(1050);
   locked=true;overlay.classList.add('v205-fade-out');
-  timer=setTimeout(()=>{overlay.classList.remove('v205-fade-out');locked=false;index++;save();render()},1150);return;
+  timer=setTimeout(()=>{
+   // V217: keep the opaque black screen across the fade/title boundary.
+   // The 3rd-day title must never expose the previous bedroom photograph.
+   if(scenes[index+1]?.kind==='v205-day3')overlay.classList.add('confession-blackout');
+   overlay.classList.remove('v205-fade-out');locked=false;index++;save();render();
+  },1150);return;
  }
  // V213: play the expanded Day 1 bedtime lines without renumbering saved scenes.
  if(scenes[index]?.v213BedtimeEntry){index=V213_DAY1_BEDTIME_EXTRA_START;save();render();return;}
