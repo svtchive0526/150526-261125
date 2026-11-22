@@ -1978,6 +1978,32 @@ function keepPencil(){if(pencilAudio)return;pencilAudio=new Audio('story-audio/p
 // V219 had used v219IsDay3Activity() before the const declaration, stopping the entire story script on load.
 const V219_MODE_KEY='shindo_day3_activity_v219';
 const V219_MAIN_KEY='shindo_day3_main_branch_v219';
+// V221: Day 3 reuses the Day 2 morning scene arrays. Its mode flag must not
+// survive a return to Day 2 afternoon; otherwise the replay skip guard treats
+// Day 2 as Day 3 and hides every previously unlocked '≫ 구역 스킵' button.
+const V221_DAY3_REPLAY_BRANCH_KEYS=[
+ 'shindo_day3_activity_v219','shindo_day3_location_v219',
+ 'shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219',
+ 'shindo_day3_art_branch_v219','shindo_day3_living_branch_v219'
+];
+function v221ClearDay3ReplayBranch(){
+ for(const key of V221_DAY3_REPLAY_BRANCH_KEYS)localStorage.removeItem(key);
+ // Do not erase completed-play markers, inventory, evidence, character identity,
+ // affinity, or Seungkwan's one-time credit tokens on an afternoon rewind.
+}
+function v221RepairOldAfternoonRewind(){
+ if(localStorage.getItem(V219_MODE_KEY)!=='1')return;
+ const oldIndex=Number(localStorage.getItem(KEY));
+ const oldScene=Number.isInteger(oldIndex)?scenes[oldIndex]:null;
+ // V220 afternoon rewinds kept the Day 3 flag and stored day=2. Support those
+ // already affected saves immediately upon script load, not only new rewinds.
+ if(oldScene?.eveningDay2 || (
+   localStorage.getItem('shindo_current_story_day_v109')==='2' &&
+   oldScene && !oldScene.day3Morning && !oldScene.v218GongyangDay &&
+   !oldScene.v219Morning && !oldScene.v219Library
+ ))v221ClearDay3ReplayBranch();
+}
+v221RepairOldAfternoonRewind();
 let day2Prayer=Number(localStorage.getItem("shindo_day2_prayer")||0),day2Morning=v219IsDay3Activity()?(localStorage.getItem("shindo_day3_location_v219")||""):(localStorage.getItem("shindo_day2_morning")||"");
 let livingBranch=Number(localStorage.getItem(v219IsDay3Activity()?'shindo_day3_living_branch_v219':'shindo_living_branch_v156')||0);
 let mainBranch=Number(localStorage.getItem(v219IsDay3Activity()?V219_MAIN_KEY:'shindo_main_branch_v160')||0);
@@ -3114,6 +3140,16 @@ function restartFromDay2Afternoon(){
  portrait.classList.remove('evening-shadow','living-silhouette','art-silhouette','main-silhouette','prayer-silhouette');
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;
  // Only afternoon/evening branch decisions are replayed. Keep morning flags.
+ // V221: clear the stale Day 3 mode BEFORE rendering Day 2 again. Without this,
+ // findCurrentAreaSkipTarget() returns -1 despite the replay flag being present.
+ v221ClearDay3ReplayBranch();
+ day2Morning=localStorage.getItem('shindo_day2_morning')||'';
+ day2Prayer=Number(localStorage.getItem('shindo_day2_prayer')||0);
+ prayerBranch=Number(localStorage.getItem('shindo_prayer_branch_v99')||0);
+ artBranch=Number(localStorage.getItem('shindo_art_branch_v105')||0);
+ livingBranch=Number(localStorage.getItem('shindo_living_branch_v156')||0);
+ mainBranch=Number(localStorage.getItem('shindo_main_branch_v160')||0);
+ confMorningBranch=Number(localStorage.getItem('shindo_confession_morning_branch_v163')||0);
  eveningBranch=0;seungkwanTruthBranch=0;
  ['shindo_evening_branch_day2_v173','shindo_seungkwan_truth_branch_v177','shindo_police_coop_v178'].forEach(k=>localStorage.removeItem(k));
  try{
