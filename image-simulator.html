@@ -15,31 +15,19 @@
 <label>PC 높이 <span id="pc-height-value">66%</span><input id="pc-height" type="range" min="20" max="110" step="1" value="66"></label>
 <label>모바일 높이 <span id="mobile-height-value">60%</span><input id="mobile-height" type="range" min="20" max="110" step="1" value="60"></label>
 <div class="full buttons"><button type="button" id="reset-height">기본 높이 복원 (PC 66% / 모바일 60%)</button></div>
-<h2 class="full">캐릭터 위치 · X / Y축</h2>
-<label>PC X축 <span id="pc-x-value">0px</span><input id="pc-x" type="range" min="-400" max="400" step="1" value="0"></label>
-<label>PC Y축 <span id="pc-y-value">0px</span><input id="pc-y" type="range" min="-400" max="400" step="1" value="0"></label>
-<label>모바일 X축 <span id="mobile-x-value">0px</span><input id="mobile-x" type="range" min="-250" max="250" step="1" value="0"></label>
-<label>모바일 Y축 <span id="mobile-y-value">0px</span><input id="mobile-y" type="range" min="-300" max="300" step="1" value="0"></label>
-<div class="full buttons"><button type="button" id="reset-position">캐릭터 위치 복원 (X 0 / Y 0)</button></div>
-<p class="small full">X는 오른쪽(+)·왼쪽(-), Y는 아래(+)·위(-) 이동해. 기존 인물별 위치 보정 위에 추가 적용되며 일반·실루엣·특별 대화의 단독 일러스트를 미리 볼 수 있어.</p>
 <p class="small full">미리보기만 조절돼. 캐릭터별 크기 보정은 유지되고, 게임 실제 배치값은 변경되지 않아. 일반·실루엣·특별 대화의 단독 일러스트에 적용돼.</p>
+<div class="divider full"></div>
+<h2 class="full">캐릭터 일러스트 사이즈 · 기본값 대비 배율</h2>
+<label>PC 사이즈 <span id="pc-pscale-value">100%</span><input id="pc-pscale" type="range" min="50" max="200" step="1" value="100"></label>
+<label>모바일 사이즈 <span id="mobile-pscale-value">100%</span><input id="mobile-pscale" type="range" min="50" max="200" step="1" value="100"></label>
+<div class="full buttons"><button type="button" id="reset-pscale">기본 사이즈 복원 (PC 100% / 모바일 100%)</button></div>
+<p class="small full">캐릭터별 기본 보정값 위에 곱해지는 추가 배율이야. 100%는 현재 게임 기준이고, 120%는 조금 크게, 80%는 조금 작게 보여줘. 일반 대화·실루엣·2인 장면 모두에 반영돼.</p>
 <label>일러스트 어두워짐 <span id="dim-value">0%</span><input id="dim" type="range" min="0" max="50" step="10" value="0"></label>
 <div class="divider full"></div>
 <h2 class="full">배경 크기 · 기본 cover 기준 확대율</h2>
 <label>PC 배경 크기 <span id="pc-bgscale-value">100%</span><input id="pc-bgscale" type="range" min="50" max="200" step="1" value="100"></label>
 <label>모바일 배경 크기 <span id="mobile-bgscale-value">100%</span><input id="mobile-bgscale" type="range" min="50" max="200" step="1" value="100"></label>
 <div class="full buttons"><button type="button" id="reset-bgscale">기본 배경 크기 복원 (PC 100% / 모바일 100%)</button></div>
-<h2 class="full">배경 높이 · 세로 확대율</h2>
-<label>PC 배경 높이 <span id="pc-bgheight-value">100%</span><input id="pc-bgheight" type="range" min="50" max="200" step="1" value="100"></label>
-<label>모바일 배경 높이 <span id="mobile-bgheight-value">100%</span><input id="mobile-bgheight" type="range" min="50" max="200" step="1" value="100"></label>
-<div class="full buttons"><button type="button" id="reset-bgheight">배경 높이 복원 (PC 100% / 모바일 100%)</button></div>
-<h2 class="full">배경 위치 · X / Y축</h2>
-<label>PC 배경 X축 <span id="pc-bgx-value">0px</span><input id="pc-bgx" type="range" min="-500" max="500" step="1" value="0"></label>
-<label>PC 배경 Y축 <span id="pc-bgy-value">0px</span><input id="pc-bgy" type="range" min="-400" max="400" step="1" value="0"></label>
-<label>모바일 배경 X축 <span id="mobile-bgx-value">0px</span><input id="mobile-bgx" type="range" min="-250" max="250" step="1" value="0"></label>
-<label>모바일 배경 Y축 <span id="mobile-bgy-value">0px</span><input id="mobile-bgy" type="range" min="-300" max="300" step="1" value="0"></label>
-<div class="full buttons"><button type="button" id="reset-bgposition">배경 위치 복원 (X 0 / Y 0)</button></div>
-<p class="small full">배경 크기=전체 확대율, 높이=세로 방향 추가 확대율, X·Y=이미지의 이동 거리야. 100%·100%·(0,0)은 게임의 원래 cover 상태야. 높이를 바꾸면 배경이 세로로 늘어나거나 줄어들 수 있어.</p>
 <p class="small full">100%는 실제 게임의 배경 cover 배치와 같아. 100% 초과 시 확대·잘림, 미만 시 축소·검은 여백이 생길 수 있어. 시뮬레이션에만 반영돼.</p>
 <label>배경 어두워짐 <span id="bgdim-value">0%</span><input id="bgdim" type="range" min="0" max="50" step="10" value="0"></label>
 <div class="divider full"></div>
@@ -60,15 +48,13 @@ const urls={background:'',portrait:'',illustration:'',duoRight:''},names={backgr
 const frames=[{id:'pc',width:1280,height:800},{id:'mobile',width:390,height:844}];
 function renderScale(){for(const f of frames){const stage=$(f.id+'-stage');const iframe=$(f.id+'-frame');const visible=stage.getBoundingClientRect().width||390;const s=visible/f.width;stage.style.height=(f.height*s)+'px';iframe.style.width=f.width+'px';iframe.style.height=f.height+'px';iframe.style.transform=`scale(${s})`;}}
 function payload(){return{...urls,portraitFilename:names.portrait,type:$('type').value,character:$('character').value==='auto'?'':$('character').value,portraitStyle:$('portrait-style').value,dim:Number($('dim').value)/100,bgShade:Number($('bgdim').value)/100,duoSilhouette:$('duo-silhouette').checked,speaker:$('speaker').value,dialogue:$('dialogue').value,evidenceTitle:$('evidence-title').value,evidenceDescription:$('evidence-description').value,duoLeft:urls.portrait};}
-function update(){frames.forEach(f=>{const data={type:'shindo-image-sim:update',payload:{...payload(),baseHeightPct:Number($(f.id+'-height').value),backgroundScalePct:Number($(f.id+'-bgscale').value),backgroundHeightPct:Number($(f.id+'-bgheight').value),backgroundOffsetXPx:Number($(f.id+'-bgx').value),backgroundOffsetYPx:Number($(f.id+'-bgy').value),portraitOffsetXPx:Number($(f.id+'-x').value),portraitOffsetYPx:Number($(f.id+'-y').value)}};$(f.id+'-frame').contentWindow?.postMessage(data,'*')});$('pc-height-value').textContent=$('pc-height').value+'%';$('mobile-height-value').textContent=$('mobile-height').value+'%';$('pc-bgscale-value').textContent=$('pc-bgscale').value+'%';$('mobile-bgscale-value').textContent=$('mobile-bgscale').value+'%';$('pc-bgheight-value').textContent=$('pc-bgheight').value+'%';$('mobile-bgheight-value').textContent=$('mobile-bgheight').value+'%';for(const d of ['pc','mobile']){for(const axis of ['x','y','bgx','bgy']){$(d+'-'+axis+'-value').textContent=$(d+'-'+axis).value+'px';}}$('dim-value').textContent=$('dim').value+'%';$('bgdim-value').textContent=$('bgdim').value+'%';renderScale()}
+function update(){frames.forEach(f=>{const data={type:'shindo-image-sim:update',payload:{...payload(),baseHeightPct:Number($(f.id+'-height').value),backgroundScalePct:Number($(f.id+'-bgscale').value),portraitScalePct:Number($(f.id+'-pscale').value)}};$(f.id+'-frame').contentWindow?.postMessage(data,'*')});$('pc-height-value').textContent=$('pc-height').value+'%';$('mobile-height-value').textContent=$('mobile-height').value+'%';$('pc-pscale-value').textContent=$('pc-pscale').value+'%';$('mobile-pscale-value').textContent=$('mobile-pscale').value+'%';$('pc-bgscale-value').textContent=$('pc-bgscale').value+'%';$('mobile-bgscale-value').textContent=$('mobile-bgscale').value+'%';$('dim-value').textContent=$('dim').value+'%';$('bgdim-value').textContent=$('bgdim').value+'%';renderScale()}
 function loadImage(input,key){const file=input.files&&input.files[0];if(!file)return;if(!file.type.startsWith('image/')){$('status').textContent='이미지 파일을 선택해줘.';return} const reader=new FileReader();reader.onload=()=>{urls[key]=reader.result;names[key]=file.name.normalize('NFC');$('status').textContent=file.name+' 로딩 완료';update()};reader.onerror=()=>{$('status').textContent='이미지를 읽지 못했어.'};reader.readAsDataURL(file)}
 [['upload-bg','background'],['upload-portrait','portrait'],['upload-art','illustration'],['upload-right','duoRight']].forEach(([id,k])=>$(id).addEventListener('change',e=>loadImage(e.target,k)));
-['type','device','character','portrait-style','pc-height','mobile-height','pc-x','pc-y','mobile-x','mobile-y','pc-bgscale','mobile-bgscale','pc-bgheight','mobile-bgheight','pc-bgx','pc-bgy','mobile-bgx','mobile-bgy','dim','bgdim','duo-silhouette','speaker','dialogue','evidence-title','evidence-description'].forEach(id=>$(id).addEventListener(id==='pc-height'||id==='mobile-height'||id==='pc-x'||id==='pc-y'||id==='mobile-x'||id==='mobile-y'||id==='pc-bgscale'||id==='mobile-bgscale'||id==='pc-bgheight'||id==='mobile-bgheight'||id==='pc-bgx'||id==='pc-bgy'||id==='mobile-bgx'||id==='mobile-bgy'||id==='speaker'||id==='dialogue'||id==='evidence-title'||id==='evidence-description'?'input':'change',()=>{if(id==='device')document.body.className='mode-'+$('device').value;update()}));
+['type','device','character','portrait-style','pc-height','mobile-height','pc-pscale','mobile-pscale','pc-bgscale','mobile-bgscale','dim','bgdim','duo-silhouette','speaker','dialogue','evidence-title','evidence-description'].forEach(id=>$(id).addEventListener(id==='pc-height'||id==='mobile-height'||id==='pc-pscale'||id==='mobile-pscale'||id==='pc-bgscale'||id==='mobile-bgscale'||id==='speaker'||id==='dialogue'||id==='evidence-title'||id==='evidence-description'?'input':'change',()=>{if(id==='device')document.body.className='mode-'+$('device').value;update()}));
 document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{const p=b.dataset.preset;$('type').value=p==='silhouette'?'portrait':p;$('portrait-style').value=p==='silhouette'?'silhouette':'normal';update()}));
 $('reset-height').addEventListener('click',()=>{$('pc-height').value='66';$('mobile-height').value='60';update()});
+$('reset-pscale').addEventListener('click',()=>{$('pc-pscale').value='100';$('mobile-pscale').value='100';update()});
 $('reset-bgscale').addEventListener('click',()=>{$('pc-bgscale').value='100';$('mobile-bgscale').value='100';update()});
-$('reset-bgheight').addEventListener('click',()=>{$('pc-bgheight').value='100';$('mobile-bgheight').value='100';update()});
-$('reset-position').addEventListener('click',()=>{for(const d of ['pc','mobile'])for(const axis of ['x','y'])$(d+'-'+axis).value='0';update()});
-$('reset-bgposition').addEventListener('click',()=>{for(const d of ['pc','mobile'])for(const axis of ['bgx','bgy'])$(d+'-'+axis).value='0';update()});
 window.addEventListener('message',e=>{if(e.data?.type==='shindo-image-sim:ready')update()});window.addEventListener('resize',renderScale);new ResizeObserver(renderScale).observe($('screens'));renderScale();
 </script></body></html>

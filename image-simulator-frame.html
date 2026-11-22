@@ -12,8 +12,8 @@
 #sim-vn .vn-duo{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;display:none}
 #sim-vn .vn-duo.is-active{display:block}
 #sim-vn .vn-duo img{position:absolute;bottom:clamp(155px,23vh,245px);height:min(47vh,560px);width:auto;max-width:48vw;object-fit:contain;object-position:bottom;transform-origin:center bottom}
-#sim-vn .vn-duo .duo-left{left:31%;transform:translateX(-50%)}
-#sim-vn .vn-duo .duo-right{left:69%;transform:translateX(-50%)}
+#sim-vn .vn-duo .duo-left{left:31%;transform:translateX(-50%) scale(var(--duo-scale,1))}
+#sim-vn .vn-duo .duo-right{left:69%;transform:translateX(-50%) scale(var(--duo-scale,1))}
 #sim-vn .vn-duo img.is-shadow{filter:brightness(0)!important}
 #sim-vn.is-recall .vn-portrait{filter:grayscale(1) brightness(.75)!important}
 #sim-vn.is-recall .vn-box{filter:grayscale(1)}
@@ -169,15 +169,17 @@ function junhuiCenterCompensation(filename,baseHeightPct){
  return Math.round(-ratio*(Number.isFinite(baseHeightPct)?innerHeight*baseHeightPct/100:Math.min(innerHeight*(innerWidth<=750?.60:.66),innerWidth<=750?620:740))*100)/100;
 }
 function applyProfile(el,filename,opts={}){
- const id=opts.character||detectKey(filename), p=profiles[id]||{}, scale=opts.manualScale || p.scale || 1;
+ const id=opts.character||detectKey(filename), p=profiles[id]||{};
+ const baseScale=Number.isFinite(p.scale)?p.scale:1;
+ const manualScalePct=Number.isFinite(opts.manualScalePct)?opts.manualScalePct:100;
+ const scale=baseScale*(manualScalePct/100);
  el.style.setProperty('--portrait-scale',String(scale));
  const correction=id==='junhui'?junhuiCenterCompensation(filename,opts.baseHeightPct):0;
- const x=Number(opts.offsetXPx)||0, y=Number(opts.offsetYPx)||0;
- el.style.setProperty('--portrait-offset-x',`calc(-50% + ${correction+x}px)`,'important');
- el.style.setProperty('--portrait-offset-y',`calc(${p.y||'0px'} + ${y}px)`,'important');
+ el.style.setProperty('--portrait-offset-x', correction?`calc(-50% + ${correction}px)`:'-50%');
+ el.style.setProperty('--portrait-offset-y',p.y||'0px');
  el.style.bottom=p.bottom||'';el.style.removeProperty('height');el.style.height=p.height||'';if(Number.isFinite(opts.baseHeightPct))el.style.setProperty('height',opts.baseHeightPct+'vh','important');el.style.maxWidth=p.maxWidth||'';el.style.width='auto';
  el.classList.toggle('special-solo',opts.style==='special');
- if(opts.style==='special')el.style.setProperty('--portrait-scale','1');
+ if(opts.style==='special')el.style.setProperty('--portrait-scale',String(manualScalePct/100));
  el.classList.toggle('prayer-silhouette',opts.style==='prayer');
  el.classList.toggle('art-silhouette',opts.style==='silhouette');
  el.classList.toggle('living-silhouette',opts.style==='silhouette');
@@ -190,15 +192,13 @@ function update(d){currentData=d;const bg=$('sim-story-backdrop');const shade=(d
  bg.style.backgroundImage=d.background?`linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.46)), url(${JSON.stringify(d.background)})`:'linear-gradient(#050607,#050607)';
  bg.style.filter=shade?'brightness('+(1-shade)+')':'';
  const bgScale=Math.min(200,Math.max(50,Number(d.backgroundScalePct)||100));
- const bgHeight=Math.min(200,Math.max(50,Number(d.backgroundHeightPct)||100));
- const bgx=Number(d.backgroundOffsetXPx)||0,bgy=Number(d.backgroundOffsetYPx)||0;
- bg.style.transform=`translate(${bgx}px,${bgy}px) scale(${bgScale/100},${bgScale*bgHeight/10000})`;bg.style.transformOrigin='center center';
+ bg.style.transform=`scale(${bgScale/100})`;bg.style.transformOrigin='center center';
  $('speaker').textContent=d.speaker||'';$('dialogue').textContent=d.dialogue||'일러스트 크기와 배경의 실제 배치를 확인합니다.';
  const portrait=$('portrait'),art=$('art'),duo=$('duo');
  portrait.hidden=!d.portrait||d.type==='illustration'||d.type==='duo'||d.type==='evidence';
- if(d.portrait){portrait.src=d.portrait;applyProfile(portrait,d.portraitFilename,{style:d.portraitStyle,character:d.character,manualScale:d.manualScale,dim:d.dim,baseHeightPct:d.baseHeightPct,offsetXPx:d.portraitOffsetXPx,offsetYPx:d.portraitOffsetYPx});}
+ if(d.portrait){portrait.src=d.portrait;applyProfile(portrait,d.portraitFilename,{style:d.portraitStyle,character:d.character,manualScalePct:Number(d.portraitScalePct)||100,dim:d.dim,baseHeightPct:d.baseHeightPct});}
  art.hidden=!(d.type==='illustration' && d.illustration);if(d.illustration)art.src=d.illustration;
- duo.classList.toggle('is-active',d.type==='duo');for(const [key,el] of [['duoLeft',$('left')],['duoRight',$('right')]]){el.hidden=!d[key];if(d[key])el.src=d[key];el.classList.toggle('is-shadow',!!d.duoSilhouette);}
+ duo.classList.toggle('is-active',d.type==='duo');duo.style.setProperty('--duo-scale',String((Number(d.portraitScalePct)||100)/100));for(const [key,el] of [['duoLeft',$('left')],['duoRight',$('right')]]){el.hidden=!d[key];if(d[key])el.src=d[key];el.classList.toggle('is-shadow',!!d.duoSilhouette);}
  $('evidence').classList.toggle('visible',d.type==='evidence');if(d.type==='evidence'){$('evidence-img').src=d.illustration||d.portrait||'';$('evidence-title').textContent=d.evidenceTitle||'증거품 획득';$('evidence-desc').textContent=d.evidenceDescription||'여기에 아이템 설명이 나타납니다.'}
 }
 window.addEventListener('message',e=>{if(e.data?.type==='shindo-image-sim:update')update(e.data.payload)});
