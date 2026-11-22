@@ -1152,6 +1152,21 @@ scenes.push(
  {"kind":"v205-bad-ending","v178":true,"eveningDay2":true,"eveningLocation":"dark"}
 );
 
+
+// V208: 2일차 저녁 [그냥 자자]. Append after earlier scene arrays to avoid
+// changing existing save indices and branching offsets.
+const V208_SLEEP_START=scenes.length;
+scenes.push(
+ {"kind":"dialogue","v178":true,"eveningDay2":true,"eveningLocation":"bongbong","speaker":"주인공","text":"아, 너무 힘든 하루였어.","clearPortrait":true},
+ {"kind":"dialogue","v178":true,"eveningDay2":true,"eveningLocation":"bongbong","speaker":"주인공","text":"들어온지 이틀만에... 아까 그 사람은 뭐지?","clearPortrait":true},
+ {"kind":"dialogue","v178":true,"eveningDay2":true,"eveningLocation":"bongbong","speaker":"주인공","text":"이름이... '부승관'이랬나?","boldWord":"부승관","clearPortrait":true},
+ {"kind":"dialogue","v178":true,"eveningDay2":true,"eveningLocation":"bongbong","speaker":"주인공","text":"머리가 너무 복잡하군.","clearPortrait":true},
+ {"kind":"dialogue","v178":true,"eveningDay2":true,"eveningLocation":"bongbong","speaker":"주인공","text":"오늘은 그냥 일찍 자야겠다.","clearPortrait":true},
+ {"kind":"dialogue","v178":true,"eveningDay2":true,"eveningLocation":"bongbong","speaker":"주인공","text":"시간은 많으니까, 내일 또 찾아내보자.","clearPortrait":true,"v205FadeAfter":true},
+ {"kind":"v205-day3","v178":true,"eveningDay2":true,"eveningLocation":"dark","text":"3일차"},
+ {"kind":"v178-hold","v178":true,"eveningDay2":true,"eveningLocation":"dark","v178Hold":"day3-after-sleep"}
+);
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -2359,7 +2374,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   if(scene.kind==='v205-timed-choice'){applySceneBackdrop(index,scene);showV205TimedChoice();return}
   if(scene.kind==='v205-bad-ending'){showV205BadEnding();return}
   if(scene.kind==='v205-day3'){showV205Day3();return}
-  if(scene.kind==='v178-hold'){areaSkipButton.hidden=true;showV178Holding(scene.v178Hold);return}
+  if(scene.kind==='v178-hold'){if(scene.v178Hold==='sleep-now'){index=V208_SLEEP_START;save();render();return}areaSkipButton.hidden=true;showV178Holding(scene.v178Hold);return}
   if(scene.kind==='v197-incinerator-check'){areaSkipButton.hidden=true;showV197IncineratorCheck();return}
   if(scene.kind==='v178-intertitle'||scene.kind==='v178-day3-title'){
    areaSkipButton.hidden=true;stopV178Bell();v178Patrol(null);storyBackdrop.style.opacity='0';applySceneBackdrop(index,scene);
@@ -2386,7 +2401,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  // This also resumes correctly when an older save is parked on a branch-end node.
  if(DAY2_MORNING_AUTO_EVENING_ENDS.has(scene.kind)){enterEveningDay2();return}
  // Keep the day in sync with real story progress, including refreshed sessions.
- try{localStorage.setItem('shindo_current_story_day_v109',String(index>=DAY2_START?2:1))}catch(_){}
+ try{localStorage.setItem('shindo_current_story_day_v109',String(scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1))}catch(_){}
  if(index===DAY2_START)localStorage.setItem(SKIP_REACHED,'1');
  updateAreaSkipButton();
  if(index===DAY2_START&&!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169')){
@@ -3054,7 +3069,7 @@ function showV178Holding(type){
   const options=['쓰레기장','야간순찰 자원','탈출 시도','그냥 자자'];
   el.innerHTML='<h2>일단 저녁 시간이니까, 움직이자.</h2><p>저녁 활동이다. 어디로 가볼까?</p><div class="shindo-morning-options">'+options.map((t,i)=>'<button type="button" data-v197-night="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
   el.style.display='flex';
-  el.querySelectorAll('[data-v197-night]').forEach(button=>button.onclick=e=>{e.stopPropagation();const value=Number(button.dataset.v197Night)||0;window.SHINDO_addPlayRecord?.('선택','2일차 저녁 활동: '+options[value-1]);if(value===1)window.SHINDO_applyAffinityEvent?.('afternoon','쓰레기장 수색',2);const targets={1:V197_DENY_TRASH_OFFSET,2:V201_PATROL_START,3:V205_ESCAPE_START,4:V197_DENY_SLEEP_OFFSET};const target=targets[value];if(Number.isInteger(target)){if(value===3)v207StartEscapeMusic();else v207StopEscapeMusic();el.style.display='none';locked=false;index=target;save();render();}});
+  el.querySelectorAll('[data-v197-night]').forEach(button=>button.onclick=e=>{e.stopPropagation();const value=Number(button.dataset.v197Night)||0;window.SHINDO_addPlayRecord?.('선택','2일차 저녁 활동: '+options[value-1]);if(value===1)window.SHINDO_applyAffinityEvent?.('afternoon','쓰레기장 수색',2);const targets={1:V197_DENY_TRASH_OFFSET,2:V201_PATROL_START,3:V205_ESCAPE_START,4:V208_SLEEP_START};const target=targets[value];if(Number.isInteger(target)){if(value===3)v207StartEscapeMusic();else v207StopEscapeMusic();el.style.display='none';locked=false;index=target;save();render();}});
   return;
  }
  if(type==='patrol-choice'){
@@ -3085,7 +3100,8 @@ function showV178Holding(type){
   'escape-attempt':'탈출 시도 루트는 다음 업데이트에서 이어집니다.',
   'sleep-now':'그냥 자자 루트는 다음 업데이트에서 이어집니다.',
   'trash-return':'쓰레기장 조사를 마쳤다. 이후 이야기는 다음 업데이트에서 이어집니다.',
-  'day3-after-escape':'3일차 이후 스토리는 다음 업데이트에서 이어집니다.'
+  'day3-after-escape':'3일차 이후 스토리는 다음 업데이트에서 이어집니다.',
+  'day3-after-sleep':'3일차 이후 스토리는 다음 업데이트에서 이어집니다.'
  };
  el.innerHTML='<h2>2일차 저녁 스토리</h2><p>'+(messages[type]||(type==='deny'?'승관에게 진실을 말하지 않은 이후의 이야기는 다음 업데이트에서 이어집니다.':'이후 이야기는 다음 업데이트에서 이어집니다.'))+'</p><button type="button" class="shindo-morning-return">오전 활동 선택지 돌아가기 (테스트)</button>';
  el.style.display='flex';el.querySelector('.shindo-morning-return').onclick=e=>{e.stopPropagation();stopV178Bell();returnToMorningActivities()};
