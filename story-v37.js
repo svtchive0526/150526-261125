@@ -736,7 +736,7 @@ scenes.push(
 
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"dark","text":"(...섣불렀던 걸까?)","speaker":"주인공","portrait":"wonwoo-body2-eyesclosed","eveningShade":0.5,"eveningBranch":1},
  {"kind":"narration","eveningDay2":true,"eveningLocation":"living","text":"생활관으로 돌아가는 내내 불안감에 시달렸다.","eveningBranch":1,"clearPortrait":true},
- {"kind":"narration","eveningDay2":true,"eveningLocation":"living","text":"생활관으로 가는 중인데...","eveningBranch":1,"clearPortrait":true},
+ {"kind":"ending","eveningDay2":true,"eveningLocation":"dark","eveningBranch":1,"endingRoute":"doksil-day2-info"},
  {"kind":"narration","eveningDay2":true,"eveningLocation":"living","text":"서늘한 저녁 공기 사이로 누군가의 어깨가 툭 와 부딪혔다.","eveningBranch":1,"portrait":"seungkwan-body1-sweating","livingSilhouette":true},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","text":"아이고, 죄송합니다!","speaker":"승관","portrait":"seungkwan-body1-sweating","eveningBranch":1,"maskSpeaker":true},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"living","text":"어떡하지, 다친 데는 없으시죠?","speaker":"승관","portrait":"seungkwan-body1-sweating","eveningBranch":1,"maskSpeaker":true},
@@ -1818,6 +1818,12 @@ function findCurrentAreaSkipTarget(){
   if(index<eveningChoice)return eveningChoice;
   if(!scene.v178){
    if(scene.eveningBranch!==1&&scene.eveningBranch!==2)return -1;
+   // V189: information-gathering now ends in the existing Doksil ending.
+   // Replay skip stops at the last story line BEFORE the ending; never crosses it.
+   if(scene.eveningBranch===1){
+    const endingAt=scenes.findIndex((x,i)=>i>index&&i<V178_OFFSET&&x.kind==='ending'&&x.endingRoute==='doksil-day2-info');
+    return endingAt>index+1?endingAt-1:-1;
+   }
    const nextChoice=scenes.findIndex((x,i)=>i>index&&i<V178_OFFSET&&x.kind==='seungkwan-choice'&&x.eveningBranch===scene.eveningBranch);
    return nextChoice;
   }
@@ -2097,6 +2103,14 @@ if(scene.branch&&selectedBranch&&scene.branch!==selectedBranch){index++;save();r
  if(scene.livingBranch&&livingBranch&&scene.livingBranch!==livingBranch){index++;save();render();return}
  if(scene.mainBranch&&mainBranch&&scene.mainBranch!==mainBranch){index++;save();render();return}
  if(scene.confMorningBranch&&confMorningBranch&&scene.confMorningBranch!==confMorningBranch){index++;save();render();return}
+ // V189: upgrade old saves that were already past the new Doksil ending checkpoint.
+ if(eveningBranch===1 && scene.eveningBranch===1 && scene.eveningDay2 && !scene.v178){
+  const doksilAt=scenes.findIndex(x=>x.endingRoute==='doksil-day2-info');
+  const otherRouteAt=scenes.findIndex((x,i)=>i>doksilAt&&x.eveningBranch===2);
+  if(doksilAt>=0 && index>doksilAt && (otherRouteAt<0 || index<otherRouteAt)){
+   index=doksilAt;save();render();return;
+  }
+ }
  if(scene.eveningBranch&&eveningBranch&&scene.eveningBranch!==eveningBranch){index++;save();render();return}
  // V150: The Day 2 central-square scene has no Wonwoo appearance.
 // Portraits from the confessional (or an old asynchronous preload) must not leak
