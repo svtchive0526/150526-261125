@@ -11,6 +11,8 @@
  const MET='shindo_met_characters_v108';
  const HISTORY_DAY='shindo_current_story_day_v109';
  const AFFINITY_UNREAD='shindo_affinity_unread_v125';
+ const JUNHUI_LOCK='shindo_junhui_affinity_locked_v205';
+ const isAffinityLocked=name=>name==='준휘'&&localStorage.getItem(JUNHUI_LOCK)==='1';
  const AFFINITY_BLINK_MS=1100;
  const AFFINITY_BLINK_COUNT=5;
  const affinityNoticeTimers=new Map();
@@ -153,7 +155,7 @@
   if(!Object.prototype.hasOwnProperty.call(result,'조슈아') || Number(result['조슈아'])===0)result['조슈아']=100;
   return result;
  }
- function updateAffinity(person,score){const values=getAffinity();const before=Number(values[person])||0;const after=Math.max(0,Math.min(100,Math.round(Number(score)||0)));values[person]=after;save(AFFINITY,values);if(before!==after)addUnread([person])}
+ function updateAffinity(person,score){if(isAffinityLocked(person))return;const values=getAffinity();const before=Number(values[person])||0;const after=Math.max(0,Math.min(100,Math.round(Number(score)||0)));values[person]=after;save(AFFINITY,values);if(before!==after)addUnread([person])}
  window.SHINDO_setAffinity=(person,score)=>{if(!PEOPLE.some(p=>p[0]===person))return;updateAffinity(person,score);document.dispatchEvent(new Event('shindo-inventory-change'))};
  // Each authored event may be granted only once per day, even after a reload or revisit.
  // All negative values are clamped at zero; positive values at 100.
@@ -194,6 +196,7 @@
   const values=getAffinity();
   const changed=[];
   for(const [name,delta] of changes){
+   if(isAffinityLocked(name))continue;
    const before=Number(values[name])||0;
    const after=Math.max(0,Math.min(100,Math.round(before+delta)));
    values[name]=after;
@@ -286,12 +289,14 @@
      if(creditedIndividuals.has(individualKey))continue;
      creditedIndividuals.add(individualKey);
     }
+    if(isAffinityLocked(name))continue;
     expected[name]=Math.max(0,Math.min(100,(expected[name]||0)+delta));
    }
   }
   if(!hasRoom)return;
   const actual=getAffinity();let changed=false;
   for(const [name,value] of Object.entries(expected)){
+   if(isAffinityLocked(name))continue;
    if(value>(Number(actual[name])||0)){
     actual[name]=value;changed=true;
    }
@@ -370,7 +375,8 @@
   if(known&&portrait){const img=make('img','inv-avatar');img.src='story-portraits/'+portrait;img.alt=name+' 프로필';img.loading='lazy';img.onerror=()=>{img.replaceWith(make('div','inv-avatar inv-avatar-unknown','??'))};card.append(img)}
   else{card.append(make('div','inv-avatar inv-avatar-unknown',known?'??':'??'))}
   const main=make('div','inv-person-main'),top=make('div','inv-person-top');
-  top.append(make('span','',known?name:'??'),make('span','inv-person-score',known?(score+' / 100'):'??'));
+  const frozen=isAffinityLocked(name);
+  top.append(make('span','',known?name:'??'),make('span','inv-person-score',known?(score+' / 100'+(frozen?' · 🔒 잠금':'')):'??'));
   const meter=make('div','inv-meter'),fill=make('div','inv-fill');fill.style.width=known?score+'%':'0%';
   meter.append(fill);main.append(top,meter);card.append(main);content.append(card)
  })}
