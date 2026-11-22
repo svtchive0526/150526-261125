@@ -1048,7 +1048,7 @@ scenes.push(
  {"kind":"narration","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"서둘러 도서실을 나왔다.","clearPortrait":true},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"이만하면 수확은 충분해.","speaker":"주인공","clearPortrait":true},
  {"kind":"narration","eveningDay2":true,"eveningLocation":"library","v178":true,"text":"생활관으로 돌아가 하루를 마무리하자.","clearPortrait":true},
- {"kind":"v178-hold","eveningDay2":true,"eveningLocation":"living","v178":true,"v178Hold":"patrol-return"}
+ {"kind":"v178-hold","eveningDay2":true,"eveningLocation":"living","v178":true,"v178Hold":"patrol-library-return"}
 );
 const V201_PATROL_OFFICE=scenes.length;
 scenes.push(
@@ -1206,6 +1206,20 @@ scenes.push(
  v209BedroomLine('물론 CCTV 위치는 기존에 다 봐서, 사각지대로만 다녔다지만.'),
  v209BedroomLine('머리가 너무 아프네...'),
  v209BedroomLine('오늘은 그냥 자야지.',{v205FadeAfter:true}),
+ ...v209Day3End()
+);
+
+// V210: 도서실과 사무실의 2일차 취침 대사를 개별 연결 (저장 인덱스 보존).
+const V210_PATROL_LIBRARY_BEDROOM=scenes.length;
+scenes.push(
+ v209BedroomLine('아, 너무 힘든 하루였어.'),
+ v209BedroomLine('들어온지 이틀만에... 아까 그 사람은 뭐지?'),
+ v209BedroomLine("이름이... '부승관'이랬나?",{boldWord:'부승관'}),
+ v209BedroomLine('머리가 너무 복잡하군.'),
+ v209BedroomLine('그래도 쓸 수 있는 증거품도 얻었으니.'),
+ v209BedroomLine('분석은 내일 시간 날 때 해볼까나.'),
+ v209BedroomLine('시간은 많으니까, 내일 또 찾아내보자.'),
+ v209BedroomLine('오늘은 그만 자야겠다.',{v205FadeAfter:true}),
  ...v209Day3End()
 );
 
@@ -2417,7 +2431,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   if(scene.kind==='v205-bad-ending'){showV205BadEnding();return}
   if(scene.kind==='v205-day3'){showV205Day3();return}
   if(scene.kind==='v178-hold'){
-   const v209Targets={'sleep-now':V208_SLEEP_START,'accept':V209_ACCEPT_BEDROOM,'trash-return':V209_TRASH_BEDROOM,'patrol-return':V209_PATROL_BEDROOM};
+   const v209Targets={'sleep-now':V208_SLEEP_START,'accept':V209_ACCEPT_BEDROOM,'trash-return':V209_TRASH_BEDROOM,'patrol-return':V209_PATROL_BEDROOM,'patrol-library-return':V210_PATROL_LIBRARY_BEDROOM};
    const target=v209Targets[scene.v178Hold];
    if(Number.isInteger(target)){index=target;save();render();return}
    areaSkipButton.hidden=true;showV178Holding(scene.v178Hold);return;
