@@ -1528,6 +1528,50 @@ scenes.push(
  v226OfficeScene('v226-office-type1-end','',null,{clearPortrait:true})
 );
 
+// V230: Day 3 [기도관] returning visits, keyed exclusively to the Day-2
+// morning activity actually chosen (not to a name unlocked on Day 1).
+// Append-only: earlier scene indices and saved checkpoints remain unchanged.
+const V230_DAY3_PRAYER_CLEAN_START=scenes.length;
+const v230PrayerScene=(kind,text,speaker,branch,extra={})=>({
+ kind,text,...(speaker?{speaker}:{}),prayerRoom:true,prayerBranch:branch,
+ v230Day3Prayer:true,...extra
+});
+scenes.push(
+ // Day 2 chose [단상 위 청소] => Day 3 Han-sol follow-up.
+ v230PrayerScene('narration','한솔에게 다가가 먼저 인사를 건넸다.',null,1,{clearPortrait:true}),
+ v230PrayerScene('dialogue','또 왔네요?','한솔',1,{portrait:'hansol-body2-eyesmile'}),
+ v230PrayerScene('narration','이미 안면이 있어서인지 대화가 한결 편했다.',null,1,{portrait:'hansol-body2-eyesmile'}),
+ v230PrayerScene('narration','시시콜콜한 이야기를 나누었다.',null,1,{portrait:'hansol-body2-eyesmile'}),
+ v230PrayerScene('narration','얼마나 시시콜콜했냐면…',null,1,{portrait:'hansol-body2-eyesmile'}),
+ v230PrayerScene('dialogue','(문준휘는 마라탕을 워낙 좋아해 가끔 몰래 배달시켜 먹는다든지,)','주인공',1,{portrait:'hansol-body1-smile',boldWord:'문준휘',inner:true}),
+ v230PrayerScene('dialogue','(서명호는 캐모마일 말고도 몰래 다른 걸 그린다든지,)','주인공',1,{portrait:'hansol-body1-smile',boldWord:'서명호',inner:true}),
+ v230PrayerScene('dialogue','(조슈아는 어릴 때부터 같이 자라 친하다든지.)','주인공',1,{portrait:'hansol-body2-smile',boldWord:'조슈아',inner:true}),
+ v230PrayerScene('dialogue','특히 조쉬네는 가면 과자 얻어 먹기 좋았지. 그 형도 귀한 신분이라.','한솔',1,{portrait:'hansol-body2-smile',boldWord:'귀한 신분',portraitFadeOutAfter:true}),
+ v230PrayerScene('narration','개중 귀담아들을 만한 건...',null,1,{clearPortrait:true}),
+ v230PrayerScene('dialogue',"('서명호 사제는 짜증 나면 빨간색으로 캔버스를 물들여버린다' 정도?)",'주인공',1,{clearPortrait:true,inner:true}),
+ v230PrayerScene('dialogue','(이곳에 대해 불만이 있는 사람이라면 알아 둬서 나쁠 게 없겠지.)','주인공',1,{clearPortrait:true,inner:true}),
+ v230PrayerScene('narration','그래도 조금 더 친해진 거 같다. 꾸준히 노력해보자.',null,1,{clearPortrait:true}),
+ v230PrayerScene('prayer-end','',null,1,{clearPortrait:true})
+);
+const V230_DAY3_PRAYER_WAKE_START=scenes.length;
+scenes.push(
+ // Day 2 chose [자는 사람 깨우기] => Day 3 Seung-cheol follow-up.
+ v230PrayerScene('narration','승철에게 다가가 먼저 인사를 건넸다.',null,2,{clearPortrait:true}),
+ v230PrayerScene('dialogue','어, 봉봉이다.','승철',2,{portrait:'seungcheol-body1-eyesmile'}),
+ v230PrayerScene('narration','이미 통성명을 한 사이라 편하게 대화를 나눴다.',null,2,{portrait:'seungcheol-body1-smile'}),
+ v230PrayerScene('narration','기도관 붙박이처럼 구는 것치곤, 승철은 기도 자체엔 큰 관심이 없어 보인다.',null,2,{portrait:'seungcheol-body1-smile'}),
+ v230PrayerScene('dialogue','(수업은 안 들어가고 과방에만 눌러앉은 복학생 선배 같달까...)','주인공',2,{portrait:'seungcheol-body1-smile',inner:true}),
+ v230PrayerScene('narration','그러나 신도들을 보는 그의 눈에는 분명 다정함이 어려 있다.',null,2,{portrait:'seungcheol-body1-eyesmile'}),
+ v230PrayerScene('dialogue','혼자 있으면 밥 먹는 것도, 잠드는 것도 외로운데.','승철',2,{portrait:'seungcheol-body2-smile'}),
+ v230PrayerScene('dialogue','여기 있으면 그럴 일이 없거든.','승철',2,{portrait:'seungcheol-body2-eyesmile'}),
+ v230PrayerScene('dialogue','사람은 결국 적응의 동물이잖아.','승철',2,{portrait:'seungcheol-body2-eyesmile',portraitFadeOutAfter:true}),
+ v230PrayerScene('dialogue','(누군가의 세계를 깨려는 사람한텐 결국 날을 세우는 수밖엔 없겠지...)','주인공',2,{clearPortrait:true,inner:true}),
+ v230PrayerScene('narration','그에게는 이곳이 세상의 전부인 모양이다.',null,2,{clearPortrait:true}),
+ v230PrayerScene('narration','안쓰러우면서도, 이해는 간다.',null,2,{clearPortrait:true}),
+ v230PrayerScene('narration','그래도 조금 더 친해진 거 같다. 꾸준히 노력해보자.',null,2,{clearPortrait:true}),
+ v230PrayerScene('prayer-end','',null,2,{clearPortrait:true})
+);
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -4029,7 +4073,7 @@ function showPrayerChoice(){
  el.classList.remove('shindo-morning-grid');el.classList.add('shindo-prayer-grid');
  const options=['단상 위 청소','자는 사람 깨우기','성경 한 장 넘기기','청소 돕기'];
  el.innerHTML='<h2>뭐부터 거들어 볼까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button data-prayer="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
- el.style.display='flex';el.querySelectorAll('[data-prayer]').forEach(b=>b.onclick=e=>{e.stopPropagation();stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopVnTyping(false);prayerBranch=Number(b.dataset.prayer);window.SHINDO_addPlayRecord?.('선택','기도관 활동: '+options[prayerBranch-1]);localStorage.setItem(v219IsDay3Activity()?'shindo_day3_prayer_branch_v219':'shindo_prayer_branch_v99',String(prayerBranch));window.SHINDO_applyAffinityEvent?.('person','기도관 활동: '+options[prayerBranch-1],getMorningAffinityDay());const branchStart=findPrayerBranchStart(prayerBranch);if(v219IsDay3Activity()&&v219WasMetDay2(({1:'한솔',2:'승철',3:'석민',4:'찬'})[prayerBranch])){v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;}el.style.display='none';el.classList.remove('shindo-prayer-grid');currentPortrait='';portrait.hidden=true;illustration.hidden=true;if(branchStart!==-1){index=branchStart;locked=false;save();render();return}locked=false;next()});
+ el.style.display='flex';el.querySelectorAll('[data-prayer]').forEach(b=>b.onclick=e=>{e.stopPropagation();stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopVnTyping(false);prayerBranch=Number(b.dataset.prayer);window.SHINDO_addPlayRecord?.('선택','기도관 활동: '+options[prayerBranch-1]);localStorage.setItem(v219IsDay3Activity()?'shindo_day3_prayer_branch_v219':'shindo_prayer_branch_v99',String(prayerBranch));window.SHINDO_applyAffinityEvent?.('person','기도관 활동: '+options[prayerBranch-1],getMorningAffinityDay());const branchStart=findPrayerBranchStart(prayerBranch);if(v219IsDay3Activity()&&v219WasMetDay2(({1:'한솔',2:'승철',3:'석민',4:'찬'})[prayerBranch])){if(prayerBranch===1||prayerBranch===2){el.style.display='none';el.classList.remove('shindo-prayer-grid');currentPortrait='';portrait.hidden=true;illustration.hidden=true;index=prayerBranch===1?V230_DAY3_PRAYER_CLEAN_START:V230_DAY3_PRAYER_WAKE_START;locked=false;save();render();return;}v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;}el.style.display='none';el.classList.remove('shindo-prayer-grid');currentPortrait='';portrait.hidden=true;illustration.hidden=true;if(branchStart!==-1){index=branchStart;locked=false;save();render();return}locked=false;next()});
 }
 
 function returnToMorningActivities(){
