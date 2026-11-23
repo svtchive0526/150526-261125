@@ -548,8 +548,60 @@ html.svter-resuming-lock #svter-lock.lock-unlocking{transform:translateY(-105%)!
 #shindo-vn .shindo-morning-options button{text-align:center;min-width:0;width:100%;padding:16px 8px}
 @media(max-width:420px){#shindo-vn .shindo-morning-options{gap:9px}#shindo-vn .shindo-morning-options button{padding:14px 6px}}
 
+
+/* V253 — Compact and consistent follow-up mail toast (PC and mobile). */
+#kamille-newmail-toast{
+  position:fixed;z-index:1500;left:50%;right:auto;
+  top:24px;bottom:auto;transform:translate(-50%,-10px);
+  display:flex;flex-direction:row;align-items:center;justify-content:flex-start;
+  gap:11px;text-align:left;cursor:pointer;
+  width:min(322px,calc(100vw - 32px));min-height:70px;
+  padding:12px 14px;box-sizing:border-box;
+  border:1px solid #E2E7E2;border-radius:12px;
+  background:#FFF;-webkit-backdrop-filter:none;backdrop-filter:none;
+  box-shadow:0 6px 22px rgba(23,42,23,.09),0 1px 3px rgba(20,35,20,.035);
+  color:#273029;line-height:1.35;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:transform .22s ease,opacity .22s ease,visibility .22s ease;
+}
+#kamille-newmail-toast.show{transform:translate(-50%,0);opacity:1;visibility:visible;pointer-events:auto}
+#kamille-newmail-toast .km-toast-icon{
+  display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;
+  border-radius:9px;background:#F0F7EE;color:#398B2B;
+  font-size:18px;font-weight:500;line-height:1;
+}
+#kamille-newmail-toast .km-toast-content{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+#kamille-newmail-toast .km-toast-content strong{
+  display:block;font-size:14px;font-weight:750;letter-spacing:-.035em;
+  white-space:normal;line-height:1.25;color:#253126;
+}
+#kamille-newmail-toast .km-toast-content small{
+  display:block;font-size:11.5px;font-weight:450;letter-spacing:-.025em;
+  white-space:normal;line-height:1.3;color:#717B73;
+}
+#kamille-newmail-toast .km-toast-arrow{
+  font-size:23px;line-height:1;font-weight:300;color:#8E998F;flex:0 0 10px;
+}
+#kamille-newmail-toast:hover{border-color:#C9D8C5;box-shadow:0 7px 24px rgba(23,42,23,.12)}
+#kamille-newmail-toast:focus-visible{outline:2px solid #50AA3B;outline-offset:3px}
+@media(max-width:750px){
+ #kamille-newmail-toast{
+   top:max(16px, env(safe-area-inset-top, 0px) + 12px);bottom:auto;left:50%;right:auto;
+   transform:translate(-50%,-10px);
+   width:calc(100vw - 24px);min-height:66px;padding:11px 13px;
+   border-radius:11px;gap:10px;
+ }
+ #kamille-newmail-toast.show{transform:translate(-50%,0)}
+ #kamille-newmail-toast .km-toast-icon{flex-basis:32px;width:32px;height:32px;font-size:17px}
+ #kamille-newmail-toast .km-toast-content strong{font-size:13.5px}
+ #kamille-newmail-toast .km-toast-content small{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+ #kamille-newmail-toast{transition:none!important}
+}
+
 </style>
-<link rel="stylesheet" href="shindo-mail-modern-classic.css"><link rel="stylesheet" href="shindo-browser-chrome.css"></head><body><div id="fiction-disclaimer" aria-label="게임 시작 전 안내"><div class="disclaimer-copy">본 게임은 다소 무서운 플레이 씬이 포함되어 있으니 플레이에 주의하시기 바랍니다.<br>본 게임에 등장하는 지명, 인물, 사건, 제품, 단체 등은 실제와 무관한 것으로 허구임을 밝힙니다.</div></div><canvas id="burn-transition" aria-hidden="true"></canvas><div id="loading"><div class="loading-stack"><div class="loading-text" id="typing-text" data-text=""><span id="typed"></span><span class="type-cursor">|</span></div><button type="button" id="sound-enable" class="sound-enable">클릭하여 키보드 소리 켜기 <span aria-hidden="true">♪</span></button></div></div><div id="title-interlude" aria-label="게임 타이틀 화면"><div class="glitch-band"></div><div class="kanji-sequence" aria-live="off"><span class="kanji-word" id="kanji-word"></span></div><div class="title-symbol" role="img" aria-label="신도"></div></div><section id="svter-lock" aria-label="게임 잠금 화면" aria-hidden="true"><div class="lock-wallpaper"></div><div class="lock-content"><div class="lock-datetime"><div class="lock-clock" id="lock-clock">00:00</div><div class="lock-date" id="lock-date"></div></div><div class="lock-notifications" id="lock-notifications"><button type="button" class="lock-notice" id="sent-notice"><div class="notice-heading"><strong>메일함</strong><time id="sent-notice-time">어제 21:05</time></div><div class="notice-body">성공적으로 메일이 발송되었습니다.</div></button></div><button type="button" class="lock-open-btn" id="lock-open-btn">로그인하기</button></div><div class="pin-layer" id="pin-layer"><button type="button" class="pin-back" id="pin-back" aria-label="잠금 화면으로 돌아가기">‹</button><div class="pin-prompt" id="pin-prompt" aria-live="polite">로그인하기</div><div class="pin-hint">힌트: 내 생일</div><form class="pin-form" id="pin-form"><input class="pin-input" id="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-label="잠금 화면 비밀번호"><button class="pin-submit" type="submit">로그인하기</button></form></div></section><button type="button" id="kamille-newmail-toast" aria-label="새 메일 확인"><strong>새 메일이 도착했습니다. 확인하세요!</strong><span>카밀레교님에게서 새 메일이 수신되었습니다.</span></button><div id="app"><main class="main"><section id="login-page"><h1 class="logo">SVTER</h1><form class="login-card" id="login-form" novalidate><div class="field"><label for="user">아이디 또는 전화번호</label><input id="user" autocomplete="username" spellcheck="false" value="Bong2@carat.kr"><button type="button" class="clear" data-clear="user" aria-label="아이디 지우기">X</button></div><div class="field password" id="password-field"><label for="password">비밀번호</label><input id="password" type="password" autocomplete="current-password" value=""><button type="button" class="clear" data-clear="password" aria-label="비밀번호 지우기">X</button><div class="error-message" id="login-error" hidden>아이디 또는 비밀번호가 일치하지 않습니다. 입력한 정보를 다시 확인해 주세요.</div></div><div class="options"><label class="remember"><input type="checkbox" id="svter-remember-login" checked>로그인 상태 유지</label><div class="toggle-wrap">IP 보안 <button type="button" id="ip-toggle" class="toggle on" aria-label="IP 보안 설정" aria-pressed="true"></button></div></div><div class="login-buttons"><button type="button" class="passkey">패스키 로그인</button><button class="submit" type="submit">로그인</button></div><div class="links"><span>아이디 찾기</span><span>비밀번호 찾기</span><span>회원가입</span></div></form></section><section id="mail-page"><header class="mail-header"><div class="mail-brand"><button type="button" id="mail-home" aria-label="받은 메일함으로 돌아가기"><span class="mobile-back-chevron" aria-hidden="true">‹</span>메일보관함</button></div><div class="greeting">안녕하세요, Bong2님!</div></header><div class="mail-layout"><button type="button" id="mail-menu-backdrop" class="mail-menu-backdrop" aria-label="메일 메뉴 닫기"></button><nav class="mail-nav" id="mail-nav"><button class="nav-action" type="button">메일 쓰기</button><button class="nav-action" type="button">내게 쓰기</button><div class="counts"><div class="count"><b id="mail-unread-count">0</b>안읽음</div><div class="count"><b id="mail-important-count">0</b>중요</div><div class="count"><b id="mail-attachment-count">0</b>첨부</div><div class="count"><b id="mail-to-count">0</b>TO</div></div><div class="nav-divider"></div><button class="folder" type="button"><span class="folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M8 14h8"/></svg></span>전체 메일</button><button class="folder primary selected" type="button" data-folder="inbox"><span class="folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 13h5l2 3h4l2-3h5"/></svg></span>받은 메일함&nbsp; <b id="mail-inbox-unread-count">0</b></button><button class="folder primary" type="button" data-folder="sent"><span class="folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></span>보낸 메일함</button><button class="folder" type="button"><span class="folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m2 12 5 5 7-7"/><path d="m12 12 3 3 7-7"/></svg></span>수신 확인</button><button class="folder" type="button"><span class="folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></span>임시보관함</button><button class="folder" type="button"><span class="folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m2 7 10 7 10-7"/></svg></span>내게 쓴 메일함</button><div class="nav-divider"></div><button class="folder" type="button"><span class="folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v5m0 3h.01"/></svg></span>스팸메일함</button><button class="folder" type="button"><span class="folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 15H6L5 6"/><path d="M10 10v7m4-7v7"/></svg></span>휴지통</button></nav><section class="mail-content"><div class="mail-toolbar"><div class="chips" id="chips"></div></div><div class="mail-list" id="mail-list"></div><div class="empty" id="empty-label"></div><div class="mail-panel" id="mail-panel"></div></section></div></section></main></div><script>
+<link rel="stylesheet" href="shindo-mail-modern-classic.css"><link rel="stylesheet" href="shindo-browser-chrome.css"></head><body><div id="fiction-disclaimer" aria-label="게임 시작 전 안내"><div class="disclaimer-copy">본 게임은 다소 무서운 플레이 씬이 포함되어 있으니 플레이에 주의하시기 바랍니다.<br>본 게임에 등장하는 지명, 인물, 사건, 제품, 단체 등은 실제와 무관한 것으로 허구임을 밝힙니다.</div></div><canvas id="burn-transition" aria-hidden="true"></canvas><div id="loading"><div class="loading-stack"><div class="loading-text" id="typing-text" data-text=""><span id="typed"></span><span class="type-cursor">|</span></div><button type="button" id="sound-enable" class="sound-enable">클릭하여 키보드 소리 켜기 <span aria-hidden="true">♪</span></button></div></div><div id="title-interlude" aria-label="게임 타이틀 화면"><div class="glitch-band"></div><div class="kanji-sequence" aria-live="off"><span class="kanji-word" id="kanji-word"></span></div><div class="title-symbol" role="img" aria-label="신도"></div></div><section id="svter-lock" aria-label="게임 잠금 화면" aria-hidden="true"><div class="lock-wallpaper"></div><div class="lock-content"><div class="lock-datetime"><div class="lock-clock" id="lock-clock">00:00</div><div class="lock-date" id="lock-date"></div></div><div class="lock-notifications" id="lock-notifications"><button type="button" class="lock-notice" id="sent-notice"><div class="notice-heading"><strong>메일함</strong><time id="sent-notice-time">어제 21:05</time></div><div class="notice-body">성공적으로 메일이 발송되었습니다.</div></button></div><button type="button" class="lock-open-btn" id="lock-open-btn">로그인하기</button></div><div class="pin-layer" id="pin-layer"><button type="button" class="pin-back" id="pin-back" aria-label="잠금 화면으로 돌아가기">‹</button><div class="pin-prompt" id="pin-prompt" aria-live="polite">로그인하기</div><div class="pin-hint">힌트: 내 생일</div><form class="pin-form" id="pin-form"><input class="pin-input" id="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-label="잠금 화면 비밀번호"><button class="pin-submit" type="submit">로그인하기</button></form></div></section><button type="button" id="kamille-newmail-toast" aria-label="카밀레교에서 온 새 메일 확인" aria-live="polite"><span class="km-toast-icon" aria-hidden="true">✉</span><span class="km-toast-content"><strong>새 메일이 도착했어요</strong><small>카밀레교 · 메일함에서 확인하기</small></span><span class="km-toast-arrow" aria-hidden="true">›</span></button><div id="app"><main class="main"><section id="login-page"><h1 class="logo">SVTER</h1><form class="login-card" id="login-form" novalidate><div class="field"><label for="user">아이디 또는 전화번호</label><input id="user" autocomplete="username" spellcheck="false" value="Bong2@carat.kr"><button type="button" class="clear" data-clear="user" aria-label="아이디 지우기">X</button></div><div class="field password" id="password-field"><label for="password">비밀번호</label><input id="password" type="password" autocomplete="current-password" value=""><button type="button" class="clear" data-clear="password" aria-label="비밀번호 지우기">X</button><div class="error-message" id="login-error" hidden>아이디 또는 비밀번호가 일치하지 않습니다. 입력한 정보를 다시 확인해 주세요.</div></div><div class="options"><label class="remember"><input type="checkbox" id="svter-remember-login" checked>로그인 상태 유지</label><div class="toggle-wrap">IP 보안 <button type="button" id="ip-toggle" class="toggle on" aria-label="IP 보안 설정" aria-pressed="true"></button></div></div><div class="login-buttons"><button type="button" class="passkey">패스키 로그인</button><button class="submit" type="submit">로그인</button></div><div class="links"><span>아이디 찾기</span><span>비밀번호 찾기</span><span>회원가입</span></div></form></section><section id="mail-page"><header class="mail-header"><div class="mail-brand"><button type="button" id="mail-home" aria-label="받은 메일함으로 돌아가기"><span class="mobile-back-chevron" aria-hidden="true">‹</span>메일보관함</button></div><div class="greeting">안녕하세요, Bong2님!</div></header><div class="mail-layout"><button type="button" id="mail-menu-backdrop" class="mail-menu-backdrop" aria-label="메일 메뉴 닫기"></button><nav class="mail-nav" id="mail-nav"><button class="nav-action" type="button">메일 쓰기</button><button class="nav-action" type="button">내게 쓰기</button><div class="counts"><div class="count"><b id="mail-unread-count">0</b>안읽음</div><div class="count"><b id="mail-important-count">0</b>중요</div><div class="count"><b id="mail-attachment-count">0</b>첨부</div><div class="count"><b id="mail-to-count">0</b>TO</div></div><div class="nav-divider"></div><button class="folder" type="button"><span class="folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M8 14h8"/></svg></span>전체 메일</button><button class="folder primary selected" type="button" data-folder="inbox"><span class="folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 13h5l2 3h4l2-3h5"/></svg></span>받은 메일함&nbsp; <b id="mail-inbox-unread-count">0</b></button><button class="folder primary" type="button" data-folder="sent"><span class="folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></span>보낸 메일함</button><button class="folder" type="button"><span class="folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m2 12 5 5 7-7"/><path d="m12 12 3 3 7-7"/></svg></span>수신 확인</button><button class="folder" type="button"><span class="folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></span>임시보관함</button><button class="folder" type="button"><span class="folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m2 7 10 7 10-7"/></svg></span>내게 쓴 메일함</button><div class="nav-divider"></div><button class="folder" type="button"><span class="folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v5m0 3h.01"/></svg></span>스팸메일함</button><button class="folder" type="button"><span class="folder-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 15H6L5 6"/><path d="M10 10v7m4-7v7"/></svg></span>휴지통</button></nav><section class="mail-content"><div class="mail-toolbar"><div class="chips" id="chips"></div></div><div class="mail-list" id="mail-list"></div><div class="empty" id="empty-label"></div><div class="mail-panel" id="mail-panel"></div></section></div></section></main></div><script>
 // Preserve each player's first-ever launch time across refreshes.
 const SVTER_HAD_FIRST_LAUNCH_BEFORE_BOOT=(()=>{try{return !!localStorage.getItem('svter_first_launch_at_v1')}catch(e){return false}})();
 const SVTER_FIRST_LAUNCH_KEY='svter_first_launch_at_v1';
@@ -939,9 +991,16 @@ function primeLockAudio(){
 }
 document.addEventListener('pointerdown',primeLockAudio,{passive:true,capture:true});
 document.addEventListener('keydown',primeLockAudio,{capture:true});
-// v32: Story mail arrives once, after every church introduction screen is viewed.
+// V253: Completion and notification are independent persistent states.
+// An existing delivered mail can still surface its toast later when the browser
+// is visible. Reconcile all eight actually-viewed church introduction screens,
+// rather than relying solely on an iframe postMessage that can be lost on navigation.
+const KAMILLE_INTRO_VIEWS_KEY='kamille_intro_views_v32';
+const KAMILLE_INTRO_REQUIRED=['교회 안내','소명1','소명2','소명3','FAQ1','FAQ2','FAQ3','카밀레교의 교리'];
 const kamilleToast=document.getElementById('kamille-newmail-toast');
+const KAMILLE_TOAST_ACK_KEY='kamille_newmail_popup_ack_v253';
 let kamilleToastTimer=0;
+let kamilleToastMarkTimer=0;
 function addKamilleLockNotice(){
  if(!kamilleMailReceived()||document.getElementById('kamille-followup-lock-notice'))return;
  const notice=document.createElement('button');notice.type='button';notice.className='lock-notice';notice.id='kamille-followup-lock-notice';
@@ -950,7 +1009,8 @@ function addKamilleLockNotice(){
  lockNotificationList.prepend(notice);makeLockNoticeDismissible(notice,'kamille-followup',date.getTime());notice.addEventListener('click',()=>openLockPin(true));
 }
 function openFollowupInbox(){
- kamilleToast.classList.remove('show');clearTimeout(kamilleToastTimer);
+ kamilleToast.classList.remove('show');clearTimeout(kamilleToastTimer);clearTimeout(kamilleToastMarkTimer);
+ try{localStorage.setItem(KAMILLE_TOAST_ACK_KEY,'1')}catch(e){}
  if(!lockUnlocked)return;
  const browser=window.SHINDO_browser;
  if(browser?.selectMail)browser.selectMail();
@@ -960,37 +1020,82 @@ function openFollowupInbox(){
  window.scrollTo({top:0,left:0,behavior:'instant'});
 }
 kamilleToast.addEventListener('click',openFollowupInbox);
-// v51: Delivery and on-screen notification are separate states. A received mail
-// must not silently suppress the popup when its delivery event is missed.
-const KAMILLE_TOAST_ACK_KEY='kamille_newmail_popup_ack_v51';
+function isKamilleToastSafeToShow(){
+ if(!lockUnlocked||!document.body.classList.contains('sh-browser-unlocked'))return false;
+ if(document.visibilityState==='hidden'||document.getElementById('shindo-story')?.classList.contains('active')||document.querySelector('#shindo-vn.active'))return false;
+ const intro=document.getElementById('sh-browser-guide');
+ if(intro&&!intro.hidden)return false;
+ return true;
+}
 function showKamilleFollowupToast(){
  if(!kamilleMailReceived()||localStorage.getItem(KAMILLE_TOAST_ACK_KEY))return;
- if(!lockUnlocked||document.getElementById('shindo-story')?.classList.contains('active'))return;
- // A toast is acknowledged when displayed, not when the mail record is created.
- localStorage.setItem(KAMILLE_TOAST_ACK_KEY,'yes');
- lockNotificationChime();
- kamilleToast.classList.add('show');clearTimeout(kamilleToastTimer);
- kamilleToastTimer=setTimeout(()=>kamilleToast.classList.remove('show'),6500);
+ // Do not interrupt a mail that has already been opened. This also prevents
+ // old players who read it from seeing an upgrade-induced duplicate notice.
+ if(localStorage.getItem(KAMILLE_NEWMAIL_READ_KEY)==='1'){
+  try{localStorage.setItem(KAMILLE_TOAST_ACK_KEY,'1')}catch(e){}
+  return;
+ }
+ if(!isKamilleToastSafeToShow()||kamilleToast.classList.contains('show'))return;
+ kamilleToast.classList.add('show');
+ clearTimeout(kamilleToastTimer);clearTimeout(kamilleToastMarkTimer);
+ // Do not mark acknowledged until the popup has actually been on a visible
+ // browser screen long enough to render. Hidden tabs and onboarding defer it.
+ kamilleToastMarkTimer=setTimeout(()=>{
+  if(!kamilleToast.classList.contains('show')||!isKamilleToastSafeToShow()){
+   kamilleToast.classList.remove('show');return;
+  }
+  const r=kamilleToast.getBoundingClientRect();
+  const style=getComputedStyle(kamilleToast);
+  if(r.width===0||r.height===0||style.display==='none'||style.visibility==='hidden'){
+   kamilleToast.classList.remove('show');return;
+  }
+  try{localStorage.setItem(KAMILLE_TOAST_ACK_KEY,'1')}catch(e){}
+  lockNotificationChime();
+  kamilleToastTimer=setTimeout(()=>kamilleToast.classList.remove('show'),8000);
+ },650);
 }
 function receiveKamilleFollowup(){
  if(!localStorage.getItem('shindo_church_link_unlocked_v30'))return;
  if(!kamilleMailReceived()){
-  localStorage.setItem(KAMILLE_NEWMAIL_KEY,String(Date.now()));
+  try{localStorage.setItem(KAMILLE_NEWMAIL_KEY,String(Date.now()))}catch(e){return}
   dismissLockNotices(['sent-original','unread-first']);
-  installKamilleMail();state.inbox.unshift(newMailState('inbox',inbox[0],true));storeMailFlags();updateMailCounts();
-  if(folder==='inbox')render();addKamilleLockNotice();
+  installKamilleMail();
+  if(state.inbox.length<inbox.length){state.inbox.unshift(newMailState('inbox',inbox[0],true));storeMailFlags()}
+  updateMailCounts();
+  if(folder==='inbox')render();
+  addKamilleLockNotice();
  }
  showKamilleFollowupToast();
+}
+function haveVisitedEveryKamilleIntro(){
+ let list=[];
+ try{list=JSON.parse(localStorage.getItem(KAMILLE_INTRO_VIEWS_KEY)||'[]')}catch(e){}
+ return Array.isArray(list)&&KAMILLE_INTRO_REQUIRED.every(key=>list.includes(key));
+}
+function reconcileKamilleFollowup(){
+ if(!kamilleMailReceived()&&haveVisitedEveryKamilleIntro())receiveKamilleFollowup();
+ if(kamilleMailReceived())showKamilleFollowupToast();
 }
 window.addEventListener('message',event=>{
  if(event.origin!==location.origin||event.source!==document.getElementById('sh-church-frame')?.contentWindow)return;
  if(event.data?.type==='kamille-intro-complete-v32')receiveKamilleFollowup();
 });
-// Same-origin iframe localStorage writes do not always trigger a parent storage event.
-// Recheck on focus and at a low frequency while the game is open.
-window.addEventListener('focus',showKamilleFollowupToast);
-window.addEventListener('storage',e=>{if(e.key===KAMILLE_NEWMAIL_KEY)showKamilleFollowupToast()});
-setInterval(showKamilleFollowupToast,1600);
+window.addEventListener('focus',reconcileKamilleFollowup);
+window.addEventListener('pageshow',reconcileKamilleFollowup);
+document.addEventListener('visibilitychange',()=>{
+ if(document.visibilityState==='hidden'){
+  if(!localStorage.getItem(KAMILLE_TOAST_ACK_KEY)){
+   kamilleToast.classList.remove('show');
+   clearTimeout(kamilleToastMarkTimer);
+  }
+ }else reconcileKamilleFollowup();
+});
+window.addEventListener('storage',e=>{
+ if([KAMILLE_NEWMAIL_KEY,KAMILLE_INTRO_VIEWS_KEY,KAMILLE_TOAST_ACK_KEY].includes(e.key))reconcileKamilleFollowup();
+});
+// Same-tab iframe writes may not dispatch a parent storage event consistently.
+setInterval(reconcileKamilleFollowup,1200);
+reconcileKamilleFollowup();
 addKamilleLockNotice();
 function showNewMailNotification(silent=false){
  if(lockHasArrived||lockUnlocked)return;
