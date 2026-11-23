@@ -1776,6 +1776,39 @@ scenes.push(
 // Case ④: missed Day-2 morning and never met Soonyoung at the police meeting.
 // The original Day-2 [호랑이 그림 보기] scene is replayed (no duplicate script).
 
+// V247: Day 3 [예술당 > 캔버스 옮기기] — Minghao's ordinary revisit.
+// Append-only scenes preserve every earlier scene index and existing save.
+// The existing Minghao affinity >=60 special scene retains its priority.
+const v247ArtCanvasScene=(kind,text,speaker=null,extra={})=>({
+ kind,text,...(speaker?{speaker}:{}),artHall:true,artBranch:2,
+ v247MinghaoFollowup:true,artLocation:'main',...extra
+});
+const V247_DAY3_ART_MINGHAO_FOLLOWUP_START=scenes.length;
+scenes.push(
+ v247ArtCanvasScene('narration','명호에게 다가가 먼저 인사를 건넸다.',null,{clearPortrait:true}),
+ v247ArtCanvasScene('narration','반가운 얼굴로 맞아주었다.',null,{portrait:'minghao-body1-eyesmile'}),
+ v247ArtCanvasScene('dialogue','요즘 자주 보네요.','명호',{portrait:'minghao-body1-smile'}),
+ v247ArtCanvasScene('dialogue','미술에 관심이 있는 거예요? 너무 잘됐다.','명호',{portrait:'minghao-body2-eyesmile'}),
+ // This portrait disappears immediately without any fade when the next page opens.
+ v247ArtCanvasScene('narration','사실 그렇진 않다는 말은 삼켰다….',null,{portrait:'minghao-body2-eyesmile'}),
+ v247ArtCanvasScene('narration','때마침 물감 심부름 차 민규와 석민이 예술당에 들렀다.',null,{
+  duo:['mingyu-body1-eyesmile','seokmin-body1-eyesmile'],v247GuestDuo:true,v247MaskGuestNames:true
+ }),
+ v247ArtCanvasScene('narration','웃으며 대화하는 명호 사제의 표정이 한결 밝았다.',null,{
+  duo:['mingyu-body1-eyesmile','seokmin-body1-eyesmile'],v247GuestDuo:true
+ }),
+ // Both guest portraits disappear immediately with no fade on the next page.
+ v247ArtCanvasScene('narration','조용해 보이는 인상과 달리, 신도들과 두루두루 잘 지내는 모양이다.',null,{portrait:'minghao-body2-eyesmile'}),
+ v247ArtCanvasScene('dialogue','봉봉씨, 다 그렸어요?','명호',{portrait:'minghao-body1-smile'}),
+ v247ArtCanvasScene('dialogue','아직이요….','주인공',{portrait:'minghao-body1-smile'}),
+ v247ArtCanvasScene('dialogue','괜찮아요. 천천히 그려요.','명호',{portrait:'minghao-body1-eyesmile'}),
+ v247ArtCanvasScene('dialogue','‘나’를 그려내는 건 누구에게나 어려운 거예요.','명호',{
+  portrait:'minghao-body2-smile',portraitFadeOutAfter:true
+ }),
+ v247ArtCanvasScene('narration','좀 더 가까워진 것 같다. 앞으로 더 많은 걸 알아가자.',null,{clearPortrait:true}),
+ v247ArtCanvasScene('art-end','',null,{clearPortrait:true})
+);
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -2335,8 +2368,9 @@ function setSpecialPortraits(scene){
  duoLeft.dataset.portraitKey='duo-'+scene.duo[0];duoRight.dataset.portraitKey='duo-'+scene.duo[1];
  duoLeft.dataset.officialShouldShow='1';duoRight.dataset.officialShouldShow='1';
  assignOfficialPortrait(duoLeft,'duo-'+scene.duo[0]);assignOfficialPortrait(duoRight,'duo-'+scene.duo[1]);
- duoLeft.classList.toggle('is-shadow',scene.duoMask==='both'||scene.duoMask==='hansol');
- duoRight.classList.toggle('is-shadow',scene.duoMask==='both');
+  // V247: each guest's identity is checked separately, including mixed unlocks.
+  duoLeft.classList.toggle('is-shadow',scene.v247GuestDuo?!mingyuRevealed:(scene.duoMask==='both'||scene.duoMask==='hansol'));
+ duoRight.classList.toggle('is-shadow',scene.v247GuestDuo?!seokminRevealed:scene.duoMask==='both');
  portrait.hidden=true; // V116: always suppress previous solo portrait during duo scenes
   duoLayer.classList.add('is-active');return true;
 }
@@ -3342,7 +3376,7 @@ if(scene.kind==='image'){
 }
 
 if(scene.kind==='dialogue'&&scene.speaker==='원우'&&!scene.maskSpeaker)window.SHINDO_markCharacterMet?.('원우');
-const duoVisible=scene.specialMinghao?setSpecialPortraits(scene):false;
+const duoVisible=(scene.specialMinghao||scene.v247MinghaoFollowup)?setSpecialPortraits(scene):false;
 // V224: regular single-portrait recall needs the same visual mode as duo recalls.
 if((scene.v224OfficeType3||scene.v226OfficeType1) && scene.recall)overlay.classList.add('is-recall');
 // V115: the special branch has its own recognition moments, independent of earlier branches.
@@ -3397,7 +3431,12 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
 }
 
  if(scene.kind==='transition'){box.style.display='none';let center=overlay.querySelector('.vn-center');if(!center){center=document.createElement('div');center.className='vn-center';overlay.appendChild(center)}center.textContent=scene.text;center.style.display='block';overlay.querySelector('.vn-hint').style.display='none';locked=true;timer=setTimeout(()=>{locked=false;next()},scene.text?2300:3300);return}
- const center=overlay.querySelector('.vn-center');if(center)center.style.display='none';box.style.display='flex';overlay.querySelector('.vn-hint').style.display='block';box.classList.remove('box-shake-soft');if(scene.boxShakeSoft){void box.offsetWidth;box.classList.add('box-shake-soft')}content.textContent=scene.maskWonwoo?scene.text.replace('원우','??'):scene.text;content.style.fontSize=scene.fontScale?String(scene.fontScale)+'em':(scene.largeText?'1.25em':'');content.style.fontWeight=scene.boldAll?'800':'';content.style.color=scene.redText?'#e02020':'';
+ const center=overlay.querySelector('.vn-center');if(center)center.style.display='none';box.style.display='flex';overlay.querySelector('.vn-hint').style.display='block';box.classList.remove('box-shake-soft');if(scene.boxShakeSoft){void box.offsetWidth;box.classList.add('box-shake-soft')}content.textContent=scene.maskWonwoo?scene.text.replace('원우','??'):scene.text;
+  // V247: reveal each visitor's name only after that specific character is known.
+  if(scene.v247MaskGuestNames){
+   content.textContent=content.textContent.replace('민규',mingyuRevealed?'민규':'??').replace('석민',seokminRevealed?'석민':'??');
+  }
+  content.style.fontSize=scene.fontScale?String(scene.fontScale)+'em':(scene.largeText?'1.25em':'');content.style.fontWeight=scene.boldAll?'800':'';content.style.color=scene.redText?'#e02020':'';
  if(scene.redWord){const at=content.textContent.indexOf(scene.redWord);if(at>=0){const txt=content.textContent;content.textContent='';content.append(document.createTextNode(txt.slice(0,at)));const b=document.createElement('strong');b.style.color='#d41616';b.textContent=scene.redWord;content.append(b,document.createTextNode(txt.slice(at+scene.redWord.length)))}}
  if(scene.boldPhrase){const at=content.textContent.indexOf(scene.boldPhrase);if(at>=0){const txt=content.textContent;content.textContent='';content.append(document.createTextNode(txt.slice(0,at)));const b=document.createElement('strong');b.textContent=scene.boldPhrase;content.append(b,document.createTextNode(txt.slice(at+scene.boldPhrase.length)))}}
  if(scene.boldWord){const target=scene.boldWord;const at=content.textContent.indexOf(target);if(at>=0){const txt=content.textContent;content.textContent='';content.append(document.createTextNode(txt.slice(0,at)));const b=document.createElement('strong');b.textContent=target;content.append(b,document.createTextNode(txt.slice(at+target.length)))}}
@@ -4359,6 +4398,11 @@ function showArtChoice(){
   e.stopPropagation();stopArtAudio();stopVnTyping(false);artBranch=Number(b.dataset.art);window.SHINDO_addPlayRecord?.('선택','예술당 활동: '+options[artBranch-1]);artLocation='main';artImage='';
   localStorage.setItem(v219IsDay3Activity()?'shindo_day3_art_branch_v219':'shindo_art_branch_v105',String(artBranch));window.SHINDO_applyAffinityEvent?.('person','예술당 활동: '+options[artBranch-1],getMorningAffinityDay());
   if(artBranch===2&&getMinghaoAffinity()>=60){startMinghaoSpecial(false);return}
+   // Day 3 revisits follow the actual Day 2 morning canvas selection, not name unlock.
+   if(v219IsDay3Activity()&&artBranch===2&&v219WasMetDay2('명호')){
+    currentPortrait='';portrait.hidden=true;illustration.hidden=true;el.style.display='none';
+    index=V247_DAY3_ART_MINGHAO_FOLLOWUP_START;locked=false;save();render();return;
+   }
   if(v219IsDay3Activity()&&artBranch===1){
    const wasMet=v219WasMetDay2('순영');
    const policeMet=v241MetSeokminAtPoliceDay2(); // The same three-member Day-2 police meeting.
