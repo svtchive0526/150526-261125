@@ -1,0 +1,41 @@
+/* SHINDO V234 — 3 + 1 browser-bar hybrid redesign.
+ * This styles the existing browser-v20.js browser bar; it DOES NOT add a second bar.
+ * Keeps working tab open/count/close and existing church/document mail routing.
+ * Selected tab and address field stay PURE WHITE with an unobtrusive gray outline.
+ */
+@media (min-width:751px) {
+  #app .main {padding-top:80px!important;}
+  #sh-browserbar {height:80px!important;min-height:80px!important;padding:0!important;gap:0!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;background:#FFFFFF!important;border-bottom:1px solid #E3E7E3!important;box-sizing:border-box!important;}
+  #sh-browserbar .sh-tab-strip {display:flex!important;align-items:flex-end!important;gap:6px!important;height:34px!important;min-height:34px!important;width:100%!important;align-self:stretch!important;justify-content:flex-start!important;padding:4px 14px 0!important;border-bottom:1px solid #E3E7E3!important;background:#FFFFFF!important;}
+  #sh-browserbar .sh-tab-shell {display:flex!important;align-items:center!important;gap:8px!important;width:185px!important;max-width:min(45vw,225px)!important;height:30px!important;min-height:30px!important;background:#FFFFFF!important;border:1px solid #E3E7E3!important;border-bottom:1px solid #FFFFFF!important;border-radius:8px 8px 0 0!important;margin-bottom:-1px!important;padding:0 10px!important;box-shadow:none!important;box-sizing:border-box!important;}
+  #sh-browserbar .sh-tab-favicon {display:inline-flex!important;align-items:center!important;justify-content:center!important;font-size:15px!important;color:#39A33D!important;flex:0 0 auto!important;}
+  #sh-browserbar #sh-tab-a.sh-tablabel {display:block!important;flex:1!important;width:auto!important;min-width:0!important;max-width:none!important;height:auto!important;line-height:normal!important;padding:0!important;margin:0!important;white-space:nowrap!important;text-align:left!important;overflow:hidden!important;text-overflow:ellipsis!important;background:#FFFFFF!important;border:0!important;border-radius:0!important;color:#323B34!important;font-size:12px!important;font-weight:650!important;}
+  #sh-browserbar .sh-tab-close {width:20px!important;height:20px!important;flex:0 0 20px!important;background:#FFFFFF!important;border:0!important;border-radius:5px!important;color:#8A948D!important;font-size:17px!important;font-weight:400!important;line-height:18px!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;}
+  #sh-browserbar .sh-tab-close:hover {background:#F5F7F5!important;color:#303A33!important;}
+  #sh-browserbar #sh-plus.sh-circle {width:27px!important;height:27px!important;min-width:27px!important;flex:0 0 27px!important;border:0!important;background:#FFFFFF!important;border-radius:6px!important;color:#757E77!important;font-size:22px!important;line-height:22px!important;margin:0 0 1px!important;cursor:pointer!important;}
+  #sh-browserbar #sh-plus:hover {background:#F5F7F5!important;}
+  #sh-browserbar .sh-toolbar {display:flex!important;align-items:center!important;gap:6px!important;padding:0 13px!important;height:45px!important;min-height:45px!important;width:100%!important;background:#FFFFFF!important;}
+  #sh-browserbar .sh-browser-nav {display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 25px!important;width:25px!important;height:28px!important;color:#757F78!important;font-size:25px!important;font-weight:400!important;line-height:1!important;}
+  #sh-browserbar .sh-browser-nav-disabled{color:#C1C7C2!important;}
+  #sh-browserbar .sh-browser-reload{font-size:20px!important;}
+  #sh-browserbar #sh-address.sh-address{display:flex!important;align-items:center!important;justify-content:flex-start!important;flex:1 1 auto!important;min-width:90px!important;max-width:none!important;width:auto!important;height:29px!important;padding:0 12px 0 31px!important;margin:0!important;border:1px solid #E3E7E3!important;border-radius:7px!important;background:#FFFFFF!important;color:#5C695E!important;font-size:12px!important;letter-spacing:-.012em!important;font-weight:450!important;text-align:left!important;position:relative!important;box-sizing:border-box!important;}
+  #sh-browserbar #sh-address::before {content:'';position:absolute;left:10px;top:7px;width:13px;height:14px;background: center/contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2339A33D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='10' width='14' height='11' rx='2'/%3E%3Cpath d='M8 10V7a4 4 0 0 1 8 0v3'/%3E%3C/svg%3E");}
+  #sh-browserbar #sh-tab-b {display:none!important;}
+  #sh-browserbar .sh-chrome-spacer {display:none!important;}
+  #sh-browserbar #sh-count.sh-count{width:29px!important;height:29px!important;min-width:29px!important;flex:0 0 29px!important;border:1px solid #D9DFDA!important;background:#FFFFFF!important;border-radius:8px!important;color:#667268!important;font-size:15px!important;font-weight:600!important;line-height:1!important;padding:0!important;}
+  #sh-browserbar #sh-menu.sh-menu{width:28px!important;height:29px!important;min-width:28px!important;flex:0 0 28px!important;border:0!important;background:#FFFFFF!important;border-radius:6px!important;color:#67736A!important;font-size:24px!important;line-height:1!important;padding:0!important;}
+  #sh-browserview,#sh-church-layer,#sh-document-layer{top:80px!important;}
+  #sh-church-frame{height:calc(100dvh - 80px)!important;}
+}
+@media (max-width:750px) {
+  /* Existing game convention: mobile browser controls remain at the bottom. */
+  body>#sh-browserbar {display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;height:70px!important;min-height:70px!important;background:#FFFFFF!important;border-top:1px solid #E3E7E3!important;border-bottom:0!important;padding:0 12px!important;}
+  body>#sh-browserbar .sh-tab-strip{display:none!important;}
+  body>#sh-browserbar .sh-toolbar{height:100%!important;min-width:0!important;display:flex!important;flex:1 1 auto!important;align-items:center!important;gap:8px!important;width:100%!important;background:#FFFFFF!important;}
+  body>#sh-browserbar .sh-browser-nav{display:none!important;}
+  body>#sh-browserbar #sh-tab-b{display:none!important;}
+  body>#sh-browserbar #sh-address{flex:1 1 auto!important;min-width:0!important;height:36px!important;padding:0 9px!important;border:1px solid #E3E7E3!important;border-radius:8px!important;background:#FFFFFF!important;color:#647066!important;font-size:11px!important;text-align:center!important;}
+  body>#sh-browserbar .sh-chrome-spacer{display:none!important;}
+  body>#sh-browserbar #sh-count,body>#sh-browserbar #sh-menu{background:#FFFFFF!important;border-color:#E3E7E3!important;color:#667268!important;}
+}
+body:not(.sh-browser-unlocked) #sh-browserbar {display:none!important;visibility:hidden!important;pointer-events:none!important;}
