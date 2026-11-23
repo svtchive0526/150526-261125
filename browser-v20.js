@@ -13,9 +13,36 @@ const view=document.createElement('div');view.id='sh-browserview';view.innerHTML
 const church=document.createElement('div');church.id='sh-church-layer';church.innerHTML='<iframe id="sh-church-frame" src="church/" title="카밀레교 홈페이지"></iframe>';main.append(church);
 const documentLayer=document.createElement('div');documentLayer.id='sh-document-layer';documentLayer.innerHTML='<img src="shindo_application.png" alt="카밀레교 신도 신청서">';main.append(documentLayer);
 const toast=document.createElement('div');toast.id='sh-toast';toast.textContent='아직 이용할 수 없습니다.';document.body.append(toast);
-const loading=document.createElement('div');loading.id='sh-browser-loading';loading.setAttribute('aria-label','페이지 로딩 중');document.body.append(loading);
-let loadingTimer=0;
-function showLoading(ms=540){if(!document.body.classList.contains('sh-browser-unlocked')){loading.classList.remove('active');clearTimeout(loadingTimer);return;}loading.classList.add('active');clearTimeout(loadingTimer);loadingTimer=setTimeout(()=>loading.classList.remove('active'),ms);}
+// V245: No artificial loading overlay for mail clicks, church navigation or tab changes.
+// V246: Soft, original mouse-click sound for the pre-story fictional browser only.
+// This intentionally excludes the lock screen, opening animation, and the visual novel.
+const browserClickAudio=Array.from({length:4},()=>{
+ const audio=new Audio('browser-click.wav');audio.preload='auto';audio.volume=0.78;return audio;
+});
+let browserClickAudioIndex=0;
+function browserClickEnabled(){
+ if(!document.body.classList.contains('sh-browser-unlocked'))return false;
+ if(document.querySelector('#shindo-vn.active'))return false;
+ try{if(localStorage.getItem('shindo_story_started_v37')==='1')return false}catch(e){}
+ return true;
+}
+function playBrowserClick(e){
+ if(e&&!e.isTrusted)return;
+ if(!browserClickEnabled())return;
+ const audio=browserClickAudio[browserClickAudioIndex++%browserClickAudio.length];
+ try{audio.pause();audio.currentTime=0;const playback=audio.play();if(playback?.catch)playback.catch(()=>{});}catch(e){}
+}
+// Capture clicks on both buttons and empty browser surfaces, including mobile taps.
+document.addEventListener('click',playBrowserClick,true);
+function attachChurchClickSound(){
+ try{
+  const frame=document.getElementById('sh-church-frame');
+  const doc=frame?.contentDocument;
+  if(!doc||doc.__shBrowserClickBound)return;
+  doc.__shBrowserClickBound=true;
+  doc.addEventListener('click',e=>{if(church.classList.contains('active'))playBrowserClick(e)},true);
+ }catch(e){/* Cross-origin frames cannot be instrumented; local church/ is same-origin. */}
+}
 const STORAGE_KEY='shindo_browser_tabs_v21';
 // The church shortcut is unlocked only by the link in the welcome mail.
 const CHURCH_UNLOCK_KEY='shindo_church_link_unlocked_v30';
@@ -37,7 +64,7 @@ const urlOf=t=>t.type==='mail'?mailAddress():t.type==='church'?churchAddress():t
 function mailAddress(){const panel=byId('mail-panel');if(!panel||!panel.classList.contains('active'))return 'mail.svter.com/mailinventory';if(panel.querySelector('.send-confirm'))return 'mail.svter.com/send';if(panel.querySelector('.compose-area'))return panel.querySelector('#compose-to')?.readOnly?'mail.svter.com/myself-send':'mail.svter.com/send-edit';const detail=panel.querySelector('[data-detail-kind]');if(detail)return 'mail.svter.com/'+(detail.dataset.detailKind==='sent'?'outbox':'inbox')+String(Number(detail.dataset.detailIndex)+1).padStart(2,'0');return 'mail.svter.com/mailinventory'}
 function churchAddress(){try{const doc=byId('sh-church-frame').contentDocument;const hash=byId('sh-church-frame').contentWindow.location.hash;const p=decodeURIComponent(hash.replace(/^#/,''));const m={'카밀레교의 소명':'info01','카밀레교의 역사':'info02','자주 묻는 질문':'info02','카밀레교의 교리':'info03','신도 등록':'newfam01','신도 새 모임':'newfam02','카밀레교 지도':'newfam03','예배 시간':'cele01','기도회 안내':'cele02','고해성사 안내':'cele03','교회 수련회':'training01','새 신도 환영회':'training02','교리대학':'training03'};return 'www.KamilleChurch.net/'+(m[p]||'home')}catch(e){return 'www.KamilleChurch.net/home'}}
 function sync(){const t=tabs.find(t=>t.id===active)||tabs[0]||{type:'new'};byId('sh-address').textContent=mode==='new'?'새 탭 열기':mode==='tabs'?'현재 열려있는 탭':t.type==='new'?'새 탭 열기':urlOf(t);byId('sh-count').textContent=tabs.filter(t=>t.type!=='new').length;byId('sh-tab-a').textContent=titleOf(t);byId('sh-tab-b').textContent=mode==='new'?'새 탭 열기':mode==='tabs'?'현재 열려있는 탭':t.type==='new'?'새 탭 열기':urlOf(t);church.classList.toggle('active',!mode&&t.type==='church');documentLayer.classList.toggle('active',!mode&&t.type==='document');view.classList.toggle('active',!!mode);if(t.type==='mail'&&!mode){document.querySelector('#login-page')?.removeAttribute('inert');} }
-function select(id){const selected=tabs.find(t=>t.id===id);if(selected?.type==='document'&&!documentUnlocked()){lockedNotice();return}if(selected?.type==='church'&&!churchUnlocked()){lockedNotice();return}showLoading();active=id;mode=tabs.length?'':'new';persist();if(!tabs.length){openNew();return}sync();scrollTopNow()}
+function select(id){const selected=tabs.find(t=>t.id===id);if(selected?.type==='document'&&!documentUnlocked()){lockedNotice();return}if(selected?.type==='church'&&!churchUnlocked()){lockedNotice();return}active=id;mode=tabs.length?'':'new';persist();if(!tabs.length){openNew();return}sync();scrollTopNow()}
 function create(type){if((type==='church'&&!churchUnlocked())||(type==='document'&&!documentUnlocked())){lockedNotice();return}const label=type==='mail'?'SVTER 메일함':type==='church'?'카밀레교':'첨부파일: 카밀레 새 가족';const tab={id:++seq,type,label};tabs.push(tab);select(tab.id)}
 function tile(t,forNew){const btn=document.createElement('div');btn.className='sh-tile';btn.setAttribute('role','button');btn.tabIndex=0;const name=titleOf(t);btn.innerHTML='<div class="sh-tile-title"></div><div class="sh-tile-content"></div>';btn.querySelector('.sh-tile-title').textContent=name;const content=btn.querySelector('.sh-tile-content');if(!forNew&&t.type==='document'){const img=document.createElement('img');img.src='shindo_application.png';img.className='sh-thumb';content.append(img)}else if(!forNew&&t.type==='mail'){content.innerHTML='<div class="sh-mini-mail"><b>메일보관함</b><div class="bar"></div><div class="line"></div><div class="line"></div><div class="bar"></div><div class="line"></div><div class="line"></div></div>'}else if(!forNew&&t.type==='church'){content.innerHTML='<div class="sh-mini-mail"><b>카밀레교</b><div class="line"></div><div class="line"></div><div class="bar"></div><div class="line"></div></div>'}else content.textContent='사용할 수 있습니다.';btn.addEventListener('click',()=>forNew?create(t.type):select(t.id));btn.addEventListener('keydown',e=>{if(e.target===btn&&(e.key==='Enter'||e.key===' ')){e.preventDefault();forNew?create(t.type):select(t.id)}});
 const matching=forNew?tabs.find(x=>x.type===t.type):t;
@@ -53,26 +80,27 @@ function closeTab(id){
  tabs.splice(index,1);
  if(active===id)active=tabs[Math.max(0,index-1)]?.id??null;
  if(previous===id)previous=active;
- persist();showLoading(350);
+ persist();
  if(mode==='new')openNew();
  else if(mode==='tabs')openTabs();
  else if(tabs.length)select(active);
  else openNew();
 }
-function openNew(){showLoading(430);previous=active;mode='new';scrollTopNow();byId('sh-view-title').textContent='새 탭 열기';byId('sh-view-return').textContent='탭 닫기';const grid=byId('sh-grid');grid.replaceChildren();[{type:'mail'},{type:'church'},{type:'document'}].forEach(t=>grid.append(tile(t,true)));sync()}
-function openTabs(){showLoading(430);previous=active;mode='tabs';scrollTopNow();byId('sh-view-title').textContent='현재 열려있는 탭 보기';byId('sh-view-return').textContent='돌아가기';const grid=byId('sh-grid');grid.replaceChildren();tabs.forEach(t=>grid.append(tile(t,false)));const add=document.createElement('button');add.className='sh-tile add-tile';add.innerHTML='<div class="sh-tile-content"><span class="sh-tile-add">+</span></div>';add.addEventListener('click',openNew);grid.append(add);sync()}
+function openNew(){previous=active;mode='new';scrollTopNow();byId('sh-view-title').textContent='새 탭 열기';byId('sh-view-return').textContent='탭 닫기';const grid=byId('sh-grid');grid.replaceChildren();[{type:'mail'},{type:'church'},{type:'document'}].forEach(t=>grid.append(tile(t,true)));sync()}
+function openTabs(){previous=active;mode='tabs';scrollTopNow();byId('sh-view-title').textContent='현재 열려있는 탭 보기';byId('sh-view-return').textContent='돌아가기';const grid=byId('sh-grid');grid.replaceChildren();tabs.forEach(t=>grid.append(tile(t,false)));const add=document.createElement('button');add.className='sh-tile add-tile';add.innerHTML='<div class="sh-tile-content"><span class="sh-tile-add">+</span></div>';add.addEventListener('click',openNew);grid.append(add);sync()}
 byId('sh-tab-close').addEventListener('click',()=>{if(active!=null)closeTab(active)});byId('sh-plus').addEventListener('click',openNew);byId('sh-count').addEventListener('click',openTabs);byId('sh-view-return').addEventListener('click',()=>{if(tabs.length)select(tabs.some(t=>t.id===previous)?previous:tabs[0].id);else openNew()});byId('sh-menu').addEventListener('click',()=>{toast.style.display='block';clearTimeout(window.__shToastTimer);window.__shToastTimer=setTimeout(()=>toast.style.display='none',2200)});
 // The mail attachment and church links navigate inside the fictional browser, not away from the game.
-document.addEventListener('click',e=>{const attachment=e.target.closest('.pending-attachment');if(attachment){e.preventDefault();e.stopImmediatePropagation();localStorage.setItem(DOCUMENT_UNLOCK_KEY,'1');showLoading(680);create('document');return}const link=e.target.closest('a.church-site-link');if(link){e.preventDefault();e.stopImmediatePropagation();localStorage.setItem(CHURCH_UNLOCK_KEY,'1');showLoading(680);create('church');return}},true);
+document.addEventListener('click',e=>{const attachment=e.target.closest('.pending-attachment');if(attachment){e.preventDefault();e.stopImmediatePropagation();localStorage.setItem(DOCUMENT_UNLOCK_KEY,'1');create('document');return}const link=e.target.closest('a.church-site-link');if(link){e.preventDefault();e.stopImmediatePropagation();localStorage.setItem(CHURCH_UNLOCK_KEY,'1');create('church');return}},true);
 // Keep the visible address in sync with the existing mail panel and church navigation.
 const observer=new MutationObserver(()=>{if(!mode)requestAnimationFrame(sync)});observer.observe(byId('mail-panel'),{childList:true,subtree:true});
-byId('sh-church-frame').addEventListener('load',()=>{sync();try{byId('sh-church-frame').contentWindow.addEventListener('hashchange',sync);byId('sh-church-frame').contentDocument.addEventListener('click',()=>setTimeout(sync,50))}catch(e){}});
+byId('sh-church-frame').addEventListener('load',()=>{attachChurchClickSound();sync();try{byId('sh-church-frame').contentWindow.addEventListener('hashchange',sync);byId('sh-church-frame').contentDocument.addEventListener('click',()=>setTimeout(sync,50))}catch(e){}});
+attachChurchClickSound();
 // A browser tab remains open while another tab is selected; the underlying mail DOM stays mounted.
 // Persist the browser session across refresh/lock; reset the viewport on each page transition.
 if('scrollRestoration' in history)history.scrollRestoration='manual';
 window.addEventListener('pageshow',()=>{scrollTopNow();sync()});
 window.addEventListener('load',()=>scrollTopNow());
-const resetOnNavigation=e=>{if(e.target.closest('#sh-browserbar,#sh-browserview'))return;const hit=e.target.closest('button,a,.folder,.mail-row,.tab-item');if(hit){showLoading(360);setTimeout(()=>{if(!mode)scrollTopNow()},70)}};
+const resetOnNavigation=e=>{if(e.target.closest('#sh-browserbar,#sh-browserview'))return;const hit=e.target.closest('button,a,.folder,.mail-row,.tab-item');if(hit){setTimeout(()=>{if(!mode)scrollTopNow()},70)}};
 document.addEventListener('click',resetOnNavigation);
 const panel=byId('mail-panel');if(panel){const navObserver=new MutationObserver(()=>{if(!mode)scrollTopNow()});navObserver.observe(panel,{attributes:true,attributeFilter:['class','style']});}
 persist();if(!tabs.length)openNew();else sync();scrollTopNow();window.SHINDO_browser={openNew,openTabs,openAttachment:()=>create('document'),openChurch:()=>create('church'),selectMail:()=>{const mail=tabs.find(t=>t.type==='mail');if(mail)select(mail.id);else create('mail')}};
