@@ -1837,6 +1837,92 @@ scenes.push(
  v255LivingResearchScene('living-end','')
 );
 
+
+// V256 — Day 3 living quarters / Jeonghan [??의 방에서 대화].
+// Append only. Case 1/3: police meeting, Case 2: Day-2 room visit but no police,
+// Case 4: replay existing first encounter. Later-day revisit if the escape item was found.
+const v256LivingScene=(kind,text,speaker=null,extra={})=>({
+ kind,text,...(speaker?{speaker}:{}),livingHall:true,livingBranch:2,
+ livingLocation:'corridor',v256Jeonghan:true,...extra
+});
+const V256_DAY3_JEONGHAN_CASE2_START=scenes.length;
+scenes.push(
+ v256LivingScene('narration','아무래도 그 방이 미심쩍다.'),
+ v256LivingScene('narration','정확히는 그 방에 있던 그 남자가.'),
+ v256LivingScene('narration','복도 모퉁이에 숨어 방을 나서는 정한을 지켜봤다.',null,{portrait:'jeonghan-body1-default',portraitFadeOutAfter:true}),
+ v256LivingScene('narration','그림자가 완전히 사라진 걸 확인한 뒤, 재빨리 방문 앞으로 갔다.',null,{clearPortrait:true}),
+ v256LivingScene('narration','침착하게 준비해 온 도구들을 꺼내 늘어놓았다.'),
+ v256LivingScene('dialogue','감시가 철저한 곳도 아니고, 방문 정도는 딸 수 있어...','주인공'),
+ v256LivingScene('narration','잠시 손을 놀리자… 문이 달칵, 열렸다.'),
+ v256LivingScene('narration','곧바로 방 안을 뒤지기 시작했다.',null,{livingLocation:'eunjae'}),
+ v256LivingScene('dialogue','윤정한. 수상한 사람이 맞잖아.','주인공',{livingLocation:'eunjae'}),
+ v256LivingScene('dialogue','텅 비어 있어야 이렇게까지 엉망이라니.','주인공',{livingLocation:'eunjae'}),
+ v256LivingScene('dialogue','서류가 책상 위는 물론이고 의자와 바닥, 창틀까지 빼곡하게...','주인공',{livingLocation:'eunjae'}),
+ v256LivingScene('narration','아쉽게도 대부분은 내용을 알아보지 못하도록 검게 칠해져 폐기된 채다.',null,{livingLocation:'eunjae'}),
+ v256LivingScene('narration','옷장과 서랍은 각종 자물쇠로 단단히 잠겨있었다.',null,{livingLocation:'eunjae'}),
+ v256LivingScene('narration','공들이면 딸 수 있겠지만 언제 정한이 돌아올지 모른다.',null,{livingLocation:'eunjae'}),
+ v256LivingScene('narration','탁자 위 올려진 작은 액자가 눈에 띄었다.',null,{livingLocation:'eunjae',illustration:'police-team-four',v256PolicePhoto:true}),
+ v256LivingScene('dialogue','사이 좋은 네 명인가… 아니, 이런 걸 볼 때가 아니지.','주인공',{livingLocation:'eunjae',illustration:'police-team-four',v256PolicePhoto:true}),
+ v256LivingScene('narration','급하게 방안을 훑었다. 그렇다면 남은 게,',null,{livingLocation:'eunjae',clearPortrait:true}),
+ v256LivingScene('dialogue','침대만 남긴 했는데...','주인공',{livingLocation:'eunjae'}),
+ v256LivingScene('narration','침대 밑으로 팔을 쑥 넣었다.',null,{livingLocation:'eunjae'}),
+ v256LivingScene('dialogue','…뭔가 있다.','주인공',{livingLocation:'eunjae'}),
+ v256LivingScene('narration','곧바로 꺼내서 살펴봤다. 튼튼한 파우치같이 생긴 물건이다.',null,{livingLocation:'eunjae',v256BackdropFadeAfter:true}),
+ v256LivingScene('evidence-popup','',null,{
+  livingLocation:'eunjae',evidenceId:'escape-package',evidenceTitle:'탈출패키지',
+  evidenceDescription:'누군가가 탈출하려고 꾸려둔 패키지다. 손전등, 장갑, 단 간식거리, 포켓나이프, 나침반이 들어있다.',
+  v256EscapePackage:true
+ }),
+ v256LivingScene('dialogue','더 뒤져보고 싶긴한데...','주인공',{livingLocation:'eunjae',v256BackdropFadeIn:true}),
+ v256LivingScene('dialogue','더 머물다간 정말로 들킬 거 같군.','주인공',{livingLocation:'eunjae'}),
+ v256LivingScene('narration','이만 돌아가자.',null,{livingLocation:'eunjae'}),
+ v256LivingScene('narration','튈 때가 언제인가를 아는 사람의 뒷모습은 아름답댔으니.',null,{livingLocation:'eunjae'}),
+ v256LivingScene('narration','오늘은 여기까지.',null,{livingLocation:'eunjae'}),
+ v256LivingScene('living-end','',null,{livingLocation:'eunjae'})
+);
+const V256_DAY3_JEONGHAN_POLICE_START=scenes.length;
+scenes.push(
+ v256LivingScene('narration','이미 다녀온 곳이지만, 다시 <은재의 방>으로 향했다.'),
+ v256LivingScene('narration','문을 열어준 정한은 내심 흡족한 모양이다.',null,{livingLocation:'eunjae'}),
+ v256LivingScene('dialogue','아아주 좋은 태도야, 봉봉 씨.','정한',{livingLocation:'eunjae',portrait:'jeonghan-body1-smile'}),
+ v256LivingScene('dialogue','여길 안전하게 나가려면 우리끼리 뭉쳐야 하거든.','정한',{livingLocation:'eunjae',portrait:'jeonghan-body1-eyesmile'}),
+ v256LivingScene('dialogue','다 같이 가자구.','정한',{livingLocation:'eunjae',portrait:'jeonghan-body1-eyesmile'}),
+ v256LivingScene('dialogue','그게 아니면 좋은 끝을 보기는 어려울걸.','정한',{livingLocation:'eunjae',portrait:'jeonghan-body1-default'}),
+ v256LivingScene('dialogue','(다 같이 살아 나가야 한다는 말이겠지.)','주인공',{livingLocation:'eunjae',portrait:'jeonghan-body1-default',inner:true}),
+ v256LivingScene('dialogue','(생각해보니 그렇다.)','주인공',{livingLocation:'eunjae',portrait:'jeonghan-body1-eyesmile',inner:true}),
+ v256LivingScene('dialogue','(쥐도 새도 모르게 공양을 당할지도 모르는 노릇이다.)','주인공',{livingLocation:'eunjae',portrait:'jeonghan-body1-eyesmile',inner:true,portraitFadeOutAfter:true}),
+ v256LivingScene('dialogue','최악의 경우, 내가 이들을 고발할 수도 있겠지….','주인공',{livingLocation:'dark',clearPortrait:true,boldAll:true,fontScale:1.2,inner:true}),
+ v256LivingScene('narration','굳이 다른 신도들과는 어울리지 말라는 게 정한의 조언이다.',null,{livingLocation:'eunjae',portrait:'jeonghan-body1-default'}),
+ v256LivingScene('dialogue','하지만 다른 신도들에게서도 정보를 얻어낼 수 있잖아요.','주인공',{livingLocation:'eunjae',portrait:'jeonghan-body1-default'}),
+ v256LivingScene('narration','이래서 기자들은… 이라는 한숨을 들은 것만 같다.',null,{livingLocation:'eunjae',portrait:'jeonghan-body1-subtle'}),
+ v256LivingScene('dialogue','아니 뭐, 봉봉 씨 마음이죠.','정한',{livingLocation:'eunjae',portrait:'jeonghan-body2-smile'}),
+ v256LivingScene('dialogue','하지만 나는 우리 애들 우선이라는 것만 알아둬.','정한',{livingLocation:'eunjae',portrait:'jeonghan-body2-eyesmile',boldWord:'우리 애들'}),
+ v256LivingScene('narration','싱긋 웃는 얼굴이었지만 말에는 뼈가 있다.',null,{livingLocation:'eunjae',portrait:'jeonghan-body1-eyesmile',portraitFadeOutAfter:true}),
+ v256LivingScene('dialogue','(윤정한. 곤란한 장난은 쳐도 같은 편을 곤경에 빠트리진 않는다.)','주인공',{livingLocation:'eunjae',inner:true,clearPortrait:true}),
+ v256LivingScene('dialogue','(그렇다면 경찰이 아닌 기자인 나도 같은 편인 걸까.)','주인공',{livingLocation:'eunjae',inner:true,clearPortrait:true}),
+ v256LivingScene('dialogue','(알 수 없다.)','주인공',{livingLocation:'eunjae',inner:true,clearPortrait:true}),
+ v256LivingScene('living-end','',null,{livingLocation:'eunjae'})
+);
+const V256_DAY4_JEONGHAN_SEARCH_REVISIT_START=scenes.length;
+scenes.push(
+ v256LivingScene('dialogue','다시 이 방을 찾는 게 과연 현명한 일일까.','주인공'),
+ v256LivingScene('narration','당연한 걱정이다. 아무래도 내가 이 방을 털었으니까.'),
+ v256LivingScene('dialogue','범인은 범행 현장으로 되돌아온다더니. 딱 내 꼴이네...','주인공'),
+ v256LivingScene('dialogue','윤정한, 눈치 빠른 사람처럼 보이던데.','주인공'),
+ v256LivingScene('narration','그래도 궁금한 점이 있어 다시 한번 문을 두드렸다.'),
+ v256LivingScene('narration','똑똑.'),
+ v256LivingScene('dialogue','…….',null,{speaker:''}),
+ v256LivingScene('dialogue','고요하다..','주인공'),
+ v256LivingScene('narration','몇 번이고 문을 두드렸으나 돌아오는 대답은 없다.'),
+ v256LivingScene('narration','정한이 다른 사람들과 어울려 다니는 모습은 자주 봤는데…'),
+ v256LivingScene('dialogue','어제만 해도 기도관 앞에서 석민과 가위바위보를 하고 있었는데.','주인공',{v256MaskSeokminName:true}),
+ v256LivingScene('dialogue','진 사람이 화단의 벌레를 먹는 내기였...나?','주인공'),
+ v256LivingScene('narration','그러나… 지금 이 방에는 없다.'),
+ v256LivingScene('narration','혹은, 더는 나에게 문을 열어주지 않는 걸지도 모른다.'),
+ v256LivingScene('dialogue','의심을 산 것 같군.','주인공'),
+ v256LivingScene('living-end','')
+);
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -1964,6 +2050,10 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .vn-illustration{position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);width:min(92vw,960px);max-height:70vh;object-fit:contain;z-index:1;pointer-events:none}
 #shindo-vn .vn-illustration[hidden]{display:none}
 #shindo-vn .vn-illustration.vn-fade{animation:vn-image-appear 1s ease-out both}
+#shindo-vn .shindo-v256-photo-fallback{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:min(75vw,440px);height:min(41vh,285px);background:#f7f7f7;border:5px solid #ededed;box-shadow:0 12px 32px rgba(0,0,0,.4);color:#565656;font-size:clamp(13px,2vw,18px);z-index:1;display:flex;align-items:center;justify-content:center;pointer-events:none;animation:vn-image-appear 1s ease-out both}
+#shindo-vn .shindo-v256-photo-fallback[hidden]{display:none!important}
+#shindo-story-backdrop.shindo-v256-faded{opacity:0!important;transition:opacity .6s ease!important}
+
 #shindo-vn .vn-illustration.vn-mail-zoom{animation:vn-mail-zoom-out 6s ease-in-out both;transform-origin:center center}
 @keyframes vn-mail-zoom-out{0%{opacity:0;transform:translate(-50%,-50%) scale(1)}12%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.22)}}
 @keyframes vn-image-appear{from{opacity:0}to{opacity:1}}
@@ -2407,6 +2497,13 @@ function getMinghaoAffinity(){
  const raw=data['명호']??data.minghao??0;return Math.max(0,Math.min(100,Number(raw)||0))}catch(_){return 0}
 }
 const illustration=document.createElement('img');illustration.className='vn-illustration';illustration.alt='';illustration.hidden=true;overlay.insertBefore(illustration,box);
+// V256: neutral fallback until the authored 4-officer illustration is supplied.
+const v256PolicePhotoFallback=document.createElement('div');
+v256PolicePhotoFallback.className='shindo-v256-photo-fallback';
+v256PolicePhotoFallback.textContent='경찰조 4인 사진';
+v256PolicePhotoFallback.hidden=true;
+overlay.insertBefore(v256PolicePhotoFallback,box);
+
 let jihoonRevealed=false,pencilAudio=null;
 function stopPencil(){if(pencilAudio){pencilAudio.pause();pencilAudio.currentTime=0;pencilAudio=null}}
 function keepPencil(){if(pencilAudio)return;pencilAudio=new Audio('story-audio/pencil-17s.mp3');pencilAudio.loop=true;pencilAudio.volume=.65;pencilAudio.play().catch(()=>{})}
@@ -2576,8 +2673,13 @@ function hasEvidenceItem(id){
 function showEvidencePopup(scene){
  locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  collectEvidence(scene.evidenceId);
+ if(scene.v256EscapePackage){
+  localStorage.setItem('shindo_escape_package_owned','1');
+  localStorage.setItem('shindo_jeonghan_room_search_v256','1');
+ }
  const pop=document.createElement('div');pop.className='shindo-evidence-overlay';
  pop.innerHTML='<div class="shindo-evidence-card"><div class="shindo-evidence-kicker">증거품을 획득했다.</div><div class="shindo-evidence-title"></div><div class="shindo-evidence-desc"></div><button class="shindo-evidence-confirm" type="button">확인</button></div>';
+ if(scene.v256EscapePackage)pop.querySelector('.shindo-evidence-kicker').textContent='아이템을 획득했다.';
  pop.querySelector('.shindo-evidence-title').textContent='['+scene.evidenceTitle+' 획득]';
  const evidenceDesc=pop.querySelector('.shindo-evidence-desc');
  if(scene.evidenceId==='destroyed-document-2'){
@@ -2667,7 +2769,10 @@ function showEvidencePopup(scene){
    card.style.transition='opacity .35s ease';
    card.style.opacity='0';
    setTimeout(()=>{pop.remove();locked=false;next()},360);
-  }else{pop.remove();locked=false;next()}
+  }else{
+   pop.remove();locked=false;next();
+   if(scene.v256EscapePackage){requestAnimationFrame(()=>storyBackdrop.classList.remove('shindo-v256-faded'));}
+  }
  };
 }
 function playExtraAudio(filename,volume=.7){const a=new Audio('story-audio/'+filename);a.volume=volume;a.play().catch(()=>{});return a}
@@ -3139,6 +3244,9 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  if(index===V214_DAY3_MORNING_START || scene.v178Hold==='day3-morning-await-script'){
   index=V215_DAY3_COMMON_START;save();render();return;
  }
+ if(scene.v256BackdropFadeIn){
+  requestAnimationFrame(()=>storyBackdrop.classList.remove('shindo-v256-faded'));
+ }
  if(scene.v219Truth){const told=localStorage.getItem('shindo_seungkwan_truth_branch_v177')==='1';if((scene.v219Truth==='told')!==told){index++;save();render();return;}}
  // Only show self-introduction if Joshua was unknown at morning entry.
  if(scene.v215JoshuaIntroOnly && localStorage.getItem('shindo_day3_joshua_intro_needed_v215')!=='1'){
@@ -3393,8 +3501,14 @@ if(scene.enterConfession){stopConfessionTick();/* Keep the confession door sound
 if(scene.eventFootsteps){if(!scene.silentFootsteps)sound('footsteps');portrait.hidden=true;currentPortrait='';box.style.display='none';locked=true;timer=setTimeout(()=>{locked=false;next()},3000);return}
 if(scene.pencil)keepPencil();else stopPencil();
 // v97: ignore volume-up cue for the removed confession clock.
+v256PolicePhotoFallback.hidden=true;
+illustration.onerror=null;illustration.onload=null;
 illustration.hidden=!scene.illustration;
-illustration.classList.toggle('vn-fade',!!scene.illustration&&(scene.kind==='image'&&scene.illustration!=='mail-01'||(scene.illustration==='tiger-painting'||scene.illustration==='tiger-painting-silly')));
+if(scene.v256PolicePhoto){
+ illustration.onerror=()=>{if(scenes[index]!==scene)return;illustration.hidden=true;v256PolicePhotoFallback.hidden=false;};
+ illustration.onload=()=>{if(scenes[index]!==scene)return;v256PolicePhotoFallback.hidden=true;illustration.hidden=false;};
+}
+illustration.classList.toggle('vn-fade',!!scene.illustration&&(scene.kind==='image'&&scene.illustration!=='mail-01'||(scene.illustration==='tiger-painting'||scene.illustration==='tiger-painting-silly'||scene.illustration==='police-team-four')));
 illustration.classList.toggle('vn-mail-zoom',scene.kind==='image'&&scene.illustration==='mail-01');
 if(scene.illustration){const illustrationPath='story-illustrations/'+scene.illustration+'.png';if(illustration.getAttribute('src')!==illustrationPath)illustration.setAttribute('src',illustrationPath)}
 if(scene.kind==='image'){
@@ -3461,7 +3575,10 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
  if(scene.kind==='transition'){box.style.display='none';let center=overlay.querySelector('.vn-center');if(!center){center=document.createElement('div');center.className='vn-center';overlay.appendChild(center)}center.textContent=scene.text;center.style.display='block';overlay.querySelector('.vn-hint').style.display='none';locked=true;timer=setTimeout(()=>{locked=false;next()},scene.text?2300:3300);return}
  const center=overlay.querySelector('.vn-center');if(center)center.style.display='none';box.style.display='flex';overlay.querySelector('.vn-hint').style.display='block';box.classList.remove('box-shake-soft');if(scene.boxShakeSoft){void box.offsetWidth;box.classList.add('box-shake-soft')}content.textContent=scene.maskWonwoo?scene.text.replace('원우','??'):scene.text;
   // V247: reveal each visitor's name only after that specific character is known.
-  if(scene.v247MaskGuestNames){
+  if(scene.v256MaskSeokminName){
+  content.textContent=content.textContent.replace('석민',seokminRevealed?'석민':'??');
+ }
+ if(scene.v247MaskGuestNames){
    content.textContent=content.textContent.replace('민규',mingyuRevealed?'민규':'??').replace('석민',seokminRevealed?'석민':'??');
   }
   content.style.fontSize=scene.fontScale?String(scene.fontScale)+'em':(scene.largeText?'1.25em':'');content.style.fontWeight=scene.boldAll?'800':'';content.style.color=scene.redText?'#e02020':'';
@@ -3478,6 +3595,7 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
 function day2Ring(times,volume){for(let i=0;i<times;i++)setTimeout(()=>{if(overlay.classList.contains('active'))playExtraAudio('oath-bell-05.mp3',volume)},i*3300)}
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
 function restartFromDay1(){
+ localStorage.removeItem('shindo_jeonghan_room_search_v256');localStorage.removeItem('shindo_escape_package_owned');storyBackdrop.classList.remove('shindo-v256-faded');
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  v207StopEscapeMusic();
  v205StopChoice();v205HammerBlocked=false;if(v205HammerAudio){v205HammerAudio.pause();v205HammerAudio=null}
@@ -3508,6 +3626,7 @@ window.SHINDO_restartFromDay1=restartFromDay1;
 
 // V169: Test restart at the black "2일차" title, keeping the authenticated mail/browser.
 function restartFromDay2(){
+ localStorage.removeItem('shindo_jeonghan_room_search_v256');localStorage.removeItem('shindo_escape_package_owned');storyBackdrop.classList.remove('shindo-v256-faded');
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  v207StopEscapeMusic();
  v205StopChoice();v205HammerBlocked=false;if(v205HammerAudio){v205HammerAudio.pause();v205HammerAudio=null}
@@ -3575,6 +3694,7 @@ window.SHINDO_restartFromDay2=restartFromDay2;
 // V184: Replay Day 2 afternoon from the central-square introduction without
 // erasing morning activity, evidence, affinity, or the morning Wonwoo meeting.
 function restartFromDay2Afternoon(){
+ localStorage.removeItem('shindo_jeonghan_room_search_v256');storyBackdrop.classList.remove('shindo-v256-faded');
  localStorage.removeItem('shindo_day2_police_met_seokmin_v241');
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  localStorage.removeItem('shindo_junhui_affinity_locked_v205');
@@ -4303,14 +4423,16 @@ function showLivingChoice(){
  locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
- const options=['방에서 자료 정리','??의 방에서 대화','말 걸기','빨래 수거'];
+ const v256LaterDay=Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||2)>=4;
+ const v256PoliceContact=(v219IsDay3Activity()||v256LaterDay)&&v241MetSeokminAtPoliceDay2();
+ const options=['방에서 자료 정리',v256PoliceContact?'은재의 방에서 대화':'??의 방에서 대화','말 걸기','빨래 수거'];
  el.innerHTML='<h2>뭐부터 해볼까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button data-living="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
  el.style.display='flex';
  el.querySelectorAll('[data-living]').forEach(b=>b.onclick=e=>{
   e.stopPropagation();livingBranch=Number(b.dataset.living);
-  localStorage.setItem(v219IsDay3Activity()?'shindo_day3_living_branch_v219':'shindo_living_branch_v156',String(livingBranch));
+  localStorage.setItem(v219IsDay3Activity()?'shindo_day3_living_branch_v219':(v256LaterDay?'shindo_later_living_branch_v256':'shindo_living_branch_v156'),String(livingBranch));
   window.SHINDO_addPlayRecord?.('선택','생활관 활동: '+options[livingBranch-1]);
-  if(livingBranch!==1)window.SHINDO_applyAffinityEvent?.('person','생활관 활동: '+options[livingBranch-1],getMorningAffinityDay());
+  if(livingBranch!==1)window.SHINDO_applyAffinityEvent?.('person','생활관 활동: '+(livingBranch===2?'??의 방에서 대화':options[livingBranch-1]),getMorningAffinityDay());
   if(livingBranch===1){
    // V255: Jihoon's hidden bad-ending condition is credited once per story day.
    // Day 2's existing selection remains the first strike, and choosing it again
@@ -4334,7 +4456,23 @@ function showLivingChoice(){
     locked=false;save();render();return;
    }
   }
-  if(v219IsDay3Activity()&&v219WasMetDay2(({2:'정한',3:'지훈',4:'민규'})[livingBranch])){v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;}
+  if(livingBranch===2&&(v219IsDay3Activity()||v256LaterDay)){
+   const metDay2=v219WasMetDay2('정한');
+   const metPolice=v241MetSeokminAtPoliceDay2();
+   const currentDay=Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||3);
+   // This later-day handler is prepared for when Day 4+ becomes playable.
+   const revisitingSearchedRoom=currentDay>=4&&!metPolice&&metDay2&&
+    localStorage.getItem('shindo_jeonghan_room_search_v256')==='1'&&hasEscapePackage();
+   const target=revisitingSearchedRoom?V256_DAY4_JEONGHAN_SEARCH_REVISIT_START:
+    metPolice?V256_DAY3_JEONGHAN_POLICE_START:
+    metDay2?V256_DAY3_JEONGHAN_CASE2_START:-1;
+   if(target>=0){
+    el.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+    index=target;locked=false;save();render();return;
+   }
+   // Neither branch met: Day 2's original first encounter is replayed.
+  }
+  if(v219IsDay3Activity()&&livingBranch!==2&&v219WasMetDay2(({3:'지훈',4:'민규'})[livingBranch])){v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;}
   const target=scenes.findIndex((x,i)=>i>LIVING_SCENE_START&&x.livingBranch===livingBranch);
   el.style.display='none';currentPortrait='';portrait.hidden=true;
   if(target>=0){index=target;locked=false;save();render()}
@@ -4515,6 +4653,10 @@ function next(userAdvance=false){
    timer=setTimeout(finishMinghaoFinale,560);
   }else finishMinghaoFinale();
   return;
+ }
+ if(scenes[index]?.v256BackdropFadeAfter){
+  locked=true;storyBackdrop.classList.add('shindo-v256-faded');
+  timer=setTimeout(()=>{locked=false;index++;save();render()},610);return;
  }
  if(scenes[index]?.portraitFadeOutAfter&&!portrait.hidden&&!portrait.classList.contains('v178-fadeout')){
   portrait.classList.add('v178-fadeout');locked=true;timer=setTimeout(()=>{portrait.classList.remove('v178-fadeout');locked=false;if(index<scenes.length-1){index++;save();render()}else finish()},560);return;
