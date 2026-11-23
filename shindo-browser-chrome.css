@@ -143,3 +143,57 @@ body:has(#sh-browserview.active) #sh-browserbar #sh-address::before {filter:gray
      and utility list navigation remain untouched. */
   #sh-browserbar #sh-utility-tab {display:none!important;}
 }
+
+
+/* V251 — All real tabs in the desktop browser strip. Scroll inside the tab
+   row if more pages are open than can fit. No change to mobile bottom bar. */
+@media (min-width:751px){
+  #sh-browserbar .sh-tab-strip{overflow:hidden!important;gap:5px!important;padding-right:13px!important;}
+  #sh-browserbar #sh-real-tabs.sh-real-tabs{
+    display:flex!important;flex:0 1 auto!important;align-items:flex-end!important;
+    gap:5px!important;min-width:0!important;width:max-content!important;max-width:calc(100% - 42px)!important;height:34px!important;
+    overflow-x:auto!important;overflow-y:hidden!important;
+    scrollbar-width:none!important;overscroll-behavior-x:contain!important;
+    scroll-behavior:auto!important;
+  }
+  #sh-browserbar #sh-real-tabs.sh-real-tabs::-webkit-scrollbar{display:none!important;}
+  #sh-browserbar #sh-real-tabs .sh-real-tab.sh-tab-shell,
+  #sh-browserbar #sh-real-tabs #sh-utility-tab.sh-utility-tab{
+    flex:0 0 clamp(132px,16vw,190px)!important;
+    width:clamp(132px,16vw,190px)!important;
+    min-width:132px!important;max-width:none!important;
+    margin-bottom:0!important;
+  }
+  #sh-browserbar #sh-real-tabs .sh-real-tab.sh-tab-shell{
+    border-bottom-color:#E3E7E3!important;
+    cursor:pointer!important;outline-offset:-2px!important;
+  }
+  #sh-browserbar #sh-real-tabs .sh-real-tab.sh-current-tab{
+    border-bottom-color:#FFFFFF!important;
+  }
+  #sh-browserbar.sh-utility-open #sh-real-tabs .sh-real-tab.sh-current-tab{
+    border-bottom-color:#E3E7E3!important;
+  }
+  #sh-browserbar #sh-real-tabs .sh-real-tablabel.sh-tablabel{
+    display:block!important;flex:1 1 auto!important;width:auto!important;
+    min-width:0!important;max-width:none!important;height:auto!important;
+    margin:0!important;padding:0!important;line-height:normal!important;
+    overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+    background:#FFFFFF!important;border:0!important;border-radius:0!important;
+    color:#323B34!important;font-size:12px!important;font-weight:650!important;
+  }
+  #sh-browserbar #sh-real-tabs .sh-real-tab:focus-visible{
+    outline:2px solid #AAB3AD!important;
+  }
+  #sh-browserbar #sh-real-tabs .sh-real-tab[aria-selected="false"] .sh-real-tablabel{
+    color:#717A73!important;
+  }
+  #sh-browserbar #sh-real-tabs #sh-utility-tab.sh-utility-tab{
+    display:none!important;
+    border-bottom-color:#FFFFFF!important;
+  }
+  #sh-browserbar.sh-utility-open #sh-real-tabs #sh-utility-tab.sh-utility-tab{
+    display:flex!important;
+  }
+  #sh-browserbar #sh-plus.sh-circle{flex-shrink:0!important;}
+}
