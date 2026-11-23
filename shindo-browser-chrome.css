@@ -110,3 +110,36 @@ body:not(.sh-browser-unlocked) #sh-browserbar {display:none!important;visibility
 /* Keep chrome icon accents monochrome while either list is open. Normal browser view is unchanged. */
 body:has(#sh-browserview.active) #sh-browserbar .sh-tab-favicon {color:#777777!important;}
 body:has(#sh-browserview.active) #sh-browserbar #sh-address::before {filter:grayscale(1)!important;}
+
+/* V250 — PC browser strip gets a temporary tab when one of the C-style
+   utility screens is open. No extra saved tab or tab-counter increment. */
+@media (min-width:751px) {
+  #sh-browserbar #sh-utility-tab.sh-utility-tab {
+    display:none!important;
+    width:185px!important;max-width:min(34vw,230px)!important;
+    flex:0 1 185px!important;
+    background:#FFFFFF!important;
+    border-color:#E3E7E3!important;
+    border-bottom-color:#FFFFFF!important;
+  }
+  #sh-browserbar.sh-utility-open #sh-utility-tab.sh-utility-tab {display:flex!important;}
+  #sh-browserbar.sh-utility-open .sh-tab-strip>.sh-tab-shell:not(.sh-utility-tab) {
+    border-bottom-color:#E3E7E3!important;
+    cursor:pointer!important;
+  }
+  #sh-browserbar.sh-no-real-tab .sh-tab-strip>.sh-tab-shell:not(.sh-utility-tab) {display:none!important;}
+  #sh-browserbar #sh-utility-tab .sh-utility-label {
+    flex:1 1 auto!important;min-width:0!important;display:block!important;
+    overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+    font-size:12px!important;line-height:normal!important;font-weight:650!important;
+    color:#323B34!important;
+  }
+  #sh-browserbar #sh-utility-tab .sh-utility-favicon {color:#858D88!important;}
+  #sh-browserbar #sh-utility-tab .sh-tab-close {color:#8A948D!important;}
+  #sh-browserbar .sh-tab-strip {min-width:0!important;overflow:hidden!important;}
+}
+@media (max-width:750px){
+  /* The mobile tab strip is intentionally hidden: the existing bottom controls
+     and utility list navigation remain untouched. */
+  #sh-browserbar #sh-utility-tab {display:none!important;}
+}

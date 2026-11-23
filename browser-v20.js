@@ -3,6 +3,16 @@
 const main=document.querySelector('#app .main');if(!main)return;
 const bar=document.createElement('div');bar.id='sh-browserbar';bar.innerHTML=`<div class="sh-tab-strip"><div class="sh-tab-shell" aria-label="현재 탭"><span class="sh-tab-favicon" aria-hidden="true">✉</span><span class="sh-tablabel" id="sh-tab-a">SVTER 메일함</span><button type="button" class="sh-tab-close" id="sh-tab-close" title="현재 탭 닫기" aria-label="현재 탭 닫기">×</button></div><button type="button" class="sh-circle" id="sh-plus" title="새 탭 열기" aria-label="새 탭 열기">+</button></div><div class="sh-toolbar"><span class="sh-browser-nav" aria-hidden="true">‹</span><span class="sh-browser-nav sh-browser-nav-disabled" aria-hidden="true">›</span><span class="sh-browser-nav sh-browser-reload" aria-hidden="true">↻</span><div class="sh-address" id="sh-address">mail.svter.com/mailinventory</div><span class="sh-tablabel" id="sh-tab-b" hidden>열려있는 탭 주소</span><div class="sh-chrome-spacer"></div><button type="button" class="sh-count" id="sh-count" title="현재 열려있는 탭" aria-label="현재 열려있는 탭">1</button><button type="button" class="sh-menu" id="sh-menu" title="메뉴" aria-label="메뉴">⋮</button></div>`;
 main.prepend(bar);
+// V250: A visible, temporary desktop tab for the browser's own utility pages.
+// This is a presentation tab, not a stored mail/church/document tab.
+const originalTab=bar.querySelector('.sh-tab-shell');
+const utilityTab=document.createElement('div');
+utilityTab.id='sh-utility-tab';
+utilityTab.className='sh-tab-shell sh-utility-tab';
+utilityTab.setAttribute('role','tab');
+utilityTab.setAttribute('aria-selected','true');
+utilityTab.innerHTML='<span class="sh-tab-favicon sh-utility-favicon" aria-hidden="true">▤</span><span class="sh-utility-label" id="sh-utility-label">새 탭 열기</span><button type="button" class="sh-tab-close" id="sh-utility-close" title="화면 닫기" aria-label="현재 탭 관리 화면 닫기">×</button>';
+originalTab.after(utilityTab);
 // On phones, the browser chrome must live above the embedded church iframe,
 // outside the scrolling game content's stacking context.
 const mobileChrome=window.matchMedia('(max-width:750px)');
@@ -63,7 +73,28 @@ const titleOf=t=>t.type==='mail'?'SVTER 메일함':t.type==='church'?'카밀레�
 const urlOf=t=>t.type==='mail'?mailAddress():t.type==='church'?churchAddress():t.type==='document'?'mail.svter.com/download:카밀레 새 가족':'새 탭 열기';
 function mailAddress(){const panel=byId('mail-panel');if(!panel||!panel.classList.contains('active'))return 'mail.svter.com/mailinventory';if(panel.querySelector('.send-confirm'))return 'mail.svter.com/send';if(panel.querySelector('.compose-area'))return panel.querySelector('#compose-to')?.readOnly?'mail.svter.com/myself-send':'mail.svter.com/send-edit';const detail=panel.querySelector('[data-detail-kind]');if(detail)return 'mail.svter.com/'+(detail.dataset.detailKind==='sent'?'outbox':'inbox')+String(Number(detail.dataset.detailIndex)+1).padStart(2,'0');return 'mail.svter.com/mailinventory'}
 function churchAddress(){try{const doc=byId('sh-church-frame').contentDocument;const hash=byId('sh-church-frame').contentWindow.location.hash;const p=decodeURIComponent(hash.replace(/^#/,''));const m={'카밀레교의 소명':'info01','카밀레교의 역사':'info02','자주 묻는 질문':'info02','카밀레교의 교리':'info03','신도 등록':'newfam01','신도 새 모임':'newfam02','카밀레교 지도':'newfam03','예배 시간':'cele01','기도회 안내':'cele02','고해성사 안내':'cele03','교회 수련회':'training01','새 신도 환영회':'training02','교리대학':'training03'};return 'www.KamilleChurch.net/'+(m[p]||'home')}catch(e){return 'www.KamilleChurch.net/home'}}
-function sync(){const t=tabs.find(t=>t.id===active)||tabs[0]||{type:'new'};byId('sh-address').textContent=mode==='new'?'새 탭 열기':mode==='tabs'?'현재 열려있는 탭':t.type==='new'?'새 탭 열기':urlOf(t);byId('sh-count').textContent=tabs.filter(t=>t.type!=='new').length;byId('sh-tab-a').textContent=titleOf(t);byId('sh-tab-b').textContent=mode==='new'?'새 탭 열기':mode==='tabs'?'현재 열려있는 탭':t.type==='new'?'새 탭 열기':urlOf(t);church.classList.toggle('active',!mode&&t.type==='church');documentLayer.classList.toggle('active',!mode&&t.type==='document');view.classList.toggle('active',!!mode);if(t.type==='mail'&&!mode){document.querySelector('#login-page')?.removeAttribute('inert');} }
+function sync(){
+ const real=tabs.find(t=>t.id===active)||tabs[0]||null;
+ const t=real||{type:'new'};
+ const utilityActive=mode==='new'||mode==='tabs';
+ byId('sh-address').textContent=mode==='new'?'새 탭 열기':mode==='tabs'?'현재 열려있는 탭':t.type==='new'?'새 탭 열기':urlOf(t);
+ byId('sh-count').textContent=tabs.filter(t=>t.type!=='new').length;
+ // The first desktop tab keeps showing the previous real page; the second
+ // tab is the active new-tabs / open-tabs view, without changing tab storage.
+ byId('sh-tab-a').textContent=real?titleOf(real):'SVTER 메일함';
+ bar.classList.toggle('sh-utility-open',utilityActive);
+ bar.classList.toggle('sh-no-real-tab',!real);
+ utilityTab.setAttribute('aria-selected',utilityActive?'true':'false');
+ originalTab.setAttribute('role','tab');
+ originalTab.setAttribute('aria-selected',utilityActive?'false':'true');
+ byId('sh-utility-label').textContent=mode==='tabs'?'현재 열려 있는 탭':'새 탭 열기';
+ utilityTab.querySelector('.sh-utility-favicon').textContent=mode==='tabs'?'▤':'＋';
+ byId('sh-tab-b').textContent=mode==='new'?'새 탭 열기':mode==='tabs'?'현재 열려있는 탭':t.type==='new'?'새 탭 열기':urlOf(t);
+ church.classList.toggle('active',!mode&&t.type==='church');
+ documentLayer.classList.toggle('active',!mode&&t.type==='document');
+ view.classList.toggle('active',!!mode);
+ if(t.type==='mail'&&!mode){document.querySelector('#login-page')?.removeAttribute('inert');}
+}
 function select(id){const selected=tabs.find(t=>t.id===id);if(selected?.type==='document'&&!documentUnlocked()){lockedNotice();return}if(selected?.type==='church'&&!churchUnlocked()){lockedNotice();return}active=id;mode=tabs.length?'':'new';persist();if(!tabs.length){openNew();return}sync();scrollTopNow()}
 function create(type){if((type==='church'&&!churchUnlocked())||(type==='document'&&!documentUnlocked())){lockedNotice();return}const label=type==='mail'?'SVTER 메일함':type==='church'?'카밀레교':'첨부파일: 카밀레 새 가족';const tab={id:++seq,type,label};tabs.push(tab);select(tab.id)}
 // V249: White, monochrome C-style portal lists for both tab views.
@@ -118,7 +149,14 @@ function closeTab(id){
 }
 function openNew(){previous=active;mode='new';scrollTopNow();byId('sh-view-title').textContent='새 탭 열기';byId('sh-view-description').textContent='접속할 페이지를 선택해 주세요.';byId('sh-view-return').textContent='← 돌아가기';byId('sh-view-section').textContent='페이지 선택';const list=byId('sh-list');list.replaceChildren();[{type:'mail'},{type:'church'},{type:'document'}].forEach(t=>list.append(tile(t,true)));byId('sh-list-add-wrap').replaceChildren();sync()}
 function openTabs(){previous=active;mode='tabs';scrollTopNow();byId('sh-view-title').textContent='현재 열려 있는 탭';byId('sh-view-description').textContent='열려 있는 페이지를 선택하거나 탭을 닫을 수 있어요.';byId('sh-view-return').textContent='← 돌아가기';byId('sh-view-section').textContent='열려 있는 페이지 · '+tabs.length+'개';const list=byId('sh-list');list.replaceChildren();tabs.forEach(t=>list.append(tile(t,false)));shAddNewTabRow();sync()}
-byId('sh-tab-close').addEventListener('click',()=>{if(active!=null)closeTab(active)});byId('sh-plus').addEventListener('click',openNew);byId('sh-count').addEventListener('click',openTabs);byId('sh-view-return').addEventListener('click',()=>{if(tabs.length)select(tabs.some(t=>t.id===previous)?previous:tabs[0].id);else openNew()});byId('sh-menu').addEventListener('click',()=>{toast.style.display='block';clearTimeout(window.__shToastTimer);window.__shToastTimer=setTimeout(()=>toast.style.display='none',2200)});
+// Closing the temporary utility tab or clicking the underlying real tab returns
+// to the original page. The underlying tab's X still closes that real tab.
+function returnToRealTab(){if(tabs.length)select(tabs.some(t=>t.id===previous)?previous:(tabs.some(t=>t.id===active)?active:tabs[0].id));else openNew();}
+byId('sh-utility-close').addEventListener('click',e=>{e.stopPropagation();returnToRealTab()});
+originalTab.addEventListener('click',e=>{if(mode&&!e.target.closest('button'))returnToRealTab()});
+originalTab.tabIndex=0;
+originalTab.addEventListener('keydown',e=>{if(mode&&(e.key==='Enter'||e.key===' ')){e.preventDefault();returnToRealTab()}});
+byId('sh-tab-close').addEventListener('click',()=>{if(active!=null)closeTab(active)});byId('sh-plus').addEventListener('click',openNew);byId('sh-count').addEventListener('click',openTabs);byId('sh-view-return').addEventListener('click',returnToRealTab);byId('sh-menu').addEventListener('click',()=>{toast.style.display='block';clearTimeout(window.__shToastTimer);window.__shToastTimer=setTimeout(()=>toast.style.display='none',2200)});
 // The mail attachment and church links navigate inside the fictional browser, not away from the game.
 document.addEventListener('click',e=>{const attachment=e.target.closest('.pending-attachment');if(attachment){e.preventDefault();e.stopImmediatePropagation();localStorage.setItem(DOCUMENT_UNLOCK_KEY,'1');create('document');return}const link=e.target.closest('a.church-site-link');if(link){e.preventDefault();e.stopImmediatePropagation();localStorage.setItem(CHURCH_UNLOCK_KEY,'1');create('church');return}},true);
 // Keep the visible address in sync with the existing mail panel and church navigation.
