@@ -1493,6 +1493,41 @@ scenes.push(
  v225OfficeScene('v225-office-type2-end','',null,{clearPortrait:true})
 );
 
+// V226: Day 3 [본당 > 사무실] type ①.
+// Day 2 AM office visited + Day 2 PM accounting ledger acquired.
+// Append-only to preserve V225 and earlier save checkpoint indices.
+const V226_DAY3_OFFICE_TYPE1_START=scenes.length;
+const v226OfficeScene=(kind,text,speaker,extra={})=>({
+ kind,text,...(speaker?{speaker}:{}),mainHall:true,mainLocation:'office',
+ mainBranch:1,v226OfficeType1:true,...extra
+});
+scenes.push(
+ v226OfficeScene("narration","대예배당 뒤 복도를 따라 걷자 사무실이 나온다.",null,{clearPortrait:true}),
+ v226OfficeScene("dialogue","(...여기 너무 자주 와도 의심받으려나?)","주인공",{clearPortrait:true}),
+ v226OfficeScene("dialogue","(접수 창구와 대기 의자, 빼곡한 서류 캐비닛.)","주인공",{clearPortrait:true}),
+ v226OfficeScene("dialogue","(이런 서류더미 속이니, 내가 하나 가져가도 들키진 않겠지.)","주인공",{clearPortrait:true}),
+ v226OfficeScene("dialogue","(내가 어제 꽂아뒀던 것도 그대로...)","주인공",{portrait:"joshua-바디-member-미소",mainSilhouette:true}),
+ v226OfficeScene("dialogue","뭐 찾으시는 거라도 있으세요?","조슈아",{portrait:"joshua-바디-member-미소"}),
+ v226OfficeScene("dialogue","(어, 미친.)","주인공",{portrait:"joshua-바디-member-미소"}),
+ v226OfficeScene("dialogue","조슈아 사제님, 또 뵙네요.","주인공",{portrait:"joshua-바디-member-미소"}),
+ v226OfficeScene("narration","싱긋 웃는다. 𝑯𝒐𝒍𝒚… 언제 봐도 성스러운 얼굴이다.",null,{portrait:"joshua-바디-member-미소"}),
+ v226OfficeScene("dialogue","그러게요. 유독 봉봉씨랑 자주 뵙는 것 같아요.","조슈아",{portrait:"joshua-바디-member-기본-member"}),
+ v226OfficeScene("dialogue","하하하...","주인공",{portrait:"joshua-바디-member-기본-member"}),
+ v226OfficeScene("narration","멋쩍은 웃음을 보였다.",null,{portrait:"joshua-바디-member-기본-member"}),
+ v226OfficeScene("dialogue","오늘도 일할 양이 많아보이네요.","주인공",{portrait:"joshua-바디-member-미소"}),
+ v226OfficeScene("dialogue","힘드시겠다.","주인공",{portrait:"joshua-바디-member-미소"}),
+ v226OfficeScene("dialogue","네. 맞아요. 근데 힘들진 않아요.","조슈아",{portrait:"joshua-바디-member-미소"}),
+ v226OfficeScene("dialogue","제가 이렇게 일함으로써,","조슈아",{portrait:"joshua-바디-member-미소"}),
+ v226OfficeScene("dialogue","여러분이 이 마을 안에서 편하게 생활하실 수 있으니까요.","조슈아",{portrait:"joshua-바디-member-미소"}),
+ v226OfficeScene("dialogue","그게 더 보람찬거죠.","조슈아",{portrait:"joshua-바디-member-미소"}),
+ v226OfficeScene("dialogue","하지만 저는 변화를 믿어요. 흐름을 믿듯이.","조슈아",{portrait:"joshua-바디-member-미소",recall:true}),
+ v226OfficeScene("dialogue","기다리는 거죠. 올바른 품으로 돌아오기까지.","조슈아",{portrait:"joshua-바디-member-미소",recall:true}),
+ v226OfficeScene("dialogue","불편한 점이 있으면 언제든 저를 찾아주세요.","조슈아",{portrait:"joshua-바디-member-미소",portraitFadeOutAfter:true}),
+ v226OfficeScene("narration","뇨롱- 하는 웃음을 남기고, 조슈아는 다시 서류 정리로 돌아갔다.",null,{clearPortrait:true}),
+ v226OfficeScene("dialogue","(새벽에도 느꼈지만, 정말 좋은 사람 같아.)","주인공",{clearPortrait:true}),
+ v226OfficeScene('v226-office-type1-end','',null,{clearPortrait:true})
+);
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -2963,6 +2998,7 @@ if(scene.kind==='day2-morning-choice'){
  if(scene.kind==='v223-locked-junhui-revisit-wait'){v219ShowMorningEnd('준휘와의 공양실 재방문 대화는 추후 추가됩니다.');return;}
  if(scene.kind==='v224-office-type3-end'){v219ShowMorningEnd('사무실 대화를 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return;}
  if(scene.kind==='v225-office-type2-end'){v219ShowMorningEnd('사무실 대화를 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return;}
+ if(scene.kind==='v226-office-type1-end'){v219ShowMorningEnd('사무실 대화를 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return;}
  if(scene.kind==='v219-library-end'){v219ShowMorningEnd('승관과의 도서실 대화를 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return}
  if(scene.kind==='main-choice'){showMainChoice();return}
  if(scene.kind==='main-end'){showMainEnd();return}
@@ -3048,7 +3084,7 @@ if(scene.kind==='image'){
 if(scene.kind==='dialogue'&&scene.speaker==='원우'&&!scene.maskSpeaker)window.SHINDO_markCharacterMet?.('원우');
 const duoVisible=scene.specialMinghao?setSpecialPortraits(scene):false;
 // V224: regular single-portrait recall needs the same visual mode as duo recalls.
-if(scene.v224OfficeType3 && scene.recall)overlay.classList.add('is-recall');
+if((scene.v224OfficeType3||scene.v226OfficeType1) && scene.recall)overlay.classList.add('is-recall');
 // V115: the special branch has its own recognition moments, independent of earlier branches.
 // Minghao has already been met at the start of this 60+ story. Hansol remains
 // unidentified until the protagonist explicitly recognises him.
@@ -3384,16 +3420,15 @@ function v219ShowMainChoice(){
   }else if(branch===1){
    window.SHINDO_applyAffinityEvent?.('person','본당 탐색: 사무실',3);
    // Distinguish Day-2 morning office visit from the independent PM ledger acquisition.
-   // ① visited + ledger: still awaiting user-authored dialogue.
+   // ① visited + ledger: V226 dialogue.
    // ② visited + no ledger: V225 dialogue.
    // ③ not visited + ledger: existing V224 dialogue.
    // ④ not visited + no ledger: original Day-2 first-meeting dialogue.
    const visitedOfficeOnDay2=v219WasMetDay2('조슈아');
    const acquiredLedgerOnDay2=hasEvidenceItem('accounting-ledger');
    if(visitedOfficeOnDay2 && acquiredLedgerOnDay2){
-    v219ShowMorningEnd('사무실 재방문 대화는 추후 추가됩니다.');return;
-   }
-   index=visitedOfficeOnDay2
+    index=V226_DAY3_OFFICE_TYPE1_START;
+   }else index=visitedOfficeOnDay2
     ? V225_DAY3_OFFICE_TYPE2_START
     : acquiredLedgerOnDay2
      ? V224_DAY3_OFFICE_TYPE3_START
