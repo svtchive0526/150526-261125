@@ -215,3 +215,87 @@
 /* v231: Read status is derived from the mailbox flag state. */
 #mail-page .mail-row.is-unread .sender,#mail-page .mail-row.is-unread .subject{font-weight:800;}
 #mail-page .mail-row:not(.is-unread) .sender,#mail-page .mail-row:not(.is-unread) .subject{font-weight:500;}
+
+/* V235 — mobile mailbox navigation refinement (visual changes only) */
+@media (max-width:750px) {
+  /* Use a clean icon without the old square background or outlined placeholder. */
+  #mail-page .mail-nav .folder-icon {
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    flex:0 0 27px!important;
+    width:27px!important;
+    height:27px!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    color:#738078!important;
+    box-shadow:none!important;
+  }
+  #mail-page .mail-nav .folder-icon::after,
+  #mail-page .mail-nav .folder-icon::before {content:none!important;display:none!important;}
+  #mail-page .mail-nav .folder-icon svg {
+    display:block!important;width:22px!important;height:22px!important;
+    stroke:currentColor!important;fill:none!important;
+  }
+  #mail-page .mail-nav .folder.selected .folder-icon {color:#287E2D!important;}
+  #mail-page .mail-nav .folder {height:54px!important;min-height:54px!important;
+    padding:0 15px!important;gap:15px!important;font-size:15px!important;
+  }
+  #mail-page .mail-nav .folder.selected {
+    background:#EBF8EC!important;color:#287E2D!important;
+  }
+  /* Keep the unread counter in the DOM for JS/live counts, but don't show it on menu rows. */
+  #mail-page .mail-nav .folder > b {display:none!important;}
+  /* The count values stay live, but they no longer live inside a bordered card. */
+  #mail-page .mail-nav .counts {
+    border:0!important;outline:0!important;box-shadow:none!important;
+    border-radius:0!important;background:#FFFFFF!important;
+    margin:10px 0 13px!important;padding:13px 0 12px!important;
+  }
+  /* Center the label and remove the generated plus sign. */
+  #mail-page .mail-nav > .nav-action {height:48px!important;min-height:48px!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    text-align:center!important;padding:0 8px!important;
+  }
+  #mail-page .mail-nav > .nav-action:first-child::before {content:none!important;display:none!important;}
+  /* Fixed header and toolbar while the drawer is open; scroll only within the drawer. */
+  html.sh-mobile-mail-menu-open {overflow:hidden!important;}
+  html.sh-mobile-mail-menu-open body {overflow:hidden!important;}
+  /* The game's mobile mail header is intentionally hidden; pin its visible chip bar. */
+  #mail-page.mobile-menu-open .mail-toolbar {
+    position:fixed!important;top:0!important;left:0!important;right:0!important;
+    height:57px!important;min-height:57px!important;width:100%!important;
+    margin:0!important;padding:0 18px!important;
+    z-index:129!important;background:#FFFFFF!important;
+    border-bottom:1px solid #E3E7E3!important;
+  }
+  /* Detail view hides .mail-toolbar; pin its own top bar instead. */
+  #mail-page.mobile-menu-open .mail-content.panel-mode .panel-top {
+    position:fixed!important;top:0!important;left:0!important;right:0!important;
+    width:100%!important;height:57px!important;min-height:57px!important;
+    z-index:129!important;background:#FFFFFF!important;
+    border-bottom:1px solid #E3E7E3!important;
+  }
+  #mail-page.mobile-menu-open .mail-nav {
+    /* Prevent the old flex-wrap/grid rules from pushing the last menu rows into a new column. */
+    display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important;
+    align-content:flex-start!important;align-items:stretch!important;
+    top:57px!important;bottom:70px!important;
+    height:calc(100dvh - 127px)!important;max-height:calc(100dvh - 127px)!important;
+    padding:19px 24px 22px!important;
+    overflow-y:auto!important;overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch;touch-action:pan-y;
+    z-index:125!important;background:#FFFFFF!important;
+  }
+  #mail-page.mobile-menu-open .mail-menu-backdrop {
+    top:57px!important;bottom:70px!important;z-index:124!important;
+  }
+  /* Preserve the white, unbordered statistics row on short phones as well. */
+  #mail-page .mail-nav .nav-divider {margin:12px 0 14px!important;}
+}
+@media (max-width:750px) and (max-height:650px) {
+  #mail-page .mail-nav .folder {height:49px!important;min-height:49px!important;}
+  #mail-page .mail-nav > .nav-action {height:43px!important;min-height:43px!important;}
+}
