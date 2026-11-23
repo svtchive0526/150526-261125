@@ -1974,6 +1974,35 @@ scenes.push(
  v256LivingScene('living-end','',null,{livingLocation:'eunjae'})
 );
 
+// V262 — Day 5 Eunjae room, cases ①/③ (police contact); append-only for saved indices.
+const V262_DAY5_EUNJAE_CASE13_START=scenes.length;
+scenes.push(
+ v256LivingScene("narration","오늘도 은재의 방을 찾았다.",null,{"livingLocation": "eunjae", "v262Day5Eunjae": true, "v262Day5SceneStart": true}),
+ v256LivingScene("narration","안에는 정한과 승관이 진지하게 논의하고 있는 것 같다.",null,{"livingLocation": "eunjae", "v262Day5Eunjae": true, "duo": ["jeonghan-body2-eyesmile", "seungkwan-body1-thinking"], "v257PoliceDuo": true}),
+ v256LivingScene("dialogue","무슨 일이지. 뭐 중요한 정보라도 찾은 걸까?!","주인공",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "duo": ["jeonghan-body1-eyesmile", "seungkwan-body1-thinking"], "v257PoliceDuo": true}),
+ v256LivingScene("dialogue","승관아, 형 말 들어 봐.","정한",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "portrait": "jeonghan-body2-eyesmile"}),
+ v256LivingScene("dialogue","원래 스트레스는 매운 걸로 푸는 거야.","정한",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "portrait": "jeonghan-body2-smile"}),
+ v256LivingScene("dialogue","형이랑 새벽 4시에 볶음 짬뽕 먹은 거 재밌지 않았어?","정한",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "portrait": "jeonghan-body1-eyesmile"}),
+ v256LivingScene("dialogue","그건 불족 먹으면 되잖아 바보 윤정한.","승관",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "portrait": "seungkwan-body2-thinking"}),
+ v256LivingScene("dialogue","고구마 김치전은 듣기만 해도 먹고 싶지 않냐구.","승관",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "portrait": "seungkwan-body1-thinking"}),
+ v256LivingScene("dialogue","...하","주인공",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "duo": ["jeonghan-body1-eyesmile", "seungkwan-body1-thinking"], "v257PoliceDuo": true}),
+ v256LivingScene("narration","…나가면 고구마 김치전을 먹을지 볶음 짬뽕을 먹을지를 두고 심각하게 토론 중이라니.",null,{"livingLocation": "eunjae", "v262Day5Eunjae": true, "duo": ["jeonghan-body1-smile", "seungkwan-body2-thinking"], "v257PoliceDuo": true}),
+ v256LivingScene("dialogue","저기…","주인공",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "clearPortrait": true}),
+ v256LivingScene("dialogue","궁금한 게 있는데, 여긴 이름이 왜 은재의 방이에요?","주인공",{"livingLocation": "eunjae", "v262Day5Eunjae": true}),
+ v256LivingScene("dialogue","아, 그건 왜냐면…","승관",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "portrait": "seungkwan-body2-eyesmile"}),
+ v256LivingScene("dialogue","왜냐면?","주인공",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "portrait": "seungkwan-body2-eyesmile"}),
+ v256LivingScene("dialogue","잠깐, 이행시 잘해요?","정한",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "portrait": "jeonghan-body1-eyesmile"}),
+ v256LivingScene("dialogue","갑자기?","주인공",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "portrait": "jeonghan-body1-smile"}),
+ v256LivingScene("dialogue","잘하면 알려줄게. 은재로 이행시 자, 은!","정한",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "portrait": "jeonghan-body1-eyesmile"}),
+ v256LivingScene("dialogue","으은, 은근히-","주인공",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "portrait": "jeonghan-body1-default"}),
+ v256LivingScene("dialogue","재.","정한",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "portrait": "jeonghan-body1-subtle"}),
+ v256LivingScene("dialogue","재, 재… 재,","주인공",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "portrait": "jeonghan-body1-subtle"}),
+ v256LivingScene("dialogue","땡~ 다음 기회에.","정한",{"livingLocation": "eunjae", "v262Day5Eunjae": true, "portrait": "jeonghan-body1-eyesmile"}),
+ v256LivingScene("narration","경쾌하게 쫓겨났다.",null,{"livingLocation": "corridor", "v262Day5Eunjae": true, "clearPortrait": true}),
+ v256LivingScene("dialogue","은근히 재수없네라고 할 걸.","주인공",{"livingLocation": "corridor", "v262Day5Eunjae": true, "boldWord": "은근히 재수없네"}),
+ v256LivingScene('living-end','',null,{livingLocation:'corridor',v262Day5Eunjae:true})
+);
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -3383,7 +3412,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  if(scene.v259JeonghanSuspicionEnd){showLivingEnd();return;}
  if(DAY2_MORNING_AUTO_EVENING_ENDS.has(scene.kind)){if(v219IsDay3Activity()){v219ShowMorningEnd('오전 활동을 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return;}enterEveningDay2();return}
  // Keep the day in sync with real story progress, including refreshed sessions.
- try{localStorage.setItem('shindo_current_story_day_v109',String(scene.v218GongyangDay|| (v219IsDay3Activity()?3:scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1)))}catch(_){}
+ try{localStorage.setItem('shindo_current_story_day_v109',String(scene.v218GongyangDay|| (scene.v262Day5Eunjae?5:(index>=V256_DAY3_JEONGHAN_POLICE_START&&index<V256_DAY4_JEONGHAN_SEARCH_REVISIT_START)?4:v219IsDay3Activity()?3:scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1)))}catch(_){}
  if(index===DAY2_START)localStorage.setItem(SKIP_REACHED,'1');
  updateAreaSkipButton();
  if(index===DAY2_START&&!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169')){
@@ -3497,6 +3526,7 @@ if(scene.kind==='day2-morning-choice'){
  if(scene.kind==='conf-morning-shared-start'){index++;save();render();return}
  if(scene.kind==='conf-morning-end'){showConfMorningEnd();return}
  if(scene.afternoonAffinity)window.SHINDO_applyAffinityEvent?.('afternoon',scene.afternoonAffinity,2);
+
  if(scene.kind==='evening-choice'){startEveningTick();showEveningChoice();return}
  if(scene.kind==='evening-end'){stopEveningTick();showEveningEnd();return}
  if(scene.kind==='seungkwan-choice'){showSeungkwanChoice();return}
@@ -4521,10 +4551,22 @@ function showLivingChoice(){
   // until this selection so case ② never receives it in the first place.
   if(v260IsDay3Living&&!v260JeonghanCase2)
    window.SHINDO_applyAffinityEvent?.('living3-room','정한',3);
-  if(livingBranch!==1&&!v260JeonghanCase2)
-   window.SHINDO_applyAffinityEvent?.('person','생활관 활동: '+(livingBranch===2?'??의 방에서 대화':options[livingBranch-1]),getMorningAffinityDay());
-  if(v260JeonghanPolice)
+  // V263: The ordinary 생활관 room-entry +5 is independent and UNCHANGED.
+  // Conversation +15 belongs exclusively to the police-contact ①/③ story.
+  // Never apply it to ②/④, or substitute it for the base location reward.
+  const v263Day=Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||2);
+  const v263EunjaeCase13=livingBranch===2&&v241MetSeokminAtPoliceDay2();
+  if(v263EunjaeCase13&&v263Day===3){
+   window.SHINDO_applyAffinityEvent?.('day3-eunjae-jeonghan','정한',3);
    window.SHINDO_applyAffinityEvent?.('living3-police','순영',3);
+  }else if(v263EunjaeCase13&&v263Day===4){
+   window.SHINDO_applyAffinityEvent?.('day4-eunjae-jeonghan','정한',4);
+  }else if(v263EunjaeCase13&&v263Day===5){
+   window.SHINDO_applyAffinityEvent?.('day5-eunjae-duo','정한·승관',5);
+  }else if(livingBranch!==1&&!v260JeonghanCase2){
+   // Preserve every preexisting generic dialogue reward in cases ②/④.
+   window.SHINDO_applyAffinityEvent?.('person','생활관 활동: '+(livingBranch===2?'??의 방에서 대화':options[livingBranch-1]),getMorningAffinityDay());
+  }
   if(livingBranch===1){
    // V255: Jihoon's hidden bad-ending condition is credited once per story day.
    // Day 2's existing selection remains the first strike, and choosing it again
@@ -4556,7 +4598,7 @@ function showLivingChoice(){
    const revisitingSearchedRoom=currentDay>=4&&!metPolice&&metDay2&&
     localStorage.getItem('shindo_jeonghan_room_search_v256')==='1'&&hasEscapePackage();
    const target=revisitingSearchedRoom?V256_DAY4_JEONGHAN_SEARCH_REVISIT_START:
-    metPolice?(currentDay>=4?V256_DAY3_JEONGHAN_POLICE_START:V257_DAY3_JEONGHAN_POLICE_PACKAGE_START):
+    metPolice?(currentDay>=5?V262_DAY5_EUNJAE_CASE13_START:(currentDay===4?V256_DAY3_JEONGHAN_POLICE_START:V257_DAY3_JEONGHAN_POLICE_PACKAGE_START)):
     metDay2?V256_DAY3_JEONGHAN_CASE2_START:-1;
    if(target>=0){
     el.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;

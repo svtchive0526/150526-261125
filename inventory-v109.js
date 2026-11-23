@@ -281,6 +281,18 @@
    // were already credited at entrance, so they must not gain another +5.
    if(localStorage.getItem(V260_DAY3_LIVING_DEFERRED)!=='1')return false;
    eventId='3|생활관정한|장소추가';changes=[['정한',5]];
+  }else if(kind==='day3-eunjae-jeonghan'){
+   if(d!==3||label!=='정한')return false;
+   eventId='3|은재의방|분기1·3|정한15';
+   changes=[['정한',15]];
+  }else if(kind==='day4-eunjae-jeonghan'){
+   if(d!==4||label!=='정한')return false;
+   eventId='4|은재의방|분기1·3|정한15';
+   changes=[['정한',15]];
+  }else if(kind==='day5-eunjae-duo'){
+   if(d!==5||label!=='정한·승관')return false;
+   eventId='5|은재의방|분기1·3|정한승관15';
+   changes=[['정한',15],['승관',15]];
   }else if(kind==='living3-police'){
    if(d!==3||label!=='순영')return false;
    eventId='3|생활관순영|경찰협력';changes=[['순영',15]];
@@ -298,6 +310,17 @@
   }else return false;
   const ledger=load(AFFINITY_EVENTS,[]);if(!Array.isArray(ledger))return false;
   if(ledger.includes(eventId))return false;
+  // Existing V262 saves that already earned Day 4's +15 must not earn it twice.
+  // Do not retroactively subtract V262's already-awarded Seungkwan affinity.
+  if(kind==='day4-eunjae-jeonghan'&&ledger.includes('4|은재의방|분기1·3|정한승관'))return false;
+  // V262 granted Jeonghan +10 through the generic per-person action on Days 3/5.
+  // Complete only the missing +5 when revisiting that same day, never another +15.
+  if(kind==='day3-eunjae-jeonghan'||kind==='day5-eunjae-duo'){
+   const oldIndividual=d+'|개별인물|정한';
+   const oldLabel=d+'|개별|생활관 활동: ??의 방에서 대화';
+   if(ledger.includes(oldIndividual)||ledger.includes(oldLabel))
+    changes=changes.map(([name,amount])=>[name,name==='정한'?5:amount]);
+  }
   if(kind==='person'){
    const selected=PERSON_EVENTS[label];
    if(ledger.some(id=>typeof id==='string'&&(
