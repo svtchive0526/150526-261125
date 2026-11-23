@@ -335,3 +335,25 @@
   #mail-page .mail-panel .panel-body .attachment {margin:0 0 28px!important;}
   #mail-page .mail-panel .church-site-link {min-height:34px!important;padding:7px 14px!important;font-size:12px!important;}
 }
+
+/* V238 — Detail action separators (desktop + mobile).
+ * Keep the four action buttons and click targets unchanged. Only shorten
+ * the separators to match the label height and soften their color.
+ */
+#mail-page .panel-subnav button + button {
+  border-left:0!important;
+  position:relative;
+}
+#mail-page .panel-subnav button + button::before {
+  content:"";
+  position:absolute;
+  left:0;
+  top:50%;
+  transform:translateY(-50%);
+  width:1px;
+  height:1.2em;
+  max-height:18px;
+  background:#EDF1ED;
+  border:0;
+  pointer-events:none;
+}
