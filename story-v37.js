@@ -1572,6 +1572,89 @@ scenes.push(
  v230PrayerScene('prayer-end','',null,2,{clearPortrait:true})
 );
 
+
+// V241: Day 3 prayer-hall [성경 한 장 넘기기], case ③ only.
+// Day 2 morning did NOT choose this activity, but the protagonist actually
+// reached Seok-min at the Day-2 police meeting. Other case scripts remain
+// unchanged until their authored text is delivered. Append-only for saves.
+const V241_DAY3_PRAYER_SEOKMIN_CASE3_START=scenes.length;
+const v241SeokminScene=(kind,text,speaker=null,extra={})=>({
+ kind,text,...(speaker?{speaker}:{}),prayerRoom:true,prayerBranch:3,
+ v241Day3SeokminCase3:true,...extra
+});
+scenes.push(
+ v241SeokminScene('narration','익숙한 얼굴 옆자리에 가서 앉았다. 석민이다.',null,{clearPortrait:true}),
+ v241SeokminScene('narration','낭독이 한창인데, 석민은 성경을 쥔 채 허둥지둥하고 있다.'),
+ v241SeokminScene('narration','손가락이 같은 구절 위를 뱅뱅 돌았다. 딱 봐도 진도를 놓친 얼굴.',null,{portrait:'seokmin-body1-surprised'}),
+ v241SeokminScene('narration','결국 보다 못하고 석민의 성경 위로 손을 뻗었다.',null,{portrait:'seokmin-body1-surprised',prayerAudio:'book-2'}),
+ v241SeokminScene('narration','한 장, 조용히 넘겼다. 낭독 중인 구절이 있는 쪽이다.',null,{portrait:'seokmin-body1-surprised'}),
+ v241SeokminScene('dialogue','와 깜짝, 가, 감사합니다….','석민',{portrait:'seokmin-body2-surprised',portraitFadeOutAfter:true}),
+ v241SeokminScene('narration','예배가 끝난 뒤 석민이 먼저 말을 걸어왔다.',null,{v241PrayerOutside:true,clearPortrait:true}),
+ v241SeokminScene('dialogue','저기, 밖에선 모르는 척하는 게 낫지 않을까요?','석민',{v241PrayerOutside:true,portrait:'seokmin-body2-default'}),
+ v241SeokminScene('dialogue','오히려 지나치게 거리를 벌리는 쪽이, 더 수상해 보일 수도 있죠.','주인공',{v241PrayerOutside:true,portrait:'seokmin-body1-default'}),
+ v241SeokminScene('dialogue','적응 잘하시네요…. 저는 들어왔을 때 좀 힘들었어서.','석민',{v241PrayerOutside:true,portrait:'seokmin-body2-default'}),
+ v241SeokminScene('dialogue','공양이니 뭐니, 정상적인 상황은 아니잖아요.','석민',{v241PrayerOutside:true,portrait:'seokmin-body2-default'}),
+ v241SeokminScene('dialogue','그래도 공양에 대한 증거만 잡으면 잭팟이니까 뭐…','석민',{v241PrayerOutside:true,portrait:'seokmin-body2-eyesmile'}),
+ v241SeokminScene('dialogue','어떻게든 해내야죠.','석민',{v241PrayerOutside:true,portrait:'seokmin-body1-eyesmile',portraitFadeOutAfter:true}),
+ v241SeokminScene('narration','말을 하는 얼굴이 쾌활한 동시에 초췌해 보인다.',null,{v241PrayerOutside:true,clearPortrait:true}),
+ v241SeokminScene('dialogue','(이석민 이 사람, 괜찮은 거 맞겠지…?)','주인공',{v241PrayerOutside:true,clearPortrait:true,inner:true}),
+ v241SeokminScene('prayer-end','',null,{v241PrayerOutside:true,clearPortrait:true})
+);
+
+
+// V242: Day 3 prayer-hall [성경 한 장 넘기기], case ① and case ④.
+// Both visited this activity on Day 2; branch solely by actual Day-2
+// police-meeting attendance. Keep case ③ and the case ② Day-2 reuse intact.
+// Append-only: previous scene indices are never shifted.
+const v242SeokminScene=(kind,text,speaker=null,extra={})=>({
+ kind,text,...(speaker?{speaker}:{}),prayerRoom:true,prayerBranch:3,
+ v242Day3Seokmin:true,...extra
+});
+const V242_DAY3_PRAYER_SEOKMIN_CASE1_START=scenes.length;
+scenes.push(
+ v242SeokminScene('narration','익숙한 얼굴 옆자리에 가서 앉았다. 석민이다.',null,{clearPortrait:true}),
+ v242SeokminScene('narration','낭독이 한창인데...'),
+ v242SeokminScene('narration','오늘도 석민은 성경을 쥔 채 허둥지둥하고 있다.'),
+ v242SeokminScene('dialogue','(아직 적응을 못했구나.)','주인공',{inner:true}),
+ v242SeokminScene('narration','손가락이 같은 구절 위를 뱅뱅 돈다.',null,{portrait:'seokmin-body1-surprised'}),
+ v242SeokminScene('narration','결국 보다 못하고 오늘도 석민의 성경 위로 손을 뻗었다.',null,{portrait:'seokmin-body1-surprised',prayerAudio:'book-2'}),
+ v242SeokminScene('narration','한 장, 조용히 넘겼다. 낭독 중인 구절이 있는 쪽이다.',null,{portrait:'seokmin-body1-surprised'}),
+ v242SeokminScene('dialogue','와 깜짝, 가, 감사합니다….','석민',{portrait:'seokmin-body2-surprised',portraitFadeOutAfter:true}),
+ v242SeokminScene('narration','예배가 끝난 뒤 석민이 먼저 말을 걸어왔다.',null,{v241PrayerOutside:true,clearPortrait:true}),
+ v242SeokminScene('dialogue','저기, 밖에선 모르는 척하는 게 낫지 않을까요?','석민',{v241PrayerOutside:true,portrait:'seokmin-body2-default'}),
+ v242SeokminScene('dialogue','오히려 지나치게 거리를 벌리는 쪽이, 더 수상해 보일 수도 있죠.','주인공',{v241PrayerOutside:true,portrait:'seokmin-body1-default'}),
+ v242SeokminScene('dialogue','적응 잘하시네요…. 저는 들어왔을 때 좀 힘들었어서.','석민',{v241PrayerOutside:true,portrait:'seokmin-body2-default'}),
+ v242SeokminScene('dialogue','공양이니 뭐니, 정상적인 상황은 아니잖아요.','석민',{v241PrayerOutside:true,portrait:'seokmin-body2-default'}),
+ v242SeokminScene('dialogue','그래도 공양에 대한 증거만 잡으면 잭팟이니까 뭐…','석민',{v241PrayerOutside:true,portrait:'seokmin-body2-eyesmile'}),
+ v242SeokminScene('dialogue','어떻게든 해내야죠.','석민',{v241PrayerOutside:true,portrait:'seokmin-body1-eyesmile',portraitFadeOutAfter:true}),
+ v242SeokminScene('narration','말을 하는 얼굴이 쾌활한 동시에 초췌해 보인다.',null,{v241PrayerOutside:true,clearPortrait:true}),
+ v242SeokminScene('dialogue','(이석민 이 사람, 괜찮은 거 맞겠지…?)','주인공',{v241PrayerOutside:true,clearPortrait:true,inner:true}),
+ v242SeokminScene('prayer-end','',null,{v241PrayerOutside:true,clearPortrait:true})
+);
+
+const V242_DAY3_PRAYER_SEOKMIN_CASE4_START=scenes.length;
+scenes.push(
+ v242SeokminScene('narration','익숙한 얼굴 옆자리에 가서 앉았다. 석민이다.',null,{clearPortrait:true}),
+ v242SeokminScene('narration','낭독이 한창인데...'),
+ v242SeokminScene('narration','오늘도 석민은 성경을 쥔 채 허둥지둥하고 있다.'),
+ v242SeokminScene('dialogue','(아직 적응을 못했구나.)','주인공',{inner:true}),
+ v242SeokminScene('narration','손가락이 같은 구절 위를 뱅뱅 돈다.',null,{portrait:'seokmin-body1-surprised'}),
+ v242SeokminScene('narration','결국 보다 못하고 오늘도 석민의 성경 위로 손을 뻗었다.',null,{portrait:'seokmin-body1-surprised',prayerAudio:'book-2'}),
+ v242SeokminScene('narration','한 장, 조용히 넘겼다. 낭독 중인 구절이 있는 쪽이다.',null,{portrait:'seokmin-body1-surprised'}),
+ v242SeokminScene('dialogue','어, 어제 그 분..! 감사합니다...','석민',{portrait:'seokmin-body2-surprised',portraitFadeOutAfter:true}),
+ v242SeokminScene('narration','예배가 끝난 뒤 석민이 먼저 말을 걸어왔다.',null,{v241PrayerOutside:true,clearPortrait:true}),
+ v242SeokminScene('dialogue','이름이... 봉봉씨랬죠? 오늘도 고마워요.','석민',{v241PrayerOutside:true,portrait:'seokmin-body2-eyesmile'}),
+ v242SeokminScene('dialogue','에이 뭘요, 그런거 돕자고 얼굴도 서로 튼거 아니겠어요.','주인공',{v241PrayerOutside:true,portrait:'seokmin-body1-default'}),
+ v242SeokminScene('dialogue','적응 잘하시네요…. 저는 들어왔을 때 좀 힘들었어서.','석민',{v241PrayerOutside:true,portrait:'seokmin-body2-default'}),
+ v242SeokminScene('dialogue','공양이니 뭐니, 정상적인 상황은 아니잖아요.','석민',{v241PrayerOutside:true,portrait:'seokmin-body2-default'}),
+ // Explicit V242 correction: NO fade on '어떻게든 적응은 해내야죠.'
+ v242SeokminScene('dialogue','어떻게든 적응은 해내야죠.','석민',{v241PrayerOutside:true,portrait:'seokmin-body1-smile'}),
+ v242SeokminScene('dialogue','다음에 또 봐요!','석민',{v241PrayerOutside:true,portrait:'seokmin-body1-eyesmile',portraitFadeOutAfter:true}),
+ v242SeokminScene('narration','말을 하는 얼굴이 쾌활한 동시에 초췌해 보인다.',null,{v241PrayerOutside:true,clearPortrait:true}),
+ v242SeokminScene('dialogue','(이석민 이 사람, 괜찮은 거 맞겠지…?)','주인공',{v241PrayerOutside:true,clearPortrait:true,inner:true}),
+ v242SeokminScene('prayer-end','',null,{v241PrayerOutside:true,clearPortrait:true})
+);
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -1614,6 +1697,7 @@ function getSceneBackdrop(sceneNumber,scene){
   // 미제공된 복도 배경은 기존처럼 검은 화면을 유지한다.
   return where==='main'?'bg-art-hall-interior.jpg':where==='office'?'bg-minghao-office.jpg':'';
  }
+ if(scene&&scene.v241PrayerOutside)return 'bg-prayer-hall-exterior.jpg';
  if(scene&&scene.prayerRoom)return 'bg-prayer-hall-interior.jpg';
  // Keep the Day 2 square photograph throughout the common square sequence;
  // the old numeric ranges had gaps that made the photo disappear mid-scene.
@@ -2736,6 +2820,7 @@ function runSkippedSceneState(from,to){
   }
   // V178 police introductions grant name unlocks on narration, not a reveal flag.
   if(s.revealName){
+   if(s.revealName==='석민'&&s.eveningDay2&&s.eveningLocation==='eunjae')localStorage.setItem('shindo_day2_police_met_seokmin_v241','1');
    window.SHINDO_markCharacterMet?.(s.revealName);
    const info={정한:['shindo_jeonghan_known_v156','jeonghan'],순영:['shindo_soonyoung_known_v105','soonyoung'],석민:['shindo_seokmin_known_v99','seokmin']}[s.revealName];
    if(info){localStorage.setItem(info[0],'1');if(info[1]==='정한')jeonghanRevealed=true;
@@ -2930,7 +3015,9 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   if(scene.v178Audio)v178Cue(scene.v178Audio);
   if(scene.patrolDuo==='in'||scene.patrolDuo==='out'){currentPortrait='';portrait.hidden=true;v178Patrol(scene.patrolDuo);}
   else if(scene.patrolDuo!=='hold'&&duoLayer.classList.contains('v178-patrol'))v178Patrol(null);
-  if(scene.revealName){const n=scene.revealName;window.SHINDO_markCharacterMet?.(n);
+  if(scene.revealName){const n=scene.revealName;
+   if(n==='석민'&&scene.eveningDay2&&scene.eveningLocation==='eunjae')localStorage.setItem('shindo_day2_police_met_seokmin_v241','1');
+   window.SHINDO_markCharacterMet?.(n);
    if(n==='정한'){jeonghanRevealed=true;localStorage.setItem('shindo_jeonghan_known_v156','1')}
    if(n==='순영'){soonyoungRevealed=true;localStorage.setItem('shindo_soonyoung_known_v105','1')}
    if(n==='석민'){seokminRevealed=true;localStorage.setItem('shindo_seokmin_known_v99','1')}
@@ -3206,7 +3293,7 @@ function restartFromDay1(){
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  v207StopEscapeMusic();
  v205StopChoice();v205HammerBlocked=false;if(v205HammerAudio){v205HammerAudio.pause();v205HammerAudio=null}
- stopV178Bell();v178Patrol(null);stopEveningTick();eveningBranch=0;seungkwanTruthBranch=0;localStorage.removeItem('shindo_evening_branch_day2_v173');localStorage.removeItem('shindo_seungkwan_truth_branch_v177');localStorage.removeItem('shindo_police_coop_v178');
+ stopV178Bell();v178Patrol(null);stopEveningTick();eveningBranch=0;seungkwanTruthBranch=0;localStorage.removeItem('shindo_evening_branch_day2_v173');localStorage.removeItem('shindo_seungkwan_truth_branch_v177');localStorage.removeItem('shindo_police_coop_v178');localStorage.removeItem('shindo_day2_police_met_seokmin_v241');
  flagReplay();
  duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');
  clearTimeout(timer);timer=null;clearConfessionQuestionTimers();
@@ -3223,7 +3310,7 @@ function restartFromDay1(){
  endingTimers.forEach(clearTimeout);endingTimers=[];
  selectedBranch=0;day2Prayer=0;day2Morning='';livingBranch=0;mainBranch=0;confMorningBranch=0;seungkwanTruthBranch=0;joshuaRevealed=false;revealed=false;jihoonRevealed=false;soonyoungRevealed=false;minghaoRevealed=false;jeonghanRevealed=false;mingyuRevealed=false;seungkwanRevealed=false;
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;confessionTickLouder=false;
- ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_seungkwan_truth_branch_v177','shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_evening_branch_day2_v173','shindo_confession_morning_branch_v163','shindo_day2_start_affinity_snapshot_v169','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person','shindo_junhui_locked_morning_seen_v223'].forEach(k=>localStorage.removeItem(k));
+ ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_seungkwan_truth_branch_v177','shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_evening_branch_day2_v173','shindo_confession_morning_branch_v163','shindo_day2_start_affinity_snapshot_v169','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person','shindo_junhui_locked_morning_seen_v223','shindo_day2_police_met_seokmin_v241'].forEach(k=>localStorage.removeItem(k));
  const day1Start=scenes.findIndex(s=>s.kind==='transition'&&s.text==='1일차 아침');
  index=day1Start>=0?day1Start:0;
  storyUnderlay.classList.add('visible');storyBackdrop.classList.add('visible');overlay.classList.add('active');refreshInventoryVisibility();
@@ -3281,7 +3368,7 @@ function restartFromDay2(){
   'shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_joshua_known_v160',
   'shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_soonyoung_known_v105','shindo_minghao_known_v105',
   'shindo_hansol_known_v99','shindo_seokmin_known_v99','shindo_chan_known_v99',
-  'shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_seungkwan_truth_branch_v177','shindo_police_coop_v178','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_affinity_unread_v125','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person','shindo_junhui_locked_morning_seen_v223'
+  'shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_seungkwan_truth_branch_v177','shindo_police_coop_v178','shindo_day2_police_met_seokmin_v241','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_affinity_unread_v125','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person','shindo_junhui_locked_morning_seen_v223'
  ];
  resetKeys.forEach(key=>localStorage.removeItem(key));
  try{const names=JSON.parse(localStorage.getItem('shindo_met_characters_v108')||'[]');
@@ -3300,6 +3387,7 @@ window.SHINDO_restartFromDay2=restartFromDay2;
 // V184: Replay Day 2 afternoon from the central-square introduction without
 // erasing morning activity, evidence, affinity, or the morning Wonwoo meeting.
 function restartFromDay2Afternoon(){
+ localStorage.removeItem('shindo_day2_police_met_seokmin_v241');
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  localStorage.removeItem('shindo_junhui_affinity_locked_v205');
  localStorage.removeItem('shindo_affinity_locks_v222');
@@ -3400,6 +3488,17 @@ function v223FinishLockedJunhuiMorning(){
  v219ShowMorningEnd('공양실을 둘러봤습니다. 이후 오전 활동 이야기는 추후 추가됩니다.');
 }
 function v219IsDay3Activity(){return localStorage.getItem(V219_MODE_KEY)==='1'}
+
+// V241: A police encounter must be evidenced by reaching the secret meeting,
+// or by a completed police-cooperation choice on an older save. Generic name
+// unlock (possibly from Day 1) is NOT proof of a Day-2 police meeting.
+function v241MetSeokminAtPoliceDay2(){
+ if(localStorage.getItem('shindo_day2_police_met_seokmin_v241')==='1')return true;
+ const metAtPoliceChoice=localStorage.getItem('shindo_police_coop_v178');
+ return localStorage.getItem('shindo_seungkwan_truth_branch_v177')==='1' &&
+  (metAtPoliceChoice==='1'||metAtPoliceChoice==='2');
+}
+
 function v219WasMetDay2(name){
  const room=localStorage.getItem('shindo_day2_morning')||'';
  const mapped={한솔:['기도관','shindo_prayer_branch_v99','1'],승철:['기도관','shindo_prayer_branch_v99','2'],석민:['기도관','shindo_prayer_branch_v99','3'],찬:['기도관','shindo_prayer_branch_v99','4'],
@@ -3621,6 +3720,7 @@ function showSeungkwanEnd(){
 }
 
 function showV178CoopChoice(){
+ localStorage.setItem('shindo_day2_police_met_seokmin_v241','1');
  v183UnlockPoliceTeam();
  locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
@@ -4073,14 +4173,30 @@ function showPrayerChoice(){
  el.classList.remove('shindo-morning-grid');el.classList.add('shindo-prayer-grid');
  const options=['단상 위 청소','자는 사람 깨우기','성경 한 장 넘기기','청소 돕기'];
  el.innerHTML='<h2>뭐부터 거들어 볼까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button data-prayer="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
- el.style.display='flex';el.querySelectorAll('[data-prayer]').forEach(b=>b.onclick=e=>{e.stopPropagation();stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopVnTyping(false);prayerBranch=Number(b.dataset.prayer);window.SHINDO_addPlayRecord?.('선택','기도관 활동: '+options[prayerBranch-1]);localStorage.setItem(v219IsDay3Activity()?'shindo_day3_prayer_branch_v219':'shindo_prayer_branch_v99',String(prayerBranch));window.SHINDO_applyAffinityEvent?.('person','기도관 활동: '+options[prayerBranch-1],getMorningAffinityDay());const branchStart=findPrayerBranchStart(prayerBranch);if(v219IsDay3Activity()&&v219WasMetDay2(({1:'한솔',2:'승철',3:'석민',4:'찬'})[prayerBranch])){if(prayerBranch===1||prayerBranch===2){el.style.display='none';el.classList.remove('shindo-prayer-grid');currentPortrait='';portrait.hidden=true;illustration.hidden=true;index=prayerBranch===1?V230_DAY3_PRAYER_CLEAN_START:V230_DAY3_PRAYER_WAKE_START;locked=false;save();render();return;}v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;}el.style.display='none';el.classList.remove('shindo-prayer-grid');currentPortrait='';portrait.hidden=true;illustration.hidden=true;if(branchStart!==-1){index=branchStart;locked=false;save();render();return}locked=false;next()});
+ el.style.display='flex';el.querySelectorAll('[data-prayer]').forEach(b=>b.onclick=e=>{e.stopPropagation();stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopVnTyping(false);prayerBranch=Number(b.dataset.prayer);window.SHINDO_addPlayRecord?.('선택','기도관 활동: '+options[prayerBranch-1]);localStorage.setItem(v219IsDay3Activity()?'shindo_day3_prayer_branch_v219':'shindo_prayer_branch_v99',String(prayerBranch));window.SHINDO_applyAffinityEvent?.('person','기도관 활동: '+options[prayerBranch-1],getMorningAffinityDay());const branchStart=findPrayerBranchStart(prayerBranch);
+  // V242: Prior Day-2 morning visit + Day-2 police meeting decides ① vs ④.
+  // v219WasMetDay2 checks the morning activity itself, never mere name unlock.
+  if(v219IsDay3Activity()&&prayerBranch===3&&v219WasMetDay2('석민')){
+   el.style.display='none';el.classList.remove('shindo-prayer-grid');
+   currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+   index=v241MetSeokminAtPoliceDay2()
+    ? V242_DAY3_PRAYER_SEOKMIN_CASE1_START
+    : V242_DAY3_PRAYER_SEOKMIN_CASE4_START;
+   locked=false;save();render();return;
+  }
+ // Case ③: no Day-2 morning Seok-min activity + actually met at police base.
+ if(v219IsDay3Activity()&&prayerBranch===3&&!v219WasMetDay2('석민')&&v241MetSeokminAtPoliceDay2()){
+  el.style.display='none';el.classList.remove('shindo-prayer-grid');currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+  index=V241_DAY3_PRAYER_SEOKMIN_CASE3_START;locked=false;save();render();return;
+ }
+ if(v219IsDay3Activity()&&v219WasMetDay2(({1:'한솔',2:'승철',3:'석민',4:'찬'})[prayerBranch])){if(prayerBranch===1||prayerBranch===2){el.style.display='none';el.classList.remove('shindo-prayer-grid');currentPortrait='';portrait.hidden=true;illustration.hidden=true;index=prayerBranch===1?V230_DAY3_PRAYER_CLEAN_START:V230_DAY3_PRAYER_WAKE_START;locked=false;save();render();return;}v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;}el.style.display='none';el.classList.remove('shindo-prayer-grid');currentPortrait='';portrait.hidden=true;illustration.hidden=true;if(branchStart!==-1){index=branchStart;locked=false;save();render();return}locked=false;next()});
 }
 
 function returnToMorningActivities(){
  v207StopEscapeMusic();
  stopV178Bell();v178Patrol(null);stopEveningWalk();
  stopEveningTick();eveningBranch=0;localStorage.removeItem('shindo_evening_branch_day2_v173');
- seungkwanTruthBranch=0;localStorage.removeItem('shindo_seungkwan_truth_branch_v177');localStorage.removeItem('shindo_police_coop_v178');
+ seungkwanTruthBranch=0;localStorage.removeItem('shindo_seungkwan_truth_branch_v177');localStorage.removeItem('shindo_police_coop_v178');localStorage.removeItem('shindo_day2_police_met_seokmin_v241');
  duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');
  clearTimeout(timer);timer=null;stopVnTyping(false);stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopArtAudio();stopGongyangBell();stopLeaderShout();stopGongyangApplause();
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;portrait.classList.remove('prayer-silhouette','art-silhouette','living-silhouette');
