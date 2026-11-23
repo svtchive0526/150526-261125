@@ -1920,7 +1920,8 @@ scenes.push(
  v256LivingScene('narration','그러나… 지금 이 방에는 없다.'),
  v256LivingScene('narration','혹은, 더는 나에게 문을 열어주지 않는 걸지도 모른다.'),
  v256LivingScene('dialogue','의심을 산 것 같군.','주인공'),
- v256LivingScene('living-end','')
+ // V259: lock Jeonghan's affinity only when this specific repeat visit finishes.
+ v256LivingScene('living-end','',null,{v259JeonghanSuspicionEnd:true})
 );
 
 // V257 — Day 3 Jeonghan police-contact scene, separate from V256's legacy
@@ -3378,6 +3379,8 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  }
  // V175: no interim selection screen after a completed Day 2 morning branch.
  // This also resumes correctly when an older save is parked on a branch-end node.
+ // V259: This Day-4+ revisit ends its OWN morning activity; never route it into Day-2 evening.
+ if(scene.v259JeonghanSuspicionEnd){showLivingEnd();return;}
  if(DAY2_MORNING_AUTO_EVENING_ENDS.has(scene.kind)){if(v219IsDay3Activity()){v219ShowMorningEnd('오전 활동을 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return;}enterEveningDay2();return}
  // Keep the day in sync with real story progress, including refreshed sessions.
  try{localStorage.setItem('shindo_current_story_day_v109',String(scene.v218GongyangDay|| (v219IsDay3Activity()?3:scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1)))}catch(_){}
@@ -4571,6 +4574,23 @@ function showLivingRecall(scene){
 }
 
 function showLivingEnd(){
+ // V259: After the Day 4+ searched-room revisit ('다시 이 방을 찾는 게...' through
+ // '의심을 산 것 같군.'), freeze Jeonghan's CURRENT affinity at morning completion.
+ // Do not trigger during the dialogue, for an ordinary living-end, or for
+ // either route's Day-3 escape-package acquisition scene.
+ if(scenes[index]?.v259JeonghanSuspicionEnd){
+  if(typeof window.SHINDO_lockAffinity==='function')window.SHINDO_lockAffinity('정한');
+  else{
+   // Defensive fallback if the inventory script has not finished loading.
+   try{
+    const key='shindo_affinity_locks_v222';
+    let locks=JSON.parse(localStorage.getItem(key)||'{}');
+    if(!locks||typeof locks!=='object'||Array.isArray(locks))locks={};
+    locks['정한']=true;localStorage.setItem(key,JSON.stringify(locks));
+    document.dispatchEvent(new Event('shindo-inventory-change'));
+   }catch(_){}
+  }
+ }
  locked=true;box.style.display='none';portrait.hidden=true;currentPortrait='';illustration.hidden=true;
  overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
