@@ -1880,7 +1880,7 @@ scenes.push(
  v256LivingScene('narration','오늘은 여기까지.',null,{livingLocation:'eunjae'}),
  v256LivingScene('living-end','',null,{livingLocation:'eunjae'})
 );
-const V256_DAY3_JEONGHAN_POLICE_START=scenes.length;
+const V256_DAY4_EUNJAE_CASE13_START=scenes.length;
 scenes.push(
  v256LivingScene('narration','이미 다녀온 곳이지만, 다시 <은재의 방>으로 향했다.'),
  v256LivingScene('narration','문을 열어준 정한은 내심 흡족한 모양이다.',null,{livingLocation:'eunjae'}),
@@ -3319,7 +3319,7 @@ function jumpV178(which){const target=V178_TARGETS[which];if(target===undefined)
 function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTyping(false);
  // V257: migrate a save paused inside the former Day-3 ①/③ script to its new Day-3 scene.
  // The old lines remain untouched at their stable indices and belong to Day 4+ now.
- if(index>=V256_DAY3_JEONGHAN_POLICE_START&&index<V256_DAY4_JEONGHAN_SEARCH_REVISIT_START&&
+ if(index>=V256_DAY4_EUNJAE_CASE13_START&&index<V256_DAY4_JEONGHAN_SEARCH_REVISIT_START&&
     localStorage.getItem('shindo_current_story_day_v109')==='3'){
   index=V257_DAY3_JEONGHAN_POLICE_PACKAGE_START;save();render();return;
  }
@@ -3412,7 +3412,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  if(scene.v259JeonghanSuspicionEnd){showLivingEnd();return;}
  if(DAY2_MORNING_AUTO_EVENING_ENDS.has(scene.kind)){if(v219IsDay3Activity()){v219ShowMorningEnd('오전 활동을 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return;}enterEveningDay2();return}
  // Keep the day in sync with real story progress, including refreshed sessions.
- try{localStorage.setItem('shindo_current_story_day_v109',String(scene.v218GongyangDay|| (scene.v262Day5Eunjae?5:(index>=V256_DAY3_JEONGHAN_POLICE_START&&index<V256_DAY4_JEONGHAN_SEARCH_REVISIT_START)?4:v219IsDay3Activity()?3:scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1)))}catch(_){}
+ try{localStorage.setItem('shindo_current_story_day_v109',String(scene.v218GongyangDay|| (scene.v262Day5Eunjae?5:(index>=V256_DAY4_EUNJAE_CASE13_START&&index<V256_DAY4_JEONGHAN_SEARCH_REVISIT_START)?4:v219IsDay3Activity()?3:scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1)))}catch(_){}
  if(index===DAY2_START)localStorage.setItem(SKIP_REACHED,'1');
  updateAreaSkipButton();
  if(index===DAY2_START&&!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169')){
@@ -4598,7 +4598,7 @@ function showLivingChoice(){
    const revisitingSearchedRoom=currentDay>=4&&!metPolice&&metDay2&&
     localStorage.getItem('shindo_jeonghan_room_search_v256')==='1'&&hasEscapePackage();
    const target=revisitingSearchedRoom?V256_DAY4_JEONGHAN_SEARCH_REVISIT_START:
-    metPolice?(currentDay>=5?V262_DAY5_EUNJAE_CASE13_START:(currentDay===4?V256_DAY3_JEONGHAN_POLICE_START:V257_DAY3_JEONGHAN_POLICE_PACKAGE_START)):
+    metPolice?(currentDay>=5?V262_DAY5_EUNJAE_CASE13_START:(currentDay===4?V256_DAY4_EUNJAE_CASE13_START:V257_DAY3_JEONGHAN_POLICE_PACKAGE_START)):
     metDay2?V256_DAY3_JEONGHAN_CASE2_START:-1;
    if(target>=0){
     el.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;
