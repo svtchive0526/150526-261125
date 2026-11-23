@@ -1871,7 +1871,7 @@ scenes.push(
  v256LivingScene('evidence-popup','',null,{
   livingLocation:'eunjae',evidenceId:'escape-package',evidenceTitle:'탈출패키지',
   evidenceDescription:'누군가가 탈출하려고 꾸려둔 패키지다. 손전등, 장갑, 단 간식거리, 포켓나이프, 나침반이 들어있다.',
-  v256EscapePackage:true
+  v256EscapePackage:true,v256JeonghanBurglarSearch:true
  }),
  v256LivingScene('dialogue','더 뒤져보고 싶긴한데...','주인공',{livingLocation:'eunjae',v256BackdropFadeIn:true}),
  v256LivingScene('dialogue','더 머물다간 정말로 들킬 거 같군.','주인공',{livingLocation:'eunjae'}),
@@ -1921,6 +1921,56 @@ scenes.push(
  v256LivingScene('narration','혹은, 더는 나에게 문을 열어주지 않는 걸지도 모른다.'),
  v256LivingScene('dialogue','의심을 산 것 같군.','주인공'),
  v256LivingScene('living-end','')
+);
+
+// V257 — Day 3 Jeonghan police-contact scene, separate from V256's legacy
+// partnership speech (now reserved for Day 4+). Append-only for existing saves.
+const V257_DAY3_JEONGHAN_POLICE_PACKAGE_START=scenes.length;
+scenes.push(
+ v256LivingScene('narration','이튿날 오후 정한이 한 말이 떠올랐다.'),
+ v256LivingScene('dialogue','아, 그리고 오전에 여기 오시면 드릴 수 있는 게 있습니다.','정한',{
+  livingLocation:'eunjae',portrait:'jeonghan-body2-default',recall:true,v257PoliceRecall:true
+ }),
+ v256LivingScene('dialogue','가 봐야겠지. 한배를 탔으니까.','주인공'),
+ v256LivingScene('narration','생활관 은재의 방 앞으로 가서 조용히 노크했다.'),
+ v256LivingScene('narration','우리만 아는 리듬으로 두드리니 곧 문이 열렸다.'),
+ v256LivingScene('narration','정한과 순영은 이곳의 지도를 펼쳐놓고 진지하게 논의 중이었다.',null,{
+  livingLocation:'eunjae',v257PoliceDuo:true,
+  duo:['jeonghan-body1-default','soonyoung-body2-thinking']
+ }),
+ v256LivingScene('narration','들어보니 특히 교주를 잡는 데 진심으로 보였다.',null,{
+  livingLocation:'eunjae',v257PoliceDuo:true,boldWord:'교주',
+  duo:['jeonghan-body2-default','soonyoung-body1-thinking']
+ }),
+ v256LivingScene('narration','기자로서 이해가 간다.',null,{livingLocation:'eunjae',clearPortrait:true}),
+ v256LivingScene('dialogue','사이비 수사는 결국 교주에서 막히거나 풀리니까.','주인공',{livingLocation:'eunjae'}),
+ v256LivingScene('dialogue','교주가 사라지면 처벌도, 진상도 그대로 끝나지만...','주인공',{livingLocation:'eunjae'}),
+ v256LivingScene('dialogue','교주가 멀쩡하면 조직은 어디서든 되살아나겠지.','주인공',{livingLocation:'eunjae'}),
+ v256LivingScene('narration','결국 교주의 정체를 밝히고, 직접 증거로 신병을 확보하는 게 최우선이다.',null,{livingLocation:'eunjae'}),
+ v256LivingScene('narration','벽면의 지도엔 고해소와 교주실에 빨간색으로 동그라미가 쳐져 있었다.',null,{
+  livingLocation:'eunjae',v257BoldPhrases:['고해소','교주실']
+ }),
+ v256LivingScene('dialogue','잠입하기 가장 어려운 곳이라서일까?','주인공',{livingLocation:'eunjae'}),
+ v256LivingScene('dialogue','봉봉씨!','정한',{livingLocation:'eunjae',portrait:'jeonghan-body1-default'}),
+ v256LivingScene('dialogue','이젠 한 팀이니까, 이거 전해주려고 불렀어요.','정한',{
+  livingLocation:'eunjae',portrait:'jeonghan-body2-eyesmile'
+ }),
+ v256LivingScene('dialogue','잘 써 봐요.','정한',{
+  livingLocation:'eunjae',portrait:'jeonghan-body2-smile',v256BackdropFadeAfter:true
+ }),
+ v256LivingScene('evidence-popup','',null,{
+  livingLocation:'eunjae',evidenceId:'escape-package',evidenceTitle:'탈출패키지',
+  evidenceDescription:'누군가가 탈출하려고 꾸려둔 패키지다. 손전등, 장갑, 단 간식거리, 포켓나이프, 나침반이 들어있다.',
+  v256EscapePackage:true // no v256JeonghanBurglarSearch: received directly from the police team
+ }),
+ v256LivingScene('dialogue','오, 고마워요!','주인공',{
+  livingLocation:'eunjae',portrait:'jeonghan-body1-smile',v256BackdropFadeIn:true,portraitFadeOutAfter:true
+ }),
+ v256LivingScene('narration','안에는 이것저것 물건이 많이 들어있다. 나중에 자세히 살펴보자.',null,{
+  livingLocation:'eunjae',clearPortrait:true
+ }),
+ v256LivingScene('narration','유용하게 쓸 수 있을 듯 하다.',null,{livingLocation:'eunjae'}),
+ v256LivingScene('living-end','',null,{livingLocation:'eunjae'})
 );
 
 const sceneBackdropRanges=[
@@ -2675,7 +2725,8 @@ function showEvidencePopup(scene){
  collectEvidence(scene.evidenceId);
  if(scene.v256EscapePackage){
   localStorage.setItem('shindo_escape_package_owned','1');
-  localStorage.setItem('shindo_jeonghan_room_search_v256','1');
+  // V257: cooperation package != illegally searched room. Preserve old burglary saves.
+  if(scene.v256JeonghanBurglarSearch)localStorage.setItem('shindo_jeonghan_room_search_v256','1');
  }
  const pop=document.createElement('div');pop.className='shindo-evidence-overlay';
  pop.innerHTML='<div class="shindo-evidence-card"><div class="shindo-evidence-kicker">증거품을 획득했다.</div><div class="shindo-evidence-title"></div><div class="shindo-evidence-desc"></div><button class="shindo-evidence-confirm" type="button">확인</button></div>';
@@ -3235,7 +3286,14 @@ function v178Patrol(mode){
  }
 }
 function jumpV178(which){const target=V178_TARGETS[which];if(target===undefined)return;const el=overlay.querySelector('.shindo-choices');if(el)el.style.display='none';locked=false;index=V178_OFFSET+target;save();render()}
-function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTyping(false);const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){finish();return}
+function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTyping(false);
+ // V257: migrate a save paused inside the former Day-3 ①/③ script to its new Day-3 scene.
+ // The old lines remain untouched at their stable indices and belong to Day 4+ now.
+ if(index>=V256_DAY3_JEONGHAN_POLICE_START&&index<V256_DAY4_JEONGHAN_SEARCH_REVISIT_START&&
+    localStorage.getItem('shindo_current_story_day_v109')==='3'){
+  index=V257_DAY3_JEONGHAN_POLICE_PACKAGE_START;save();render();return;
+ }
+ const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){finish();return}
  // V207: Resume BGM only inside the escape scene; never restart it per line.
  if(index>=V205_ESCAPE_START && index<V205_ESCAPE_LIE+100 && scene?.eveningLocation==='village' && !v207EscapeMusicFading)v207StartEscapeMusic();
  if(!scene.v213Day1Bedtime)v183SyncPoliceIdentityAt(index);
@@ -3518,9 +3576,10 @@ if(scene.kind==='image'){
 }
 
 if(scene.kind==='dialogue'&&scene.speaker==='원우'&&!scene.maskSpeaker)window.SHINDO_markCharacterMet?.('원우');
-const duoVisible=(scene.specialMinghao||scene.v247MinghaoFollowup)?setSpecialPortraits(scene):false;
+const duoVisible=(scene.specialMinghao||scene.v247MinghaoFollowup||scene.v257PoliceDuo)?setSpecialPortraits(scene):false;
+ if(!duoVisible&&duoLayer.classList.contains('is-active')){duoLayer.classList.remove('is-active');duoLeft.hidden=true;duoRight.hidden=true;}
 // V224: regular single-portrait recall needs the same visual mode as duo recalls.
-if((scene.v224OfficeType3||scene.v226OfficeType1) && scene.recall)overlay.classList.add('is-recall');
+if((scene.v224OfficeType3||scene.v226OfficeType1||scene.v257PoliceRecall) && scene.recall)overlay.classList.add('is-recall');
 // V115: the special branch has its own recognition moments, independent of earlier branches.
 // Minghao has already been met at the start of this 60+ story. Hansol remains
 // unidentified until the protagonist explicitly recognises him.
@@ -3585,6 +3644,18 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
  if(scene.redWord){const at=content.textContent.indexOf(scene.redWord);if(at>=0){const txt=content.textContent;content.textContent='';content.append(document.createTextNode(txt.slice(0,at)));const b=document.createElement('strong');b.style.color='#d41616';b.textContent=scene.redWord;content.append(b,document.createTextNode(txt.slice(at+scene.redWord.length)))}}
  if(scene.boldPhrase){const at=content.textContent.indexOf(scene.boldPhrase);if(at>=0){const txt=content.textContent;content.textContent='';content.append(document.createTextNode(txt.slice(0,at)));const b=document.createElement('strong');b.textContent=scene.boldPhrase;content.append(b,document.createTextNode(txt.slice(at+scene.boldPhrase.length)))}}
  if(scene.boldWord){const target=scene.boldWord;const at=content.textContent.indexOf(target);if(at>=0){const txt=content.textContent;content.textContent='';content.append(document.createTextNode(txt.slice(0,at)));const b=document.createElement('strong');b.textContent=target;content.append(b,document.createTextNode(txt.slice(at+target.length)))}}
+  if(Array.isArray(scene.v257BoldPhrases)&&scene.v257BoldPhrases.length){
+   const raw=content.textContent;const parts=scene.v257BoldPhrases.filter(Boolean);
+   const root=document.createDocumentFragment();let offset=0;
+   while(offset<raw.length){
+    const hits=parts.map(term=>({term,index:raw.indexOf(term,offset)})).filter(item=>item.index>=0).sort((a,b)=>a.index-b.index);
+    if(!hits.length){root.append(document.createTextNode(raw.slice(offset)));break;}
+    const hit=hits[0];root.append(document.createTextNode(raw.slice(offset,hit.index)));
+    const strong=document.createElement('strong');strong.textContent=hit.term;root.append(strong);
+    offset=hit.index+hit.term.length;
+   }
+   content.replaceChildren(root);
+  }
  if(scene.boldScale){const target=scene.boldWord||'';for(const node of content.querySelectorAll('strong')){if(node.textContent===target)node.style.fontSize=String(scene.boldScale)+'em'}}
  if(scene.kind==='dialogue'||scene.kind==='narration')queueMicrotask(()=>warmUpcomingPortraits(index));
  if(scene.kind==='dialogue'||scene.kind==='narration'||scene.kind==='line')beginVnTyping(scene.recall?(()=>{timer=setTimeout(()=>{locked=false;next()},1300)}):(scene.delayedConfessionBlackout?startConfessionQuestionTransition:null));
@@ -4464,7 +4535,7 @@ function showLivingChoice(){
    const revisitingSearchedRoom=currentDay>=4&&!metPolice&&metDay2&&
     localStorage.getItem('shindo_jeonghan_room_search_v256')==='1'&&hasEscapePackage();
    const target=revisitingSearchedRoom?V256_DAY4_JEONGHAN_SEARCH_REVISIT_START:
-    metPolice?V256_DAY3_JEONGHAN_POLICE_START:
+    metPolice?(currentDay>=4?V256_DAY3_JEONGHAN_POLICE_START:V257_DAY3_JEONGHAN_POLICE_PACKAGE_START):
     metDay2?V256_DAY3_JEONGHAN_CASE2_START:-1;
    if(target>=0){
     el.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;
