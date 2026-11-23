@@ -1655,6 +1655,42 @@ scenes.push(
  v242SeokminScene('prayer-end','',null,{v241PrayerOutside:true,clearPortrait:true})
 );
 
+// V243: Day 3 [기도관 > 청소 돕기] after actually meeting Chan during
+// Day-2 MORNING activity. Do not use name-unlock or other encounters as proof.
+// Append-only: preserve every existing scene index/checkpoint from V242.
+const V243_DAY3_PRAYER_CHAN_FOLLOWUP_START=scenes.length;
+const v243ChanScene=(kind,text,speaker=null,extra={})=>({
+ kind,text,...(speaker?{speaker}:{}),prayerRoom:true,prayerBranch:4,
+ v243Day3Chan:true,...extra
+});
+scenes.push(
+ // Inside the prayer hall.
+ v243ChanScene('narration','찬에게 다가가 먼저 인사를 건넸다.',null,{clearPortrait:true}),
+ v243ChanScene('narration','반갑게 인사를 받아준다.',null,{portrait:'chan-body1-smile'}),
+ v243ChanScene('dialogue','(손등은 여전히 온통 터져 있네...)','주인공',{portrait:'chan-body1-eyesmile',inner:true,portraitFadeOutAfter:true}),
+ // Outside: the prayer-hall back garden, with the existing exterior backdrop.
+ v243ChanScene('narration','함께 청소를 서둘러 마무리하고, 기도관 뒤뜰을 거닐며 이야기를 나눴다.',null,{v241PrayerOutside:true,clearPortrait:true}),
+ v243ChanScene('narration','예상대로 찬은 이곳의 생활과 신앙 활동에 무척이나 만족해하는 듯했다.',null,{v241PrayerOutside:true,clearPortrait:true}),
+ v243ChanScene('dialogue','반복되는 일과가 좋아요. 사람을 건강하게 만들어준달까.','찬',{v241PrayerOutside:true,portrait:'chan-body2-eyesmile'}),
+ v243ChanScene('narration','생각보다 진솔한 이야기를 많이 들을 수 있었다.',null,{v241PrayerOutside:true,portrait:'chan-body2-eyesmile'}),
+ v243ChanScene('narration','그중에서도 놀라운 건,',null,{v241PrayerOutside:true,portrait:'chan-body2-smile'}),
+ v243ChanScene('narration','그가 모태신앙이 아니라 자진해서 입소했다는 사실이었다.',null,{v241PrayerOutside:true,portrait:'chan-body1-smile',boldWord:'자진해서 입소'}),
+ v243ChanScene('dialogue','(생물학적 가족이 파탄 나고,)','주인공',{v241PrayerOutside:true,portrait:'chan-body1-eyesmile',inner:true}),
+ // The exact displayed substring includes a word space: "구원해준 게".
+ // boldScale targets only the emphasized phrase, not the whole dialogue box.
+ v243ChanScene('dialogue','(자신을 진정으로 구원해준 게 카밀레교였다는 이야기…)','주인공',{v241PrayerOutside:true,portrait:'chan-body1-eyesmile',inner:true,boldWord:'진정으로 구원해준 게 카밀레교',boldScale:1.1}),
+ v243ChanScene('narration','‘우리는 당신을 가족으로 생각합니다’.',null,{v241PrayerOutside:true,portrait:'chan-body3-smile',boldAll:true,fontScale:1.2}),
+ v243ChanScene('narration','그 문구가 그를 이곳으로 끌어들였으리라.',null,{v241PrayerOutside:true,portrait:'chan-body3-eyesmile'}),
+ v243ChanScene('narration','야무진 그에게서는 야망이 엿보였다.',null,{v241PrayerOutside:true,portrait:'chan-body2-determined'}),
+ v243ChanScene('narration','인정받고 싶은 마음, 솔직하고 패기로운 욕심.',null,{v241PrayerOutside:true,portrait:'chan-body3-determined'}),
+ v243ChanScene('dialogue','(특히 사제들을 동경하는 것 같고...)','주인공',{v241PrayerOutside:true,portrait:'chan-body3-determined',inner:true}),
+ v243ChanScene('dialogue','분명 제가 봤을 땐 이게 낫거든요? 근데 자꾸 형들은 아니래.','찬',{v241PrayerOutside:true,portrait:'chan-body3-eyesmile'}),
+ v243ChanScene('dialogue','그래도 갈수록 맡는 일이 많아져서 좋아.','찬',{v241PrayerOutside:true,portrait:'chan-body3-smile'}),
+ v243ChanScene('dialogue','받은 만큼 이곳에 돌려주는 거지.','찬',{v241PrayerOutside:true,portrait:'chan-body3-eyesmile',portraitFadeOutAfter:true}),
+ v243ChanScene('narration','좋은 사람인 것과는 별개로, 한번 척지면 돌이킬 수 없을 것 같다….',null,{v241PrayerOutside:true,clearPortrait:true}),
+ v243ChanScene('prayer-end','',null,{v241PrayerOutside:true,clearPortrait:true})
+);
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -4189,7 +4225,16 @@ function showPrayerChoice(){
   el.style.display='none';el.classList.remove('shindo-prayer-grid');currentPortrait='';portrait.hidden=true;illustration.hidden=true;
   index=V241_DAY3_PRAYER_SEOKMIN_CASE3_START;locked=false;save();render();return;
  }
- if(v219IsDay3Activity()&&v219WasMetDay2(({1:'한솔',2:'승철',3:'석민',4:'찬'})[prayerBranch])){if(prayerBranch===1||prayerBranch===2){el.style.display='none';el.classList.remove('shindo-prayer-grid');currentPortrait='';portrait.hidden=true;illustration.hidden=true;index=prayerBranch===1?V230_DAY3_PRAYER_CLEAN_START:V230_DAY3_PRAYER_WAKE_START;locked=false;save();render();return;}v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;}el.style.display='none';el.classList.remove('shindo-prayer-grid');currentPortrait='';portrait.hidden=true;illustration.hidden=true;if(branchStart!==-1){index=branchStart;locked=false;save();render();return}locked=false;next()});
+ if(v219IsDay3Activity()&&v219WasMetDay2(({1:'한솔',2:'승철',3:'석민',4:'찬'})[prayerBranch])){
+  if(prayerBranch===1||prayerBranch===2||prayerBranch===4){
+   el.style.display='none';el.classList.remove('shindo-prayer-grid');
+   currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+   index=prayerBranch===1?V230_DAY3_PRAYER_CLEAN_START:
+     prayerBranch===2?V230_DAY3_PRAYER_WAKE_START:V243_DAY3_PRAYER_CHAN_FOLLOWUP_START;
+   locked=false;save();render();return;
+  }
+  v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;
+ }el.style.display='none';el.classList.remove('shindo-prayer-grid');currentPortrait='';portrait.hidden=true;illustration.hidden=true;if(branchStart!==-1){index=branchStart;locked=false;save();render();return}locked=false;next()});
 }
 
 function returnToMorningActivities(){
