@@ -7,6 +7,9 @@
  const HISTORY='shindo_play_history_v107';
  const AFFINITY='shindo_affinity_v107';
  const AFFINITY_EVENTS='shindo_affinity_events_v111';
+ // V260: New Day-3 saves defer Jeonghan's living-hall +5 until a branch is chosen.
+ // A pre-V260 save with the room event already credited retains that historical +5.
+ const V260_DAY3_LIVING_DEFERRED='shindo_day3_living_room_deferred_v260';
  const EVIDENCE='shindo_evidence_items_v105';
  const MET='shindo_met_characters_v108';
  const HISTORY_DAY='shindo_current_story_day_v109';
@@ -269,7 +272,18 @@
    eventId=d+'|장소|'+label;
    // 고해소/공양실에는 추가 캐릭터 선택 없이 바로 1:1 대화가 시작된다.
    // 따라서 입장 즉시 +20, 별도 개별 대화 +15는 지급하지 않는다.
-   changes=morningRoomCast(label,d).map(name=>[name,(label==='고해소'||label==='공양실')?20:5]);
+   changes=morningRoomCast(label,d)
+    .filter(name=>!(d===3&&label==='생활관'&&name==='정한'))
+    .map(name=>[name,(label==='고해소'||label==='공양실')?20:5]);
+  }else if(kind==='living3-room'){
+   if(d!==3||label!=='정한')return false;
+   // Only newly played Day-3 entries use deferred payment. Earlier saves
+   // were already credited at entrance, so they must not gain another +5.
+   if(localStorage.getItem(V260_DAY3_LIVING_DEFERRED)!=='1')return false;
+   eventId='3|생활관정한|장소추가';changes=[['정한',5]];
+  }else if(kind==='living3-police'){
+   if(d!==3||label!=='순영')return false;
+   eventId='3|생활관순영|경찰협력';changes=[['순영',15]];
   }else if(kind==='afternoon'){
    if(d!==2||!Object.prototype.hasOwnProperty.call(AFTERNOON_EVENTS,label))return false;
    eventId=d+'|오후친밀도|'+label;
@@ -302,6 +316,7 @@
   }
   // Preserve the completed-event marker as part of the same synchronous operation.
   save(AFFINITY,values);ledger.push(eventId);save(AFFINITY_EVENTS,ledger);
+  if(kind==='room'&&d===3&&label==='생활관')localStorage.setItem(V260_DAY3_LIVING_DEFERRED,'1');
   addUnread(changed);
   document.dispatchEvent(new Event('shindo-inventory-change'));
   return true;
@@ -345,7 +360,10 @@
    if(PERSON_EVENTS[label]){
     const room=label.startsWith('기도관')?'기도관':label.startsWith('예술당')?'예술당':label.startsWith('생활관')?'생활관':label.startsWith('본당')?'본당':label.startsWith('공양실')?'공양실':'고해소';
     grantAffinity('room',room,day);
-    grantAffinity('person',label,day);
+    // V260: snooping in Jeonghan's room (Day-3 case ②) grants no affinity.
+    if(!(day===3 && label==='생활관 활동: ??의 방에서 대화' &&
+      localStorage.getItem('shindo_day3_jeonghan_case_v260')==='2'))
+     grantAffinity('person',label,day);
    }
   }
  }
@@ -377,7 +395,14 @@
    }else if(parts[1]==='장소'&&ROOMS[parts.slice(2).join('|')]){
     hasRoom=true;
     const room=parts.slice(2).join('|');
-    changes=morningRoomCast(room,Number(parts[0])).map(n=>[n,(room==='고해소'||room==='공양실')?20:5]);
+    changes=morningRoomCast(room,Number(parts[0]))
+     .filter(n=>!(Number(parts[0])===3&&room==='생활관'&&n==='정한'&&
+       localStorage.getItem(V260_DAY3_LIVING_DEFERRED)==='1'))
+     .map(n=>[n,(room==='고해소'||room==='공양실')?20:5]);
+   }else if(parts[1]==='생활관정한'&&parts[2]==='장소추가'){
+    changes=[['정한',5]];
+   }else if(parts[1]==='생활관순영'&&parts[2]==='경찰협력'){
+    changes=[['순영',15]];
    }else if(parts[1]==='오후친밀도'){
     changes=AFTERNOON_EVENTS[parts.slice(2).join('|')]||[];
    }else if(parts[1]==='개별인물'){
