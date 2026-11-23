@@ -1461,6 +1461,38 @@ scenes.push(
  v224OfficeScene('v224-office-type3-end','',null,{clearPortrait:true})
 );
 
+// V225: Day 3 main-hall office Type ② (Day 2 morning office visited + ledger NOT obtained).
+// Append only: all V224 scene indices and existing checkpoints stay in place.
+const V225_DAY3_OFFICE_TYPE2_START=scenes.length;
+const v225OfficeScene=(kind,text,speaker,extra={})=>({
+ kind,text,...(speaker?{speaker}:{}),mainHall:true,mainLocation:'office',
+ mainBranch:1,v225OfficeType2:true,...extra
+});
+scenes.push(
+ v225OfficeScene("narration","대예배당 뒤 복도를 따라 걷자 사무실이 나온다.",null,{'clearPortrait':true}),
+ v225OfficeScene("dialogue","여기 길쯤은 이제 눈 감고도.","주인공",{'clearPortrait':true}),
+ v225OfficeScene("dialogue","(접수 창구와 대기 의자, 빼곡한 서류 캐비닛.)","주인공",{'clearPortrait':true}),
+ v225OfficeScene("dialogue","(어제 오전과 다를 바 없네.)","주인공",{'clearPortrait':true}),
+ v225OfficeScene("dialogue","(여기 일이 그렇게 많나...?)","주인공",{'portrait':'joshua-바디-member-미소','mainSilhouette':true}),
+ v225OfficeScene("dialogue","뭐 찾으시는 거라도 있으세요?","조슈아",{'portrait':'joshua-바디-member-미소'}),
+ v225OfficeScene("dialogue","(인기척도 없이, 어제도 그러더니.)","주인공",{'portrait':'joshua-바디-member-미소'}),
+ v225OfficeScene("dialogue","어, 그쪽은 조슈아….","주인공",{'portrait':'joshua-바디-member-미소'}),
+ v225OfficeScene("narration","싱긋 웃는다. 𝑯𝒐𝒍𝒚… 다시 봐도 성스러운 얼굴이다.",null,{'portrait':'joshua-바디-member-미소'}),
+ v225OfficeScene("dialogue","저 기억하시네요?","조슈아",{'portrait':'joshua-바디-member-기본-member'}),
+ v225OfficeScene("dialogue","(기억 못 하기 어렵긴 하죠.)","주인공",{'portrait':'joshua-바디-member-기본-member'}),
+ v225OfficeScene("narration","라는 말은 속으로 삼켰다.",null,{'portrait':'joshua-바디-member-기본-member'}),
+ v225OfficeScene("dialogue","오늘도 일할 양이 많아보이네요.","주인공",{'portrait':'joshua-바디-member-미소'}),
+ v225OfficeScene("dialogue","힘드시겠다.","주인공",{'portrait':'joshua-바디-member-미소'}),
+ v225OfficeScene("dialogue","네. 맞아요. 근데 힘들진 않아요.","조슈아",{'portrait':'joshua-바디-member-미소'}),
+ v225OfficeScene("dialogue","제가 이렇게 일함으로써,","조슈아",{'portrait':'joshua-바디-member-미소'}),
+ v225OfficeScene("dialogue","여러분이 이 마을 안에서 편하게 생활하실 수 있으니까요.","조슈아",{'portrait':'joshua-바디-member-미소'}),
+ v225OfficeScene("dialogue","그게 더 보람찬거죠.","조슈아",{'portrait':'joshua-바디-member-미소'}),
+ v225OfficeScene("dialogue","불편한 점이 있으면 언제든 저를 찾아주세요.","조슈아",{'portrait':'joshua-바디-member-미소','portraitFadeOutAfter':true}),
+ v225OfficeScene("narration","뇨롱- 하는 웃음을 남기고, 조슈아는 다시 서류 정리로 돌아갔다.",null,{'clearPortrait':true}),
+ v225OfficeScene("dialogue","(내 착각일 수도 있겠지만, 좋은 사람 같아.)","주인공",{'clearPortrait':true}),
+ v225OfficeScene('v225-office-type2-end','',null,{clearPortrait:true})
+);
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -2930,6 +2962,7 @@ if(scene.kind==='day2-morning-choice'){
  if(scene.kind==='v223-locked-junhui-first-end'){v223FinishLockedJunhuiMorning();return;}
  if(scene.kind==='v223-locked-junhui-revisit-wait'){v219ShowMorningEnd('준휘와의 공양실 재방문 대화는 추후 추가됩니다.');return;}
  if(scene.kind==='v224-office-type3-end'){v219ShowMorningEnd('사무실 대화를 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return;}
+ if(scene.kind==='v225-office-type2-end'){v219ShowMorningEnd('사무실 대화를 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return;}
  if(scene.kind==='v219-library-end'){v219ShowMorningEnd('승관과의 도서실 대화를 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return}
  if(scene.kind==='main-choice'){showMainChoice();return}
  if(scene.kind==='main-end'){showMainEnd();return}
@@ -3350,15 +3383,21 @@ function v219ShowMainChoice(){
    index=V219_DAY3_LIBRARY_START;
   }else if(branch===1){
    window.SHINDO_applyAffinityEvent?.('person','본당 탐색: 사무실',3);
-   if(v219WasMetDay2('조슈아')){
-    // Types ①/②: Day 2 morning visit. New scripts are still pending.
+   // Distinguish Day-2 morning office visit from the independent PM ledger acquisition.
+   // ① visited + ledger: still awaiting user-authored dialogue.
+   // ② visited + no ledger: V225 dialogue.
+   // ③ not visited + ledger: existing V224 dialogue.
+   // ④ not visited + no ledger: original Day-2 first-meeting dialogue.
+   const visitedOfficeOnDay2=v219WasMetDay2('조슈아');
+   const acquiredLedgerOnDay2=hasEvidenceItem('accounting-ledger');
+   if(visitedOfficeOnDay2 && acquiredLedgerOnDay2){
     v219ShowMorningEnd('사무실 재방문 대화는 추후 추가됩니다.');return;
    }
-   // Type ③: no Day 2 AM visit, but ledger acquired during the Day 2 PM investigation.
-   // Type ④: neither condition; reuse the original Day 2 office conversation.
-   index=hasEvidenceItem('accounting-ledger')
-    ? V224_DAY3_OFFICE_TYPE3_START
-    : scenes.findIndex((x,i)=>i>MAIN_SCENE_START&&x.mainBranch===1);
+   index=visitedOfficeOnDay2
+    ? V225_DAY3_OFFICE_TYPE2_START
+    : acquiredLedgerOnDay2
+     ? V224_DAY3_OFFICE_TYPE3_START
+     : scenes.findIndex((x,i)=>i>MAIN_SCENE_START&&x.mainBranch===1);
   }else{
    index=scenes.findIndex((x,i)=>i>MAIN_SCENE_START&&x.mainBranch===2);
   }
