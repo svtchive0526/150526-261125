@@ -198,8 +198,8 @@ function closeTab(id){
  else if(tabs.length)select(active);
  else openNew();
 }
-function openNew(){previous=active;mode='new';scrollTopNow();byId('sh-view-title').textContent='새 탭 열기';byId('sh-view-description').textContent='접속할 페이지를 선택해 주세요.';byId('sh-view-return').textContent='← 돌아가기';byId('sh-view-section').textContent='페이지 선택';const list=byId('sh-list');list.replaceChildren();[{type:'mail'},{type:'church'},{type:'document'}].forEach(t=>list.append(tile(t,true)));byId('sh-list-add-wrap').replaceChildren();sync();revealStripTab('utility')}
-function openTabs(){previous=active;mode='tabs';scrollTopNow();byId('sh-view-title').textContent='현재 열려 있는 탭';byId('sh-view-description').textContent='열려 있는 페이지를 선택하거나 탭을 닫을 수 있어요.';byId('sh-view-return').textContent='← 돌아가기';byId('sh-view-section').textContent='열려 있는 페이지 · '+tabs.length+'개';const list=byId('sh-list');list.replaceChildren();tabs.forEach(t=>list.append(tile(t,false)));shAddNewTabRow();sync();revealStripTab('utility')}
+function openNew(){previous=active;mode='new';scrollTopNow();byId('sh-view-title').textContent='새 탭 열기';byId('sh-view-description').textContent='접속할 페이지를 선택해 주세요.';byId('sh-view-return').textContent='← 돌아가기';byId('sh-view-section').textContent='페이지 선택';const list=byId('sh-list');list.replaceChildren();[{type:'mail'},{type:'church'},{type:'document'}].forEach(t=>list.append(tile(t,true)));byId('sh-list-add-wrap').replaceChildren();sync();revealStripTab('utility');requestBrowserGuide('new')}
+function openTabs(){previous=active;mode='tabs';scrollTopNow();byId('sh-view-title').textContent='현재 열려 있는 탭';byId('sh-view-description').textContent='열려 있는 페이지를 선택하거나 탭을 닫을 수 있어요.';byId('sh-view-return').textContent='← 돌아가기';byId('sh-view-section').textContent='열려 있는 페이지 · '+tabs.length+'개';const list=byId('sh-list');list.replaceChildren();tabs.forEach(t=>list.append(tile(t,false)));shAddNewTabRow();sync();revealStripTab('utility');requestBrowserGuide('tabs')}
 // Closing the temporary utility tab or clicking the underlying real tab returns
 // to the original page. The underlying tab's X still closes that real tab.
 function returnToRealTab(){if(tabs.length)select(tabs.some(t=>t.id===previous)?previous:(tabs.some(t=>t.id===active)?active:tabs[0].id));else openNew();}
@@ -222,5 +222,139 @@ window.addEventListener('load',()=>scrollTopNow());
 const resetOnNavigation=e=>{if(e.target.closest('#sh-browserbar,#sh-browserview'))return;const hit=e.target.closest('button,a,.folder,.mail-row,.tab-item');if(hit){setTimeout(()=>{if(!mode)scrollTopNow()},70)}};
 document.addEventListener('click',resetOnNavigation);
 const panel=byId('mail-panel');if(panel){const navObserver=new MutationObserver(()=>{if(!mode)scrollTopNow()});navObserver.observe(panel,{attributes:true,attributeFilter:['class','style']});}
-persist();if(!tabs.length)openNew();else sync();scrollTopNow();window.SHINDO_browser={openNew,openTabs,openAttachment:()=>create('document'),openChurch:()=>create('church'),selectMail:()=>{const mail=tabs.find(t=>t.type==='mail');if(mail)select(mail.id);else create('mail')}};
+// V252 — Three independent first-visit browser guides. The overlay positions
+// itself over the actual V251 chrome / C-style list; it never replaces them.
+// Each guide is completed once in this browser, regardless of which page tab is open.
+const SH_GUIDE_KEYS={intro:'shindo_browser_guide_intro_v252',tabs:'shindo_browser_guide_tabs_v252',new:'shindo_browser_guide_new_v252'};
+const SH_GUIDE_COPY={
+ intro:{title:'브라우저 바 안내',copy:'이곳은 브라우저 바예요. 열어둔 페이지를 위쪽 탭에서 바로 이동하고, + 버튼으로 새로운 페이지를 열 수 있어요.',mobile:'이곳은 브라우저 바예요. 화면 아래쪽에서 숫자 버튼으로 열린 페이지 목록을 확인하고, 새 탭을 열 수 있어요.'},
+ tabs:{title:'현재 열려 있는 탭',copy:'지금 열린 페이지를 한눈에 확인할 수 있어요. 원하는 항목을 눌러 이동하거나, 오른쪽 × 버튼으로 탭을 닫아보세요.'},
+ new:{title:'새 탭 열기',copy:'이곳에서 새로운 페이지를 열 수 있어요. 기존 페이지는 닫히지 않으니 자유롭게 탐색해보세요.'}
+};
+let shGuideActive='',shGuideLayer=null,shGuidePriorOverflow=null;
+const shGuideSessionSeen=new Set();
+function shGuideSeen(k){
+ if(shGuideSessionSeen.has(k))return true;
+ try{return localStorage.getItem(SH_GUIDE_KEYS[k])==='1'}catch(e){return false}
+}
+function shGuideEligible(){
+ if(!document.body.classList.contains('sh-browser-unlocked'))return false;
+ if(document.querySelector('#shindo-vn.active'))return false;
+ try{if(localStorage.getItem('shindo_story_started_v37')==='1')return false}catch(e){}
+ return true;
+}
+function shGuideBuild(){
+ if(shGuideLayer)return shGuideLayer;
+ shGuideLayer=document.createElement('div');shGuideLayer.id='sh-browser-guide';shGuideLayer.hidden=true;
+ shGuideLayer.innerHTML=`<div class="sh-guide-glass sh-guide-glass-top"></div><div class="sh-guide-glass sh-guide-glass-left"></div><div class="sh-guide-glass sh-guide-glass-right"></div><div class="sh-guide-glass sh-guide-glass-bottom"></div><div class="sh-guide-focus" aria-hidden="true"></div><div class="sh-guide-connector" aria-hidden="true"></div><section class="sh-guide-card" role="dialog" aria-modal="true" aria-labelledby="sh-guide-title" aria-describedby="sh-guide-copy"><h2 id="sh-guide-title"></h2><p id="sh-guide-copy"></p><div class="sh-guide-footer"><div class="sh-guide-dots" aria-hidden="true"><i></i><i></i><i></i></div><div class="sh-guide-actions"><button type="button" class="sh-guide-dismiss">닫기</button><button type="button" class="sh-guide-confirm">확인</button></div></div></section>`;
+ document.body.append(shGuideLayer);
+ shGuideLayer.querySelectorAll('.sh-guide-dismiss,.sh-guide-confirm').forEach(btn=>btn.addEventListener('click',()=>shGuideFinish(true)));
+ // A spotlight is instructional, not a live click-through window.
+ shGuideLayer.addEventListener('click',e=>{if(!e.target.closest('.sh-guide-card')){e.stopPropagation();e.preventDefault()}},true);
+ return shGuideLayer;
+}
+function shGuideTarget(k){
+ if(k==='intro')return bar;
+ if(k==='tabs'&&mode==='tabs')return byId('sh-list');
+ if(k==='new'&&mode==='new')return byId('sh-list');
+ return null;
+}
+function shGuidePosition(){
+ if(!shGuideActive||!shGuideLayer||shGuideLayer.hidden)return;
+ const target=shGuideTarget(shGuideActive);if(!target)return;
+ const rect=target.getBoundingClientRect();
+ const W=document.documentElement.clientWidth||window.innerWidth,H=window.innerHeight;
+ const pad=shGuideActive==='intro'?4:7;
+ // For very tall tab lists, illuminate their visible first portion so the
+ // explanation card never has to obscure the entire list.
+ const left=Math.max(4,Math.floor(rect.left-pad));
+ const top=Math.max(4,Math.floor(rect.top-pad));
+ const right=Math.min(W-4,Math.ceil(rect.right+pad));
+ const maxListHeight=Math.max(105,Math.floor(H*.44));
+ const bottom=Math.min(H-4,shGuideActive==='intro'?Math.ceil(rect.bottom+pad):Math.ceil(Math.min(rect.bottom+pad,top+maxListHeight)));
+ const x=Math.min(left,W-12),y=Math.min(top,H-12),w=Math.max(8,right-x),h=Math.max(8,bottom-y);
+ const boxes={top:{left:0,top:0,width:W,height:y},left:{left:0,top:y,width:x,height:h},right:{left:x+w,top:y,width:Math.max(0,W-x-w),height:h},bottom:{left:0,top:y+h,width:W,height:Math.max(0,H-y-h)}};
+ for(const [type,box] of Object.entries(boxes)){const el=shGuideLayer.querySelector('.sh-guide-glass-'+type);Object.assign(el.style,Object.fromEntries(Object.entries(box).map(([k,v])=>[k,v+'px'])))}
+ const focus=shGuideLayer.querySelector('.sh-guide-focus');
+ Object.assign(focus.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px',borderRadius:(shGuideActive==='intro'?'9px':'12px')});
+ const card=shGuideLayer.querySelector('.sh-guide-card');
+ const cW=Math.min(window.innerWidth<=750?338:410,W-24);
+ card.style.width=cW+'px';card.style.left='12px';card.style.top='12px';
+ const cH=card.getBoundingClientRect().height, gap=17;
+ // Put the guide below a top browser bar, and above a bottom mobile bar.
+ const fitsBelow=y+h+gap+cH<=H-10, fitsAbove=y-gap-cH>=10;
+ let cY,side;
+ if(fitsBelow){cY=y+h+gap;side='below'}
+ else if(fitsAbove){cY=y-gap-cH;side='above'}
+ else {cY=Math.min(H-cH-10,Math.max(10,(y+h/2)-cH/2));side='side'}
+ const cX=Math.max(12,Math.min(W-cW-12,x+(w-cW)/2));
+ Object.assign(card.style,{left:Math.round(cX)+'px',top:Math.round(Math.max(10,cY))+'px'});
+ const connector=shGuideLayer.querySelector('.sh-guide-connector');
+ if(side==='side'){connector.style.display='none'}else{
+  connector.style.display='block';
+  const atX=Math.max(cX+20,Math.min(cX+cW-20,x+w/2));
+  const atY=side==='below'?y+h+2:cY+cH+2;
+  const length=side==='below'?cY-atY:y-atY;
+  Object.assign(connector.style,{left:Math.round(atX)+'px',top:Math.round(atY)+'px',height:Math.max(0,Math.min(17,length))+'px'});
+ }
+}
+function shGuideShow(k){
+ if(shGuideActive||!shGuideEligible()||shGuideSeen(k))return;
+ const target=shGuideTarget(k);
+ if(!target||getComputedStyle(target).display==='none')return;
+ shGuideActive=k;
+ const layer=shGuideBuild(),copy=SH_GUIDE_COPY[k];
+ layer.querySelector('#sh-guide-title').textContent=copy.title;
+ layer.querySelector('#sh-guide-copy').textContent=(k==='intro'&&mobileChrome.matches)?copy.mobile||copy.copy:copy.copy;
+ layer.querySelectorAll('.sh-guide-dots i').forEach((dot,i)=>dot.classList.toggle('on',i==={intro:0,tabs:1,new:2}[k]));
+ layer.querySelector('.sh-guide-confirm').textContent=k==='intro'?'시작하기':'확인';
+ shGuidePriorOverflow=document.documentElement.style.overflow;
+ document.documentElement.style.overflow='hidden';
+ layer.hidden=false;
+ shGuidePosition();requestAnimationFrame(shGuidePosition);
+ layer.querySelector('.sh-guide-confirm').focus({preventScroll:true});
+}
+function shGuideFinish(completed){
+ if(!shGuideActive)return;
+ const k=shGuideActive;shGuideActive='';
+ if(shGuideLayer)shGuideLayer.hidden=true;
+ document.documentElement.style.overflow=shGuidePriorOverflow??'';
+ shGuidePriorOverflow=null;
+ if(completed){shGuideSessionSeen.add(k);try{localStorage.setItem(SH_GUIDE_KEYS[k],'1')}catch(e){}}
+}
+function requestBrowserGuide(k){
+ if(!shGuideEligible()||shGuideSeen(k)||shGuideActive)return;
+ // Utility list re-renders synchronously; wait one frame for CSS/layout.
+ requestAnimationFrame(()=>{if((k==='tabs'&&mode==='tabs')||(k==='new'&&mode==='new'))shGuideShow(k)});
+}
+function shGuideMaybeIntro(){
+ if(!shGuideEligible()||shGuideSeen('intro')||shGuideActive||mode)return;
+ const mail=byId('mail-page'),login=byId('login-page');
+ if(!mail||!login||getComputedStyle(mail).display==='none'||getComputedStyle(login).display!=='none')return;
+ const current=tabs.find(t=>t.id===active);
+ if(current?.type!=='mail')return;
+ requestAnimationFrame(()=>{if(!shGuideActive&&shGuideEligible()&&getComputedStyle(mail).display!=='none'&&getComputedStyle(login).display==='none'&&!mode)shGuideShow('intro')});
+}
+// Mail/login UI is owned by index.html; observe only the relevant visibility
+// transitions rather than modifying its login, story or saved-state logic.
+const shIntroMail=byId('mail-page'),shIntroLogin=byId('login-page');
+const shIntroObserver=new MutationObserver(shGuideMaybeIntro);
+shIntroObserver.observe(document.body,{attributes:true,attributeFilter:['class']});
+if(shIntroMail)shIntroObserver.observe(shIntroMail,{attributes:true,attributeFilter:['style','class']});
+if(shIntroLogin)shIntroObserver.observe(shIntroLogin,{attributes:true,attributeFilter:['style','class']});
+window.addEventListener('pageshow',shGuideMaybeIntro);
+window.addEventListener('resize',()=>{if(shGuideActive){const k=shGuideActive;if(k==='intro')shGuideLayer.querySelector('#sh-guide-copy').textContent=mobileChrome.matches?SH_GUIDE_COPY.intro.mobile:SH_GUIDE_COPY.intro.copy;requestAnimationFrame(shGuidePosition)}});
+window.addEventListener('scroll',()=>{if(shGuideActive)requestAnimationFrame(shGuidePosition)},true);
+document.addEventListener('keydown',e=>{
+ if(!shGuideActive)return;
+ if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();shGuideFinish(true);return}
+ if(e.key==='Tab'){
+  const buttons=Array.from(shGuideLayer.querySelectorAll('.sh-guide-card button'));
+  const index=buttons.indexOf(document.activeElement);
+  if(index>=0){e.preventDefault();buttons[(index+(e.shiftKey?buttons.length-1:1))%buttons.length].focus()}
+ }else if(['ArrowDown','ArrowUp','PageDown','PageUp','Home','End',' '].includes(e.key)&&!e.target.closest('.sh-guide-card'))e.preventDefault();
+},true);
+// Useful for manual QA without changing any normal player-facing controls.
+window.SHINDO_browserGuide={replay:k=>{if(!SH_GUIDE_COPY[k])return;shGuideFinish(false);shGuideSessionSeen.delete(k);try{localStorage.removeItem(SH_GUIDE_KEYS[k])}catch(e){}if(k==='intro')shGuideMaybeIntro();else if(k==='tabs'?mode==='tabs':mode==='new')shGuideShow(k)},isActive:()=>shGuideActive};
+persist();if(!tabs.length)openNew();else sync();scrollTopNow();window.SHINDO_browser={openNew,openTabs,openAttachment:()=>create('document'),openChurch:()=>create('church'),selectMail:()=>{const mail=tabs.find(t=>t.type==='mail');if(mail)select(mail.id);else create('mail')}};shGuideMaybeIntro();
 })();
