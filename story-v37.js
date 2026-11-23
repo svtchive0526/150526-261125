@@ -1821,6 +1821,22 @@ scenes.push({
  portrait:'hansol-body2-mocking',v248MinghaoFinal:true
 });
 
+// V255: Day 3 [생활관 > 방에서 자료 정리] repeat scene.
+// Added after V248 without moving existing saved scene indices.
+const V255_DAY3_LIVING_RESEARCH_REPEAT_START=scenes.length;
+const v255LivingResearchScene=(kind,text,speaker=null)=>({
+ kind,text,...(speaker?{speaker}:{}),livingHall:true,livingBranch:1,
+ livingLocation:'bongbong',v255Day3LivingResearchRepeat:true,clearPortrait:true
+});
+scenes.push(
+ v255LivingResearchScene('narration','내 방에서 이제껏 모은 자료를 정리하는 중이다.'),
+ v255LivingResearchScene('dialogue','어제도... 자료정리를 했었지 참.','주인공'),
+ v255LivingResearchScene('dialogue','지훈이 알려준 수칙을 벌써 두 번이나 어겨 버렸네.','주인공'),
+ v255LivingResearchScene('dialogue','나중에 만나면 용서라도 구해야겠다.','주인공'),
+ v255LivingResearchScene('narration','자료 정리만 했는데 어느새 또 어둑어둑해지고 있다.'),
+ v255LivingResearchScene('living-end','')
+);
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -3482,7 +3498,7 @@ function restartFromDay1(){
  endingTimers.forEach(clearTimeout);endingTimers=[];
  selectedBranch=0;day2Prayer=0;day2Morning='';livingBranch=0;mainBranch=0;confMorningBranch=0;seungkwanTruthBranch=0;joshuaRevealed=false;revealed=false;jihoonRevealed=false;soonyoungRevealed=false;minghaoRevealed=false;jeonghanRevealed=false;mingyuRevealed=false;seungkwanRevealed=false;
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;confessionTickLouder=false;
- ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_seungkwan_truth_branch_v177','shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_evening_branch_day2_v173','shindo_confession_morning_branch_v163','shindo_day2_start_affinity_snapshot_v169','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person','shindo_junhui_locked_morning_seen_v223','shindo_day2_police_met_seokmin_v241'].forEach(k=>localStorage.removeItem(k));
+ ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jihoon_bad_day2_counted_v255','shindo_jihoon_bad_day3_counted_v255','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_seungkwan_truth_branch_v177','shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_evening_branch_day2_v173','shindo_confession_morning_branch_v163','shindo_day2_start_affinity_snapshot_v169','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person','shindo_junhui_locked_morning_seen_v223','shindo_day2_police_met_seokmin_v241'].forEach(k=>localStorage.removeItem(k));
  const day1Start=scenes.findIndex(s=>s.kind==='transition'&&s.text==='1일차 아침');
  index=day1Start>=0?day1Start:0;
  storyUnderlay.classList.add('visible');storyBackdrop.classList.add('visible');overlay.classList.add('active');refreshInventoryVisibility();
@@ -3536,7 +3552,7 @@ function restartFromDay2(){
  const resetKeys=[
   'shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_art_branch_v105',
   'shindo_living_branch_v156','shindo_main_branch_v160','shindo_confession_morning_branch_v163',
-  'shindo_jihoon_bad_conditions_v156','shindo_evidence_items_v105',
+  'shindo_jihoon_bad_conditions_v156','shindo_jihoon_bad_day2_counted_v255','shindo_jihoon_bad_day3_counted_v255','shindo_evidence_items_v105',
   'shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_joshua_known_v160',
   'shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_soonyoung_known_v105','shindo_minghao_known_v105',
   'shindo_hansol_known_v99','shindo_seokmin_known_v99','shindo_chan_known_v99',
@@ -4296,10 +4312,27 @@ function showLivingChoice(){
   window.SHINDO_addPlayRecord?.('선택','생활관 활동: '+options[livingBranch-1]);
   if(livingBranch!==1)window.SHINDO_applyAffinityEvent?.('person','생활관 활동: '+options[livingBranch-1],getMorningAffinityDay());
   if(livingBranch===1){
-   // Persistent, hidden story flag. The actual Jihoon bad-ending route will be
-   // resolved by the later ending chapter; do not reveal it in the UI.
-   const count=Number(localStorage.getItem('shindo_jihoon_bad_conditions_v156')||0);
-   localStorage.setItem('shindo_jihoon_bad_conditions_v156',String(Math.min(3,count+1)));
+   // V255: Jihoon's hidden bad-ending condition is credited once per story day.
+   // Day 2's existing selection remains the first strike, and choosing it again
+   // on Day 3 makes two strikes. Never count retries within the same day twice.
+   const day3=v219IsDay3Activity();
+   const countKey='shindo_jihoon_bad_conditions_v156';
+   const creditKey=day3?'shindo_jihoon_bad_day3_counted_v255':'shindo_jihoon_bad_day2_counted_v255';
+   const didDay2=localStorage.getItem('shindo_day2_morning')==='생활관' &&
+    localStorage.getItem('shindo_living_branch_v156')==='1';
+   if(localStorage.getItem(creditKey)!=='1'){
+    const previous=Number(localStorage.getItem(countKey)||0);
+    const current=Number.isFinite(previous)?Math.max(0,Math.min(3,previous)):0;
+    const expected=day3?(didDay2?2:1):1;
+    localStorage.setItem(countKey,String(Math.min(3,Math.max(current,expected))));
+    localStorage.setItem(creditKey,'1');
+   }
+   if(day3&&didDay2){
+    // Revisit: use the new Day-3 five-line scene in Bongbong's room.
+    el.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+    index=V255_DAY3_LIVING_RESEARCH_REPEAT_START;
+    locked=false;save();render();return;
+   }
   }
   if(v219IsDay3Activity()&&v219WasMetDay2(({2:'정한',3:'지훈',4:'민규'})[livingBranch])){v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;}
   const target=scenes.findIndex((x,i)=>i>LIVING_SCENE_START&&x.livingBranch===livingBranch);
