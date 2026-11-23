@@ -54,3 +54,13 @@ body:not(.sh-browser-unlocked) #sh-browserbar {display:none!important;visibility
   #sh-browserbar #sh-menu.sh-menu::before,
   #sh-browserbar #sh-menu.sh-menu::after {content:none!important;display:none!important;box-shadow:none!important;}
 }
+
+/* V239 — PC-only: the old separate left ‘탭 박스’ has been removed from
+   the DOM. Its reserved width must disappear from the chrome and tab views.
+   Mobile keeps the independent bottom browser toolbar and tab navigation. */
+@media (min-width:751px) {
+  #app { --sh-left:0px!important; }
+  #app .main { flex:1 1 auto!important;width:100%!important;min-width:0!important; }
+  #sh-browserbar { left:0!important;right:0!important;width:100%!important; }
+  #sh-browserview { left:0!important;right:0!important; }
+}
