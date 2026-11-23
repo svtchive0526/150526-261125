@@ -1281,7 +1281,7 @@ scenes.push(
  {"kind":"dialogue","v178":true,"day3Morning":true,"text":"뭐...가요?","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member","speaker":"주인공"},
  {"kind":"dialogue","v178":true,"day3Morning":true,"text":"입교하신지 얼마 되지도 않았는데.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member","speaker":"조슈아","boldAll":true},
  {"kind":"dialogue","v178":true,"day3Morning":true,"text":"이렇게 열심히...","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아","boldAll":true,"fontScale":1.4},
- {"kind":"dialogue","v178":true,"day3Morning":true,"text":"일하시는 거요.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아","boldAll":true,"fontScale":1.5},
+ {"kind":"dialogue","v178":true,"day3Morning":true,"text":"일하시는 거?","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"조슈아","boldAll":true,"fontScale":1.5},
  {"kind":"dialogue","v178":true,"day3Morning":true,"text":"여, 영광이죠 저는. 열심히 할 수만 있다면.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-미소","speaker":"주인공"},
  {"kind":"dialogue","v178":true,"day3Morning":true,"text":"그래도 쉬엄쉬엄하세요.","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member","speaker":"조슈아"},
  {"kind":"dialogue","v178":true,"day3Morning":true,"text":"은은하게 타올라야지,","backdrop":"bg-living-corridor.jpg","portrait":"joshua-바디-member-기본-member","speaker":"조슈아"},
