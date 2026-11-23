@@ -1691,6 +1691,91 @@ scenes.push(
  v243ChanScene('prayer-end','',null,{v241PrayerOutside:true,clearPortrait:true})
 );
 
+// V244: Day 3 [예술당 > 호랑이 그림 보기], separate all four possible histories.
+// The two facts are independent: the Day-2 morning Art Hall selection and the
+// Day-2 evening/afternoon undercover police meeting (which introduced Soonyoung).
+// Append only: old scene indices/checkpoints stay stable across V243 -> V244.
+const v244ArtScene=(kind,text,speaker=null,extra={})=>({
+ kind,text,...(speaker?{speaker}:{}),artHall:true,artBranch:1,
+ v244Day3Soonyoung:true,artLocation:'main',...extra
+});
+// Case ①: visited Soonyoung in Day-2 morning AND met police in Day-2 evening.
+const V244_ART_CASE1_START=scenes.length;
+scenes.push(
+ v244ArtScene('dialogue','이건...','주인공',{illustration:'tiger-painting-silly',artImage:'tiger',artFade:true,clearPortrait:true}),
+ v244ArtScene('dialogue','어제보다 더...','주인공',{illustration:'tiger-painting-silly',artImage:'tiger'}),
+ v244ArtScene('dialogue','맞아! 새로운 그림이야!','순영',{portrait:'soonyoung-body1-smile'}),
+ v244ArtScene('dialogue','또 호랑이네요.','주인공',{portrait:'soonyoung-body2-smile'}),
+ v244ArtScene('dialogue','햄스터에 줄 긋는다고 호랑이 되나 싶지만…','주인공',{portrait:'soonyoung-body2-default'}),
+ v244ArtScene('dialogue','잠깐, 속담이 이게 아닌가?','주인공',{portrait:'soonyoung-body2-confused'}),
+ v244ArtScene('dialogue','근데 이거, 호랑이 맞아요?','주인공',{portrait:'soonyoung-body2-confused'}),
+ v244ArtScene('dialogue','왜.','순영',{portrait:'soonyoung-body1-confused'}),
+ v244ArtScene('dialogue','설마.','순영',{portrait:'soonyoung-body1-default'}),
+ v244ArtScene('dialogue','너 눈에도 쥐새끼 같아?!!?!','순영',{portrait:'soonyoung-body2-disgusted',boldAll:true,fontScale:1.2}),
+ v244ArtScene('dialogue','어, 아뇨? 호랑이. 완전 호랑이.','주인공',{portrait:'soonyoung-body1-disgusted'}),
+ v244ArtScene('dialogue','아름다운 이 땅에 금수강산에 난 대한민국의 마지막 호랑이, 완전.','주인공',{portrait:'soonyoung-body1-confused'}),
+ v244ArtScene('dialogue','와. 방금 그 문장 마음에 드는데? 좀 가져갈게.','순영',{portrait:'soonyoung-body2-smile'}),
+ v244ArtScene('narration','저렇게 좋아하는데. 한 번만 봐주자.',null,{portrait:'soonyoung-body2-smile'}),
+ v244ArtScene('dialogue','야. 근데 좀 그렇다? 내가 호랑이만 그리자고 입교한 건 아니거든?!','순영',{portrait:'soonyoung-body2-disgusted'}),
+ v244ArtScene('dialogue','아니었어?!','주인공',{portrait:'soonyoung-body2-disgusted'}),
+ v244ArtScene('dialogue','뭐라고?!?!? 너 내가 얼마나 예리한지 알면, 어?','순영',{portrait:'soonyoung-body2-confused',boldWord:'뭐라고?!?!?',boldScale:1.2}),
+ v244ArtScene('dialogue','조심히 좀 다녀. 너 그러다 소문 다 난다.','순영',{portrait:'soonyoung-body1-default'}),
+ v244ArtScene('dialogue','(…경고를 할 거면 뭐, 제대로 하던가.)','주인공',{inner:true,portrait:'soonyoung-body1-default',portraitFadeOutAfter:true}),
+ v244ArtScene('dialogue','(세상 아방한 것 같다가도 결정적일 때 허를 찌르는 말을 한단 말이지.)','주인공',{inner:true,clearPortrait:true}),
+ v244ArtScene('narration','그래도 조금 더 친해진 거 같다. 꾸준히 호랑, 아니 노력해보자.',null,{clearPortrait:true}),
+ v244ArtScene('art-end','',null,{clearPortrait:true})
+);
+// Case ②: visited Soonyoung in Day-2 morning; NO police meeting.
+const V244_ART_CASE2_START=scenes.length;
+scenes.push(
+ v244ArtScene('dialogue','이건...','주인공',{illustration:'tiger-painting-silly',artImage:'tiger',artFade:true,clearPortrait:true}),
+ v244ArtScene('dialogue','어제보다 더...','주인공',{illustration:'tiger-painting-silly',artImage:'tiger'}),
+ v244ArtScene('dialogue','맞아! 새로운 그림이야!','순영',{portrait:'soonyoung-body1-smile'}),
+ v244ArtScene('dialogue','또 호랑이네요.','주인공',{portrait:'soonyoung-body2-smile'}),
+ v244ArtScene('dialogue','햄스터에 줄 긋는다고 호랑이 되나 싶지만…','주인공',{portrait:'soonyoung-body2-default'}),
+ v244ArtScene('dialogue','잠깐, 속담이 이게 아닌가?','주인공',{portrait:'soonyoung-body2-confused'}),
+ v244ArtScene('dialogue','근데 이거, 호랑이 맞아요?','주인공',{portrait:'soonyoung-body2-confused'}),
+ v244ArtScene('dialogue','왜.','순영',{portrait:'soonyoung-body1-confused'}),
+ v244ArtScene('dialogue','설마.','순영',{portrait:'soonyoung-body1-default'}),
+ v244ArtScene('dialogue','너 눈에도 쥐새끼 같아?!!?!','순영',{portrait:'soonyoung-body2-disgusted',boldAll:true,fontScale:1.2}),
+ v244ArtScene('dialogue','어, 아뇨? 호랑이. 완전 호랑이.','주인공',{portrait:'soonyoung-body1-disgusted'}),
+ v244ArtScene('dialogue','아름다운 이 땅에 금수강산에 난 대한민국의 마지막 호랑이, 완전.','주인공',{portrait:'soonyoung-body1-confused'}),
+ v244ArtScene('dialogue','와. 방금 그 문장 마음에 드는데? 좀 가져갈게.','순영',{portrait:'soonyoung-body2-smile'}),
+ v244ArtScene('narration','저렇게 좋아하는데. 한 번만 봐주자.',null,{portrait:'soonyoung-body2-smile'}),
+ v244ArtScene('dialogue','야. 근데 좀 그렇다? 내가 호랑이만 그리자고 입교한 건 아니거든?!','순영',{portrait:'soonyoung-body2-disgusted'}),
+ v244ArtScene('dialogue','아니었어?!','주인공',{portrait:'soonyoung-body2-disgusted'}),
+ v244ArtScene('dialogue','뭐라고?!?!?','순영',{portrait:'soonyoung-body2-confused',boldAll:true,fontScale:1.2}),
+ v244ArtScene('dialogue','아, 아, 아니에요.','주인공',{portrait:'soonyoung-body1-default'}),
+ v244ArtScene('dialogue','그래 뭐, 다음에 또 보자. 그림 구경하러 와!','순영',{portrait:'soonyoung-body1-smile',portraitFadeOutAfter:true}),
+ v244ArtScene('narration','그래도 조금 더 친해진 거 같다. 꾸준히 호랑, 아니 노력해보자.',null,{clearPortrait:true}),
+ v244ArtScene('art-end','',null,{clearPortrait:true})
+);
+// Case ③: missed Soonyoung on Day-2 morning, but actually met him with police.
+// Reuse the Day-2 tiger-painting illustration and the same entrance fade.
+const V244_ART_CASE3_START=scenes.length;
+scenes.push(
+ v244ArtScene('dialogue','웬 생뚱맞은 호랑이 그림이?','주인공',{illustration:'tiger-painting',artImage:'tiger',artFade:true,clearPortrait:true}),
+ v244ArtScene('narration','자동으로 몸이 이끌렸다.',null,{illustration:'tiger-painting',artImage:'tiger'}),
+ v244ArtScene('narration','멍하니 구경하고 있는데 옆으로 낯익은 남자가 다가왔다.',null,{portrait:'soonyoung-body1-smile'}),
+ v244ArtScene('dialogue','와 역시 김봉봉! 참 안목이란 말이야.','순영',{portrait:'soonyoung-body2-smile'}),
+ v244ArtScene('dialogue','나 말고 여기 들어와서 이 그림부터 보는 사람 처음 보거든~','순영',{portrait:'soonyoung-body2-smile'}),
+ v244ArtScene('dialogue','역시, 이 시대의 인재!','순영',{portrait:'soonyoung-body2-smile'}),
+ v244ArtScene('dialogue','쉿!! 조용히 좀 해요!','주인공',{portrait:'soonyoung-body2-default',fontScale:0.8}),
+ v244ArtScene('dialogue','아니 뭐, 이 정도 말 가지고 쫄게?','순영',{portrait:'soonyoung-body2-confused',fontScale:1.2}),
+ v244ArtScene('dialogue','긴장해야 할 때랑 안 해도 될 때 구분하는 것도 덕목이야.','순영',{portrait:'soonyoung-body2-smile'}),
+ v244ArtScene('dialogue','그래야 필요할 때 딱, 치고 빠지지.','순영',{portrait:'soonyoung-body1-smile'}),
+ v244ArtScene('dialogue','…….','주인공',{portrait:'soonyoung-body1-smile'}),
+ v244ArtScene('dialogue','(흠칫.)','주인공',{inner:true,portrait:'soonyoung-body1-glare'}),
+ v244ArtScene('narration','날카로운 시선. 형사의 얼굴이다.',null,{portrait:'soonyoung-body2-glare'}),
+ v244ArtScene('dialogue','여기 들어와서 오히려 물드는 사람들도 있단 말이지.','순영',{portrait:'soonyoung-body2-thinking'}),
+ v244ArtScene('dialogue','여기가 괜히 사이비가 아니거든.','순영',{portrait:'soonyoung-body1-confused'}),
+ v244ArtScene('dialogue','그니까 봉봉 씨도 조심해.','순영',{portrait:'soonyoung-body1-glare',portraitFadeOutAfter:true}),
+ v244ArtScene('dialogue','알았다고….','주인공',{clearPortrait:true}),
+ v244ArtScene('art-end','',null,{clearPortrait:true})
+);
+// Case ④: missed Day-2 morning and never met Soonyoung at the police meeting.
+// The original Day-2 [호랑이 그림 보기] scene is replayed (no duplicate script).
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -3247,7 +3332,7 @@ if(scene.eventFootsteps){if(!scene.silentFootsteps)sound('footsteps');portrait.h
 if(scene.pencil)keepPencil();else stopPencil();
 // v97: ignore volume-up cue for the removed confession clock.
 illustration.hidden=!scene.illustration;
-illustration.classList.toggle('vn-fade',!!scene.illustration&&(scene.kind==='image'&&scene.illustration!=='mail-01'||scene.illustration==='tiger-painting'));
+illustration.classList.toggle('vn-fade',!!scene.illustration&&(scene.kind==='image'&&scene.illustration!=='mail-01'||(scene.illustration==='tiger-painting'||scene.illustration==='tiger-painting-silly')));
 illustration.classList.toggle('vn-mail-zoom',scene.kind==='image'&&scene.illustration==='mail-01');
 if(scene.illustration){const illustrationPath='story-illustrations/'+scene.illustration+'.png';if(illustration.getAttribute('src')!==illustrationPath)illustration.setAttribute('src',illustrationPath)}
 if(scene.kind==='image'){
@@ -4274,7 +4359,18 @@ function showArtChoice(){
   e.stopPropagation();stopArtAudio();stopVnTyping(false);artBranch=Number(b.dataset.art);window.SHINDO_addPlayRecord?.('선택','예술당 활동: '+options[artBranch-1]);artLocation='main';artImage='';
   localStorage.setItem(v219IsDay3Activity()?'shindo_day3_art_branch_v219':'shindo_art_branch_v105',String(artBranch));window.SHINDO_applyAffinityEvent?.('person','예술당 활동: '+options[artBranch-1],getMorningAffinityDay());
   if(artBranch===2&&getMinghaoAffinity()>=60){startMinghaoSpecial(false);return}
-  if(v219IsDay3Activity()&&v219WasMetDay2(({1:'순영',2:'명호'})[artBranch])){v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;}
+  if(v219IsDay3Activity()&&artBranch===1){
+   const wasMet=v219WasMetDay2('순영');
+   const policeMet=v241MetSeokminAtPoliceDay2(); // The same three-member Day-2 police meeting.
+   const target=wasMet?(policeMet?V244_ART_CASE1_START:V244_ART_CASE2_START):
+     (policeMet?V244_ART_CASE3_START:-1);
+   if(target>=0){
+    currentPortrait='';portrait.hidden=true;illustration.hidden=true;el.style.display='none';
+    index=target;locked=false;save();render();return;
+   }
+   // Case ④ falls through into the existing Day-2 art-branch-1 scene.
+  }
+  if(v219IsDay3Activity()&&artBranch!==1&&v219WasMetDay2(({2:'명호'})[artBranch])){v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;}
   const target=scenes.findIndex((x,i)=>i>ART_SCENE_START&&x.artBranch===artBranch);
   currentPortrait='';portrait.hidden=true;illustration.hidden=true;el.style.display='none';
   if(target>=0){index=target;locked=false;save();render()}
