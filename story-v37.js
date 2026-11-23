@@ -2832,7 +2832,13 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  if(scene.v215JoshuaIntroOnly && localStorage.getItem('shindo_day3_joshua_intro_needed_v215')!=='1'){
   index++;save();render();return;
  }
+ // V229: Joshua's route is a mandatory Day 3 prayer attendance. If a
+ // previous build saved the completion flag without the actual affinity event,
+ // also repair it when loading the subsequent offering / morning activities.
  if(scene.v215PrayerAuto)v215ApplyDay3Prayer(true);
+ if((scene.v218GongyangDay===3 || scene.v219Morning===true ||
+     (v219IsDay3Activity() && !scene.eveningDay2)) &&
+    hasEvidenceItem('accounting-ledger'))v215ApplyDay3Prayer(true);
  // Keep an already-closed eye transition fully black when resuming from a save.
  if(scene.v218EyesDark||scene.kind==='v218-eyes-open')overlay.classList.add('v218-eye-cover','v218-eyes-closed');
  if(scene.v178){
@@ -2862,6 +2868,8 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
    if(Number.isInteger(target)){index=target;save();render();return}
    areaSkipButton.hidden=true;
    if(scene.v178Hold==='day3-morning-joshua-complete'||scene.v178Hold==='day3-morning-normal-complete'){
+    // V229: do not enter the offering with a missed Joshua prayer credit.
+    if(scene.v178Hold==='day3-morning-joshua-complete')v215ApplyDay3Prayer(true);
     index=V218_GONGYANG_START_BY_DAY[3];save();render();return;
    }
    showV178Holding(scene.v178Hold);return;
@@ -3730,15 +3738,32 @@ function showV205Day3(){
  timer=setTimeout(()=>{center.style.display='none';locked=false;next()},2300);
 }
 // V215: Shared day-based prayer outcome uses the existing affection rules.
+// V229: the affinity event ledger is the source of truth; an older visual
+// completion marker alone is not proof that all characters received the credit.
+function v229HasDay3PrayerAffinityCredit(){
+ try{
+  const events=JSON.parse(localStorage.getItem('shindo_affinity_events_v111')||'[]');
+  return Array.isArray(events)&&events.includes('3|새벽기도');
+ }catch(_){return false}
+}
 function v215ApplyDay3Prayer(attend){
  const key='shindo_day3_prayer_result_v215';
- if(localStorage.getItem(key))return;
- if(typeof window.SHINDO_applyAffinityEvent==='function'){
-  window.SHINDO_applyAffinityEvent('prayer',attend?'참석':'불참',3);
-  localStorage.setItem(key,attend?'참석':'불참');
+ const saved=localStorage.getItem(key);
+ const intended=(saved==='참석'||saved==='불참')?saved:(attend?'참석':'불참');
+ if(v229HasDay3PrayerAffinityCredit()){
+  if(!saved)localStorage.setItem(key,intended);
+  return true;
  }
- window.SHINDO_addPlayRecord?.('선택','3일차 새벽기도: '+(attend?'참석':'불참'));
+ // An uninitialized inventory engine must not mark the event as complete.
+ const grant=window.SHINDO_applyAffinityEvent;
+ if(typeof grant!=='function')return false;
+ const granted=grant('prayer',intended,3);
+ if(granted!==true&&!v229HasDay3PrayerAffinityCredit())return false;
+ localStorage.setItem(key,intended);
+ window.SHINDO_addPlayRecord?.('선택','3일차 새벽기도: '+intended);
+ return true;
 }
+
 function showV215Day3PrayerChoice(){
  locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;
  overlay.querySelector('.vn-hint').style.display='none';
@@ -3754,6 +3779,18 @@ function showV215Day3PrayerChoice(){
   };
  }
 }
+
+// V229: one more chance once all scripts have loaded, without replaying text
+// or clearing any progress. Applies only to Joshua's already-completed prayer.
+window.addEventListener('load',()=>{
+ const n=Number(localStorage.getItem(KEY));
+ const savedScene=Number.isInteger(n)?scenes[n]:null;
+ if(!savedScene||!hasEvidenceItem('accounting-ledger'))return;
+ if(savedScene.v215PrayerAuto || savedScene.v178Hold==='day3-morning-joshua-complete' ||
+    savedScene.v218GongyangDay===3 || savedScene.v219Morning===true ||
+    (v219IsDay3Activity()&&!savedScene.eveningDay2))v215ApplyDay3Prayer(true);
+},{once:true});
+
 // Do not reuse the Day 2 bell player: it is stopped during every later scene.
 let v218BellAudio=null,v218BellTimer=null,v218BellSceneIndex=-1;
 function v218StopOfferingBell(){
