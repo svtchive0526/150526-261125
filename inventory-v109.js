@@ -319,8 +319,8 @@
    if(label.startsWith('고해소 대응: ')||label==='공양실 활동: 준휘와 대화')return false;
    const person=PERSON_EVENTS[label];if(!person)return false;
    eventId=d+'|개별인물|'+person;
-   // Other characters retain +10; ordinary Jeonghan dialogue awards +15.
-   changes=[[person,person==='정한'?15:10]];
+   // All ordinary morning individual conversations award +15; Wonwoo and Junhui remain room-only +20.
+   changes=[[person,15]];
   }else return false;
   const ledger=load(AFFINITY_EVENTS,[]);if(!Array.isArray(ledger))return false;
   if(ledger.includes(eventId))return false;
