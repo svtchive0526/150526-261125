@@ -2197,6 +2197,51 @@ scenes.push(
  v286MingyuScene('living-end','',null,{livingLocation:'corridor'})
 );
 
+// V287: 4th-day library encounter (only denial on Day 2 + ordinary library on Day 3).
+// All previous scene indices remain unchanged. Day 4's complete morning entry is not yet authored.
+const V287_DAY4_LIBRARY_START=scenes.length;
+scenes.push(
+ {"kind":"narration","text":"본당 도서실로 향했다.","v287Day4Library":true,"mainHall":true,"mainLocation":"library"},
+ {"kind":"narration","text":"햇빛이 잘 드는 자리에는 어김없이 승관이 앉아 있었다.","v287Day4Library":true,"mainHall":true,"mainLocation":"library"},
+ {"kind":"narration","text":"달라진 게 있다면...","v287Day4Library":true,"mainHall":true,"mainLocation":"library"},
+ {"kind":"narration","text":"오늘은 조는 대신 우등생처럼 책에 코를 박고 있다는 점이다.","v287Day4Library":true,"portrait":"seungkwan-body2-default","mainSilhouette":true,"mainHall":true,"mainLocation":"library"},
+ {"kind":"narration","text":"승관에게 조심스레 다가갔다.","v287Day4Library":true,"portrait":"seungkwan-body2-surprised","mainHall":true,"mainLocation":"library"},
+ {"kind":"dialogue","text":"어, 아 깜짝이야! 깜짝 놀랐잖아요.","v287Day4Library":true,"speaker":"승관","portrait":"seungkwan-body1-shocked","mainHall":true,"mainLocation":"library"},
+ {"kind":"dialogue","text":"놀라게 할 생각은 없었는데.","v287Day4Library":true,"speaker":"주인공","portrait":"seungkwan-body1-surprised","mainHall":true,"mainLocation":"library"},
+ {"kind":"dialogue","text":"오늘은 안 조네요?","v287Day4Library":true,"speaker":"주인공","portrait":"seungkwan-body2-default","mainHall":true,"mainLocation":"library"},
+ {"kind":"dialogue","text":"아니이… 지난번엔 정말 잠깐이었어요, 진짜로!!","v287Day4Library":true,"speaker":"승관","portrait":"seungkwan-body3-thinking","mainHall":true,"mainLocation":"library"},
+ {"kind":"narration","text":"뾰로통한 모습이 놀리는 맛이 있다.","v287Day4Library":true,"portrait":"seungkwan-body2-sweating","mainHall":true,"mainLocation":"library"},
+ {"kind":"narration","text":"그를 따라 킥킥 웃다가 다시 한번 깨달았다.","v287Day4Library":true,"portrait":"seungkwan-body2-default","mainHall":true,"mainLocation":"library"},
+ {"kind":"dialogue","text":"(정말 상대를 쉽게 무장해제 시키는 사람이다.)","v287Day4Library":true,"speaker":"주인공","portrait":"seungkwan-body2-eyesmile","mainHall":true,"mainLocation":"library"},
+ {"kind":"dialogue","text":"그래도 사람이 있어서 좋다~.","v287Day4Library":true,"speaker":"승관","portrait":"seungkwan-body2-eyesmile","mainHall":true,"mainLocation":"library"},
+ {"kind":"dialogue","text":"사실 쪼끔은? 심심했거든요.","v287Day4Library":true,"speaker":"승관","portrait":"seungkwan-body1-eyesmile","v287TransitionAfter":true,"mainHall":true,"mainLocation":"library"},
+ {"kind":"dialogue","text":"종교는 결속력이 중요한 게 맞지만…","speaker":"승관","portrait":"seungkwan-body2-thinking","v287Day4Library":true,"v287Recall":true,"recall":true,"backdrop":"bg-living-quarters-exterior.png"},
+ {"kind":"dialogue","text":"사람을 죽여가고, 서로 밀고하면서까지 이러는 게 맞을까요?","speaker":"승관","portrait":"seungkwan-body2-thinking","v287Day4Library":true,"v287Recall":true,"recall":true,"backdrop":"bg-living-quarters-exterior.png"},
+ {"kind":"dialogue","text":"봉봉 씨.","speaker":"승관","portrait":"seungkwan-body2-thinking","v287Day4Library":true,"v287Recall":true,"recall":true,"backdrop":"bg-living-quarters-exterior.png","boldAll":true,"fontScale":1.2},
+ {"kind":"dialogue","text":"맞으시죠? 봉봉아티클의 취재기자.","speaker":"승관","portrait":"seungkwan-body2-default","v287Day4Library":true,"v287Recall":true,"recall":true,"backdrop":"bg-living-quarters-exterior.png","boldAll":true,"fontScale":1.2,"v287TransitionAfter":true},
+ {"kind":"narration","text":"친근하게 구는 지금과 수상하게 굴던 그 때의 모습이 겹쳐 보인다.","v287Day4Library":true,"portrait":"seungkwan-body2-default","mainHall":true,"mainLocation":"library"},
+ {"kind":"narration","text":"왜인진 모르겠으나, 승관은 내 정체를 안다.","v287Day4Library":true,"portrait":"seungkwan-body2-default","mainHall":true,"mainLocation":"library"},
+ {"kind":"dialogue","text":"(차라리 먼저 손을 써두는 편이…)","v287Day4Library":true,"speaker":"주인공","portrait":"seungkwan-body2-eyesmile","mainHall":true,"mainLocation":"library"},
+ {"kind":"dialogue","text":"봉봉 씨?","v287Day4Library":true,"speaker":"승관","portrait":"seungkwan-body2-eyesmile","mainHall":true,"mainLocation":"library"},
+ {"kind":"dialogue","text":"무슨 생각 해요?","v287Day4Library":true,"speaker":"승관","portrait":"seungkwan-body2-eyesmile","mainHall":true,"mainLocation":"library"},
+ {"kind":"dialogue","text":"아, 아무 생각도 안 했어요.","v287Day4Library":true,"speaker":"주인공","portrait":"seungkwan-body2-default","portraitFadeOutAfter":true,"mainHall":true,"mainLocation":"library"},
+ {"kind":"narration","text":"모르겠다. 머릿속이 뒤죽박죽이다.","v287Day4Library":true,"clearPortrait":true,"mainHall":true,"mainLocation":"library"},
+ {"kind":"v287-day4-library-end","v287Day4Library":true,"mainHall":true,"mainLocation":"library","clearPortrait":true}
+);
+function v287CanOpenDay4Library(){
+ return localStorage.getItem('shindo_current_story_day_v109')==='4' &&
+  localStorage.getItem('shindo_seungkwan_truth_branch_v177')==='2' &&
+  localStorage.getItem('shindo_day3_location_v219')==='본당' &&
+  localStorage.getItem(V219_MAIN_KEY)==='3';
+}
+// A Day-4 morning selector can use this route when the later-day chapter is connected.
+function v287EnterDay4Library(){
+ if(!v287CanOpenDay4Library())return false;
+ const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
+ currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+ index=V287_DAY4_LIBRARY_START;locked=false;save();render();return true;
+}
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -2253,6 +2298,11 @@ function getSceneBackdrop(sceneNumber,scene){
  return "";
 }
 const style=document.createElement('style');style.textContent=`
+/* V287: isolated fade overlay for the Day-4 Seungkwan memory (not other routes). */
+#shindo-vn .v287-memory-curtain{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:40;transition:opacity .7s ease}
+#shindo-vn .v287-memory-curtain.is-visible{opacity:1}
+#shindo-vn.v287-library-recall .special-memory-kicker{display:block}
+
 
 /* V270 위반 ending and transitions; existing endings are untouched. */
 #shindo-vn .v270-wiban-test{margin-top:10px!important;border:1px dashed #9b7d7d!important;background:#261e1e!important;text-align:center!important;font-size:14px!important}
@@ -2798,6 +2848,7 @@ duoLeft.className='duo-left';duoRight.className='duo-right';duoLeft.alt='';duoRi
 duoLayer.append(duoLeft,duoRight);overlay.insertBefore(duoLayer,box);
 attachPortraitErrorHandler(duoLeft);attachPortraitErrorHandler(duoRight);
 const recallKicker=document.createElement('div');recallKicker.className='special-memory-kicker';recallKicker.textContent='회상';overlay.appendChild(recallKicker);
+const v287Curtain=document.createElement('div');v287Curtain.className='v287-memory-curtain';overlay.appendChild(v287Curtain);
 function setSpecialPortraits(scene){
  overlay.classList.toggle('is-recall',!!scene.recall);
  if(!scene.duo){duoLayer.classList.remove('is-active');for(const image of [duoLeft,duoRight]){image.dataset.officialRequest=String((Number(image.dataset.officialRequest)||0)+1);image.hidden=true;image.removeAttribute('src')}return false}
@@ -3572,6 +3623,8 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){finish();return}
  if(!scene.v270Wiban)overlay.classList.remove('v283-wiban-end-black','v283-wiban-day-black','v283-wiban-day-transition');
  overlay.classList.toggle('v283-wiban-recall',!!scene.v283RecallCount);
+ overlay.classList.toggle('v287-library-recall',!!scene.v287Recall);
+ if(scene.v287Recall)overlay.classList.add('is-recall');else if(scenes[index-1]?.v287Recall)overlay.classList.remove('is-recall');
  recallKicker.textContent=scene.v283RecallCount?String(scene.v283RecallCount)+'회':'회상';
  if(!scene.v281WibanFinal)v281ClearFinalArtwork();
  if(scene.v280Skipped){index=v279NextIndexFor(index);save();render();return}
@@ -3611,6 +3664,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  if(index>=V205_ESCAPE_START && index<V205_ESCAPE_LIE+100 && scene?.eveningLocation==='village' && !v207EscapeMusicFading)v207StartEscapeMusic();
  if(!scene.v213Day1Bedtime)v183SyncPoliceIdentityAt(index);
  if(scene.day3Morning||scene.v218GongyangDay||scene.v223JunhuiLockedFirst||v219IsDay3Activity())areaSkipButton.hidden=true;
+ if(scene.v287Recall||scene.v287Day4Library)areaSkipButton.hidden=true;
  // Players already saved at V214's temporary Day 3 scenes resume the full script.
  if(index===V214_DAY3_MORNING_START || scene.v178Hold==='day3-morning-await-script'){
   index=V215_DAY3_COMMON_START;save();render();return;
@@ -3705,14 +3759,14 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  if(scene.v259JeonghanSuspicionEnd){showLivingEnd();return;}
  if(DAY2_MORNING_AUTO_EVENING_ENDS.has(scene.kind)){if(v219IsDay3Activity()){v219ShowMorningEnd('오전 활동을 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return;}enterEveningDay2();return}
  // Keep the day in sync with real story progress, including refreshed sessions.
- try{if(!scene.v270Wiban)localStorage.setItem('shindo_current_story_day_v109',String(scene.v218GongyangDay|| (scene.v262Day5Eunjae?5:(index>=V256_DAY4_EUNJAE_CASE13_START&&index<V256_DAY4_JEONGHAN_SEARCH_REVISIT_START)?4:v219IsDay3Activity()?3:scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1)))}catch(_){}
+ try{if(!scene.v270Wiban)localStorage.setItem('shindo_current_story_day_v109',String(scene.v218GongyangDay|| (scene.v287Day4Library || (scene.mainHall && v287CanOpenDay4Library())?4:(scene.v262Day5Eunjae?5:(index>=V256_DAY4_EUNJAE_CASE13_START&&index<V256_DAY4_JEONGHAN_SEARCH_REVISIT_START)?4:v219IsDay3Activity()?3:scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1))))}catch(_){}
  if(index===DAY2_START)localStorage.setItem(SKIP_REACHED,'1');
  updateAreaSkipButton();if(scene.v270Wiban)areaSkipButton.hidden=true;
  if(index===DAY2_START&&!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169')){
   try{localStorage.setItem('shindo_day2_start_affinity_snapshot_v169',localStorage.getItem('shindo_affinity_v107')||'{"조슈아":100}')}catch(_){}
  }
 const existingChoiceModal=overlay.querySelector('.shindo-choices');if(existingChoiceModal&&scene.kind!=='main-choice'&&scene.kind!=='main-end'&&scene.kind!=='living-choice'&&scene.kind!=='living-end'&&scene.kind!=='art-choice'&&scene.kind!=='art-end'&&scene.kind!=='prayer-choice'&&scene.kind!=='prayer-end'&&scene.kind!=='day2-morning-choice'&&scene.kind!=='day2-prayer-choice'&&scene.kind!=='choice')existingChoiceModal.style.display='none';
-if(!scene.specialMinghao&&!scene.patrolDuo){duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');}
+if(!scene.specialMinghao&&!scene.patrolDuo){duoLayer.classList.remove('is-active');if(!scene.v287Recall)overlay.classList.remove('is-recall');}
 const fadingOutOfSquare=scene.kind==='day2-morning-choice'&&currentSceneBackdropKey==='bg-central-square.jpg';
 applySceneBackdrop(index,scene);
  if(scene.eveningDay2){if(scene.eveningLocation==='dark'&&!scene.v178){eveningLivingEntered=false;startEveningTick()}else if(scene.eveningLocation==='living'&&!scene.v178)enterEveningLiving();else stopEveningTick()}else{stopEveningTick();stopEveningWalk();eveningLivingEntered=false;}
@@ -3812,6 +3866,7 @@ if(scene.kind==='day2-morning-choice'){
  if(scene.kind==='v224-office-type3-end'){v219ShowMorningEnd('사무실 대화를 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return;}
  if(scene.kind==='v225-office-type2-end'){v219ShowMorningEnd('사무실 대화를 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return;}
  if(scene.kind==='v226-office-type1-end'){v219ShowMorningEnd('사무실 대화를 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return;}
+ if(scene.kind==='v287-day4-library-end'){v287ShowDay4LibraryEnd();return;}
  if(scene.kind==='v219-library-end'){v219ShowMorningEnd('승관과의 도서실 대화를 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return}
  if(scene.kind==='main-choice'){showMainChoice();return}
  if(scene.kind==='main-end'){showMainEnd();return}
@@ -4039,6 +4094,7 @@ function v277ClearTransientScenes(){
  endingTimers.forEach(clearTimeout);endingTimers=[];
  duoLayer.classList.remove('is-active','is-visible');overlay.classList.remove('v283-wiban-recall','v283-wiban-end-black','v283-wiban-day-black','v283-wiban-day-transition','is-recall','art-blackout','v205-fade-out','v276-day3-title','v218-eye-cover','v218-eyes-closed','sanctuary','sanctuary-leaving','day','confession-blackout','confession-fade','day2-shake','sleep-fadeout','sleep-fadein');
  overlay.querySelector('.shindo-ending')?.remove();overlay.querySelectorAll('.shindo-evidence-overlay').forEach(el=>el.remove());
+ v287Curtain.classList.remove('is-visible');overlay.classList.remove('v287-library-recall');
  const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
  const center=overlay.querySelector('.vn-center');if(center)center.style.display='none';
  storyBackdrop.classList.remove('shindo-v256-faded');storyBackdrop.style.filter='';storyBackdrop.style.opacity='';storyUnderlay.style.filter='';
@@ -4432,11 +4488,13 @@ function v219ShowMorningEnd(message){
  el.style.display='flex';
 }
 function v219StartLocation(room){
+ const v287MainOnDay4=room==='본당' && localStorage.getItem('shindo_current_story_day_v109')==='4';
  localStorage.setItem(V219_MODE_KEY,'1');
- localStorage.setItem('shindo_day3_location_v219',room);
- localStorage.setItem('shindo_current_story_day_v109','3');
+ if(!v287MainOnDay4)localStorage.setItem('shindo_day3_location_v219',room);
+ localStorage.setItem('shindo_current_story_day_v109',v287MainOnDay4?'4':'3');
  day2Morning=room;
- v219MarkMorningRoom(room);
+ if(v287MainOnDay4)window.SHINDO_applyAffinityEvent?.('room',room,4);
+ else v219MarkMorningRoom(room);
  const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;
  artLocation='main';artImage='';prayerBranch=artBranch=livingBranch=mainBranch=confMorningBranch=0;
@@ -4464,6 +4522,26 @@ function v219ShowDay3MorningMenu(){
  };
 }
 function v219ShowMainChoice(){
+ if(v287CanOpenDay4Library()){
+  locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;
+  overlay.querySelector('.vn-hint').style.display='none';
+  let menu=overlay.querySelector('.shindo-choices');
+  if(!menu){menu=document.createElement('div');menu.className='shindo-choices';overlay.appendChild(menu)}
+  menu.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
+  menu.innerHTML='<h2>어디부터 살펴볼까?</h2><div class="shindo-morning-options"><button type="button" data-v287-library="1">도서실</button></div>';
+  menu.style.display='flex';
+  menu.querySelector('[data-v287-library]').onclick=e=>{
+   e.stopPropagation();
+   if(!v287CanOpenDay4Library()){
+    menu.innerHTML='<h2>도서실</h2><p>현재 선택 이력에 해당하는 4일차 도서실 대화는 아직 구현되지 않았습니다.</p>';
+    return;
+   }
+   window.SHINDO_addPlayRecord?.('선택','4일차 본당: 도서실');
+   v287EnterDay4Library();
+  };
+  return;
+ }
+
  locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  const options=[['1','사무실'],['3','도서실']];
@@ -4559,6 +4637,7 @@ function showDay2Choice(type){locked=true;box.style.display='none';portrait.hidd
  }}})
 }
 function showMainChoice(){
+ if(v287CanOpenDay4Library()){v219ShowMainChoice();return;}
  if(v219IsDay3Activity()){v219ShowMainChoice();return;}
  locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
@@ -5643,11 +5722,32 @@ v205HammerBlocked=false;if(v205HammerAudio){v205HammerAudio.pause();v205HammerAu
  try{localStorage.setItem(KEY,'complete');localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}
  window.SHINDO_openFeedback?.();
 }
+function v287FadeIntoNext(){
+ if(locked)return;
+ locked=true;areaSkipButton.hidden=true;
+ v287Curtain.classList.add('is-visible');
+ timer=setTimeout(()=>{
+  index=v279NextIndexFor(index);save();render();
+  // The destination portrait and photograph are placed before the curtain clears.
+  requestAnimationFrame(()=>requestAnimationFrame(()=>v287Curtain.classList.remove('is-visible')));
+ },710);
+}
+function v287ShowDay4LibraryEnd(){
+ locked=true;areaSkipButton.hidden=true;box.style.display='none';
+ currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+ overlay.querySelector('.vn-hint').style.display='none';
+ let menu=overlay.querySelector('.shindo-choices');
+ if(!menu){menu=document.createElement('div');menu.className='shindo-choices';overlay.appendChild(menu)}
+ menu.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
+ menu.innerHTML='<h2>4일차 오전 활동</h2><p>도서실 대화를 마쳤습니다. 이후 스토리는 추후 연결됩니다.</p>';
+ menu.style.display='flex';
+}
 function next(userAdvance=false){
  if(scenes[index]?.v281WibanFinal)return; // Unskippable: only V281's automatic timeline advances.
  if(v205HammerBlocked)return;
  if(locked)return;
  if(vnTypingTimer!==null){stopVnTyping(true);return;}
+ if(scenes[index]?.v287TransitionAfter){v287FadeIntoNext();return;}
  if(scenes[index]?.v270FadeAfter){v270FadeToNext();return;}
  // V248: a two-page line 32 without re-indexing every scene or corrupting saves.
  if(scenes[index]?.v248MinghaoFirst){
