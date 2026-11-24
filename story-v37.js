@@ -2242,6 +2242,142 @@ function v287EnterDay4Library(){
  index=V287_DAY4_LIBRARY_START;locked=false;save();render();return true;
 }
 
+
+// V288: Day-4 main hall library, Day-2 journalist disclosed and Day-3 Seungkwan met.
+// Append-only scenes keep every pre-existing save index stable.
+const V288_DAY4_LIBRARY_TOLD_START=scenes.length;
+scenes.push(
+ {"kind":"narration","text":"본당 도서실로 향했다.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","clearPortrait":true},
+ {"kind":"narration","text":"햇빛이 잘 드는 자리에는 어김없이 승관이 앉아 있었다.","v288Day4Library":true,"mainHall":true,"mainLocation":"library"},
+ {"kind":"narration","text":"달라진 게 있다면,","v288Day4Library":true,"mainHall":true,"mainLocation":"library"},
+ {"kind":"narration","text":"오늘은 조는 대신 우등생처럼 책에 코를 박고 있다는 점이다.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","portrait":"seungkwan-body2-default"},
+ {"kind":"dialogue","text":"아, 봉봉 씨 왔어요?","v288Day4Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body2-smile"},
+ {"kind":"dialogue","text":"오늘도 고생이네요~","v288Day4Library":true,"mainHall":true,"mainLocation":"library","speaker":"주인공","portrait":"seungkwan-body2-eyesmile"},
+ {"kind":"narration","text":"근처에 사람이 없는 걸 확인한 뒤, 목소리를 한껏 낮춰 속삭였다.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","portrait":"seungkwan-body2-eyesmile"},
+ {"kind":"dialogue","text":"찾고 있는 거죠? 단서든, 증거든.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","speaker":"주인공","portrait":"seungkwan-body2-default","v288LibraryShade":true,"fontScale":0.85},
+ {"kind":"dialogue","text":"으아아, 여기 뭐 있는 게 없네….","v288Day4Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body1-thinking","v288LibraryShade":true,"fontScale":0.85},
+ {"kind":"dialogue","text":"어후, 내가 진짜. 팔자에도 없는 도서관을 다 와 보고.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body1-thinking","v288LibraryShade":true,"fontScale":0.85},
+ {"kind":"dialogue","text":"책 좀 읽고 살아요.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","speaker":"주인공","portrait":"seungkwan-body1-thinking","v288LibraryShade":true,"fontScale":0.85},
+ {"kind":"dialogue","text":"뭐래, 나도 읽거든요?!","v288Day4Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body1-sweating","v288LibraryShade":true,"fontScale":0.85},
+ {"kind":"dialogue","text":"두꺼운 건 손이 잘 안 가서 그렇지.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body3-sweating","v288LibraryShade":true,"fontScale":0.85},
+ {"kind":"narration","text":"소소하게 투닥대고 있으니 일상 같다.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","portrait":"seungkwan-body2-default","v288LibraryShade":true},
+ {"kind":"narration","text":"미친 사이비 교단 안이 아니라, 동네 공립 도서관에 와 있는 것 같달까.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","portrait":"seungkwan-body2-default","v288LibraryShade":true},
+ {"kind":"narration","text":"그러나 책장을 빼곡히 채운 교리서의 모습에 다시 현실로 돌아온다.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","portrait":"seungkwan-body2-default","v288LibraryShade":true},
+ {"kind":"dialogue","text":"솔직하게 말하자면 좀 무서워요.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body3-sweating","v288LibraryShade":true,"fontScale":0.85},
+ {"kind":"dialogue","text":"…당연히 무섭죠. 잠입 수사잖아요.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","speaker":"주인공","portrait":"seungkwan-body1-thinking","v288LibraryShade":true,"fontScale":0.85},
+ {"kind":"dialogue","text":"다 같이 있으니까 덜 무섭긴 한데,","v288Day4Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body1-thinking","v288LibraryShade":true,"fontScale":0.85},
+ {"kind":"dialogue","text":"한편으론 또 다 같이 있어서 더 무섭다고 해야 하나.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body1-thinking","v288LibraryShade":true,"fontScale":0.85},
+ {"kind":"dialogue","text":"무슨 일이라도 생기면, 나는 멀쩡할 수 있을까 하고….","v288Day4Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body2-thinking","v288LibraryShade":true,"fontScale":0.85},
+ {"kind":"dialogue","text":"(아직 오지 않은 상실을 미리 두려워하는 걸까.)","v288Day4Library":true,"mainHall":true,"mainLocation":"library","speaker":"주인공","portrait":"seungkwan-body2-thinking","v288LibraryShade":true,"fontScale":0.85},
+ {"kind":"narration","text":"걱정이 많은 사람 같다.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","portrait":"seungkwan-body3-sweating"},
+ {"kind":"narration","text":"두려움은 원동력이 되기도 하지만,","v288Day4Library":true,"mainHall":true,"mainLocation":"library","portrait":"seungkwan-body2-sweating"},
+ {"kind":"narration","text":"자칫하다가는 절망에 빠지기도 쉽다.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","portrait":"seungkwan-body2-default","boldAll":true},
+ {"kind":"dialogue","text":"그래도 뭐, 파이팅 해야지! 돈 기비럽 네버 ㄱ...","v288Day4Library":true,"mainHall":true,"mainLocation":"library","speaker":"승관","portrait":"seungkwan-body2-eyesmile"},
+ {"kind":"dialogue","text":"왜 갑자기 노래를.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","speaker":"주인공","portrait":"seungkwan-body2-smile","portraitFadeOutAfter":true},
+ {"kind":"narration","text":"그럼에도 그저 다 괜찮을 거라고 고개를 끄덕이는 수밖에 없었다.","v288Day4Library":true,"mainHall":true,"mainLocation":"library","clearPortrait":true},
+ {"kind":"v287-day4-library-end","v288Day4Library":true,"mainHall":true,"mainLocation":"library","clearPortrait":true}
+);
+function v288CanOpenDay4Library(){
+ return localStorage.getItem('shindo_current_story_day_v109')==='4' &&
+  localStorage.getItem('shindo_seungkwan_truth_branch_v177')==='1' &&
+  localStorage.getItem('shindo_day3_location_v219')==='본당' &&
+  localStorage.getItem(V219_MAIN_KEY)==='3';
+}
+function v288CanOpenAnyDay4Library(){return v287CanOpenDay4Library()||v288CanOpenDay4Library()}
+function v288EnterDay4Library(){
+ if(!v288CanOpenDay4Library())return false;
+ const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
+ currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+ index=V288_DAY4_LIBRARY_TOLD_START;locked=false;save();render();return true;
+}
+
+
+// V289: morning confessional repeat visits (Day 3-13). Original Day-2 dialogue is unchanged.
+const V289_CONF_REPEAT_START=scenes.length;
+const V289_CONF_VISITS_KEY='shindo_morning_confession_days_v289';
+const V289_CONF_GIFTS=Object.freeze(['만년필을','카트리지를','양초를','캐모마일 티백을','장부용 종이를','만년필 잉크를','캐모마일 모종을','파일철을','성냥을','노트를','만년필 컨버터를']);
+const V289_CONF_BRANCH_1=V289_CONF_REPEAT_START+20;
+const V289_CONF_BRANCH_2=V289_CONF_REPEAT_START+22;
+const V289_CONF_BRANCH_3=V289_CONF_REPEAT_START+24;
+scenes.push(
+ {"kind":"narration","v289MorningConf":true,"confMorning":true,"confLocation":"outside","text":"낮의 고해소 앞은 어둡고 서늘했다.","clearPortrait":true},
+ {"kind":"narration","v289MorningConf":true,"confMorning":true,"confLocation":"outside","text":"문을 두드리니 원우 사제가 모습을 보였다.","sound":"confessionDoor"},
+ {"kind":"dialogue","v289MorningConf":true,"confMorning":true,"confLocation":"inside","text":"…무슨 일입니까.","speaker":"원우","portrait":"wonwoo-body1-ominous"},
+ {"kind":"narration","v289MorningConf":true,"confMorning":true,"confLocation":"inside","text":"일순간 예민한 얼굴이었다가 차분함을 되찾았다.","portrait":"wonwoo-body1-default"},
+ {"kind":"narration","v289MorningConf":true,"confMorning":true,"confLocation":"inside","text":"열린 문 너머로 두꺼운 장부가 보였다.","portrait":"wonwoo-body1-default"},
+ {"kind":"narration","v289MorningConf":true,"confMorning":true,"confLocation":"inside","text":"옆에는 막 내려놓은 듯한 만년필 한 자루도.","portrait":"wonwoo-body1-default"},
+ {"kind":"narration","v289MorningConf":true,"confMorning":true,"confLocation":"inside","text":"시선을 알아챘는지, 문을 반쯤 닫아 안을 가려버렸다.","portrait":"wonwoo-body2-default"},
+ {"kind":"dialogue","v289MorningConf":true,"confMorning":true,"confLocation":"inside","text":"(방금까지 무언가를 적고 있었던 게 분명한데.)","speaker":"주인공","portrait":"wonwoo-body2-default"},
+ {"kind":"dialogue","v289MorningConf":true,"confMorning":true,"confLocation":"inside","text":"(고해성사 내용을 하나하나 적는 걸까.)","speaker":"주인공","portrait":"wonwoo-body2-default","boldWord":"고해성사"},
+ {"kind":"dialogue","v289MorningConf":true,"confMorning":true,"confLocation":"inside","text":"(본래 교리에 어긋나는 일인 건 둘째치고, 어디에 쓰려고?)","speaker":"주인공","portrait":"wonwoo-body2-eyesclosed"},
+ {"kind":"dialogue","v289MorningConf":true,"confMorning":true,"confLocation":"inside","text":"무슨 일입니까.","speaker":"원우","portrait":"wonwoo-body2-eyesclosed"},
+ {"kind":"dialogue","v289MorningConf":true,"confMorning":true,"confLocation":"inside","text":"그… 생활관 신도님께서 사제님께 이걸 가져다드리라고 부탁했습니다.","speaker":"주인공","portrait":"wonwoo-body2-default"},
+ {"kind":"dialogue","v289MorningConf":true,"confMorning":true,"confLocation":"inside","text":"아마 부족하실 거라고.","speaker":"주인공","portrait":"wonwoo-body2-default"},
+ {"kind":"narration","v289MorningConf":true,"confMorning":true,"confLocation":"inside","text":"(물건명) 건넸다. 시선이 짧게 닿았다 거두어진다.","portrait":"wonwoo-body2-eyesmile","v289Gift":true},
+ {"kind":"dialogue","v289MorningConf":true,"confMorning":true,"confLocation":"inside","text":"아. 감사합니다.","speaker":"원우","portrait":"wonwoo-body2-smile","portraitFadeOutAfter":true},
+ {"kind":"narration","v289MorningConf":true,"confMorning":true,"confLocation":"outside","text":"간결하다 못해 무신경한 인사와 함께 문이 도로 닫혔다.","clearPortrait":true},
+ {"kind":"narration","v289MorningConf":true,"confMorning":true,"confLocation":"outside","text":"분명 저 안에 무언가 있다. 어떻게든 들어갈 방법이 없으려나?"},
+ {"kind":"narration","v289MorningConf":true,"confMorning":true,"confLocation":"outside","text":"고해소를 빙 둘러봤지만 침범할 길은 없다.","v289ForestCue":true},
+ {"kind":"narration","v289MorningConf":true,"confMorning":true,"confLocation":"outside","text":"차라리 정정당당하게 문을 따고 들어가야 한다."},
+ {"kind":"v289-conf-branch","v289MorningConf":true,"confMorning":true,"confLocation":"outside"},
+ {"kind":"dialogue","v289MorningConf":true,"confMorning":true,"confLocation":"outside","text":"(야간순찰을 하는 척 와보거나, 정 안 되면 최소한 포켓나이프 같은 게 있다면 좋을 텐데….)","speaker":"주인공"},
+ {"kind":"conf-morning-end","v289MorningConf":true,"confMorning":true,"confLocation":"outside"},
+ {"kind":"dialogue","v289MorningConf":true,"confMorning":true,"confLocation":"outside","text":"(흠, 경찰들이라면 이런 걸 잘 알겠지. 그들과 다시 접선해보자.)","speaker":"주인공"},
+ {"kind":"conf-morning-end","v289MorningConf":true,"confMorning":true,"confLocation":"outside"},
+ {"kind":"dialogue","v289MorningConf":true,"confMorning":true,"confLocation":"outside","text":"(요즘 생활관에 빈방이 은근히 많다고 들었다.)","speaker":"주인공"},
+ {"kind":"dialogue","v289MorningConf":true,"confMorning":true,"confLocation":"outside","text":"(사라진 사람들, ...공양된 사람들이 쓰던 방이겠지.)","speaker":"주인공"},
+ {"kind":"dialogue","v289MorningConf":true,"confMorning":true,"confLocation":"outside","text":"(그런 곳이라면 미처 챙기지 못한, 쓸 만한 물건이 남아있을지도 몰라.)","speaker":"주인공"},
+ {"kind":"dialogue","v289MorningConf":true,"confMorning":true,"confLocation":"outside","text":"(두 번 정도는 가볼만한 가치가 있겠어.)","speaker":"주인공"},
+ {"kind":"conf-morning-end","v289MorningConf":true,"confMorning":true,"confLocation":"outside"}
+);
+// Per-day ledger: morning visits only. An overnight confession is never counted.
+// Legacy Day-2 and Day-3 choices can be recovered from their existing exact room keys.
+function v289VisitedDays(){
+ let days=[];
+ try{const data=JSON.parse(localStorage.getItem(V289_CONF_VISITS_KEY)||'[]');if(Array.isArray(data))days=data.filter(n=>Number.isInteger(n)&&n>=2&&n<=13);}catch(_){}
+ if(localStorage.getItem('shindo_day2_morning')==='고해소')days.push(2);
+ // Do not infer a Day-3 visit merely from the mode flag. Require explicit location.
+ if(localStorage.getItem('shindo_day3_location_v219')==='고해소')days.push(3);
+ return [...new Set(days)].sort((a,b)=>a-b);
+}
+function v289RecordMorningVisit(day){
+ const days=v289VisitedDays();
+ if(Number.isInteger(day)&&day>=2&&day<=13&&!days.includes(day))days.push(day);
+ days.sort((a,b)=>a-b);
+ localStorage.setItem(V289_CONF_VISITS_KEY,JSON.stringify(days));
+ return days.length;
+}
+function v289DropMorningVisitsFrom(day){
+ const days=v289VisitedDays().filter(n=>n<day);
+ // Clear previous navigation flag first at the caller so legacy migration cannot restore deleted days.
+ localStorage.setItem(V289_CONF_VISITS_KEY,JSON.stringify(days));
+}
+function v289CurrentVisitNumber(){return v289VisitedDays().length;}
+function v289ConfBranchTarget(){return hasEscapePackage()?V289_CONF_BRANCH_1:v241MetSeokminAtPoliceDay2()?V289_CONF_BRANCH_2:V289_CONF_BRANCH_3;}
+let v289ForestAudio=null,v289ForestStartTimer=null,v289ForestFadeTimer=null;
+function v289StopForestCue(){
+ clearTimeout(v289ForestStartTimer);clearInterval(v289ForestFadeTimer);
+ v289ForestStartTimer=null;v289ForestFadeTimer=null;
+ if(v289ForestAudio){v289ForestAudio.pause();v289ForestAudio.currentTime=0;v289ForestAudio=null;}
+}
+function v289StartForestCue(){
+ v289StopForestCue();
+ const clip=new Audio('story-audio/01-4.mp3');
+ clip.volume=.7;v289ForestAudio=clip;
+ clip.play().catch(()=>{});
+ v289ForestStartTimer=setTimeout(()=>{
+  if(v289ForestAudio!==clip)return;
+  const started=performance.now();const initial=.7;const fadeMs=650;
+  v289ForestFadeTimer=setInterval(()=>{
+   if(v289ForestAudio!==clip){clearInterval(v289ForestFadeTimer);return;}
+   const k=Math.min(1,(performance.now()-started)/fadeMs);
+   clip.volume=Math.max(0,initial*(1-k));
+   if(k>=1)v289StopForestCue();
+  },30);
+ },3500);
+ clip.addEventListener('ended',()=>{if(v289ForestAudio===clip)v289StopForestCue()},{once:true});
+}
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -2307,6 +2443,8 @@ const style=document.createElement('style');style.textContent=`
 /* V270 위반 ending and transitions; existing endings are untouched. */
 #shindo-vn .v270-wiban-test{margin-top:10px!important;border:1px dashed #9b7d7d!important;background:#261e1e!important;text-align:center!important;font-size:14px!important}
 #shindo-story-backdrop.v279-wiban-square-dim{filter:brightness(.4)!important;transition:filter .55s ease}
+/* V288: 60% darker library background only; character artwork and text stay untouched. */
+#shindo-story-backdrop.v288-library-dim{filter:brightness(.4)!important;transition:filter .45s ease}
 #shindo-vn .vn-portrait.v270-shadow{filter:brightness(0)!important;opacity:var(--v270-shade,.2)!important}
 #shindo-vn .v270-curtain{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:11;transition:opacity .65s ease;}
 #shindo-vn .v270-curtain.shown{opacity:1}
@@ -3634,6 +3772,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  }
  // V279: 60% dark background only for old CSV lines 41~46.
  storyBackdrop.classList.toggle('v279-wiban-square-dim',!!scene.v279SquareDark);
+ storyBackdrop.classList.toggle('v288-library-dim',!!scene.v288LibraryShade);
  // V277: take the pre-Day-3 snapshot at the *first* Day-3 title, before
  // Day-3 affinity or story events. Existing saves later in Day 3 are not guessed.
  if((scene.kind==='v205-day3'||scene.kind==='v178-day3-title')&&
@@ -3664,7 +3803,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  if(index>=V205_ESCAPE_START && index<V205_ESCAPE_LIE+100 && scene?.eveningLocation==='village' && !v207EscapeMusicFading)v207StartEscapeMusic();
  if(!scene.v213Day1Bedtime)v183SyncPoliceIdentityAt(index);
  if(scene.day3Morning||scene.v218GongyangDay||scene.v223JunhuiLockedFirst||v219IsDay3Activity())areaSkipButton.hidden=true;
- if(scene.v287Recall||scene.v287Day4Library)areaSkipButton.hidden=true;
+ if(scene.v287Recall||scene.v287Day4Library||scene.v288Day4Library)areaSkipButton.hidden=true;
  // Players already saved at V214's temporary Day 3 scenes resume the full script.
  if(index===V214_DAY3_MORNING_START || scene.v178Hold==='day3-morning-await-script'){
   index=V215_DAY3_COMMON_START;save();render();return;
@@ -3757,9 +3896,10 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  // This also resumes correctly when an older save is parked on a branch-end node.
  // V259: This Day-4+ revisit ends its OWN morning activity; never route it into Day-2 evening.
  if(scene.v259JeonghanSuspicionEnd){showLivingEnd();return;}
+ if(scene.v289MorningConf&&scene.kind==='conf-morning-end'){showConfMorningEnd();return;}
  if(DAY2_MORNING_AUTO_EVENING_ENDS.has(scene.kind)){if(v219IsDay3Activity()){v219ShowMorningEnd('오전 활동을 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return;}enterEveningDay2();return}
  // Keep the day in sync with real story progress, including refreshed sessions.
- try{if(!scene.v270Wiban)localStorage.setItem('shindo_current_story_day_v109',String(scene.v218GongyangDay|| (scene.v287Day4Library || (scene.mainHall && v287CanOpenDay4Library())?4:(scene.v262Day5Eunjae?5:(index>=V256_DAY4_EUNJAE_CASE13_START&&index<V256_DAY4_JEONGHAN_SEARCH_REVISIT_START)?4:v219IsDay3Activity()?3:scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1))))}catch(_){}
+ try{if(!scene.v270Wiban&&!scene.v289MorningConf&&!(scene.confMorning&&v219IsDay3Activity()&&Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||0)>=3))localStorage.setItem('shindo_current_story_day_v109',String(scene.v218GongyangDay|| (scene.v287Day4Library || scene.v288Day4Library || (scene.mainHall && v288CanOpenAnyDay4Library())?4:(scene.v262Day5Eunjae?5:(index>=V256_DAY4_EUNJAE_CASE13_START&&index<V256_DAY4_JEONGHAN_SEARCH_REVISIT_START)?4:v219IsDay3Activity()?3:scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1))))}catch(_){}
  if(index===DAY2_START)localStorage.setItem(SKIP_REACHED,'1');
  updateAreaSkipButton();if(scene.v270Wiban)areaSkipButton.hidden=true;
  if(index===DAY2_START&&!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169')){
@@ -3870,6 +4010,10 @@ if(scene.kind==='day2-morning-choice'){
  if(scene.kind==='v219-library-end'){v219ShowMorningEnd('승관과의 도서실 대화를 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return}
  if(scene.kind==='main-choice'){showMainChoice();return}
  if(scene.kind==='main-end'){showMainEnd();return}
+ if(scene.kind==='v289-conf-branch'){
+  const target=v289ConfBranchTarget();
+  index=target;save();render();return;
+ }
  if(scene.kind==='conf-morning-choice'){showConfMorningChoice();return}
  if(scene.kind==='conf-morning-shared-start'){index++;save();render();return}
  if(scene.kind==='conf-morning-end'){showConfMorningEnd();return}
@@ -3913,6 +4057,12 @@ if(scene.blackout)overlay.classList.add('confession-blackout');
 if(scene.fade){overlay.classList.add('confession-fade');setTimeout(()=>overlay.classList.remove('confession-fade'),1100)}
 overlay.classList.toggle('day',index>=3);
 if(scene.kind==='sfx'){if(scene.clearPortrait){currentPortrait='';portrait.hidden=true}sound(scene.sound);index++;save();render();return}
+if(scene.v289Gift){
+ const visit=v289CurrentVisitNumber();
+ const item=V289_CONF_GIFTS[visit-2];
+ scene.text=item?item+' 건넸다. 시선이 짧게 닿았다 거두어진다.':'물건명 미지정: 방문 횟수를 확인해주세요.';
+}
+if(scene.v289ForestCue)v289StartForestCue();
 if(!(scene.sound==='forest'&&index===22)&&!(scene.soundOnlyWithoutMorningConfessional&&hadMorningConfessionalVisit()))sound(scene.sound);
 if(scene.reveal)revealed=true;
 if(scene.revealJihoon)jihoonRevealed=true;
@@ -4079,6 +4229,7 @@ function v277RestoreDay3Snapshot(){
 }
 // Reset transient scene elements before teleporting to a non-linear checkpoint.
 function v277ClearTransientScenes(){
+ v289StopForestCue();
  v281ClearFinalArtwork();
  v270StopMusic();v270StopBell();v273StopKnock();v280ClearWibanCheckpoint();v207StopEscapeMusic();
  v218StopOfferingBell();v205StopChoice();v205HammerBlocked=false;
@@ -4113,6 +4264,7 @@ function restartFromDay3(){
  const exact=v277RestoreDay3Snapshot();
  v277ClearTransientScenes();
  if(exact===null){
+  v289DropMorningVisitsFrom(3);
   // Do not guess or rewrite past affinity and evidence on old saves.
   // Remove only current Day-3 navigation selections; existing award ledgers
   // remain intact so replays cannot double-credit already earned events.
@@ -4147,6 +4299,8 @@ window.SHINDO_hasDay3RestartSnapshot=()=>{
 
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
 function restartFromDay1(){
+ v289StopForestCue();
+ localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V277_DAY3_SNAPSHOT);
  // V270: restarting a story must allow future Day 4+ research counts to be earned again.
  v270StopMusic();v270StopBell();
@@ -4185,6 +4339,8 @@ window.SHINDO_restartFromDay1=restartFromDay1;
 
 // V169: Test restart at the black "2일차" title, keeping the authenticated mail/browser.
 function restartFromDay2(){
+ v289StopForestCue();
+ localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V277_DAY3_SNAPSHOT);
  // V270: restarting a story must allow future Day 4+ research counts to be earned again.
  v270StopMusic();v270StopBell();
@@ -4260,6 +4416,8 @@ window.SHINDO_restartFromDay2=restartFromDay2;
 // V184: Replay Day 2 afternoon from the central-square introduction without
 // erasing morning activity, evidence, affinity, or the morning Wonwoo meeting.
 function restartFromDay2Afternoon(startAtConfessional=false){
+ v289StopForestCue();
+ v289DropMorningVisitsFrom(3);
  localStorage.removeItem(V277_DAY3_SNAPSHOT);
  // Day-2 confession must never inherit a later ending's active sounds.
  v270StopMusic();v270StopBell();v273StopKnock();v207StopEscapeMusic();
@@ -4484,16 +4642,19 @@ function v219ShowMorningEnd(message){
  overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-prayer-grid','shindo-morning-grid','shindo-art-grid');
- el.innerHTML='<h2>3일차 오전 활동</h2><p>'+message+'</p>';
+ el.innerHTML='<h2>'+(day2Morning==='고해소'?String(Math.max(3,Math.min(13,Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||3))))+'일차 오전 활동':'3일차 오전 활동')+'</h2><p>'+message+'</p>';
  el.style.display='flex';
 }
 function v219StartLocation(room){
  const v287MainOnDay4=room==='본당' && localStorage.getItem('shindo_current_story_day_v109')==='4';
+ const v289ConfDay=room==='고해소'?Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||3):0;
+ const v289VisitDay=room==='고해소'&&v289ConfDay>=3&&v289ConfDay<=13?v289ConfDay:3;
  localStorage.setItem(V219_MODE_KEY,'1');
- if(!v287MainOnDay4)localStorage.setItem('shindo_day3_location_v219',room);
- localStorage.setItem('shindo_current_story_day_v109',v287MainOnDay4?'4':'3');
+ if(!v287MainOnDay4 && !(room==='고해소'&&v289VisitDay!==3))localStorage.setItem('shindo_day3_location_v219',room);
+ localStorage.setItem('shindo_current_story_day_v109',room==='고해소'?String(v289VisitDay):v287MainOnDay4?'4':'3');
  day2Morning=room;
- if(v287MainOnDay4)window.SHINDO_applyAffinityEvent?.('room',room,4);
+ if(room==='고해소'&&v289VisitDay!==3)window.SHINDO_applyAffinityEvent?.('room',room,v289VisitDay);
+ else if(v287MainOnDay4)window.SHINDO_applyAffinityEvent?.('room',room,4);
  else v219MarkMorningRoom(room);
  const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;
@@ -4503,7 +4664,13 @@ function v219StartLocation(room){
  if(!Number.isInteger(dest))return;
  // V223: Locked-Junhui special conversation overrides the prior Day 2 encounter flag.
  if(room==='공양실'&&v223JunhuiIsLocked()){v223OpenLockedJunhuiMorning();return;}
- if((room==='고해소'&&v219WasMetDay2('원우'))||(room==='공양실'&&v219WasMetDay2('준휘'))){
+ if(room==='고해소'){
+  const visit=v289RecordMorningVisit(v289VisitDay);
+  if(visit>V289_CONF_GIFTS.length+1){v219ShowMorningEnd('고해소 13회차 이후의 대사는 아직 제공되지 않았습니다.');return;}
+  index=visit===1?CONFESSIONAL_MORNING_START:V289_CONF_REPEAT_START;
+  locked=false;save();render();return;
+ }
+ if(room==='공양실'&&v219WasMetDay2('준휘')){
   v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;
  }
  index=dest;locked=false;save();render();
@@ -4522,7 +4689,8 @@ function v219ShowDay3MorningMenu(){
  };
 }
 function v219ShowMainChoice(){
- if(v287CanOpenDay4Library()){
+ storyBackdrop.classList.remove('v288-library-dim');
+ if(v288CanOpenAnyDay4Library()){
   locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;
   overlay.querySelector('.vn-hint').style.display='none';
   let menu=overlay.querySelector('.shindo-choices');
@@ -4532,12 +4700,13 @@ function v219ShowMainChoice(){
   menu.style.display='flex';
   menu.querySelector('[data-v287-library]').onclick=e=>{
    e.stopPropagation();
-   if(!v287CanOpenDay4Library()){
+   if(!v288CanOpenAnyDay4Library()){
     menu.innerHTML='<h2>도서실</h2><p>현재 선택 이력에 해당하는 4일차 도서실 대화는 아직 구현되지 않았습니다.</p>';
     return;
    }
    window.SHINDO_addPlayRecord?.('선택','4일차 본당: 도서실');
-   v287EnterDay4Library();
+   if(v288CanOpenDay4Library())v288EnterDay4Library();
+   else v287EnterDay4Library();
   };
   return;
  }
@@ -4624,6 +4793,7 @@ function showDay2Choice(type){locked=true;box.style.display='none';portrait.hidd
   el.style.display='none';currentPortrait='';portrait.hidden=true;
   index=LIVING_SCENE_START;save();locked=false;render();
  }else if(day2Morning==='고해소'){
+  v289RecordMorningVisit(2);
   confMorningBranch=0;localStorage.removeItem('shindo_confession_morning_branch_v163');
   el.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;
   index=CONFESSIONAL_MORNING_START;save();locked=false;render();
@@ -4637,7 +4807,7 @@ function showDay2Choice(type){locked=true;box.style.display='none';portrait.hidd
  }}})
 }
 function showMainChoice(){
- if(v287CanOpenDay4Library()){v219ShowMainChoice();return;}
+ if(v288CanOpenAnyDay4Library()){v219ShowMainChoice();return;}
  if(v219IsDay3Activity()){v219ShowMainChoice();return;}
  locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
@@ -5058,6 +5228,7 @@ function showConfMorningChoice(){
  });
 }
 function showConfMorningEnd(){
+ // Allow the fixed 3.5-second forest cue and its fade to finish across the ending menu.
  locked=true;box.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
@@ -5308,6 +5479,7 @@ function showPrayerChoice(){
 }
 
 function returnToMorningActivities(){
+ v289StopForestCue();
  v207StopEscapeMusic();
  stopV178Bell();v178Patrol(null);stopEveningWalk();
  stopEveningTick();eveningBranch=0;localStorage.removeItem('shindo_evening_branch_day2_v173');
@@ -5717,7 +5889,7 @@ function finish(){
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  v205StopChoice(); v207StopEscapeMusic();
 v205HammerBlocked=false;if(v205HammerAudio){v205HammerAudio.pause();v205HammerAudio=null}
- stopEveningTick();areaSkipButton.hidden=true;stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopPencil();stopConfessionTick();stopEndingBell();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}storyBackdrop.classList.remove('visible');storyUnderlay.classList.remove('visible');overlay.classList.remove("active","sanctuary","sanctuary-leaving","day",'v283-wiban-recall','v283-wiban-end-black','v283-wiban-day-black','v283-wiban-day-transition');storyBackdrop.style.filter='';storyUnderlay.style.filter='';
+ v289StopForestCue();stopEveningTick();areaSkipButton.hidden=true;stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopPencil();stopConfessionTick();stopEndingBell();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}storyBackdrop.classList.remove('visible');storyUnderlay.classList.remove('visible');overlay.classList.remove("active","sanctuary","sanctuary-leaving","day",'v283-wiban-recall','v283-wiban-end-black','v283-wiban-day-black','v283-wiban-day-transition');storyBackdrop.style.filter='';storyUnderlay.style.filter='';
  // Only finish after the player explicitly advances past the final dialogue.
  try{localStorage.setItem(KEY,'complete');localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}
  window.SHINDO_openFeedback?.();
@@ -5733,6 +5905,7 @@ function v287FadeIntoNext(){
  },710);
 }
 function v287ShowDay4LibraryEnd(){
+ storyBackdrop.classList.remove('v288-library-dim');
  locked=true;areaSkipButton.hidden=true;box.style.display='none';
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;
  overlay.querySelector('.vn-hint').style.display='none';
