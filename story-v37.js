@@ -2062,8 +2062,8 @@ scenes.push(
  v270Scene('narration','그렇게 고해소로 가야하는 시간이 되었다.',null,'confOutside'),
  v270Scene('dialogue','고해소는 신성한 장소입니다.','원우','confInside',{portrait:'wonwoo-body1-ominous',sound:'confessionDoor'}),
  v270Scene('dialogue','거짓을 고하지 않을 것임을 맹세하십니까?','원우','confInside',{portrait:'wonwoo-body2-ominous'}),
- v270Scene('dialogue','맹세합니다.','주인공','confInside',{portrait:'wonwoo-body2-ominous',v270Shade:.2}),
- v270Scene('dialogue','...알겠습니다.','원우','confInside',{portrait:'wonwoo-body2-ominous',v270Shade:.4}),
+ v270Scene('dialogue','맹세합니다.','주인공','confInside',{portrait:'wonwoo-body2-ominous'}),
+ v270Scene('dialogue','...알겠습니다.','원우','confInside',{portrait:'wonwoo-body2-ominous',portraitFadeOutAfter:true}),
  v270Scene('v270-wiban-choice','',null,'confInside'),
  v270Scene('dialogue','당신의 죄는 모두 토해져, 신께 닿아 사해졌습니다.','원우','confInside',{portrait:'wonwoo-body2-ominous',v270Shade:.8}),
  v270Scene('dialogue','당신의 생활에 행복과 안식이 있었기를.','원우','confInside',{portrait:'wonwoo-body2-ominous',v270Shade:.8}),
@@ -2084,14 +2084,14 @@ scenes.push(
  v270Scene('narration','김봉봉은 공양자로 선정되었다.',null,'square',{v270BgmTarget:.35,v270BgmFade:2000}),
  v270Scene('dialogue','뭐지?','주인공','square'),
  v270Scene('narration','밀고한 자의 정체를 찾아 고개를 이리저리 휘두를 때였다.',null,'square',{portrait:'jihoon-body1-default',livingSilhouette:true}),
- v270Scene('narration','지훈과 눈이 마주쳤다. 차갑게 가라앉은 시선.',null,'square',{portrait:'jihoon-body1-default',v270Shade:.3}),
- v270Scene('narration','그제야 모든 것이 이해됐다.',null,'square',{portrait:'jihoon-body1-default',v270Shade:.5,v270FadeAfter:true}),
- v270Scene('dialogue','아뿔싸. 집중하느라 시간 가는 줄 몰랐다.','주인공','bed',{recall:true,v270BgmTarget:.45,v270BgmFade:1500}),
- v270Scene('dialogue','오늘치 종교활동을 놓쳤다.','주인공','bed',{recall:true,v270FadeAfter:true}),
- v270Scene('dialogue','큰일이다. 지훈이 알려준 수칙을 어기고 말았다.','주인공','bed',{recall:true,v270BgmTarget:.5,v270BgmFade:1600}),
- v270Scene('dialogue','별 일 없어야 할텐데.','주인공','bed',{recall:true,v270FadeAfter:true}),
- v270Scene('dialogue','오늘따라 정리가 더 잘 되는 느낌이네.','주인공','bed',{recall:true,boldAll:true,v270BgmTarget:.6,v270BgmFade:1600}),
- v270Scene('dialogue','운수가 좋군.','주인공','bed',{recall:true,boldAll:true,fontScale:1.4,v270FadeAfter:true}),
+ v270Scene('narration','지훈과 눈이 마주쳤다. 차갑게 가라앉은 시선.',null,'square',{portrait:'jihoon-body1-default'}),
+ v270Scene('narration','그제야 모든 것이 이해됐다.',null,'square',{portrait:'jihoon-body1-default',v270FadeAfter:true}),
+ v270Scene('dialogue','아뿔싸. 집중하느라 시간 가는 줄 몰랐다.','주인공','bed',{recall:true,v283RecallCount:1,v270BgmTarget:.45,v270BgmFade:1500}),
+ v270Scene('dialogue','오늘치 종교활동을 놓쳤다.','주인공','bed',{recall:true,v283RecallCount:1,v270FadeAfter:true}),
+ v270Scene('dialogue','큰일이다. 지훈이 알려준 수칙을 어기고 말았다.','주인공','bed',{recall:true,v283RecallCount:2,v270BgmTarget:.5,v270BgmFade:1600}),
+ v270Scene('dialogue','별 일 없어야 할텐데.','주인공','bed',{recall:true,v283RecallCount:2,v270FadeAfter:true}),
+ v270Scene('dialogue','오늘따라 정리가 더 잘 되는 느낌이네.','주인공','bed',{recall:true,v283RecallCount:3,boldAll:true,v270BgmTarget:.6,v270BgmFade:1600}),
+ v270Scene('dialogue','운수가 좋군.','주인공','bed',{recall:true,v283RecallCount:3,boldAll:true,fontScale:1.4,v270FadeAfter:true}),
  v270Scene('narration','뎅- 종소리가 울릴 때 지훈이 나지막이 되뇐다.',null,'square',{portrait:'jihoon-body1-default',v270BgmHardStop:true,v270Bell:true}),
  v270Scene('dialogue','우리는 흔들리지 않습니다. 위반하지 않습니다.','지훈','square',{clearPortrait:true,boldAll:true,fontScale:1.3,redText:true,v281WibanFinal:true}),
  v270Scene('v270-wiban-ending','',null,'black')
@@ -2330,6 +2330,13 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .shindo-ending-wiban{padding:0}
 #shindo-vn .shindo-ending-wiban .shindo-ending-stage{width:100%;height:100%;overflow:hidden}
 #shindo-vn .shindo-ending-wiban .shindo-ending-illustration{object-fit:cover;object-position:50% 50%}
+/* V283: WIBAN-only transitions; no changes to other endings or recall scenes. */
+#shindo-vn.day.v283-wiban-day-black:not(.confession-blackout),#shindo-vn.v283-wiban-day-black{background-color:#000!important;background-image:none!important}
+#shindo-vn.v283-wiban-day-black:not(.v283-wiban-day-transition){transition:none!important}
+#shindo-vn.v283-wiban-day-transition{transition:background-color .9s ease!important}
+#shindo-vn.day.v283-wiban-end-black:not(.confession-blackout),#shindo-vn.v283-wiban-end-black{background-color:#000!important;background-image:none!important}
+#shindo-vn.v283-wiban-recall .special-memory-kicker{display:block;font-size:clamp(20.8px,2.145vw,26px);font-weight:800;letter-spacing:0;color:#fff}
+@media(max-width:750px){#shindo-vn.v283-wiban-recall .special-memory-kicker{font-size:18.2px}}
 /* V281: last WIBAN line uses the ending artwork as the live scene background. */
 #shindo-vn .v281-wiban-final-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;z-index:1;opacity:0;pointer-events:none;transition:opacity 1s ease;will-change:opacity}
 #shindo-vn .v281-wiban-final-art.is-visible{opacity:1}
@@ -3511,6 +3518,9 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   index=V257_DAY3_JEONGHAN_POLICE_PACKAGE_START;save();render();return;
  }
  const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){finish();return}
+ if(!scene.v270Wiban)overlay.classList.remove('v283-wiban-end-black','v283-wiban-day-black','v283-wiban-day-transition');
+ overlay.classList.toggle('v283-wiban-recall',!!scene.v283RecallCount);
+ recallKicker.textContent=scene.v283RecallCount?String(scene.v283RecallCount)+'회':'회상';
  if(!scene.v281WibanFinal)v281ClearFinalArtwork();
  if(scene.v280Skipped){index=v279NextIndexFor(index);save();render();return}
  // A stale controller can leave the WIBAN soundtrack playing on the ordinary story.
@@ -3530,7 +3540,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  if(scene.v270Wiban){areaSkipButton.hidden=true;
   if(scene.v270PoliceOnly&&!v241MetSeokminAtPoliceDay2()){index++;save();render();return;}
   if(scene.kind==='v270-wiban-choice'){applySceneBackdrop(index,scene);v270ShowChoice();return;}
-  if(scene.kind==='v270-wiban-day-title'){applySceneBackdrop(index,scene);v270ShowDayTitle();return;}
+  if(scene.kind==='v270-wiban-day-title'){overlay.classList.add('v283-wiban-day-black');applySceneBackdrop(index,scene);v270ShowDayTitle();return;}
   if(scene.kind==='v270-wiban-ending'){v270ShowEnding();return;}
   if(scene.v270BgmHardStop){v279StopClock();v270StopMusic();tone(90,.13,.05,'triangle');}
   if(scene.v270BgmStart)v270StartMusic(scene.v270BgmTarget||.2);
@@ -3975,7 +3985,7 @@ function v277ClearTransientScenes(){
  if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}
  if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}
  endingTimers.forEach(clearTimeout);endingTimers=[];
- duoLayer.classList.remove('is-active','is-visible');overlay.classList.remove('is-recall','art-blackout','v205-fade-out','v276-day3-title','v218-eye-cover','v218-eyes-closed','sanctuary','sanctuary-leaving','day','confession-blackout','confession-fade','day2-shake','sleep-fadeout','sleep-fadein');
+ duoLayer.classList.remove('is-active','is-visible');overlay.classList.remove('v283-wiban-recall','v283-wiban-end-black','v283-wiban-day-black','v283-wiban-day-transition','is-recall','art-blackout','v205-fade-out','v276-day3-title','v218-eye-cover','v218-eyes-closed','sanctuary','sanctuary-leaving','day','confession-blackout','confession-fade','day2-shake','sleep-fadeout','sleep-fadein');
  overlay.querySelector('.shindo-ending')?.remove();overlay.querySelectorAll('.shindo-evidence-overlay').forEach(el=>el.remove());
  const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
  const center=overlay.querySelector('.vn-center');if(center)center.style.display='none';
@@ -5391,7 +5401,10 @@ function v270ShowChoice(){
  });
 }
 function v270ShowDayTitle(){
+ // V283: the intertitle is opaque black even while the preceding bedroom
+ // backdrop is still decoding/fading asynchronously.
  locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;
+ overlay.classList.add('v283-wiban-day-black');
  const day=(Number(localStorage.getItem(V270_WIBAN_DAY_KEY))||5)+1;
  const center=overlay.querySelector('.vn-center')||(()=>{const c=document.createElement('div');c.className='vn-center';overlay.appendChild(c);return c})();
  center.textContent=day+'일차 아침';center.style.display='block';
@@ -5399,9 +5412,25 @@ function v270ShowDayTitle(){
  const dayTitleIndex=index;
  timer=setTimeout(()=>{
   if(index!==dayTitleIndex || scenes[index]?.kind!=='v270-wiban-day-title')return;
-  center.style.display='none';locked=false;
-  // Direct continuation to WIBAN line 36, never to the Day-1 introduction.
-  index=V270_WIBAN_START+35;save();render();
+  // Prime the actual next photograph while black still covers the screen.
+  primeBackdrop('bg-central-square.jpg').then(()=>{
+   if(index!==dayTitleIndex || scenes[index]?.kind!=='v270-wiban-day-title')return;
+   ++backdropChangeToken;
+   if(backdropSwapTimer){clearTimeout(backdropSwapTimer);backdropSwapTimer=null}
+   currentSceneBackdropKey='bg-central-square.jpg';
+   setSceneBackdropImage('bg-central-square.jpg');
+   storyBackdrop.style.opacity='1';
+   center.style.display='none';locked=false;
+   index=V270_WIBAN_START+35;save();render();
+   requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    if(index===V270_WIBAN_START+35){
+     overlay.classList.add('v283-wiban-day-transition');
+     void overlay.offsetWidth;
+     overlay.classList.remove('v283-wiban-day-black');
+     setTimeout(()=>overlay.classList.remove('v283-wiban-day-transition'),960);
+    }
+   }));
+  });
  },2400);
 }
 // V281: the image now appears only behind the final *dialogue*, not on this title screen.
@@ -5414,7 +5443,7 @@ function v281PreloadFinalArtwork(){
 }
 let v281FinalArt=null;
 let v281FinalGeneration=0;
-const V281_FINAL_READ_HOLD_MS=1700; // readable full line after its typewriter finishes
+const V281_FINAL_READ_HOLD_MS=4000; // 4 seconds with the full last line visible after typing, unskippable
 const V281_FINAL_ART_ONLY_MS=2000; // exactly two seconds after the dialogue disappears
 const V281_FINAL_FADE_MS=1000;
 function v281ClearFinalArtwork(){
@@ -5430,7 +5459,7 @@ function v281PlayFinalDialogue(){
  areaSkipButton.hidden=true;
  portrait.hidden=true;currentPortrait='';
  illustration.hidden=true;
- overlay.classList.add('v281-wiban-autoline');
+ overlay.classList.add('v281-wiban-autoline','v283-wiban-end-black');
  overlay.querySelector('.vn-hint').style.display='none';
  const img=document.createElement('img');
  img.className='v281-wiban-final-art';img.alt='';img.decoding='async';
@@ -5499,7 +5528,7 @@ function finish(){
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  v205StopChoice(); v207StopEscapeMusic();
 v205HammerBlocked=false;if(v205HammerAudio){v205HammerAudio.pause();v205HammerAudio=null}
- stopEveningTick();areaSkipButton.hidden=true;stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopPencil();stopConfessionTick();stopEndingBell();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}storyBackdrop.classList.remove('visible');storyUnderlay.classList.remove('visible');overlay.classList.remove("active","sanctuary","sanctuary-leaving","day");storyBackdrop.style.filter='';storyUnderlay.style.filter='';
+ stopEveningTick();areaSkipButton.hidden=true;stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopPencil();stopConfessionTick();stopEndingBell();stopSanctuaryTick();if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}storyBackdrop.classList.remove('visible');storyUnderlay.classList.remove('visible');overlay.classList.remove("active","sanctuary","sanctuary-leaving","day",'v283-wiban-recall','v283-wiban-end-black','v283-wiban-day-black','v283-wiban-day-transition');storyBackdrop.style.filter='';storyUnderlay.style.filter='';
  // Only finish after the player explicitly advances past the final dialogue.
  try{localStorage.setItem(KEY,'complete');localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}
  window.SHINDO_openFeedback?.();
