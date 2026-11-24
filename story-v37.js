@@ -2426,6 +2426,70 @@ scenes.push(
  {"kind":"dialogue","eveningLocation":"living","text":"(오늘 밤엔 본격적으로 조사에 나서볼까?)","speaker":"주인공","clearPortrait":true,"v291Day3Confession":true,"v291CsvOrder":39,"v291Branch":2},
  {"kind":"v291-day3-end","v291Day3Confession":true,"eveningLocation":"living"}
 );
+// V293 — Day 3 afternoon activities reuse Day-2 investigation routes ONLY.
+// The escape choice and Seungkwan's first encounter remain Day-2 exclusive.
+// Append scenes after V291; every older scene index remains unchanged.
+const V293_DAY3_NIGHT_KEY='shindo_day3_evening_active_v293';
+const V293_DAY3_NIGHT_START=scenes.length;
+const v293Bed=(kind,text='',extra={})=>({kind,text,v293Day3Evening:true,eveningLocation:'bongbong',clearPortrait:true,...extra});
+scenes.push(
+ {kind:'v293-night-choice',v293Day3Evening:true,eveningLocation:'living'},
+ v293Bed('dialogue','아, 오늘도 벌써 끝이라니.',{speaker:'주인공'}),
+ v293Bed('dialogue','시간이 왜 이렇게 빠른지 모르겠네.',{speaker:'주인공'}),
+ v293Bed('dialogue','오늘은...',{speaker:'주인공'}),
+ v293Bed('dialogue','증거도 좀 얻었고, 다른 소득도 좀 있군.',{speaker:'주인공'}),
+ v293Bed('narration','어느샌가 적응을 한 모양이다. 마음이 한결 편안하다.'),
+ v293Bed('narration','적응을 해서 편한건지, 감화되고 있는건진 모르겠지만.',{boldAll:true}),
+ v293Bed('dialogue','졸리다.',{speaker:'주인공'}),
+ v293Bed('dialogue','오늘도 이만 자야지.',{speaker:'주인공',v293FadeToDay4:true}),
+ {kind:'v293-day4-title',v293Day3Evening:true,eveningLocation:'dark',text:'4일차'},
+ {kind:'v293-day4-pending',v293Day3Evening:true,eveningLocation:'dark'}
+);
+const V293_DAY3_BEDTIME_START=V293_DAY3_NIGHT_START+1;
+const V293_DAY4_TITLE=V293_DAY3_NIGHT_START+9;
+function v293Active(){return localStorage.getItem(V293_DAY3_NIGHT_KEY)==='1';}
+function v293ReusedNightScene(scene){return v293Active() && !!scene?.v178 && !!scene?.eveningDay2 && index>=V197_DENY_TRASH_OFFSET && index<V205_ESCAPE_START;}
+function v293Day3EveningScene(scene){return !!scene?.v293Day3Evening || v293ReusedNightScene(scene);}
+function v293EndActivity(){
+ stopEveningTick();stopEveningWalk();v178Patrol(null);v207StopEscapeMusic();
+ const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
+ locked=false;index=V293_DAY3_BEDTIME_START;save();render();
+}
+function v293EnterNight(){
+ localStorage.setItem(V293_DAY3_NIGHT_KEY,'1');
+ localStorage.setItem('shindo_current_story_day_v109','3');
+ stopEveningTick();stopEveningWalk();v178Patrol(null);v207StopEscapeMusic();
+ const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
+ overlay.classList.remove('confession-blackout','sleep-fadein','sleep-fadeout');
+ portrait.hidden=true;currentPortrait='';illustration.hidden=true;
+ locked=false;index=V293_DAY3_NIGHT_START;save();render();
+}
+function v293ShowDay4Title(){
+ // Keep the backdrop fully opaque black throughout the intertitle.
+ localStorage.setItem('shindo_current_story_day_v109','4');
+ overlay.classList.add('confession-blackout','v293-day4-title');
+ overlay.classList.remove('sleep-fadein','sleep-fadeout');
+ storyBackdrop.style.opacity='0';storyUnderlay.style.opacity='1';
+ applySceneBackdrop(index,scenes[index]);
+ box.style.display='none';portrait.hidden=true;illustration.hidden=true;
+ overlay.querySelector('.vn-hint').style.display='none';
+ const center=overlay.querySelector('.vn-center')||(()=>{const e=document.createElement('div');e.className='vn-center';overlay.appendChild(e);return e})();
+ center.textContent='4일차';center.style.display='block';locked=true;
+ timer=setTimeout(()=>{
+  center.style.display='none';localStorage.removeItem(V293_DAY3_NIGHT_KEY);
+  locked=false;index=V293_DAY4_TITLE+1;save();render();
+ },2300);
+}
+function v293ShowDay4Pending(){
+ // No authored Day-4 introduction is wired yet; never restart Day 1 or fabricate dialogue.
+ overlay.classList.add('confession-blackout','v293-day4-title');
+ storyBackdrop.style.opacity='0';applySceneBackdrop(index,scenes[index]);
+ box.style.display='none';portrait.hidden=true;illustration.hidden=true;
+ overlay.querySelector('.vn-hint').style.display='none';locked=true;
+ let menu=overlay.querySelector('.shindo-choices');if(!menu){menu=document.createElement('div');menu.className='shindo-choices';overlay.appendChild(menu)}
+ menu.innerHTML='<h2>4일차</h2><p>4일차 도입 스크립트는 아직 연결되지 않았습니다.</p>';
+ menu.style.display='flex';
+}
 const V291_DAY3_PM_CHOICE=V291_DAY3_PM_START+24;
 const V291_DAY3_PM_FIRST_BRANCH_1=V291_DAY3_PM_START+25;
 const V291_DAY3_PM_FIRST_BRANCH_2=V291_DAY3_PM_START+31;
@@ -2435,7 +2499,7 @@ function v291Day3MorningConfVisited(){
  // The user specified 3rd-day morning, not 2nd-day morning.
  return localStorage.getItem('shindo_day3_location_v219')==='고해소';
 }
-function v291EnterDay3Afternoon(){
+function v291EnterDay3Afternoon(){localStorage.removeItem(V293_DAY3_NIGHT_KEY);
  stopEveningTick();
  localStorage.removeItem(V219_MODE_KEY); // afternoon is no longer a morning selection
  localStorage.setItem('shindo_current_story_day_v109','3');
@@ -2621,7 +2685,7 @@ function getSceneBackdrop(sceneNumber,scene){
  if(scene&&scene.mainHall)return {inside:'bg-sanctuary-inside.png',office:'bg-sanctuary-office.jpg',library:'bg-sanctuary-library.jpg'}[scene.mainLocation||'inside']||'';
  if(scene&&scene.confMorning)return {outside:'bg-confession-outside.png',inside:'bg-confession-inside.png'}[scene.confLocation||'outside']||'bg-confession-outside.png';
  if(scene&&scene.gongyangHall)return {square:'bg-central-square.jpg',outside:'bg-gongyang-outside.jpg'}[scene.gongyangLocation||'square']||'';
- if(scene&&(scene.eveningDay2||scene.v291Day3Confession))return {square:'bg-central-square.jpg',outside:'bg-confession-outside.png',inside:'bg-confession-inside.png',dark:'',living:'bg-living-quarters-exterior.png',bongbong:LIVING_BACKDROPS.bongbong,corridor:LIVING_BACKDROPS.corridor,eunjae:LIVING_BACKDROPS.eunjae,village:'bg-village-front.png',junhuiEnding:'bg-junhui-ending.png',trash:'bg-trash-yard.jpg',incinerator:'bg-incinerator.jpg',library:'bg-sanctuary-library.jpg',office:'bg-sanctuary-office.jpg'}[scene.eveningLocation||'square']||'';
+ if(scene&&(scene.eveningDay2||scene.v291Day3Confession||scene.v293Day3Evening))return {square:'bg-central-square.jpg',outside:'bg-confession-outside.png',inside:'bg-confession-inside.png',dark:'',living:'bg-living-quarters-exterior.png',bongbong:LIVING_BACKDROPS.bongbong,corridor:LIVING_BACKDROPS.corridor,eunjae:LIVING_BACKDROPS.eunjae,village:'bg-village-front.png',junhuiEnding:'bg-junhui-ending.png',trash:'bg-trash-yard.jpg',incinerator:'bg-incinerator.jpg',library:'bg-sanctuary-library.jpg',office:'bg-sanctuary-office.jpg'}[scene.eveningLocation||'square']||'';
  // V149: keep the sleep/title interstitial entirely black.
  if(scene&&scene.kind==='sleep-transition')return "";
  // V152: optional location photos for Day 2 activities. No scene is inserted,
@@ -2755,6 +2819,10 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn.v276-day3-title{background:#000!important;background-image:none!important;transition:none!important;animation:none!important;opacity:1!important;isolation:isolate}
 #shindo-vn.v276-day3-title::before{content:"";position:absolute;inset:0;background:#000;z-index:49;pointer-events:none}
 #shindo-vn.v276-day3-title .vn-center{position:relative;z-index:51;color:#fff}
+#shindo-vn.v293-day4-title{background:#000!important;background-image:none!important;opacity:1!important;isolation:isolate}
+#shindo-vn.v293-day4-title::before{content:'';position:absolute;inset:0;background:#000!important;z-index:49;pointer-events:none}
+#shindo-vn.v293-day4-title .vn-center{position:relative;z-index:51;color:#fff}
+#shindo-vn.v293-day4-title .shindo-choices{z-index:52}
 #shindo-vn.confession-fade:before{content:"";position:absolute;inset:0;background:#000;z-index:5;animation:shindo-confession-flash 1.1s ease both;pointer-events:none}
 @keyframes shindo-confession-flash{0%{opacity:0}45%{opacity:1}100%{opacity:0}}
 @keyframes day2-screen-shake{0%,100%{transform:translate(0,0)}20%{transform:translate(-9px,5px)}40%{transform:translate(8px,-5px)}60%{transform:translate(-5px,-4px)}80%{transform:translate(5px,3px)}}
@@ -3701,6 +3769,7 @@ const V216_SKIP_CHECKPOINT_KINDS=new Set([
 ]);
 function findV216Day2ActivitySkipTarget(){
  const here=scenes[index];
+ if(v293ReusedNightScene(here))return -1;
  if(!here || !here.eveningDay2 || !here.v178 ||
     !['dialogue','narration'].includes(here.kind) ||
     here.v205Hammer || here.v205HammerWait || here.v205FadeAfter ||
@@ -3999,6 +4068,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  // V276: clear the title-only shield immediately after the intertitle. The
  // existing blackout/wake fade controls when the next story photo is revealed.
  if(scene.kind!=='v205-day3'&&scene.kind!=='v178-day3-title')overlay.classList.remove('v276-day3-title');
+ if(scene.kind!=='v293-day4-title'&&scene.kind!=='v293-day4-pending')overlay.classList.remove('v293-day4-title');
  if(scene.v270Wiban){areaSkipButton.hidden=true;
   if(scene.v270PoliceOnly&&!v241MetSeokminAtPoliceDay2()){index++;save();render();return;}
   if(scene.kind==='v270-wiban-choice'){applySceneBackdrop(index,scene);v270ShowChoice();return;}
@@ -4021,7 +4091,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  if(index>=V205_ESCAPE_START && index<V205_ESCAPE_LIE+100 && scene?.eveningLocation==='village' && !v207EscapeMusicFading)v207StartEscapeMusic();
  if(!scene.v213Day1Bedtime)v183SyncPoliceIdentityAt(index);
  if(scene.day3Morning||scene.v218GongyangDay||scene.v223JunhuiLockedFirst||v219IsDay3Activity()||scene.v291Day3Confession)areaSkipButton.hidden=true;
- if(scene.v287Recall||scene.v287Day4Library||scene.v288Day4Library)areaSkipButton.hidden=true;
+ if(scene.v287Recall||scene.v287Day4Library||scene.v288Day4Library||v293Day3EveningScene(scene))areaSkipButton.hidden=true;
  // Players already saved at V214's temporary Day 3 scenes resume the full script.
  if(index===V214_DAY3_MORNING_START || scene.v178Hold==='day3-morning-await-script'){
   index=V215_DAY3_COMMON_START;save();render();return;
@@ -4064,6 +4134,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   if(scene.kind==='v205-bad-ending'){showV205BadEnding();return}
   if(scene.kind==='v205-day3'){showV205Day3();return}
   if(scene.kind==='v178-hold'){
+   if(v293ReusedNightScene(scene)&&['trash-return','patrol-return','patrol-library-return','sleep-now'].includes(scene.v178Hold)){v293EndActivity();return;}
    // V214: Only the successful night/sleep outcomes join the normal Day 3
    // morning. Refusal/other fatal routes retain their existing endings.
    if(scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'){
@@ -4118,7 +4189,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  if(scene.v289MorningConf&&scene.kind==='conf-morning-end'){showConfMorningEnd();return;}
  if(DAY2_MORNING_AUTO_EVENING_ENDS.has(scene.kind)){if(v292ContinueAfterMorning())return;v219ShowMorningEnd('오전 활동을 마쳤습니다. 오후 스토리 연결 조건을 확인할 수 없습니다.');return}
  // Keep the day in sync with real story progress, including refreshed sessions.
- try{if(!scene.v270Wiban&&!scene.v289MorningConf&&!(v219IsDay3Activity()&&Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||0)>=4)&&!(scene.confMorning&&v219IsDay3Activity()&&Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||0)>=3))localStorage.setItem('shindo_current_story_day_v109',String(scene.v218GongyangDay|| (scene.v287Day4Library || scene.v288Day4Library || (scene.mainHall && v288CanOpenAnyDay4Library())?4:(scene.v291Day3Confession?3:(scene.v262Day5Eunjae?5:(index>=V256_DAY4_EUNJAE_CASE13_START&&index<V256_DAY4_JEONGHAN_SEARCH_REVISIT_START)?4:v219IsDay3Activity()?3:scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1)))))}catch(_){}
+ try{if(!v293Day3EveningScene(scene)&&!scene.v270Wiban&&!scene.v289MorningConf&&!(v219IsDay3Activity()&&Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||0)>=4)&&!(scene.confMorning&&v219IsDay3Activity()&&Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||0)>=3))localStorage.setItem('shindo_current_story_day_v109',String(scene.v218GongyangDay|| (scene.v287Day4Library || scene.v288Day4Library || (scene.mainHall && v288CanOpenAnyDay4Library())?4:(scene.v291Day3Confession?3:(scene.v262Day5Eunjae?5:(index>=V256_DAY4_EUNJAE_CASE13_START&&index<V256_DAY4_JEONGHAN_SEARCH_REVISIT_START)?4:v219IsDay3Activity()?3:scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1)))))}catch(_){}
  if(index===DAY2_START)localStorage.setItem(SKIP_REACHED,'1');
  updateAreaSkipButton();if(scene.v270Wiban)areaSkipButton.hidden=true;
  if(index===DAY2_START&&!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169')){
@@ -4242,7 +4313,10 @@ if(scene.kind==='day2-morning-choice'){
  if(scene.afternoonAffinity)window.SHINDO_applyAffinityEvent?.('afternoon',scene.afternoonAffinity,2);
 
  if(scene.kind==='v291-day3-choice'){v291ShowDay3ConfessionalChoice();return;}
- if(scene.kind==='v291-day3-end'){v291ShowDay3ConfessionalEnd();return;}
+ if(scene.kind==='v291-day3-end'){v293EnterNight();return;}
+ if(scene.kind==='v293-night-choice'){showV178Holding('deny');return;}
+ if(scene.kind==='v293-day4-title'){v293ShowDay4Title();return;}
+ if(scene.kind==='v293-day4-pending'){v293ShowDay4Pending();return;}
  if(scene.kind==='evening-choice'){startEveningTick();showEveningChoice();return}
  if(scene.kind==='evening-end'){stopEveningTick();showEveningEnd();return}
  if(scene.kind==='seungkwan-choice'){showSeungkwanChoice();return}
@@ -4452,7 +4526,7 @@ function v277RestoreDay3Snapshot(){
  return snapshot.index;
 }
 // Reset transient scene elements before teleporting to a non-linear checkpoint.
-function v277ClearTransientScenes(){
+function v277ClearTransientScenes(){localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');
  v289StopForestCue();
  v281ClearFinalArtwork();
  v270StopMusic();v270StopBell();v273StopKnock();v280ClearWibanCheckpoint();v207StopEscapeMusic();
@@ -4523,7 +4597,7 @@ window.SHINDO_hasDay3RestartSnapshot=()=>{
 };
 
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
-function restartFromDay1(){localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay1(){localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -4566,7 +4640,7 @@ function restartFromDay1(){localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
 window.SHINDO_restartFromDay1=restartFromDay1;
 
 // V169: Test restart at the black "2일차" title, keeping the authenticated mail/browser.
-function restartFromDay2(){localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay2(){localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -5065,7 +5139,7 @@ function showMainChoice(){
   if(target>=0){index=target;save();locked=false;render()}
  });
 }
-function enterEveningDay2(){
+function enterEveningDay2(){localStorage.removeItem(V293_DAY3_NIGHT_KEY);
  // Keep the morning's discoveries intact when replaying the afternoon.
  if(!localStorage.getItem('shindo_day2_pre_evening_met_v184')){
   try{localStorage.setItem('shindo_day2_pre_evening_met_v184',localStorage.getItem('shindo_met_characters_v108')||'[]')}catch(_){}
@@ -5387,10 +5461,16 @@ function showV178Holding(type){
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
  if(type==='deny'){
-  const options=['쓰레기장','야간순찰 자원','탈출 시도','그냥 자자'];
+  const day3=v293Active();
+  const options=day3?['쓰레기장','야간순찰 자원','그냥 자자']:['쓰레기장','야간순찰 자원','탈출 시도','그냥 자자'];
   el.innerHTML='<h2>일단 저녁 시간이니까, 움직이자.</h2><p>저녁 활동이다. 어디로 가볼까?</p><div class="shindo-morning-options">'+options.map((t,i)=>'<button type="button" data-v197-night="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
   el.style.display='flex';
-  el.querySelectorAll('[data-v197-night]').forEach(button=>button.onclick=e=>{e.stopPropagation();const value=Number(button.dataset.v197Night)||0;window.SHINDO_addPlayRecord?.('선택','2일차 저녁 활동: '+options[value-1]);if(value===1)window.SHINDO_applyAffinityEvent?.('afternoon','쓰레기장 수색',2);const targets={1:V197_DENY_TRASH_OFFSET,2:V201_PATROL_START,3:V205_ESCAPE_START,4:V208_SLEEP_START};const target=targets[value];if(Number.isInteger(target)){if(value===3)v207StartEscapeMusic();else v207StopEscapeMusic();el.style.display='none';locked=false;index=target;save();render();}});
+  el.querySelectorAll('[data-v197-night]').forEach(button=>button.onclick=e=>{e.stopPropagation();const value=Number(button.dataset.v197Night)||0;if(!options[value-1])return;
+   window.SHINDO_addPlayRecord?.('선택',(day3?'3일차':'2일차')+' 저녁 활동: '+options[value-1]);
+   if(value===1)window.SHINDO_applyAffinityEvent?.('afternoon','쓰레기장 수색',day3?3:2);
+   if(day3&&value===3){v293EndActivity();return;}
+   const targets={1:V197_DENY_TRASH_OFFSET,2:V201_PATROL_START,3:V205_ESCAPE_START,4:V208_SLEEP_START};const target=targets[value];
+   if(Number.isInteger(target)){if(value===3)v207StartEscapeMusic();else v207StopEscapeMusic();el.style.display='none';locked=false;index=target;save();render();}});
   return;
  }
  if(type==='patrol-choice'){
@@ -5401,8 +5481,8 @@ function showV178Holding(type){
    e.stopPropagation();const value=Number(button.dataset.v201Patrol)||0;
    const target=value===1?V201_PATROL_LIBRARY:value===2?V201_PATROL_OFFICE:-1;
    if(target<0)return;
-   window.SHINDO_addPlayRecord?.('선택','2일차 야간순찰 자원: '+options[value-1]);
-   window.SHINDO_applyAffinityEvent?.('afternoon',value===1?'본당 도서실 수사':'본당 사무실 수사',2);
+   window.SHINDO_addPlayRecord?.('선택',(v293Active()?'3일차':'2일차')+' 야간순찰 자원: '+options[value-1]);
+   window.SHINDO_applyAffinityEvent?.('afternoon',value===1?'본당 도서실 수사':'본당 사무실 수사',v293Active()?3:2);
    el.style.display='none';locked=false;index=target;save();render();
   });
   return;
@@ -5411,7 +5491,7 @@ function showV178Holding(type){
   const options=['분리수거함 수색','소각로 청소'];
   el.innerHTML='<h2>…더는 뭐가 나오지 않는다.<span style="display:block">다른 데로 가볼까?</span></h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button type="button" data-v197-trash="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
   el.style.display='flex';
-  el.querySelectorAll('[data-v197-trash]').forEach(button=>button.onclick=e=>{e.stopPropagation();const value=Number(button.dataset.v197Trash)||0;window.SHINDO_addPlayRecord?.('선택','2일차 쓰레기장: '+options[value-1]);window.SHINDO_applyAffinityEvent?.('afternoon',value===1?'분리수거함 수색':'소각로 청소',2);const target=value===1?V197_DENY_RECYCLING_OFFSET:V197_DENY_INCINERATOR_CHECK_OFFSET;if(Number.isInteger(target)){el.style.display='none';locked=false;index=target;save();render();}});
+  el.querySelectorAll('[data-v197-trash]').forEach(button=>button.onclick=e=>{e.stopPropagation();const value=Number(button.dataset.v197Trash)||0;window.SHINDO_addPlayRecord?.('선택',(v293Active()?'3일차':'2일차')+' 쓰레기장: '+options[value-1]);window.SHINDO_applyAffinityEvent?.('afternoon',value===1?'분리수거함 수색':'소각로 청소',v293Active()?3:2);const target=value===1?V197_DENY_RECYCLING_OFFSET:V197_DENY_INCINERATOR_CHECK_OFFSET;if(Number.isInteger(target)){el.style.display='none';locked=false;index=target;save();render();}});
   return;
  }
  const messages={
@@ -6169,6 +6249,10 @@ function next(userAdvance=false){
  if(v205HammerBlocked)return;
  if(locked)return;
  if(vnTypingTimer!==null){stopVnTyping(true);return;}
+ if(scenes[index]?.v293FadeToDay4){
+  locked=true;overlay.classList.add('sleep-fadeout');
+  timer=setTimeout(()=>{overlay.classList.add('confession-blackout','v293-day4-title');overlay.classList.remove('sleep-fadeout');locked=false;index=V293_DAY4_TITLE;save();render();},950);return;
+ }
  if(scenes[index]?.v287TransitionAfter){v287FadeIntoNext();return;}
  if(scenes[index]?.v270FadeAfter){v270FadeToNext();return;}
  // V248: a two-page line 32 without re-indexing every scene or corrupting saves.
