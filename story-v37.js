@@ -3939,7 +3939,7 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
  if(scene.follow){locked=true;timer=setTimeout(()=>{locked=false;next()},1600)}
  else if(index===12){locked=true;timer=setTimeout(()=>{locked=false;next()},2000)}
  else locked=!!scene.delayedConfessionBlackout||!!scene.recall;
- if(scene.v270Bell){locked=true;timer=setTimeout(()=>{locked=false},6300);}
+ if(scene.v270Bell){locked=true;timer=setTimeout(()=>{locked=false},7150);}
 }
 function day2Ring(times,volume){for(let i=0;i<times;i++)setTimeout(()=>{if(overlay.classList.contains('active'))playExtraAudio('oath-bell-05.mp3',volume)},i*3300)}
 // V277: exact pre-Day-3 checkpoint for future replays. Capture before any
@@ -5385,8 +5385,8 @@ function v284BellHtmlFallback(token){
   v270BellFade=setInterval(()=>{
    if(token!==v284BellGeneration||v270BellAudio!==bell)return;
    const elapsed=performance.now()-started;
-   if(elapsed>=6300){v270StopBell();return}
-   if(elapsed>=5450)bell.volume=Math.max(0,(6300-elapsed)/850);
+   if(elapsed>=7150){v270StopBell();return}
+   if(elapsed>=6300)bell.volume=Math.max(0,(7150-elapsed)/850);
   },40);
  }).catch(err=>console.warn('[SHINDO V284] 위반 종소리 HTMLAudio 재생 실패',err));
 }
@@ -5403,12 +5403,12 @@ function v270PlayBell(){
    const source=ctx.createBufferSource(),gain=ctx.createGain(),now=ctx.currentTime;
    source.buffer=buffer;
    gain.gain.setValueAtTime(1,now);
-   gain.gain.setValueAtTime(1,now+5.45);
-   gain.gain.linearRampToValueAtTime(0,now+6.3);
+   gain.gain.setValueAtTime(1,now+6.3);
+   gain.gain.linearRampToValueAtTime(0,now+7.15);
    source.connect(gain);gain.connect(ctx.destination);
    v284BellSource=source;v284BellGainNode=gain;
    source.onended=()=>{if(token===v284BellGeneration)v270StopBell()};
-   source.start(now,0,6.3);
+   source.start(now,0,7.15);
   }catch(err){
    console.warn('[SHINDO V284] 위반 종소리 WebAudio 재생 실패',err);
    if(token===v284BellGeneration)v284BellHtmlFallback(token);
