@@ -4093,10 +4093,9 @@ function v219ShowDay3MorningMenu(){
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  const places=['기도관','예술당','생활관','본당','고해소','공양실'];
  el.classList.remove('shindo-prayer-grid','shindo-art-grid');el.classList.add('shindo-morning-grid');
- el.innerHTML='<h2>오전 활동이다. 어디로 가볼까?</h2><div class="shindo-morning-options">'+places.map((name,i)=>'<button type="button" data-v219-room="'+i+'">'+name+'</button>').join('')+'</div><button type="button" class="v270-wiban-test" data-v270-wiban-test>［테스트］ 위반 엔딩 (6일차 아침 표시)</button>';
+ el.innerHTML='<h2>오전 활동이다. 어디로 가볼까?</h2><div class="shindo-morning-options">'+places.map((name,i)=>'<button type="button" data-v219-room="'+i+'">'+name+'</button>').join('')+'</div>';
  el.style.display='flex';
- el.querySelector('[data-v270-wiban-test]').onclick=e=>{e.stopPropagation();v270EnterEnding(true)};
- for(const b of el.querySelectorAll('[data-v219-room]'))b.onclick=e=>{
+  for(const b of el.querySelectorAll('[data-v219-room]'))b.onclick=e=>{
   e.stopPropagation();const place=places[Number(b.dataset.v219Room)];
   window.SHINDO_addPlayRecord?.('선택','3일차 오전 활동 장소: '+place);
   v219StartLocation(place);
@@ -4668,8 +4667,14 @@ function showLivingChoice(){
  const v256LaterDay=Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||2)>=4;
  const v256PoliceContact=(v219IsDay3Activity()||v256LaterDay)&&v241MetSeokminAtPoliceDay2();
  const options=['방에서 자료 정리',v256PoliceContact?'은재의 방에서 대화':'??의 방에서 대화','말 걸기','빨래 수거'];
- el.innerHTML='<h2>뭐부터 해볼까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button data-living="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
+ // V272: Preview-only control is shown inside the Day-3 생활관 activity menu,
+ // not on the shared Day-3 morning location-selection screen.
+ const v272Day3LivingTest=v219IsDay3Activity()&&
+  Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||0)===3;
+ el.innerHTML='<h2>뭐부터 해볼까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button data-living="'+(i+1)+'">'+t+'</button>').join('')+'</div>'+
+  (v272Day3LivingTest?'<button type="button" class="v270-wiban-test" data-v270-wiban-test>［테스트］ 위반 엔딩 (6일차 아침 표시)</button>':'');
  el.style.display='flex';
+ if(v272Day3LivingTest)el.querySelector('[data-v270-wiban-test]').onclick=e=>{e.stopPropagation();v270EnterEnding(true)};
  el.querySelectorAll('[data-living]').forEach(b=>b.onclick=e=>{
   e.stopPropagation();livingBranch=Number(b.dataset.living);
   localStorage.setItem(v219IsDay3Activity()?'shindo_day3_living_branch_v219':(v256LaterDay?'shindo_later_living_branch_v256':'shindo_living_branch_v156'),String(livingBranch));
