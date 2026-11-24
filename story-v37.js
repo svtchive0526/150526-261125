@@ -2265,6 +2265,12 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .shindo-ending-illustration{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity 1s ease;will-change:opacity}
 #shindo-vn .shindo-ending-illustration.is-visible{opacity:1}
 #shindo-vn .shindo-ending-illustration.is-fading-out{opacity:0}
+/* V275: Only the WIBAN ending artwork fills the story viewport on PC and mobile.
+   object-fit:cover deliberately crops landscape artwork on portrait screens. */
+#shindo-vn .shindo-ending-wiban{padding:0}
+#shindo-vn .shindo-ending-wiban .shindo-ending-stage{width:100%;height:100%;overflow:hidden}
+#shindo-vn .shindo-ending-wiban .shindo-ending-illustration{object-fit:cover;object-position:50% 50%}
+
 #shindo-vn .shindo-ending-copy{animation:vn-image-appear 1s ease both;max-width:900px}
 #shindo-vn .shindo-ending-stage .shindo-ending-copy{animation:none;position:relative;z-index:1;opacity:0;transition:opacity 1s ease;padding:24px;box-sizing:border-box}
 #shindo-vn .shindo-ending-stage .shindo-ending-copy.is-visible{opacity:1}
