@@ -2052,13 +2052,13 @@ scenes.push(
  v270Scene('dialogue','오늘따라 정리가 더 잘 되는 느낌이네.','주인공','bed'),
  v270Scene('dialogue','운수가 좋군.','주인공','bed',{boldAll:true}),
  v270Scene('narration','그때였다.',null,'bed',{v270BgmTarget:.2,v270BgmStart:true}),
- v270Scene('narration','똑똑.',null,'bed',{v273KnockVolume:0.4,boldAll:true}),
+ v270Scene('narration','똑똑.',null,'bed',{v273KnockVolume:0.1,boldAll:true}),
  v270Scene('dialogue','누구지?','주인공','bed'),
- v270Scene('narration','똑똑.',null,'bed',{v273KnockVolume:0.5,boldAll:true,fontScale:1.2}),
- v270Scene('narration','똑똑똑.',null,'bed',{v273KnockVolume:0.6,boldAll:true,fontScale:1.4}),
+ v270Scene('narration','똑똑.',null,'bed',{v273KnockVolume:0.6,boldAll:true,fontScale:1.2}),
+ v270Scene('narration','똑똑똑.',null,'bed',{v273KnockVolume:1.5,boldAll:true,fontScale:1.4}),
  v270Scene('dialogue','누구세요?','주인공','bed'),
  v270Scene('narration','문을 열어봤지만, 아무도 없다.',null,'bed'),
- v270Scene('dialogue','뭐람...','주인공','bed',{v270FadeAfter:true}),
+ v270Scene('dialogue','뭐람...','주인공','bed'),
  v270Scene('narration','그렇게 고해소로 가야하는 시간이 되었다.',null,'confOutside'),
  v270Scene('dialogue','고해소는 신성한 장소입니다.','원우','confInside',{portrait:'wonwoo-body1-ominous',sound:'confessionDoor'}),
  v270Scene('dialogue','거짓을 고하지 않을 것임을 맹세하십니까?','원우','confInside',{portrait:'wonwoo-body2-ominous'}),
@@ -2072,11 +2072,11 @@ scenes.push(
  v270Scene('dialogue','내일은... <은재의 방>에 가서 보고해야지.','주인공','village',{v270PoliceOnly:true}),
  v270Scene('dialogue','이제 자야겠다.','주인공','bed'),
  v270Scene('dialogue','오늘도 잘 버텨냈군.','주인공','bed',{v270BgmTarget:.5,v270BgmFade:2600}),
- v270Scene('narration','똑똑.',null,'bed',{v273KnockVolume:0.4}),
+ v270Scene('narration','똑똑.',null,'bed',{v273KnockVolume:0.1}),
  v270Scene('dialogue','?','주인공','bed'),
- v270Scene('narration','똑똑똑.',null,'bed',{v273KnockVolume:0.7,boldAll:true}),
- v270Scene('narration','똑똑똑똑.',null,'bed',{v273KnockVolume:0.8,boldAll:true,fontScale:1.5,v270BgmTarget:.7,v270BgmFade:600}),
- v270Scene('narration','문을 열고 나갔으나 아무도 없었다.',null,'bed',{v270BgmTarget:.2,v270BgmFade:1200}),
+ v270Scene('narration','똑똑똑.',null,'bed',{v273KnockVolume:0.6,boldAll:true}),
+ v270Scene('narration','똑똑똑똑.',null,'bed',{v273KnockVolume:1.5,boldAll:true,fontScale:1.5,v270BgmTarget:.7,v270BgmFade:600}),
+ v270Scene('dialogue','누구세요?','주인공','bed',{v270BgmTarget:.2,v270BgmFade:1200}),
  v270Scene('dialogue','뭐야. 잘못 들었나.','주인공','bed'),
  v270Scene('dialogue','너무 피곤해서 그런가보다.','주인공','bed'),
  v270Scene('dialogue','잠이나 자야지.','주인공','bed',{v270FadeAfter:true}),
@@ -2084,18 +2084,69 @@ scenes.push(
  v270Scene('narration','김봉봉은 공양자로 선정되었다.',null,'square',{v270BgmTarget:.35,v270BgmFade:2000}),
  v270Scene('dialogue','뭐지?','주인공','square'),
  v270Scene('narration','밀고한 자의 정체를 찾아 고개를 이리저리 휘두를 때였다.',null,'square',{portrait:'jihoon-body1-default',livingSilhouette:true}),
- v270Scene('narration','지훈과 눈이 마주쳤다. 차갑게 가라앉은 시선.',null,'square',{portrait:'jihoon-body1-default'}),
- v270Scene('narration','그제야 모든 것이 이해됐다.',null,'square',{portrait:'jihoon-body1-eyesmile',v270FadeAfter:true}),
+ v270Scene('narration','지훈과 눈이 마주쳤다. 차갑게 가라앉은 시선.',null,'square',{portrait:'jihoon-body1-default',v270Shade:.3}),
+ v270Scene('narration','그제야 모든 것이 이해됐다.',null,'square',{portrait:'jihoon-body1-default',v270Shade:.5,v270FadeAfter:true}),
  v270Scene('dialogue','아뿔싸. 집중하느라 시간 가는 줄 몰랐다.','주인공','bed',{recall:true,v270BgmTarget:.45,v270BgmFade:1500}),
  v270Scene('dialogue','오늘치 종교활동을 놓쳤다.','주인공','bed',{recall:true,v270FadeAfter:true}),
  v270Scene('dialogue','큰일이다. 지훈이 알려준 수칙을 어기고 말았다.','주인공','bed',{recall:true,v270BgmTarget:.5,v270BgmFade:1600}),
  v270Scene('dialogue','별 일 없어야 할텐데.','주인공','bed',{recall:true,v270FadeAfter:true}),
  v270Scene('dialogue','오늘따라 정리가 더 잘 되는 느낌이네.','주인공','bed',{recall:true,boldAll:true,v270BgmTarget:.6,v270BgmFade:1600}),
  v270Scene('dialogue','운수가 좋군.','주인공','bed',{recall:true,boldAll:true,fontScale:1.4,v270FadeAfter:true}),
- v270Scene('narration','뎅- 종소리가 울릴 때 지훈이 나지막이 되뇐다.',null,'square',{portrait:'jihoon-body1-smile',v270BgmHardStop:true,v270Bell:true}),
- v270Scene('dialogue','우리는 흔들리지 않습니다. 위반하지 않습니다.','지훈','square',{portrait:'jihoon-body1-eyesmile',boldAll:true,fontScale:1.3,redText:true,portraitFadeOutAfter:false}),
+ v270Scene('narration','뎅- 종소리가 울릴 때 지훈이 나지막이 되뇐다.',null,'square',{portrait:'jihoon-body1-default',v270BgmHardStop:true,v270Bell:true}),
+ v270Scene('dialogue','우리는 흔들리지 않습니다. 위반하지 않습니다.','지훈','square',{portrait:'jihoon-body2-default',boldAll:true,fontScale:1.3,redText:true,portraitFadeOutAfter:false}),
  v270Scene('v270-wiban-ending','',null,'black')
 );
+
+
+// V279: additional "위반" scenes are appended after the original 49, so saved
+// indices across the whole game (including the original WIBAN route) stay stable.
+const V279_WIBAN_EXTRA_START=scenes.length;
+const v279More=(kind,text,speaker,location,extra={})=>v270Scene(kind,text,speaker,location,{v279ClockActive:true,v279BgmActive:true,...extra});
+const V279_AFTER_13_START=scenes.length;
+scenes.push(
+ v279More('narration','하던 자료 정리나 마저 했다.',null,'bed',{clearPortrait:true,v279ParentOrder:13}),
+ v279More('narration','시간은 흐르고 흘러...',null,'bed',{clearPortrait:true,v279ParentOrder:13,v270FadeAfter:true})
+);
+const V279_AFTER_21_START=scenes.length;
+scenes.push(
+ v279More('dialogue','그럼, 내일 뵙겠습니다. 김봉봉 신도님.','원우','confInside',{
+  portrait:'wonwoo-body1-default',boldWord:'내일',v279ParentOrder:21
+ })
+);
+const V279_AFTER_31_START=scenes.length;
+scenes.push(
+ v279More('narration','문을 열고 나갔다.',null,'bed',{portrait:'jihoon-body1-default',livingSilhouette:true,v279ParentOrder:31}),
+ v279More('dialogue','...','지훈','bed',{portrait:'jihoon-body1-default',v279ParentOrder:31}),
+ v279More('dialogue','이 시간엔 어쩐 일로...?','주인공','bed',{portrait:'jihoon-body1-default',v279ParentOrder:31}),
+ v279More('dialogue','...','지훈','bed',{portrait:'jihoon-body1-default',portraitFadeOutAfter:true,v279ParentOrder:31}),
+ v279More('narration','지훈은 가만히 나를 바라보다 그냥 가버렸다.',null,'bed',{clearPortrait:true,v279ParentOrder:31}),
+ v279More('dialogue','뭐야...','주인공','bed',{clearPortrait:true,v279ParentOrder:31})
+);
+// Link exact pre-existing lines to appended ones; avoid shifting other scenes.
+scenes[V270_WIBAN_START+12].v279NextIndex=V279_AFTER_13_START;
+scenes[V279_AFTER_13_START+1].v279NextIndex=V270_WIBAN_START+13;
+scenes[V270_WIBAN_START+20].v279NextIndex=V279_AFTER_21_START;
+scenes[V279_AFTER_21_START].v279NextIndex=V270_WIBAN_START+21;
+scenes[V270_WIBAN_START+30].v279NextIndex=V279_AFTER_31_START;
+scenes[V279_AFTER_31_START+5].v279NextIndex=V270_WIBAN_START+31;
+// Original scene order is immutable; actual route progression follows links.
+for(let offset=5;offset<=45;offset++){
+ scenes[V270_WIBAN_START+offset].v279ClockActive=true;
+ scenes[V270_WIBAN_START+offset].v279BgmActive=true;
+}
+for(let offset=40;offset<=45;offset++){
+ const scene=scenes[V270_WIBAN_START+offset];
+ scene.backdrop='bg-central-square.jpg';scene.clearPortrait=true;delete scene.portrait;
+ scene.v279SquareDark=true;
+}
+function v279NextIndexFor(current){
+ const target=scenes[current]?.v279NextIndex;
+ return Number.isInteger(target)?target:current+1;
+}
+function v279BgmRecoveryIndex(scene){
+ const order=Number(scene?.v279ParentOrder);
+ return Number.isInteger(order)&&order>=1&&order<=49?V270_WIBAN_START+order-1:index;
+}
 
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
@@ -2156,6 +2207,7 @@ const style=document.createElement('style');style.textContent=`
 
 /* V270 위반 ending and transitions; existing endings are untouched. */
 #shindo-vn .v270-wiban-test{margin-top:10px!important;border:1px dashed #9b7d7d!important;background:#261e1e!important;text-align:center!important;font-size:14px!important}
+#shindo-story-backdrop.v279-wiban-square-dim{filter:brightness(.4)!important;transition:filter .55s ease}
 #shindo-vn .vn-portrait.v270-shadow{filter:brightness(0)!important;opacity:var(--v270-shade,.2)!important}
 #shindo-vn .v270-curtain{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:11;transition:opacity .65s ease;}
 #shindo-vn .v270-curtain.shown{opacity:1}
@@ -3446,6 +3498,8 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   index=V257_DAY3_JEONGHAN_POLICE_PACKAGE_START;save();render();return;
  }
  const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){finish();return}
+ // V279: 60% dark background only for old CSV lines 41~46.
+ storyBackdrop.classList.toggle('v279-wiban-square-dim',!!scene.v279SquareDark);
  // V277: take the pre-Day-3 snapshot at the *first* Day-3 title, before
  // Day-3 affinity or story events. Existing saves later in Day 3 are not guessed.
  if((scene.kind==='v205-day3'||scene.kind==='v178-day3-title')&&
@@ -3459,13 +3513,16 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   if(scene.kind==='v270-wiban-choice'){applySceneBackdrop(index,scene);v270ShowChoice();return;}
   if(scene.kind==='v270-wiban-day-title'){applySceneBackdrop(index,scene);v270ShowDayTitle();return;}
   if(scene.kind==='v270-wiban-ending'){v270ShowEnding();return;}
-  if(scene.v270BgmHardStop){v270StopMusic();tone(90,.13,.05,'triangle');}
+  if(scene.v270BgmHardStop){v279StopClock();v270StopMusic();tone(90,.13,.05,'triangle');}
   if(scene.v270BgmStart)v270StartMusic(scene.v270BgmTarget||.2);
   else if(scene.v270BgmTarget!=null){if(!v270Music)v270StartMusic(scene.v270BgmTarget);else v270FadeMusic(scene.v270BgmTarget,scene.v270BgmFade||1600);}
   if(scene.v270Bell){v270PlayBell();}
   if(scene.v273KnockVolume!=null)v273PlayKnock(scene.v273KnockVolume);
-  if(!v270Music && index>V270_WIBAN_START+5 && index<V270_WIBAN_START+46 && !scene.v270BgmHardStop && scene.v270BgmTarget==null){
-   let recoveredVolume=.2;for(let q=index;q>=V270_WIBAN_START;q--){if(scenes[q].v270BgmTarget!=null){recoveredVolume=scenes[q].v270BgmTarget;break}}
+  // The one-second tick plays alongside horror BGM through line 46.
+  if(scene.v279ClockActive&&!v279ClockAudio)v279StartClock();
+  if(!v270Music && scene.v279BgmActive && !scene.v270BgmHardStop && scene.v270BgmTarget==null){
+   let recoveredVolume=.2;
+   for(let q=v279BgmRecoveryIndex(scene);q>=V270_WIBAN_START;q--){if(scenes[q].v270BgmTarget!=null){recoveredVolume=scenes[q].v270BgmTarget;break}}
    v270StartMusic(recoveredVolume);
   }
  }
@@ -5089,17 +5146,57 @@ function v270EnsureCurtain(){
 }
 // V273: Per-line knock cue for WIBAN-007/009/010/027/029/030.
 // Independent of the route's horror-music/BGM volume automation.
-let v273KnockAudio=null;
+let v273KnockAudio=null,v279KnockGain=null,v279KnockSource=null;
 function v273StopKnock(){
  if(v273KnockAudio){v273KnockAudio.pause();v273KnockAudio.currentTime=0;v273KnockAudio=null}
+ if(v279KnockSource){try{v279KnockSource.disconnect()}catch(_){}v279KnockSource=null}
+ if(v279KnockGain){try{v279KnockGain.disconnect()}catch(_){}v279KnockGain=null}
 }
 function v273PlayKnock(volume){
  v273StopKnock();
  const knock=new Audio('story-audio/knock_sound02.wav');
- knock.loop=false;knock.volume=Math.max(0,Math.min(1,volume));
+ knock.loop=false;
+ // HTMLMediaElement.volume is limited to 1.0; 150% requires a Web Audio GainNode.
+ knock.volume=Math.max(0,Math.min(1,volume));
+ if(volume>1){
+  try{
+   const ctx=audioContext();
+   if(!ctx)throw Error('Web Audio unavailable');
+   const src=ctx.createMediaElementSource(knock),gain=ctx.createGain();
+   gain.gain.value=volume;src.connect(gain);gain.connect(ctx.destination);
+   v279KnockSource=src;v279KnockGain=gain;
+  }catch(err){console.warn('[SHINDO V279] 150% knock gain unavailable: fallback to 100%',err)}
+ }
  v273KnockAudio=knock;
- knock.addEventListener('ended',()=>{if(v273KnockAudio===knock)v273KnockAudio=null},{once:true});
- knock.play().catch(err=>console.warn('[SHINDO V273] 위반 노크 효과음 재생 불가',err));
+ knock.addEventListener('ended',()=>{if(v273KnockAudio===knock)v273StopKnock()},{once:true});
+ knock.play().catch(err=>console.warn('[SHINDO V279] 위반 노크 효과음 재생 불가',err));
+}
+// Clock asset is a 19-second recording with ticks ~1s apart. Keep it as
+// an independent looping ambient track, rather than overlapping new Audio() each second.
+let v279ClockAudio=null,v279ClockFadeTimer=null;
+function v279StopClock(){
+ if(v279ClockFadeTimer!==null){cancelAnimationFrame(v279ClockFadeTimer);v279ClockFadeTimer=null}
+ if(v279ClockAudio){v279ClockAudio.pause();v279ClockAudio.currentTime=0;v279ClockAudio=null}
+}
+function v279StartClock(){
+ if(v279ClockAudio)return;
+ const clock=new Audio('story-audio/clock_1s_sound.mp3');
+ clock.loop=true;clock.volume=.35;
+ v279ClockAudio=clock;
+ clock.play().catch(err=>console.warn('[SHINDO V279] 위반 초침소리 재생 불가',err));
+}
+function v279FadeClockBeforeBell(duration=640){
+ if(!v279ClockAudio)return;
+ if(v279ClockFadeTimer!==null){cancelAnimationFrame(v279ClockFadeTimer);v279ClockFadeTimer=null}
+ const clock=v279ClockAudio,from=clock.volume,begin=performance.now();
+ const tick=now=>{
+  if(v279ClockAudio!==clock)return;
+  const t=Math.min(1,(now-begin)/duration);
+  clock.volume=from*(1-t);
+  if(t<1)v279ClockFadeTimer=requestAnimationFrame(tick);
+  else v279StopClock();
+ };
+ v279ClockFadeTimer=requestAnimationFrame(tick);
 }
 function v270FadeMusic(target,duration=1500){
  if(!v270Music)return;
@@ -5116,6 +5213,7 @@ function v270FadeMusic(target,duration=1500){
 function v270StopMusic(){
  if(v270MusicTween!==null)cancelAnimationFrame(v270MusicTween);v270MusicTween=null;
  if(v270Music){v270Music.pause();v270Music.currentTime=0;v270Music=null}
+ v279StopClock();
 }
 function v270StartMusic(target=.2){
  if(!v270Music){
@@ -5144,15 +5242,17 @@ function v270PlayBell(){
 }
 function v270FadeToNext(){
  const cover=v270EnsureCurtain();locked=true;
+ // WIBAN-046 -> WIBAN-047: finish a 640ms clock fade BEFORE the offering bell.
+ if(index===V270_WIBAN_START+45)v279FadeClockBeforeBell(640);
  void cover.offsetWidth;cover.classList.add('shown');
  timer=setTimeout(()=>{
   locked=false;
-  if(index<scenes.length-1){index++;save();render()}
+  if(index<scenes.length-1){index=v279NextIndexFor(index);save();render()}
   requestAnimationFrame(()=>requestAnimationFrame(()=>cover.classList.remove('shown')));
  },690);
 }
 function v270EnterEnding(isTest=false){
- v273StopKnock();
+ v273StopKnock();v279StopClock();
  const day=Number(localStorage.getItem('shindo_current_story_day_v109'))||3;
  // The provided preview explicitly displays Day 6; real play shows the next day.
  localStorage.setItem(V270_WIBAN_DAY_KEY,String(isTest?5:day));
@@ -5182,7 +5282,7 @@ function v270ShowDayTitle(){
  timer=setTimeout(()=>{center.style.display='none';locked=false;next()},2400);
 }
 function v270ShowEnding(){
- v273StopKnock();
+ v273StopKnock();v279StopClock();
  v270StopMusic();v270StopBell();stopVnTyping(false);
  box.style.display='none';portrait.hidden=true;illustration.hidden=true;
  overlay.querySelector('.vn-hint').style.display='none';
@@ -5220,7 +5320,7 @@ function v270ShowEnding(){
  if(art.complete){if(!art.naturalWidth)art.style.visibility='hidden';runEndingTimeline()}
 }
 function finish(){
- v273StopKnock();
+ v273StopKnock();v279StopClock();
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  v205StopChoice(); v207StopEscapeMusic();
 v205HammerBlocked=false;if(v205HammerAudio){v205HammerAudio.pause();v205HammerAudio=null}
@@ -5254,7 +5354,7 @@ function next(userAdvance=false){
   timer=setTimeout(()=>{locked=false;index++;save();render()},610);return;
  }
  if(scenes[index]?.portraitFadeOutAfter&&!portrait.hidden&&!portrait.classList.contains('v178-fadeout')){
-  portrait.classList.add('v178-fadeout');locked=true;timer=setTimeout(()=>{portrait.classList.remove('v178-fadeout');locked=false;if(index<scenes.length-1){index++;save();render()}else finish()},560);return;
+  portrait.classList.add('v178-fadeout');locked=true;timer=setTimeout(()=>{portrait.classList.remove('v178-fadeout');locked=false;if(index<scenes.length-1){index=v279NextIndexFor(index);save();render()}else finish()},560);return;
  }
 
  if(scenes[index]?.v205FadeAfter){
@@ -5278,11 +5378,11 @@ function next(userAdvance=false){
  if(scenes[index]?.v213BedtimeEntry){index=V213_DAY1_BEDTIME_EXTRA_START;save();render();return;}
  if(scenes[index]?.v213BedtimeFinal){index=DAY2_START;save();render();return;}
  if(index>=scenes.length-1){finish();return;}
- index++;save();render();
+ index=v279NextIndexFor(index);save();render();
 }
 overlay.addEventListener('click',()=>{audioContext();if(scenes[index]?.eveningLocation==='village'&&!v207EscapeMusicFading)v207StartEscapeMusic();if(v178BellWanted&&!v178BellStarted){prepareV178BellFromGesture();if(v178BellBuffer)startV178Bell();}next(true)});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(phoneDrawer.classList.contains('is-open'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next(true)}});
 window.SHINDO_startStory=()=>{
- v273StopKnock();
+ v273StopKnock();v279StopClock();
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  v207StopEscapeMusic();
  stopV178Bell();v178Patrol(null);stopEveningTick();eveningBranch=Number(localStorage.getItem('shindo_evening_branch_day2_v173')||0);
