@@ -3767,9 +3767,9 @@ const V216_SKIP_CHECKPOINT_KINDS=new Set([
  'v178-intertitle','v178-day3-title','v178-ending','v178-coop-choice',
  'ending','sleep-transition'
 ]);
-function findV216Day2ActivitySkipTarget(){
+function findV216Day2ActivitySkipTarget(allowDay3=false){
  const here=scenes[index];
- if(v293ReusedNightScene(here))return -1;
+ if(v293ReusedNightScene(here)&&!allowDay3)return -1;
  if(!here || !here.eveningDay2 || !here.v178 ||
     !['dialogue','narration'].includes(here.kind) ||
     here.v205Hammer || here.v205HammerWait || here.v205FadeAfter ||
@@ -3794,9 +3794,73 @@ function findV216Day2ActivitySkipTarget(){
  }
  return -1; // No safe checkpoint in this area.
 }
+// V295: Day 3 replay skip respects the same choices/endings/reveal protections as Day 2.
+// Skip only contiguous, uncomplicated dialogue within the currently selected area.
+function v295FindDay3AreaSkipTarget(){
+ const cur=scenes[index];if(!cur||!['dialogue','narration'].includes(cur.kind))return -1;
+ if(cur.v281WibanFinal||cur.v287Recall||cur.v283RecallCount||cur.v270Wiban||cur.recall||
+    cur.kind==='living-recall'||cur.v248MinghaoFirst||cur.specialMinghao)return -1;
+ let limit=-1,belongs=null;
+ if(cur.v291Day3Confession){
+  const choice=V291_DAY3_PM_CHOICE;
+  if(index<choice)limit=choice;
+  else if(index>=V291_DAY3_PM_FIRST_BRANCH_2&&index<V291_DAY3_PM_FIRST_BRANCH_2+8)limit=V291_DAY3_PM_FIRST_BRANCH_2+8;
+  else if(index>=V291_DAY3_PM_FIRST_BRANCH_1&&index<V291_DAY3_PM_FIRST_BRANCH_2-1)
+   limit=V291_DAY3_PM_FIRST_BRANCH_2-2; // last line before Doksil ending
+  belongs=x=>!!x?.v291Day3Confession;
+ }else if(cur.v293Day3Evening){
+  if(index>=V293_DAY3_BEDTIME_START&&index<V293_DAY4_TITLE-1){
+   limit=V293_DAY4_TITLE-1;belongs=x=>!!x?.v293Day3Evening;
+  }
+ }else if(v293ReusedNightScene(cur)){
+  // The existing Day-2 area boundaries also apply to the reused investigations.
+  return findV216Day2ActivitySkipTarget(true);
+ }else if(cur.v218GongyangDay===3){
+  const end=scenes.findIndex((x,i)=>i>index&&x.kind==='v218-gongyang-end'&&x.v218GongyangDay===3);
+  limit=end;belongs=x=>x?.v218GongyangDay===3;
+ }else if(cur.day3Morning){
+  const end=scenes.findIndex((x,i)=>i>index&&x.kind==='v178-hold'&&
+    ['day3-morning-normal-complete','day3-morning-joshua-complete'].includes(x.v178Hold));
+  limit=end;belongs=x=>!!x?.day3Morning;
+ }else if(v219IsDay3Activity()||cur.v219Library||cur.v290GongyangRepeat||cur.v223JunhuiLockedFirst){
+  const attrs=['v219Library','v290GongyangRepeat','v223JunhuiLockedFirst','prayerRoom','artHall','livingHall','mainHall','confMorning','gongyangHall'];
+  const attr=attrs.find(k=>cur[k]);
+  if(attr){belongs=x=>!!x?.[attr];for(let i=index+1;i<scenes.length&&i<index+160;i++){
+   if(!belongs(scenes[i])){limit=i;break}
+   if(AREA_END_KINDS.has(scenes[i].kind)||/end$/.test(scenes[i].kind)){limit=i;break}
+  }}
+ }
+ if(limit<=index+1||!belongs)return -1;
+ let last=index;
+ for(let j=index+1;j<=limit;j++){
+  const x=scenes[j];if(!x)break;
+  // The decision, ending, intertitle or sensitive beat itself is never skipped.
+  if(AREA_CHOICE_KINDS.has(x.kind)||AREA_END_KINDS.has(x.kind)||
+     x.kind==='ending'||x.kind==='living-recall'||x.kind==='evidence-popup'||
+     x.kind==='v178-hold'||x.kind==='v215-day3-branch'||x.kind==='v215-day3-prayer-choice'||
+     x.kind==='v218-eyes-open'||x.kind==='v218-gongyang-end'||x.kind==='v291-day3-choice'||
+     x.kind==='v291-day3-end'||x.kind==='v293-day4-title'){
+   if(j===limit)return j;break;
+  }
+  if(!belongs(x)||x.v270Wiban||x.v287Recall||x.v283RecallCount||x.recall||
+     x.v215PrayerAuto||x.v215JoshuaIntroOnly||x.v290GiftDelivered||x.v248MinghaoFirst||
+     x.illustration||x.sound||x.bellOnce||x.v218Bell||x.gongyangBell||x.portraitFadeOutAfter||
+     x.v219Truth||x.v289MorningConf||x.v290SkipIfGifted||x.v290OnlySecond||
+     x.v293FadeToDay4||x.v291Day3MorningOnly||x.v291DoorSoundUnlessMorningConf)break;
+  // Do not jump past character-branch boundaries or conditional script variants.
+  if(cur.prayerBranch&&x.prayerBranch&&x.prayerBranch!==cur.prayerBranch)break;
+  if(cur.artBranch&&x.artBranch&&x.artBranch!==cur.artBranch)break;
+  if(cur.livingBranch&&x.livingBranch&&x.livingBranch!==cur.livingBranch)break;
+  if(cur.mainBranch&&x.mainBranch&&x.mainBranch!==cur.mainBranch)break;
+  last=j;
+ }
+ return last>index+1?last:-1;
+}
 function findCurrentAreaSkipTarget(){
- if(v219IsDay3Activity())return -1;
  if(localStorage.getItem(SKIP_REPLAY)!=='1')return -1;
+ const day3=v219IsDay3Activity()||scenes[index]?.day3Morning||scenes[index]?.v218GongyangDay===3||
+   scenes[index]?.v291Day3Confession||v293Day3EveningScene(scenes[index])||scenes[index]?.v219Library||scenes[index]?.v223JunhuiLockedFirst;
+ if(day3)return v295FindDay3AreaSkipTarget();
  const scene=scenes[index];if(!scene||AREA_CHOICE_KINDS.has(scene.kind)||AREA_END_KINDS.has(scene.kind)||scene.kind==='ending'||scene.kind==='sleep-transition'||scene.kind==='evidence-popup'||scene.kind==='living-recall')return -1;
  // V180: replay-only skipping is scoped to a single Day 2 evening/night section.
  // Never cross a manual choice, the evening intertitle, the room threshold,
@@ -4041,6 +4105,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   index=V257_DAY3_JEONGHAN_POLICE_PACKAGE_START;save();render();return;
  }
  const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){finish();return}
+ v295CaptureExactCheckpoint();
  if(!scene.v270Wiban)overlay.classList.remove('v283-wiban-end-black','v283-wiban-day-black','v283-wiban-day-transition');
  overlay.classList.toggle('v283-wiban-recall',!!scene.v283RecallCount);
  overlay.classList.toggle('v287-library-recall',!!scene.v287Recall);
@@ -4090,8 +4155,8 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  // V207: Resume BGM only inside the escape scene; never restart it per line.
  if(index>=V205_ESCAPE_START && index<V205_ESCAPE_LIE+100 && scene?.eveningLocation==='village' && !v207EscapeMusicFading)v207StartEscapeMusic();
  if(!scene.v213Day1Bedtime)v183SyncPoliceIdentityAt(index);
- if(scene.day3Morning||scene.v218GongyangDay||scene.v223JunhuiLockedFirst||v219IsDay3Activity()||scene.v291Day3Confession)areaSkipButton.hidden=true;
- if(scene.v287Recall||scene.v287Day4Library||scene.v288Day4Library||v293Day3EveningScene(scene))areaSkipButton.hidden=true;
+ if(scene.v287Recall||scene.v287Day4Library||scene.v288Day4Library)areaSkipButton.hidden=true;
+ // V295: Day-3 skip is calculated by updateAreaSkipButton(), not hidden globally.
  // Players already saved at V214's temporary Day 3 scenes resume the full script.
  if(index===V214_DAY3_MORNING_START || scene.v178Hold==='day3-morning-await-script'){
   index=V215_DAY3_COMMON_START;save();render();return;
@@ -4557,7 +4622,7 @@ function v277ClearTransientScenes(){localStorage.removeItem(V293_DAY3_NIGHT_KEY)
 // For legacy saves with no Day-3 checkpoint, the past Day-2 state cannot be
 // reconstructed losslessly. Rewind only the scene; keep existing event/score
 // ledgers to prevent accidental duplicate affinity or evidence grants.
-function restartFromDay3(){
+function restartFromDay3(){localStorage.removeItem('shindo_checkpoint_states_v295');
  flagReplay();
  const exact=v277RestoreDay3Snapshot();
  v277ClearTransientScenes();
@@ -4597,7 +4662,7 @@ window.SHINDO_hasDay3RestartSnapshot=()=>{
 };
 
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
-function restartFromDay1(){localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay1(){localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -4632,6 +4697,23 @@ function restartFromDay1(){localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.
  selectedBranch=0;day2Prayer=0;day2Morning='';livingBranch=0;mainBranch=0;confMorningBranch=0;seungkwanTruthBranch=0;joshuaRevealed=false;revealed=false;jihoonRevealed=false;soonyoungRevealed=false;minghaoRevealed=false;jeonghanRevealed=false;mingyuRevealed=false;seungkwanRevealed=false;
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;confessionTickLouder=false;
  ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jihoon_bad_day2_counted_v255','shindo_jihoon_bad_day3_counted_v255','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_seungkwan_truth_branch_v177','shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_evening_branch_day2_v173','shindo_confession_morning_branch_v163','shindo_day2_start_affinity_snapshot_v169','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_day3_jeonghan_case_v260','shindo_day3_living_room_deferred_v260','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person','shindo_junhui_locked_morning_seen_v223','shindo_day2_police_met_seokmin_v241'].forEach(k=>localStorage.removeItem(k));
+ // V295: remove **all** game progress, not only the accumulated scores.
+ // `shindo_met_characters_v108` is the source of unlocked profile cards; the
+ // legacy `*_known_*` keys and inventory compatibility stores must not leak
+ // from the previous run. Account/mail/browser/feedback records are excluded.
+ const resetGameKeys=[];
+ for(let n=0;n<localStorage.length;n++){
+  const key=localStorage.key(n);
+  if(v295IsStoryStateKey(key))resetGameKeys.push(key);
+ }
+ for(const key of resetGameKeys)localStorage.removeItem(key);
+ for(const key of [V295_CHECKPOINT_SNAPSHOTS,V277_DAY3_SNAPSHOT,SKIP_REPLAY,SKIP_REACHED,
+  'shindo_met_characters_v108','shindo_affinity_v107','shindo_affinity_events_v111',
+  'shindo_affinity_locks_v222','shindo_junhui_affinity_locked_v205','shindo_affinity_unread_v125',
+  'shindo_play_history_v107'])localStorage.removeItem(key);
+ // The live dialogue renderer also caches whether these people are known.
+ hansolRevealed=false;seokminRevealed=false;chanRevealed=false;
+ junhuiRevealed=false;joshuaRevealed=false;revealed=false;jihoonRevealed=false;
  const day1Start=scenes.findIndex(s=>s.kind==='transition'&&s.text==='1일차 아침');
  index=day1Start>=0?day1Start:0;
  storyUnderlay.classList.add('visible');storyBackdrop.classList.add('visible');overlay.classList.add('active');refreshInventoryVisibility();
@@ -4640,7 +4722,7 @@ function restartFromDay1(){localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.
 window.SHINDO_restartFromDay1=restartFromDay1;
 
 // V169: Test restart at the black "2일차" title, keeping the authenticated mail/browser.
-function restartFromDay2(){localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay2(){localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -4720,7 +4802,7 @@ window.SHINDO_restartFromDay2=restartFromDay2;
 
 // V184: Replay Day 2 afternoon from the central-square introduction without
 // erasing morning activity, evidence, affinity, or the morning Wonwoo meeting.
-function restartFromDay2Afternoon(startAtConfessional=false){
+function restartFromDay2Afternoon(startAtConfessional=false){localStorage.removeItem('shindo_checkpoint_states_v295');
  v289StopForestCue();
  v289DropMorningVisitsFrom(3);
  v290DropGongyangVisitsFrom(3);
@@ -4845,48 +4927,134 @@ function v282FindCheckpointScene(id){
   default:return -1;
  }
 }
+// V295 exact checkpoint state. Capturing a point at the moment it is reached
+// lets feedback rewinds retain all earlier affinity and discard all later awards,
+// including once-only event IDs, locks, discoveries, and replay history.
+const V295_CHECKPOINT_SNAPSHOTS='shindo_checkpoint_states_v295';
+const V295_NON_STORY_KEYS=new Set([
+ KEY,'shindo_story_started_v37','shindo_sleep_gate_v48',V295_CHECKPOINT_SNAPSHOTS,
+ V277_DAY3_SNAPSHOT,SKIP_REPLAY,SKIP_REACHED,'shindo_scene_index_migrated_v176'
+]);
+const V295_NON_STORY_PREFIXES=['shindo_mail_','shindo_church_','shindo_attachment_','shindo_browser_','shindo_beta_feedback_','shindo_phone_'];
+let v295InCheckpointTeleport=false;
+function v295IsStoryStateKey(key){
+ return key?.startsWith('shindo_')&&!V295_NON_STORY_KEYS.has(key)&&
+        !V295_NON_STORY_PREFIXES.some(prefix=>key.startsWith(prefix));
+}
+function v295ReadCheckpointMap(){
+ try{const x=JSON.parse(localStorage.getItem(V295_CHECKPOINT_SNAPSHOTS)||'{}');
+  return x&&typeof x==='object'&&!Array.isArray(x)?x:{};
+ }catch(_){return {}}
+}
+function v295ReadCurrentStoryState(){
+ const state={};for(let i=0;i<localStorage.length;i++){
+  const key=localStorage.key(i);if(v295IsStoryStateKey(key))state[key]=localStorage.getItem(key);
+ }return state;
+}
+function v295CaptureExactCheckpoint(){
+ if(v295InCheckpointTeleport)return;
+ const matches=Object.keys(V282_CHECKPOINT_LABELS).filter(id=>id!=='reset'&&v282FindCheckpointScene(id)===index);
+ if(!matches.length)return;
+ const map=v295ReadCheckpointMap(),state=v295ReadCurrentStoryState();
+ let changed=false;
+ for(const id of matches)if(!map[id]){map[id]={index,state};changed=true}
+ if(changed)try{localStorage.setItem(V295_CHECKPOINT_SNAPSHOTS,JSON.stringify(map))}catch(e){console.warn('체크포인트 친밀도 기록 저장 불가',e)}
+}
+function v295RestoreExactCheckpoint(id){
+ const map=v295ReadCheckpointMap(),snapshot=map[id]||(id==='day3_joshua'?map.day3_intro:id==='day3_intro'?map.day3_joshua:null);
+ if(!snapshot||snapshot.index!==v282FindCheckpointScene(id)||
+    !snapshot.state||typeof snapshot.state!=='object')return false;
+ const toDelete=[];
+ for(let i=0;i<localStorage.length;i++){
+  const key=localStorage.key(i);if(v295IsStoryStateKey(key)&&!Object.prototype.hasOwnProperty.call(snapshot.state,key))toDelete.push(key);
+ }
+ toDelete.forEach(key=>localStorage.removeItem(key));
+ Object.entries(snapshot.state).forEach(([key,value])=>{
+  if(v295IsStoryStateKey(key)&&typeof value==='string')localStorage.setItem(key,value);
+ });
+ const ids=Object.keys(V282_CHECKPOINT_LABELS).filter(key=>key!=='reset');
+ const order=ids.indexOf(id);
+ for(let i=order+1;i<ids.length;i++)delete map[ids[i]];
+ // Joshua and normal Day-3 intros share a scene; they share the same state.
+ try{localStorage.setItem(V295_CHECKPOINT_SNAPSHOTS,JSON.stringify(map))}catch(_){}
+ return true;
+}
+function v295SyncRuntimeFromStorage(){
+ selectedBranch=Number(localStorage.getItem('shindo_confession_branch')||0);
+ const d3=v219IsDay3Activity();
+ day2Morning=localStorage.getItem(d3?'shindo_day3_location_v219':'shindo_day2_morning')||'';
+ day2Prayer=Number(localStorage.getItem('shindo_day2_prayer')||0);
+ prayerBranch=Number(localStorage.getItem(d3?'shindo_day3_prayer_branch_v219':'shindo_prayer_branch_v99')||0);
+ artBranch=Number(localStorage.getItem(d3?'shindo_day3_art_branch_v219':'shindo_art_branch_v105')||0);
+ livingBranch=Number(localStorage.getItem(d3?'shindo_day3_living_branch_v219':'shindo_living_branch_v156')||0);
+ mainBranch=Number(localStorage.getItem(d3?V219_MAIN_KEY:'shindo_main_branch_v160')||0);
+ confMorningBranch=Number(localStorage.getItem('shindo_confession_morning_branch_v163')||0);
+ eveningBranch=Number(localStorage.getItem('shindo_evening_branch_day2_v173')||0);
+ seungkwanTruthBranch=Number(localStorage.getItem('shindo_seungkwan_truth_branch_v177')||0);
+ for(const [key,name] of [
+  ['shindo_jeonghan_known_v156','jeonghanRevealed'],
+  ['shindo_junhui_known_v167','junhuiRevealed'],
+  ['shindo_joshua_known_v160','joshuaRevealed'],
+  ['shindo_soonyoung_known_v105','soonyoungRevealed'],
+  ['shindo_seungkwan_known_v177','seungkwanRevealed'],
+  ['shindo_mingyu_known_v156','mingyuRevealed'],
+  ['shindo_minghao_known_v105','minghaoRevealed'],
+  ['shindo_hansol_known_v99','hansolRevealed'],
+  ['shindo_seokmin_known_v99','seokminRevealed'],
+  ['shindo_chan_known_v99','chanRevealed']]){
+  const val=localStorage.getItem(key)==='1';
+  if(name==='jeonghanRevealed')jeonghanRevealed=val;
+  else if(name==='junhuiRevealed')junhuiRevealed=val;
+  else if(name==='joshuaRevealed')joshuaRevealed=val;
+  else if(name==='soonyoungRevealed')soonyoungRevealed=val;
+  else if(name==='seungkwanRevealed')seungkwanRevealed=val;
+  else if(name==='mingyuRevealed')mingyuRevealed=val;
+  else if(name==='minghaoRevealed')minghaoRevealed=val;
+  else if(name==='hansolRevealed')hansolRevealed=val;
+  else if(name==='seokminRevealed')seokminRevealed=val;
+  else if(name==='chanRevealed')chanRevealed=val;
+ }
+ // First two names are introduced in the linear Day-1 prologue. This check
+ // never unlocks branch characters or overwrites their restored flags.
+ revealed=Number(index)>=81;jihoonRevealed=Number(index)>=99;
+}
+window.SHINDO_hasExactCheckpointStateV295=id=>id==='reset'||id==='day1_intro'||!!v295ReadCheckpointMap()[id]||(id==='day3_joshua'&&!!v295ReadCheckpointMap().day3_intro)||(id==='day3_intro'&&!!v295ReadCheckpointMap().day3_joshua);
 function v282RestartFromCheckpoint(id){
  if(!Object.prototype.hasOwnProperty.call(V282_CHECKPOINT_LABELS,id))return false;
  const target=v282FindCheckpointScene(id);
  if(!Number.isInteger(target)||target<0||target>=scenes.length){
   console.error('[SHINDO V282] 확인되지 않은 재시작 지점:',id);return false;
  }
- // Preserve the existing day-specific reset procedures and their safeguards.
- // They manage inventory and prior decisions without modifying mail login.
- if(id==='reset'||id.startsWith('day1_'))restartFromDay1();
- else if(id.startsWith('day2_'))restartFromDay2();
- else restartFromDay3();
- v277ClearTransientScenes();
+ // No precise historic per-scene affinity state exists for older saves.
+ // Refuse the jump BEFORE changing any data, rather than guessing score deltas.
+ if(!window.SHINDO_hasExactCheckpointStateV295(id)){
+  console.warn('[SHINDO V295] 재시작 지점의 실제 친밀도 이력이 없습니다:',id);
+  return false;
+ }
+ v295InCheckpointTeleport=true;
+ if(id==='reset'||id==='day1_intro'){
+  // The first Day-1 title is before every character encounter or affinity
+  // event, so it may safely start with an empty game-history state.
+  restartFromDay1();
+ }else{
+  v277ClearTransientScenes();
+  if(!v295RestoreExactCheckpoint(id)){v295InCheckpointTeleport=false;return false}
+  if(id.startsWith('day2_'))localStorage.removeItem(V277_DAY3_SNAPSHOT);
+  flagReplay(); // Area-skip is available only when replaying a past section.
+ }
  localStorage.removeItem(V282_TEST_JOSHUA_KEY);
  if(id==='day3_joshua'){
   // Test-only branch override, cleared at the branch decision.
   // Do not fabricate the accounting ledger evidence to activate it.
   localStorage.setItem(V282_TEST_JOSHUA_KEY,'1');
  }
- if(id==='day2_contact'){
-  // Actual authored encounter follows the '일단 함구하자' confession response.
-  // No affinity is awarded until its original scene is played.
-  eveningBranch=2;
-  localStorage.setItem('shindo_evening_branch_day2_v173','2');
- }
- if(id==='day2_afternoon'){
-  // Existing activity-selection screen after declining to disclose to Seungkwan.
-  // No earlier police cooperation or affinity event is fabricated.
-  eveningBranch=2;seungkwanTruthBranch=2;
-  localStorage.setItem('shindo_evening_branch_day2_v173','2');
-  localStorage.setItem('shindo_seungkwan_truth_branch_v177','2');
- }
+ // Exact state replaces the old test-only assumption that every Day-2 encounter
+ // had the same truth/cooperation choices. Never overwrite the recorded branch.
  if(id==='day3_confession'||id==='day3_afternoon'){
-  // Afternoon checkpoints are not a morning location. Keep the regular
-  // Day-3 reset semantics, but enter the afternoon renderer explicitly.
-  localStorage.removeItem(V219_MODE_KEY);
-  localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
-  localStorage.removeItem(V293_DAY3_NIGHT_KEY);
-  if(id==='day3_afternoon'){
-   // Reused Day-2 investigations must be labelled and routed as Day 3;
-   // in particular, the Day-2-only escape option must not appear.
-   localStorage.setItem(V293_DAY3_NIGHT_KEY,'1');
-  }
+  // A true snapshot already includes the afternoon state. In particular,
+  // preserve the original choices and evidence rather than clearing them.
+  // The Day-3-evening renderer needs its period flag at its entry point.
+  if(id==='day3_afternoon')localStorage.setItem(V293_DAY3_NIGHT_KEY,'1');
  }
  if(id==='reset'){
   // A complete VN reset starts before the Day 1 title, not at its checkpoint.
@@ -4899,9 +5067,9 @@ function v282RestartFromCheckpoint(id){
   jihoonRevealed=scenes.slice(0,target+1).some(x=>x.revealJihoon);
  }
  localStorage.setItem('shindo_current_story_day_v109',id.startsWith('day3_')?'3':id.startsWith('day2_')?'2':'1');
- index=target;locked=false;save();
+ index=target;v295SyncRuntimeFromStorage();locked=false;save();
  document.dispatchEvent(new Event('shindo-inventory-change'));
- render();return true;
+ try{render()}finally{v295InCheckpointTeleport=false}return true;
 }
 window.SHINDO_restartFromCheckpointV282=v282RestartFromCheckpoint;
 window.SHINDO_CHECKPOINT_LABELS_V282=V282_CHECKPOINT_LABELS;

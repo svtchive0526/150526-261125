@@ -50,6 +50,20 @@
   '한솔':'shindo_hansol_known_v99','석민':'shindo_seokmin_known_v99','찬':'shindo_chan_known_v99',
   '순영':'shindo_soonyoung_known_v105','명호':'shindo_minghao_known_v105'
  };
+ // V295: V294 could reset the story while leaving character name unlocks.
+ // If the save is still before Day-1's first introduction, those unlocks
+ // cannot be legitimate. Clear just the stale unlock keys; leave mail alone.
+ (function repairEarlyDay1Unlocks(){
+  const raw=localStorage.getItem('shindo_story_progress_v37');
+  if(raw===null || raw==='complete')return;
+  const pos=Number(raw);
+  if(!Number.isInteger(pos)||pos<0||pos>=81)return;
+  const keys=[MET,...Object.values(LEGACY_KNOWN),
+   'shindo_jeonghan_known_v156','shindo_mingyu_known_v156',
+   'shindo_joshua_known_v160','shindo_junhui_known_v167',
+   'shindo_seungkwan_known_v177'];
+  for(const key of keys)localStorage.removeItem(key);
+ })();
  function isMet(name){
   if(load(MET,[]).includes(name))return true;
   if(LEGACY_KNOWN[name]&&localStorage.getItem(LEGACY_KNOWN[name])==='1')return true;
@@ -181,7 +195,7 @@
   render();
  }
  function refreshUnreadIndicators(){
-  const any=getUnread().length>0;
+  const any=getUnread().some(name=>isMet(name));
   document.getElementById('shindo-phone-toggle')?.classList.toggle('shindo-affinity-unread',any);
   panel.querySelector('[data-tab="people"]')?.classList.toggle('shindo-affinity-unread',any);
  }
@@ -702,13 +716,14 @@
    if(typeof window.SHINDO_restartFromCheckpointV282!=='function'){
     window.alert('재시작 기능을 불러오지 못했습니다.');return;
    }
-   const legacyNote=id.startsWith('day3_')&&window.SHINDO_hasDay3RestartSnapshot?.()===false
-    ?'\n\n이전 저장에는 3일차 시작 상태가 없을 수 있습니다. 그 경우 친밀도와 증거품을 임의로 역산하지 않고 장면만 이동합니다.' : '';
-   const detail=id==='reset'?'게임 스토리 진행 기록을 초기화하고 첫 도입으로 돌아갑니다.':
-    '이 지점으로 테스트 이동하며 건너뛴 장면의 보상이나 증거품을 자동 지급하지 않습니다.';
-   if(!window.confirm(label+' — 이동할까요?\n'+detail+legacyNote))return;
+   if(window.SHINDO_hasExactCheckpointStateV295?.(id)===false){
+    window.alert('이 지점의 정확한 친밀도 기록이 없습니다.\n현재 저장을 임의로 역산하지 않기 위해 이동하지 않았습니다.\n해당 지점을 V295 이후 실제 플레이로 지나면 기록이 생성됩니다.');return;
+   }
+   const detail=id==='reset'?'스토리와 모든 친밀도 점수·지급 이벤트·잠금 이력을 초기화하고 1일차부터 시작합니다. (조슈아 기본 100점은 게임 초기 설정입니다.)':
+    '해당 지점에 실제 도달했을 때 저장된 상태로 되돌립니다. 그 이후의 친밀도·지급 이벤트·잠금·플레이 기록은 삭제됩니다.';
+   if(!window.confirm(label+' — 이동할까요?\n'+detail))return;
    const result=window.SHINDO_restartFromCheckpointV282(id);
-   if(result!==true){window.alert('해당 장면을 찾지 못해 이동하지 않았습니다.');return}
+   if(result!==true){window.alert('정확한 체크포인트 상태를 복원할 수 없어 이동하지 않았습니다.');return}
    drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');
   });
   grid.append(restart);
