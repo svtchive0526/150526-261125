@@ -2052,10 +2052,10 @@ scenes.push(
  v270Scene('dialogue','오늘따라 정리가 더 잘 되는 느낌이네.','주인공','bed'),
  v270Scene('dialogue','운수가 좋군.','주인공','bed',{boldAll:true}),
  v270Scene('narration','그때였다.',null,'bed',{v270BgmTarget:.2,v270BgmStart:true}),
- v270Scene('narration','똑똑.',null,'bed',{boldAll:true}),
+ v270Scene('narration','똑똑.',null,'bed',{v273KnockVolume:0.4,boldAll:true}),
  v270Scene('dialogue','누구지?','주인공','bed'),
- v270Scene('narration','똑똑.',null,'bed',{boldAll:true,fontScale:1.2}),
- v270Scene('narration','똑똑똑.',null,'bed',{boldAll:true,fontScale:1.4}),
+ v270Scene('narration','똑똑.',null,'bed',{v273KnockVolume:0.5,boldAll:true,fontScale:1.2}),
+ v270Scene('narration','똑똑똑.',null,'bed',{v273KnockVolume:0.6,boldAll:true,fontScale:1.4}),
  v270Scene('dialogue','누구세요?','주인공','bed'),
  v270Scene('narration','문을 열어봤지만, 아무도 없다.',null,'bed'),
  v270Scene('dialogue','뭐람...','주인공','bed',{v270FadeAfter:true}),
@@ -2072,10 +2072,10 @@ scenes.push(
  v270Scene('dialogue','내일은... <은재의 방>에 가서 보고해야지.','주인공','village',{v270PoliceOnly:true}),
  v270Scene('dialogue','이제 자야겠다.','주인공','bed'),
  v270Scene('dialogue','오늘도 잘 버텨냈군.','주인공','bed',{v270BgmTarget:.5,v270BgmFade:2600}),
- v270Scene('narration','똑똑.',null,'bed'),
+ v270Scene('narration','똑똑.',null,'bed',{v273KnockVolume:0.4}),
  v270Scene('dialogue','?','주인공','bed'),
- v270Scene('narration','똑똑똑.',null,'bed',{boldAll:true}),
- v270Scene('narration','똑똑똑똑.',null,'bed',{boldAll:true,fontScale:1.5,v270BgmTarget:.7,v270BgmFade:600}),
+ v270Scene('narration','똑똑똑.',null,'bed',{v273KnockVolume:0.7,boldAll:true}),
+ v270Scene('narration','똑똑똑똑.',null,'bed',{v273KnockVolume:0.8,boldAll:true,fontScale:1.5,v270BgmTarget:.7,v270BgmFade:600}),
  v270Scene('narration','문을 열고 나갔으나 아무도 없었다.',null,'bed',{v270BgmTarget:.2,v270BgmFade:1200}),
  v270Scene('dialogue','뭐야. 잘못 들었나.','주인공','bed'),
  v270Scene('dialogue','너무 피곤해서 그런가보다.','주인공','bed'),
@@ -3443,6 +3443,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   if(scene.v270BgmStart)v270StartMusic(scene.v270BgmTarget||.2);
   else if(scene.v270BgmTarget!=null){if(!v270Music)v270StartMusic(scene.v270BgmTarget);else v270FadeMusic(scene.v270BgmTarget,scene.v270BgmFade||1600);}
   if(scene.v270Bell){v270PlayBell();}
+  if(scene.v273KnockVolume!=null)v273PlayKnock(scene.v273KnockVolume);
   if(!v270Music && index>V270_WIBAN_START+5 && index<V270_WIBAN_START+46 && !scene.v270BgmHardStop && scene.v270BgmTarget==null){
    let recoveredVolume=.2;for(let q=index;q>=V270_WIBAN_START;q--){if(scenes[q].v270BgmTarget!=null){recoveredVolume=scenes[q].v270BgmTarget;break}}
    v270StartMusic(recoveredVolume);
@@ -4949,6 +4950,20 @@ function v270EnsureCurtain(){
  if(!v270Curtain){v270Curtain=document.createElement('div');v270Curtain.className='v270-curtain';overlay.appendChild(v270Curtain)}
  return v270Curtain;
 }
+// V273: Per-line knock cue for WIBAN-007/009/010/027/029/030.
+// Independent of the route's horror-music/BGM volume automation.
+let v273KnockAudio=null;
+function v273StopKnock(){
+ if(v273KnockAudio){v273KnockAudio.pause();v273KnockAudio.currentTime=0;v273KnockAudio=null}
+}
+function v273PlayKnock(volume){
+ v273StopKnock();
+ const knock=new Audio('story-audio/knock_sound02.wav');
+ knock.loop=false;knock.volume=Math.max(0,Math.min(1,volume));
+ v273KnockAudio=knock;
+ knock.addEventListener('ended',()=>{if(v273KnockAudio===knock)v273KnockAudio=null},{once:true});
+ knock.play().catch(err=>console.warn('[SHINDO V273] 위반 노크 효과음 재생 불가',err));
+}
 function v270FadeMusic(target,duration=1500){
  if(!v270Music)return;
  if(v270MusicTween!==null){cancelAnimationFrame(v270MusicTween);v270MusicTween=null}
@@ -5000,6 +5015,7 @@ function v270FadeToNext(){
  },690);
 }
 function v270EnterEnding(isTest=false){
+ v273StopKnock();
  const day=Number(localStorage.getItem('shindo_current_story_day_v109'))||3;
  // The provided preview explicitly displays Day 6; real play shows the next day.
  localStorage.setItem(V270_WIBAN_DAY_KEY,String(isTest?5:day));
@@ -5029,6 +5045,7 @@ function v270ShowDayTitle(){
  timer=setTimeout(()=>{center.style.display='none';locked=false;next()},2400);
 }
 function v270ShowEnding(){
+ v273StopKnock();
  v270StopMusic();v270StopBell();stopVnTyping(false);
  box.style.display='none';portrait.hidden=true;illustration.hidden=true;
  overlay.querySelector('.vn-hint').style.display='none';
@@ -5066,6 +5083,7 @@ function v270ShowEnding(){
  if(art.complete){if(!art.naturalWidth)art.style.visibility='hidden';runEndingTimeline()}
 }
 function finish(){
+ v273StopKnock();
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  v205StopChoice(); v207StopEscapeMusic();
 v205HammerBlocked=false;if(v205HammerAudio){v205HammerAudio.pause();v205HammerAudio=null}
@@ -5124,6 +5142,7 @@ function next(userAdvance=false){
 }
 overlay.addEventListener('click',()=>{audioContext();if(scenes[index]?.eveningLocation==='village'&&!v207EscapeMusicFading)v207StartEscapeMusic();if(v178BellWanted&&!v178BellStarted){prepareV178BellFromGesture();if(v178BellBuffer)startV178Bell();}next(true)});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(phoneDrawer.classList.contains('is-open'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next(true)}});
 window.SHINDO_startStory=()=>{
+ v273StopKnock();
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  v207StopEscapeMusic();
  stopV178Bell();v178Patrol(null);stopEveningTick();eveningBranch=Number(localStorage.getItem('shindo_evening_branch_day2_v173')||0);
