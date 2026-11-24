@@ -2247,6 +2247,12 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn.active{animation:none!important;opacity:1!important}
 #shindo-vn.confession-blackout{background-color:#000!important;background-image:none!important;opacity:1!important;isolation:isolate}
 #shindo-vn.confession-blackout{background:#000!important}
+/* V276: Day-3 intertitles require a fully opaque black frame.
+   The inherited .day background transition must never expose the previous bedroom
+   while the day card is visible. The title text sits above the black shield. */
+#shindo-vn.v276-day3-title{background:#000!important;background-image:none!important;transition:none!important;animation:none!important;opacity:1!important;isolation:isolate}
+#shindo-vn.v276-day3-title::before{content:"";position:absolute;inset:0;background:#000;z-index:49;pointer-events:none}
+#shindo-vn.v276-day3-title .vn-center{position:relative;z-index:51;color:#fff}
 #shindo-vn.confession-fade:before{content:"";position:absolute;inset:0;background:#000;z-index:5;animation:shindo-confession-flash 1.1s ease both;pointer-events:none}
 @keyframes shindo-confession-flash{0%{opacity:0}45%{opacity:1}100%{opacity:0}}
 @keyframes day2-screen-shake{0%,100%{transform:translate(0,0)}20%{transform:translate(-9px,5px)}40%{transform:translate(8px,-5px)}60%{transform:translate(-5px,-4px)}80%{transform:translate(5px,3px)}}
@@ -3440,6 +3446,14 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   index=V257_DAY3_JEONGHAN_POLICE_PACKAGE_START;save();render();return;
  }
  const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){finish();return}
+ // V277: take the pre-Day-3 snapshot at the *first* Day-3 title, before
+ // Day-3 affinity or story events. Existing saves later in Day 3 are not guessed.
+ if((scene.kind==='v205-day3'||scene.kind==='v178-day3-title')&&
+    !localStorage.getItem(V277_DAY3_SNAPSHOT) && !v219IsDay3Activity() &&
+    localStorage.getItem('shindo_current_story_day_v109')!=='3')v277CaptureDay3Snapshot();
+ // V276: clear the title-only shield immediately after the intertitle. The
+ // existing blackout/wake fade controls when the next story photo is revealed.
+ if(scene.kind!=='v205-day3'&&scene.kind!=='v178-day3-title')overlay.classList.remove('v276-day3-title');
  if(scene.v270Wiban){areaSkipButton.hidden=true;
   if(scene.v270PoliceOnly&&!v241MetSeokminAtPoliceDay2()){index++;save();render();return;}
   if(scene.kind==='v270-wiban-choice'){applySceneBackdrop(index,scene);v270ShowChoice();return;}
@@ -3515,6 +3529,12 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   }
   if(scene.kind==='v197-incinerator-check'){areaSkipButton.hidden=true;showV197IncineratorCheck();return}
   if(scene.kind==='v178-intertitle'||scene.kind==='v178-day3-title'){
+   // V276: the 3rd-day notice stays black during its full 2.3s display.
+   // Never allow the previous Bongbong-room image to fade through it.
+   if(scene.kind==='v178-day3-title'){
+    overlay.classList.add('confession-blackout','v276-day3-title');
+    overlay.classList.remove('sleep-fadein','sleep-fadeout');
+   }
    areaSkipButton.hidden=true;stopV178Bell();v178Patrol(null);storyBackdrop.style.opacity='0';applySceneBackdrop(index,scene);
    box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
    const center=overlay.querySelector('.vn-center')||(()=>{const e=document.createElement('div');e.className='vn-center';overlay.appendChild(e);return e})();
@@ -3831,8 +3851,103 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
  if(scene.v270Bell){locked=true;timer=setTimeout(()=>{locked=false},6300);}
 }
 function day2Ring(times,volume){for(let i=0;i<times;i++)setTimeout(()=>{if(overlay.classList.contains('active'))playExtraAudio('oath-bell-05.mp3',volume)},i*3300)}
+// V277: exact pre-Day-3 checkpoint for future replays. Capture before any
+// Day-3 prayer, location or character event; only game-local shindo_ keys.
+// Mail login, SVTER browser state and other websites are never snapshotted.
+const V277_DAY3_SNAPSHOT='shindo_day3_start_snapshot_v277';
+const V277_PROGRESS_KEYS=new Set([KEY,'shindo_story_started_v37','shindo_sleep_gate_v48',V277_DAY3_SNAPSHOT]);
+function v277CaptureDay3Snapshot(){
+ if(localStorage.getItem(V277_DAY3_SNAPSHOT))return;
+ const state={};
+ for(let i=0;i<localStorage.length;i++){
+  const key=localStorage.key(i);
+  if(key?.startsWith('shindo_')&&!V277_PROGRESS_KEYS.has(key))state[key]=localStorage.getItem(key);
+ }
+ try{localStorage.setItem(V277_DAY3_SNAPSHOT,JSON.stringify({index,state}))}catch(err){console.warn('3일차 시작 상태 저장 실패',err)}
+}
+function v277RestoreDay3Snapshot(){
+ let snapshot;
+ try{snapshot=JSON.parse(localStorage.getItem(V277_DAY3_SNAPSHOT)||'null')}catch(_){return null}
+ if(!snapshot||!Number.isInteger(snapshot.index)||!scenes[snapshot.index]||
+   !['v205-day3','v178-day3-title'].includes(scenes[snapshot.index].kind)||
+   !snapshot.state||typeof snapshot.state!=='object'||Array.isArray(snapshot.state))return null;
+ const keys=[];
+ for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key?.startsWith('shindo_')&&!V277_PROGRESS_KEYS.has(key))keys.push(key)}
+ for(const key of keys)if(!(key in snapshot.state))localStorage.removeItem(key);
+ for(const [key,val] of Object.entries(snapshot.state)){
+  if(key.startsWith('shindo_')&&!V277_PROGRESS_KEYS.has(key)&&typeof val==='string')localStorage.setItem(key,val);
+ }
+ return snapshot.index;
+}
+// Reset transient scene elements before teleporting to a non-linear checkpoint.
+function v277ClearTransientScenes(){
+ v270StopMusic();v270StopBell();v273StopKnock();v207StopEscapeMusic();
+ v218StopOfferingBell();v205StopChoice();v205HammerBlocked=false;
+ if(v205HammerAudio){v205HammerAudio.pause();v205HammerAudio=null}
+ stopV178Bell();v178Patrol(null);stopEveningTick();stopEveningWalk();eveningLivingEntered=false;
+ stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopPencil();
+ stopConfessionTick();stopEndingBell();stopSanctuaryTick();stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopArtAudio();
+ clearTimeout(timer);timer=null;clearConfessionQuestionTimers();stopVnTyping(false);
+ if(confessionTickStartTimer){clearTimeout(confessionTickStartTimer);confessionTickStartTimer=null}
+ if(confessionDoorAudio){confessionDoorAudio.pause();confessionDoorAudio.currentTime=0;confessionDoorAudio=null}
+ if(storySfxTimer){clearTimeout(storySfxTimer);storySfxTimer=null}
+ if(storySfx){storySfx.pause();storySfx.currentTime=0;storySfx=null}
+ endingTimers.forEach(clearTimeout);endingTimers=[];
+ duoLayer.classList.remove('is-active','is-visible');overlay.classList.remove('is-recall','art-blackout','v205-fade-out','v276-day3-title','v218-eye-cover','v218-eyes-closed','sanctuary','sanctuary-leaving','day','confession-blackout','confession-fade','day2-shake','sleep-fadeout','sleep-fadein');
+ overlay.querySelector('.shindo-ending')?.remove();overlay.querySelectorAll('.shindo-evidence-overlay').forEach(el=>el.remove());
+ const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
+ const center=overlay.querySelector('.vn-center');if(center)center.style.display='none';
+ storyBackdrop.classList.remove('shindo-v256-faded');storyBackdrop.style.filter='';storyBackdrop.style.opacity='';storyUnderlay.style.filter='';
+ portrait.style.filter='';portrait.style.opacity='';portrait.style.transition='';
+ portrait.classList.remove('evening-shadow','living-silhouette','art-silhouette','main-silhouette','prayer-silhouette');
+ currentPortrait='';portrait.hidden=true;illustration.hidden=true;box.classList.remove('box-shake-soft');
+ storyUnderlay.classList.add('visible');storyBackdrop.classList.add('visible');overlay.classList.add('active');
+ overlay.querySelector('.vn-hint').style.display='none';
+ areaSkipButton.hidden=true;locked=false;
+}
+// For legacy saves with no Day-3 checkpoint, the past Day-2 state cannot be
+// reconstructed losslessly. Rewind only the scene; keep existing event/score
+// ledgers to prevent accidental duplicate affinity or evidence grants.
+function restartFromDay3(){
+ flagReplay();
+ const exact=v277RestoreDay3Snapshot();
+ v277ClearTransientScenes();
+ if(exact===null){
+  // Do not guess or rewrite past affinity and evidence on old saves.
+  // Remove only current Day-3 navigation selections; existing award ledgers
+  // remain intact so replays cannot double-credit already earned events.
+  v221ClearDay3ReplayBranch();
+  localStorage.removeItem('shindo_day3_prayer_result_v215');
+  localStorage.removeItem('shindo_day3_joshua_intro_needed_v215');
+  localStorage.removeItem('shindo_day3_start_snapshot_v277');
+  index=scenes.findIndex((scene,i)=>scene.kind==='v205-day3'&&scenes[i+1]?.v178Hold==='day3-after-sleep');
+  if(index<0){console.error('3일차 시작 장면을 찾지 못했습니다.');return}
+ }else index=exact;
+ // Rebuild runtime selectors from the actual saved branch flags, not defaults.
+ day2Prayer=Number(localStorage.getItem('shindo_day2_prayer')||0);
+ day2Morning=localStorage.getItem('shindo_day2_morning')||'';
+ livingBranch=0;mainBranch=0;prayerBranch=0;artBranch=0;confMorningBranch=0;
+ eveningBranch=Number(localStorage.getItem('shindo_evening_branch_day2_v173')||0);
+ seungkwanTruthBranch=Number(localStorage.getItem('shindo_seungkwan_truth_branch_v177')||0);
+ selectedBranch=Number(localStorage.getItem('shindo_confession_branch')||0);
+ joshuaRevealed=localStorage.getItem('shindo_joshua_known_v160')==='1';
+ jeonghanRevealed=localStorage.getItem('shindo_jeonghan_known_v156')==='1';
+ mingyuRevealed=localStorage.getItem('shindo_mingyu_known_v156')==='1';
+ junhuiRevealed=localStorage.getItem('shindo_junhui_known_v167')==='1';
+ seungkwanRevealed=localStorage.getItem('shindo_seungkwan_known_v177')==='1';
+ soonyoungRevealed=localStorage.getItem('shindo_soonyoung_known_v105')==='1';
+ minghaoRevealed=localStorage.getItem('shindo_minghao_known_v105')==='1';
+ localStorage.setItem('shindo_current_story_day_v109','3');
+ save();document.dispatchEvent(new Event('shindo-inventory-change'));render();
+}
+window.SHINDO_restartFromDay3=restartFromDay3;
+window.SHINDO_hasDay3RestartSnapshot=()=>{
+ try{const s=JSON.parse(localStorage.getItem(V277_DAY3_SNAPSHOT)||'null');return !!s&&Number.isInteger(s.index)&&!!s.state}catch(_){return false}
+};
+
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
 function restartFromDay1(){
+ localStorage.removeItem(V277_DAY3_SNAPSHOT);
  // V270: restarting a story must allow future Day 4+ research counts to be earned again.
  v270StopMusic();v270StopBell();
  for(let day=4;day<=13;day++)localStorage.removeItem('shindo_jihoon_bad_day'+day+'_counted_v270');
@@ -3869,6 +3984,7 @@ window.SHINDO_restartFromDay1=restartFromDay1;
 
 // V169: Test restart at the black "2일차" title, keeping the authenticated mail/browser.
 function restartFromDay2(){
+ localStorage.removeItem(V277_DAY3_SNAPSHOT);
  // V270: restarting a story must allow future Day 4+ research counts to be earned again.
  v270StopMusic();v270StopBell();
  for(let day=4;day<=13;day++)localStorage.removeItem('shindo_jihoon_bad_day'+day+'_counted_v270');
@@ -3941,7 +4057,12 @@ window.SHINDO_restartFromDay2=restartFromDay2;
 
 // V184: Replay Day 2 afternoon from the central-square introduction without
 // erasing morning activity, evidence, affinity, or the morning Wonwoo meeting.
-function restartFromDay2Afternoon(){
+function restartFromDay2Afternoon(startAtConfessional=false){
+ localStorage.removeItem(V277_DAY3_SNAPSHOT);
+ // Day-2 confession must never inherit a later ending's active sounds.
+ v270StopMusic();v270StopBell();v273StopKnock();v207StopEscapeMusic();
+ for(let day=4;day<=13;day++)localStorage.removeItem('shindo_jihoon_bad_day'+day+'_counted_v270');
+ ['shindo_wiban_trigger_day_v270','shindo_wiban_test_v270','shindo_wiban_confession_answer_v270'].forEach(key=>localStorage.removeItem(key));
  localStorage.removeItem('shindo_jeonghan_room_search_v256');storyBackdrop.classList.remove('shindo-v256-faded');
  localStorage.removeItem('shindo_day2_police_met_seokmin_v241');
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
@@ -4012,10 +4133,18 @@ function restartFromDay2Afternoon(){
  // Preserve the morning confessional route so the afternoon reunion dialogue is accurate.
  localStorage.setItem('shindo_current_story_day_v109','2');
  index=EVENING_DAY2_START;
+ if(startAtConfessional){
+  // Morning confessional visitors get Wonwoo's '또 보네요' line first.
+  const text=day2Morning==='고해소'?'김봉봉씨. 또 보네요.':'고해소는 신성한 장소입니다.';
+  const confessionStart=scenes.findIndex((scene,i)=>i>=EVENING_DAY2_START&&i<EVENING_DAY2_START+12&&scene.eveningDay2&&scene.eveningLocation==='inside'&&scene.text===text);
+  if(confessionStart<0){console.error('2일차 고해소 재시작 장면을 찾지 못했습니다.');return}
+  index=confessionStart;
+ }
  storyUnderlay.classList.add('visible');storyBackdrop.classList.add('visible');overlay.classList.add('active');
  locked=false;save();document.dispatchEvent(new Event('shindo-inventory-change'));render();
 }
 window.SHINDO_restartFromDay2Afternoon=restartFromDay2Afternoon;
+window.SHINDO_restartFromDay2Confessional=()=>restartFromDay2Afternoon(true);
 
 // V219: distinguish a Day 2 morning encounter from a name known since Day 1.
 // V223: This flag is shared by Days 3–13 and is written only after
@@ -4429,8 +4558,10 @@ function showV205BadEnding(){
 function showV205Day3(){
  v207StopEscapeMusic(); // Audio was faded during the preceding 1.15-second blackout.
  v205StopChoice();areaSkipButton.hidden=true;stopEveningTick();stopEveningWalk();stopVnTyping(false);stopV178Bell();
- // V217: also protect direct resume on the title, not only normal sleep flow.
- overlay.classList.add('confession-blackout');
+ // V276: protect direct resume and the normal transition with an opaque
+ // title-only shield, independent of the previous bedroom photo and fade.
+ overlay.classList.add('confession-blackout','v276-day3-title');
+ overlay.classList.remove('sleep-fadein','sleep-fadeout');
  storyBackdrop.style.opacity='0';applySceneBackdrop(index,scenes[index]);
  box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';locked=true;
  const center=overlay.querySelector('.vn-center')||(()=>{const n=document.createElement('div');n.className='vn-center';overlay.appendChild(n);return n})();
@@ -5136,7 +5267,10 @@ function next(userAdvance=false){
   timer=setTimeout(()=>{
    // V217: keep the opaque black screen across the fade/title boundary.
    // The 3rd-day title must never expose the previous bedroom photograph.
-   if(scenes[index+1]?.kind==='v205-day3')overlay.classList.add('confession-blackout');
+   if(scenes[index+1]?.kind==='v205-day3'){
+    // V276: make black fully opaque before removing the preceding fade cover.
+    overlay.classList.add('confession-blackout','v276-day3-title');
+   }
    overlay.classList.remove('v205-fade-out');locked=false;index++;save();render();
   },1150);return;
  }

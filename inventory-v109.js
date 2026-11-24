@@ -662,15 +662,32 @@
    content.append(card)
   });
  }
- function feedback(){empty('피드백 및 이미지 배치 확인 도구입니다. 진행 중인 게임 기록은 유지됩니다.');const simButton=make('button','inv-feedback','PC · 모바일 이미지 배치 시뮬레이터');simButton.type='button';simButton.addEventListener('click',()=>{const url=new URL('image-simulator.html',window.location.href).href;window.open(url,'_blank','noopener')});content.append(simButton);const btn=make('button','inv-feedback','피드백 페이지 열기');btn.type='button';btn.addEventListener('click',()=>{if(typeof window.SHINDO_openFeedback!=='function'){empty('현재 피드백 페이지를 열 수 없습니다.');return}drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');window.SHINDO_openFeedback()});content.append(btn);for(const [day,label] of [[1,'1일차부터 다시 시작'],[2,'2일차부터 다시 시작']]){
+ function feedback(){
+ empty('피드백 및 이미지 배치 확인 도구입니다. 아래 버튼에서 진행 지점을 선택할 수 있습니다.');
+ const simButton=make('button','inv-feedback','PC · 모바일 이미지 배치 시뮬레이터');
+ simButton.type='button';simButton.addEventListener('click',()=>{const url=new URL('image-simulator.html',window.location.href).href;window.open(url,'_blank','noopener')});content.append(simButton);
+ const btn=make('button','inv-feedback','피드백 페이지 열기');btn.type='button';
+ btn.addEventListener('click',()=>{if(typeof window.SHINDO_openFeedback!=='function'){empty('현재 피드백 페이지를 열 수 없습니다.');return}drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');window.SHINDO_openFeedback()});content.append(btn);
+ const options=[
+  ['1일차부터 다시 시작','SHINDO_restartFromDay1'],
+  ['2일차부터 다시 시작','SHINDO_restartFromDay2'],
+  ['2일차 오후부터 다시 시작(고해소 장면부터)','SHINDO_restartFromDay2Confessional'],
+  ['3일차부터 다시 시작','SHINDO_restartFromDay3']
+ ];
+ for(const [label,callback] of options){
   const restart=make('button','inv-feedback inv-feedback-reset',label);restart.type='button';
   restart.addEventListener('click',()=>{
-   if(!window.confirm(day+'일차부터 다시 시작할까요?\n해당 날짜부터 진행한 게임 기록과 친밀도/증거품이 초기화됩니다.'))return;
+   if(typeof window[callback]!=='function'){window.alert('해당 재시작 기능을 불러오지 못했습니다.');return}
+   const legacyNote=callback==='SHINDO_restartFromDay3' && window.SHINDO_hasDay3RestartSnapshot?.()===false
+     ?'\n\n이전에 시작한 저장 데이터에는 3일차 시작 스냅샷이 없을 수 있습니다. 그 경우 이미 획득한 친밀도·증거품은 보존하고 장면만 재시작합니다.' : '';
+   if(!window.confirm(label+'할까요?\n진행 지점 이후의 일부 선택 기록이 초기화될 수 있습니다.'+legacyNote))return;
    drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');
-   (day===1?window.SHINDO_restartFromDay1:window.SHINDO_restartFromDay2)?.();
-  });content.append(restart);
- }const restart=make('button','inv-feedback inv-feedback-reset','아예 처음부터 다시 하기');restart.type='button';restart.addEventListener('click',()=>window.SHINDO_restartFromOpening?.());content.append(restart)}
- function render(){panel.querySelectorAll('.inv-tab').forEach(b=>{b.setAttribute('aria-selected',String(b.dataset.tab===active))});refreshUnreadIndicators();content.replaceChildren();({evidence,people,history,feedback})[active]()}
+   window[callback]();
+  });
+  content.append(restart);
+ }
+}
+function render(){panel.querySelectorAll('.inv-tab').forEach(b=>{b.setAttribute('aria-selected',String(b.dataset.tab===active))});refreshUnreadIndicators();content.replaceChildren();({evidence,people,history,feedback})[active]()}
  panel.querySelectorAll('.inv-tab').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();closeEvidenceDetail();active=b.dataset.tab;render()}));
  document.addEventListener('shindo-inventory-change',render);
  document.getElementById('shindo-phone-putaway')?.addEventListener('click',closeEvidenceDetail);
