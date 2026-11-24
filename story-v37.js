@@ -2003,6 +2003,42 @@ scenes.push(
  v256LivingScene('living-end','',null,{livingLocation:'corridor',v262Day5Eunjae:true})
 );
 
+// V269 — Day 3 living quarters > Talk; only if Day 2 morning selected the same Jihoon talk.
+// Append-only scenes preserve all existing story indices and localStorage keys.
+const V269_DAY3_LIVING_JIHOON_FOLLOWUP_START=scenes.length;
+const v269JihoonScene=(kind,text,speaker=null,extra={})=>({
+ kind,text,...(speaker?{speaker}:{}),livingHall:true,livingBranch:3,livingLocation:'corridor',v269Day3Jihoon:true,...extra
+});
+scenes.push(
+ v269JihoonScene("narration","오늘도 복도를 걷고 있는데,",null),
+ v269JihoonScene("narration","어라. 아는 얼굴이다.",null,{"portrait":"jihoon-body1-default","livingSilhouette":true}),
+ v269JihoonScene("narration","조심스레 다가갔다.",null,{"portrait":"jihoon-body1-default"}),
+ v269JihoonScene("dialogue","자주 보네요.","지훈",{"portrait":"jihoon-body2-smile"}),
+ v269JihoonScene("narration","낯을 제법 가리는 것 같은데,",null,{"portrait":"jihoon-body1-smile"}),
+ v269JihoonScene("narration","그렇다고 상대를 어색하게 만들진 않는다.",null,{"portrait":"jihoon-body1-smile"}),
+ v269JihoonScene("narration","흥얼거리는 노래가 제법 좋다.",null,{"portrait":"jihoon-body1-eyesmile"}),
+ v269JihoonScene("dialogue","음악 했어요?","주인공",{"portrait":"jihoon-body1-smile"}),
+ v269JihoonScene("dialogue","(민망해하는걸보니 맞군.)","주인공",{"portrait":"jihoon-body1-flustered"}),
+ v269JihoonScene("dialogue","예. 어릴 때 클라리넷을 좀.","지훈",{"portrait":"jihoon-body2-flustered"}),
+ v269JihoonScene("dialogue","크흠, 뭐. 좀 지낼 만은 하죠?","지훈",{"portrait":"jihoon-body2-flustered"}),
+ v269JihoonScene("dialogue","나쁘지 않을 텐데.","지훈",{"portrait":"jihoon-body2-eyesmile"}),
+ v269JihoonScene("dialogue","네, 뭐… 흥미로운 분들이 계세요.","주인공",{"portrait":"jihoon-body1-eyesmile"}),
+ v269JihoonScene("dialogue","아, 이거. 권순영 호랑이 그림 본 거 아냐?","지훈",{"portrait":"jihoon-body1-smile"}),
+ v269JihoonScene("dialogue","어...","주인공",{"portrait":"jihoon-body1-smile"}),
+ v269JihoonScene("dialogue","문준휘 걔는 무섭긴 한데, 단 거만 주면 잘 웃거든.","지훈",{"portrait":"jihoon-body2-smile"}),
+ v269JihoonScene("dialogue","원우도 좀 무섭고.","지훈",{"portrait":"jihoon-body2-eyesmile"}),
+ v269JihoonScene("dialogue","승철이 형님이야 뭐, 늘 고생이지.","지훈",{"portrait":"jihoon-body2-smile"}),
+ v269JihoonScene("narration","전보다 확연히 풀어진 얼굴이다.",null,{"portrait":"jihoon-body1-eyesmile"}),
+ v269JihoonScene("narration","쉽진 않았으나, 지훈의 이야기를 어느 정도는 들을 수 있었다.",null,{"portrait":"jihoon-body1-default"}),
+ v269JihoonScene("narration","예전에 친척 한 명이 그를 여기서 빼내려고 애썼던 모양이다.",null,{"portrait":"jihoon-body2-default"}),
+ v269JihoonScene("dialogue","(그 일로 인해 카밀레교가 크게 흔들릴 뻔했고...)","주인공",{"portrait":"jihoon-body1-default","boldAll":true}),
+ v269JihoonScene("dialogue","(그래서 지금처럼 조직과 규율을 수호하는 사람이 된 거구나.)","주인공",{"portrait":"jihoon-body1-default","boldAll":true}),
+ v269JihoonScene("dialogue","(세상에 사연 없는 사람은 없다지만…)","주인공",{"portrait":"jihoon-body1-eyesmile","portraitFadeOutAfter":true}),
+ v269JihoonScene("narration","지훈의 옆모습을 보며 생각했다.",null,{"clearPortrait":true}),
+ v269JihoonScene("narration","사연도 사연이지만, 이 사람은 정이 참 많은 거 같다고.",null,{"clearPortrait":true}),
+ v269JihoonScene('living-end','')
+);
+
 const sceneBackdropRanges=[
  {start:5,end:17,file:"bg-van-interior.png"},
  {start:18,end:57,file:"bg-forest-path.png"},
@@ -4613,7 +4649,15 @@ function showLivingChoice(){
    }
    // Neither branch met: Day 2's original first encounter is replayed.
   }
-  if(v219IsDay3Activity()&&livingBranch!==2&&v219WasMetDay2(({3:'지훈',4:'민규'})[livingBranch])){v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;}
+  // V269: Day-3 Jihoon follow-up only after the actual Day-2 living-quarters
+  // '말 걸기' activity. The original Day-2 Jihoon script remains the first
+  // encounter when that choice was not made on Day 2.
+  if(v219IsDay3Activity()&&livingBranch===3&&v219WasMetDay2('지훈')){
+   el.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+   index=V269_DAY3_LIVING_JIHOON_FOLLOWUP_START;
+   locked=false;save();render();return;
+  }
+  if(v219IsDay3Activity()&&livingBranch===4&&v219WasMetDay2('민규')){v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;}
   const target=scenes.findIndex((x,i)=>i>LIVING_SCENE_START&&x.livingBranch===livingBranch);
   el.style.display='none';currentPortrait='';portrait.hidden=true;
   if(target>=0){index=target;locked=false;save();render()}
