@@ -2142,8 +2142,7 @@ for(let offset=40;offset<=45;offset++){
  scene.v279SquareDark=true;
 }
 function v279NextIndexFor(current){
- const target=scenes[current]?.v279NextIndex;
- return Number.isInteger(target)?target:current+1;
+ return v290GongyangNextIndex(current);
 }
 function v279BgmRecoveryIndex(scene){
  const order=Number(scene?.v279ParentOrder);
@@ -2330,6 +2329,94 @@ scenes.push(
  {"kind":"dialogue","v289MorningConf":true,"confMorning":true,"confLocation":"outside","text":"(두 번 정도는 가볼만한 가치가 있겠어.)","speaker":"주인공"},
  {"kind":"conf-morning-end","v289MorningConf":true,"confMorning":true,"confLocation":"outside"}
 );
+// V290: one repeat-visit story across Days 3–13. Original scene indices stay unchanged.
+const V290_GONGYANG_REPEAT_START=scenes.length;
+scenes.push(
+ {"kind":"narration","text":"공양실 근처는 늘 경비가 삼엄하다.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"clearPortrait":true},
+ {"kind":"narration","text":"누군가의 허락이 없다면 쉽게 들어갈 순 없을 듯하다.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true},
+ {"kind":"narration","text":"아쉬운 마음에 근처를 어슬렁거리던 차다.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true},
+ {"kind":"dialogue","text":"야-옹.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"??","v290CatGreeting":true},
+ {"kind":"narration","text":"웬 고양이가 발목에 비비적댄다. 어떡해! 너무 귀여워.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true},
+ {"kind":"narration","text":"참지 못하고 강아지풀로 마구 놀아주고 있을 때였다.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true},
+ {"kind":"dialogue","text":"어? 신기하네. 림보는 경계심 엄청 심한데.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"준휘","portrait":"junhui-body1-eyesmile"},
+ {"kind":"narration","text":"순식간에, 바로 옆에 조그맣게 쪼그려 앉는 문준휘다.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"portrait":"junhui-body1-smile"},
+ {"kind":"dialogue","text":"아이 착하지 우리 림보… 야익 엉덩이, 엉덩이는 안되지!","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"준휘","portrait":"junhui-body1-smile"},
+ {"kind":"dialogue","text":"(어떻게 고양이 이름이 림보?)","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"주인공","portrait":"junhui-body1-eyesmile"},
+ {"kind":"dialogue","text":"(그나저나, 먹을 걸 좋아한다고 했던 거 같은데.)","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"주인공","portrait":"junhui-body1-smile","v290SkipIfGifted":true},
+ {"kind":"dialogue","text":"(이런 때에 좀 친근한 척 구는 게 낫겠지.)","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"주인공","portrait":"junhui-body1-smile","v290SkipIfGifted":true},
+ {"kind":"narration","text":"주머니를 뒤져본다.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"portrait":"junhui-body1-smile"},
+ {"kind":"dialogue","text":"뭐 줄 만한 게 있었나?","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"주인공","portrait":"junhui-body1-eyesmile"},
+ {"kind":"v290-gift-check","text":"","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true},
+ {"kind":"dialogue","text":"(맞다, 탈출 패키지!)","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"주인공","portrait":"junhui-body2-default"},
+ {"kind":"narration","text":"혹시 몰라서 패키지의 비상식량 중 초코바를 들고 다녔다.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"portrait":"junhui-body1-default"},
+ {"kind":"dialogue","text":"(이게 유용하게 쓰일 줄이야.)","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"주인공","portrait":"junhui-body1-default"},
+ {"kind":"narration","text":"허겁지겁 주머니에서 초코바를 꺼내 건넸다.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"portrait":"junhui-body2-default"},
+ {"kind":"dialogue","text":"드실래요? 전 단 건 별로라.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"주인공","portrait":"junhui-body1-eyesmile"},
+ {"kind":"dialogue","text":"와!","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"준휘","portrait":"junhui-body1-smile"},
+ {"kind":"dialogue","text":"한솔이가 그랬어요.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"준휘","portrait":"junhui-body1-eyesmile"},
+ {"kind":"dialogue","text":"먹을 거 주는 사람, 좋은 사람이라고.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"준휘","portrait":"junhui-body3-snacking"},
+ {"kind":"narration","text":"활짝 웃으며 초코바를 먹는 준휘다.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"portrait":"junhui-body3-snacking","v290GiftDelivered":true},
+ {"kind":"dialogue","text":"(그럼, 몰래 나가려다 잡혀도 안 봐주나?)","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"주인공","portrait":"junhui-body1-eyesmile"},
+ {"kind":"dialogue","text":"그래도, 나쁜 짓 하다가 잡히면 못 봐줘요!","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"준휘","portrait":"junhui-body2-default"},
+ {"kind":"dialogue","text":"(에라이, 얄짤없네.)","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"주인공","portrait":"junhui-body1-default"},
+ {"kind":"dialogue","text":"(…아쉽게도 지금으로서는 없네.)","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"주인공","portrait":"junhui-body1-default"},
+ {"kind":"narration","text":"나중에 구하게 되면,","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"portrait":"junhui-body1-default"},
+ {"kind":"narration","text":"여기 다시 와서 준휘 사제에게 줘도 좋을 거 같다.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"portrait":"junhui-body1-smile"},
+ {"kind":"dialogue","text":"(혹시 모르지. 어떤 표정을 지을지.)","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"주인공","portrait":"junhui-body1-eyesmile"},
+ {"kind":"dialogue","text":"림보야, 림보야~","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"준휘","portrait":"junhui-body1-eyesmile","v290OnlySecond":true},
+ {"kind":"dialogue","text":"너도 쥐를 사냥하지, 그치?","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"준휘","portrait":"junhui-body1-eyesmile","boldWord":"사냥","v290OnlySecond":true},
+ {"kind":"dialogue","text":"아유 밤마다 산책하면서 잡기 피곤해 죽겠어~","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"준휘","portrait":"junhui-body1-smile","boldAll":true,"portraitFadeOutAfter":true,"v290OnlySecond":true},
+ {"kind":"dialogue","text":"(대화가 어쩐지 좀… 살벌하네.)","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"주인공","clearPortrait":true,"v290OnlySecond":true},
+ {"kind":"narration","text":"문득, 불쑥 탈출하고 싶었던 이튿날 밤이 떠오른다.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"v290OnlySecond":true},
+ {"kind":"narration","text":"그때 탈출을 시도했더라면, 문준휘를 만났을지도 모르겠다.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"v290OnlySecond":true},
+ {"kind":"narration","text":"외출 담당이란 말이 조금은 다르게 다가온다.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"boldWord":"외출 담당","v290OnlySecond":true},
+ {"kind":"narration","text":"문준휘를 어떻게든 처리하기 전까지는 탈출이 힘들지도 모르겠다.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"clearPortrait":true},
+ {"kind":"narration","text":"하지만 한솔을 비롯한 그와 가까운 이들이 가만있을 리 없다.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"boldWord":"한솔"},
+ {"kind":"narration","text":"그 화살이 나에게 돌아올지도 모르고.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"boldAll":true},
+ {"kind":"narration","text":"신중하게 고민하고 움직여야 한다.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true},
+ {"kind":"dialogue","text":"선택도 후폭풍도, 전부 내 몫이니까.","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true,"speaker":"주인공"},
+ {"kind":"v290-gongyang-end","text":"","gongyangHall":true,"gongyangLocation":"outside","v290JunhuiRepeat":true}
+);
+const V290_GIFT_YES_START=V290_GONGYANG_REPEAT_START+15;
+const V290_GIFT_NO_START=V290_GONGYANG_REPEAT_START+27;
+const V290_POST_GIFT_START=V290_GONGYANG_REPEAT_START+31;
+scenes[V290_GONGYANG_REPEAT_START+26].v279NextIndex=V290_POST_GIFT_START;
+const V290_GONGYANG_DAYS_KEY='shindo_gongyang_morning_days_v290';
+const V290_JUNHUI_FED_KEY='shindo_junhui_chocobar_given_v290';
+function v290MorningGongyangDays(){
+ let days=[];
+ try{const data=JSON.parse(localStorage.getItem(V290_GONGYANG_DAYS_KEY)||'[]');if(Array.isArray(data))days=data.filter(d=>Number.isInteger(d)&&d>=2&&d<=13);}catch(_){}
+ if(localStorage.getItem('shindo_day2_morning')==='공양실')days.push(2);
+ if(localStorage.getItem('shindo_day3_location_v219')==='공양실')days.push(3);
+ return [...new Set(days)].sort((a,b)=>a-b);
+}
+function v290RecordGongyangMorning(day){
+ const days=v290MorningGongyangDays();
+ if(Number.isInteger(day)&&day>=2&&day<=13&&!days.includes(day))days.push(day);
+ days.sort((a,b)=>a-b);
+ localStorage.setItem(V290_GONGYANG_DAYS_KEY,JSON.stringify(days));
+ if(days.length>=3)localStorage.setItem('shindo_limbo_known_v290','1');
+ return days.length;
+}
+function v290CurrentGongyangVisit(){return v290MorningGongyangDays().length;}
+function v290JunhuiAlreadyFed(){return localStorage.getItem(V290_JUNHUI_FED_KEY)==='1';}
+function v290DropGongyangVisitsFrom(day){
+ const days=v290MorningGongyangDays().filter(d=>d<day);
+ localStorage.setItem(V290_GONGYANG_DAYS_KEY,JSON.stringify(days));
+ if(days.length<3)localStorage.removeItem('shindo_limbo_known_v290');
+ // Do not guess whether a snack was given before the existing save history.
+ if(day<=2)localStorage.removeItem(V290_JUNHUI_FED_KEY);
+}
+function v290GongyangNextIndex(current){
+ let pos=Number.isInteger(scenes[current]?.v279NextIndex)?scenes[current].v279NextIndex:current+1;
+ while(scenes[pos]&&((scenes[pos].v290OnlySecond&&v290CurrentGongyangVisit()!==2)||
+       (scenes[pos].v290SkipIfGifted&&v290JunhuiAlreadyFed())))pos++;
+ return pos;
+}
+function v290StartGiftChoice(){
+ const target=hasEscapePackage()?V290_GIFT_YES_START:V290_GIFT_NO_START;
+ index=target;locked=false;save();render();
+}
 // Per-day ledger: morning visits only. An overnight confession is never counted.
 // Legacy Day-2 and Day-3 choices can be recovered from their existing exact room keys.
 function v289VisitedDays(){
@@ -3765,7 +3852,12 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  if(scene.v287Recall)overlay.classList.add('is-recall');else if(scenes[index-1]?.v287Recall)overlay.classList.remove('is-recall');
  recallKicker.textContent=scene.v283RecallCount?String(scene.v283RecallCount)+'회':'회상';
  if(!scene.v281WibanFinal)v281ClearFinalArtwork();
- if(scene.v280Skipped){index=v279NextIndexFor(index);save();render();return}
+ if(scene.v280Skipped || (scene.v290OnlySecond&&v290CurrentGongyangVisit()!==2) ||
+   (scene.v290SkipIfGifted&&v290JunhuiAlreadyFed())){index=v279NextIndexFor(index);save();render();return}
+ if(scene.v290CatGreeting)scene.speaker=v290CurrentGongyangVisit()>=3?'림보':'??';
+ if(scene.v290GiftDelivered || (scene.gongyangItemBranch===1&&scene.text==='활짝 웃으며 초코바를 먹는 준휘다.')){
+  localStorage.setItem(V290_JUNHUI_FED_KEY,'1');
+ }
  // A stale controller can leave the WIBAN soundtrack playing on the ordinary story.
  if(!scene.v270Wiban && (v270Music||v279ClockAudio)){
   v273StopKnock();v270StopMusic();v270StopBell();v280ClearWibanCheckpoint();
@@ -4001,6 +4093,8 @@ if(scene.kind==='day2-morning-choice'){
   }else showDay2Choice('morning');
   return;
  }
+ if(scene.kind==='v290-gongyang-end'){showGongyangEnd();return;}
+ if(scene.kind==='v290-gift-check'){v290StartGiftChoice();return;}
  if(scene.kind==='v223-locked-junhui-first-end'){v223FinishLockedJunhuiMorning();return;}
  if(scene.kind==='v223-locked-junhui-revisit-wait'){v219ShowMorningEnd('준휘와의 공양실 재방문 대화는 추후 추가됩니다.');return;}
  if(scene.kind==='v224-office-type3-end'){v219ShowMorningEnd('사무실 대화를 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return;}
@@ -4265,6 +4359,7 @@ function restartFromDay3(){
  v277ClearTransientScenes();
  if(exact===null){
   v289DropMorningVisitsFrom(3);
+  v290DropGongyangVisitsFrom(3);
   // Do not guess or rewrite past affinity and evidence on old saves.
   // Remove only current Day-3 navigation selections; existing award ledgers
   // remain intact so replays cannot double-credit already earned events.
@@ -4301,6 +4396,9 @@ window.SHINDO_hasDay3RestartSnapshot=()=>{
 function restartFromDay1(){
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
+ localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
+ localStorage.removeItem(V290_JUNHUI_FED_KEY);
+ localStorage.removeItem('shindo_limbo_known_v290');
  localStorage.removeItem(V277_DAY3_SNAPSHOT);
  // V270: restarting a story must allow future Day 4+ research counts to be earned again.
  v270StopMusic();v270StopBell();
@@ -4341,6 +4439,9 @@ window.SHINDO_restartFromDay1=restartFromDay1;
 function restartFromDay2(){
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
+ localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
+ localStorage.removeItem(V290_JUNHUI_FED_KEY);
+ localStorage.removeItem('shindo_limbo_known_v290');
  localStorage.removeItem(V277_DAY3_SNAPSHOT);
  // V270: restarting a story must allow future Day 4+ research counts to be earned again.
  v270StopMusic();v270StopBell();
@@ -4418,6 +4519,7 @@ window.SHINDO_restartFromDay2=restartFromDay2;
 function restartFromDay2Afternoon(startAtConfessional=false){
  v289StopForestCue();
  v289DropMorningVisitsFrom(3);
+ v290DropGongyangVisitsFrom(3);
  localStorage.removeItem(V277_DAY3_SNAPSHOT);
  // Day-2 confession must never inherit a later ending's active sounds.
  v270StopMusic();v270StopBell();v273StopKnock();v207StopEscapeMusic();
@@ -4649,11 +4751,14 @@ function v219StartLocation(room){
  const v287MainOnDay4=room==='본당' && localStorage.getItem('shindo_current_story_day_v109')==='4';
  const v289ConfDay=room==='고해소'?Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||3):0;
  const v289VisitDay=room==='고해소'&&v289ConfDay>=3&&v289ConfDay<=13?v289ConfDay:3;
+ const v290GongDay=room==='공양실'?Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||3):0;
+ const v290VisitDay=room==='공양실'&&v290GongDay>=3&&v290GongDay<=13?v290GongDay:3;
  localStorage.setItem(V219_MODE_KEY,'1');
- if(!v287MainOnDay4 && !(room==='고해소'&&v289VisitDay!==3))localStorage.setItem('shindo_day3_location_v219',room);
- localStorage.setItem('shindo_current_story_day_v109',room==='고해소'?String(v289VisitDay):v287MainOnDay4?'4':'3');
+ if(!v287MainOnDay4 && !(room==='고해소'&&v289VisitDay!==3) && !(room==='공양실'&&v290VisitDay!==3))localStorage.setItem('shindo_day3_location_v219',room);
+ localStorage.setItem('shindo_current_story_day_v109',room==='고해소'?String(v289VisitDay):room==='공양실'?String(v290VisitDay):v287MainOnDay4?'4':'3');
  day2Morning=room;
  if(room==='고해소'&&v289VisitDay!==3)window.SHINDO_applyAffinityEvent?.('room',room,v289VisitDay);
+ else if(room==='공양실'&&v290VisitDay!==3)window.SHINDO_applyAffinityEvent?.('room',room,v290VisitDay);
  else if(v287MainOnDay4)window.SHINDO_applyAffinityEvent?.('room',room,4);
  else v219MarkMorningRoom(room);
  const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
@@ -4662,16 +4767,18 @@ function v219StartLocation(room){
  const points={'기도관':PRAYER_SCENE_START,'예술당':ART_SCENE_START,'생활관':LIVING_SCENE_START,'본당':MAIN_SCENE_START,'고해소':CONFESSIONAL_MORNING_START,'공양실':GONGYANG_SCENE_START};
  const dest=points[room];
  if(!Number.isInteger(dest))return;
- // V223: Locked-Junhui special conversation overrides the prior Day 2 encounter flag.
- if(room==='공양실'&&v223JunhuiIsLocked()){v223OpenLockedJunhuiMorning();return;}
+ // V290: count morning Gongyang visits by distinct day, but keep Junhui's locked route first.
+ if(room==='공양실'){
+  const visit=v290RecordGongyangMorning(v290VisitDay);
+  if(v223JunhuiIsLocked()){v223OpenLockedJunhuiMorning();return;}
+  index=visit===1?GONGYANG_SCENE_START:V290_GONGYANG_REPEAT_START;
+  locked=false;save();render();return;
+ }
  if(room==='고해소'){
   const visit=v289RecordMorningVisit(v289VisitDay);
   if(visit>V289_CONF_GIFTS.length+1){v219ShowMorningEnd('고해소 13회차 이후의 대사는 아직 제공되지 않았습니다.');return;}
   index=visit===1?CONFESSIONAL_MORNING_START:V289_CONF_REPEAT_START;
   locked=false;save();render();return;
- }
- if(room==='공양실'&&v219WasMetDay2('준휘')){
-  v219ShowMorningEnd('이 인물의 3일차 신규 대화는 추후 추가됩니다.');return;
  }
  index=dest;locked=false;save();render();
 }
@@ -4798,6 +4905,7 @@ function showDay2Choice(type){locked=true;box.style.display='none';portrait.hidd
   el.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;
   index=CONFESSIONAL_MORNING_START;save();locked=false;render();
  }else if(day2Morning==='공양실'){
+  v290RecordGongyangMorning(2);
   window.SHINDO_addPlayRecord?.('선택','공양실 활동: 준휘와 대화');
   // V182: 준휘 친밀도 +20은 공양실 장소 선택 시 이미 지급됨.
   el.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;
