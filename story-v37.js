@@ -2395,7 +2395,7 @@ scenes.push(
  {"kind":"dialogue","eveningLocation":"inside","text":"거짓을 고하지 않을 것임을 맹세하십니까?","speaker":"원우","portrait":"wonwoo-body2-default","v291Day3Confession":true,"v291CsvOrder":8},
  {"kind":"dialogue","eveningLocation":"inside","text":"예. 맹세합니다.","speaker":"주인공","portrait":"wonwoo-body2-default","v291Day3Confession":true,"v291CsvOrder":9},
  {"kind":"narration","eveningLocation":"inside","text":"오늘도 되는대로 지어내어 말했다.","portrait":"wonwoo-body2-default","v291Day3Confession":true,"v291CsvOrder":10},
- {"kind":"narration","eveningLocation":"inside","text":"기자가 아니라 작가를 했어야 했으면 더 성공했을까.","portrait":"wonwoo-body2-default","v291Day3Confession":true,"v291CsvOrder":11},
+ {"kind":"narration","eveningLocation":"inside","text":"기자가 아니라 작가를 했으면 더 성공했을까.","portrait":"wonwoo-body2-default","v291Day3Confession":true,"v291CsvOrder":11},
  {"kind":"dialogue","eveningLocation":"inside","text":"(매일 이렇게 한 마디씩 하는 것도 보통 일은 아니지.)","speaker":"주인공","portrait":"wonwoo-body2-eyesclosed","v291Day3Confession":true,"v291CsvOrder":12},
  {"kind":"dialogue","eveningLocation":"inside","text":"(칸막이 너머는 대체 어떤 표정을 하고 있을까?)","speaker":"주인공","portrait":"wonwoo-body2-eyesclosed","v291Day3Confession":true,"v291CsvOrder":13},
  {"kind":"dialogue","eveningLocation":"inside","text":"(알 수 없지.)","speaker":"주인공","portrait":"wonwoo-body2-eyesclosed","v291Day3Confession":true,"v291CsvOrder":14},
@@ -2445,12 +2445,40 @@ function v291EnterDay3Afternoon(){
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;
  locked=false;index=V291_DAY3_PM_START;save();render();
 }
-// V291: The third-day afternoon follows the completed morning activity automatically.
-// This must not affect Day 2's existing automatic transition or Day 4+ endings.
-function v291ContinueAfterMorning(){
- if(!v219IsDay3Activity() || localStorage.getItem('shindo_current_story_day_v109')!=='3')return false;
- v291EnterDay3Afternoon();
- return true;
+// V292: One date-aware route for all completed morning activities.
+// Day 2/3 afternoon confession scripts exist. Day 4-13 must use their OWN
+// authored scripts: register a future scene with v292AfternoonConfessionalStart:true
+// and v292AfternoonConfessionalDay:<date>. Never replay an earlier day's story.
+function v292ShowPendingAfternoon(day){
+  locked=true;areaSkipButton.hidden=true;box.style.display='none';
+  currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+  overlay.querySelector('.vn-hint').style.display='none';
+  let el=overlay.querySelector('.shindo-choices');
+  if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
+  el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
+  el.innerHTML='<h2>'+day+'일차 오후 고해소</h2><p>이 날짜의 오후 고해소 스크립트는 아직 등록되지 않았습니다.</p>';
+  el.style.display='flex';
+}
+function v292ContinueAfterMorning(){
+  const scene=scenes[index];
+  if(!scene)return false;
+  const day=Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||0);
+  if(day===2 && !v219IsDay3Activity()){
+    // Day 2 already had this same direct transition: preserve its scene/branches.
+    enterEveningDay2();return true;
+  }
+  if(!v219IsDay3Activity() || day<3 || day>13)return false;
+  if(day===3){v291EnterDay3Afternoon();return true;}
+  const target=scenes.findIndex(s=>s.v292AfternoonConfessionalStart===true && s.v292AfternoonConfessionalDay===day);
+  if(target>=0){
+    stopEveningTick();localStorage.removeItem(V219_MODE_KEY);
+    const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
+    currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+    locked=false;index=target;save();render();return true;
+  }
+  // Day 4+ afternoon dialogue has not been authored yet. Stop safely at its
+  // dedicated checkpoint without inventing lines or leaving a choice button.
+  v292ShowPendingAfternoon(day);return true;
 }
 function v291ShowDay3ConfessionalChoice(){
  locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;
@@ -4088,9 +4116,9 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  // V259: This Day-4+ revisit ends its OWN morning activity; never route it into Day-2 evening.
  if(scene.v259JeonghanSuspicionEnd){showLivingEnd();return;}
  if(scene.v289MorningConf&&scene.kind==='conf-morning-end'){showConfMorningEnd();return;}
- if(DAY2_MORNING_AUTO_EVENING_ENDS.has(scene.kind)){if(v219IsDay3Activity()){v219ShowMorningEnd('오전 활동을 마쳤습니다. 3일차 오후 스토리는 추후 연결됩니다.');return;}enterEveningDay2();return}
+ if(DAY2_MORNING_AUTO_EVENING_ENDS.has(scene.kind)){if(v292ContinueAfterMorning())return;v219ShowMorningEnd('오전 활동을 마쳤습니다. 오후 스토리 연결 조건을 확인할 수 없습니다.');return}
  // Keep the day in sync with real story progress, including refreshed sessions.
- try{if(!scene.v270Wiban&&!scene.v289MorningConf&&!(scene.confMorning&&v219IsDay3Activity()&&Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||0)>=3))localStorage.setItem('shindo_current_story_day_v109',String(scene.v218GongyangDay|| (scene.v287Day4Library || scene.v288Day4Library || (scene.mainHall && v288CanOpenAnyDay4Library())?4:(scene.v291Day3Confession?3:(scene.v262Day5Eunjae?5:(index>=V256_DAY4_EUNJAE_CASE13_START&&index<V256_DAY4_JEONGHAN_SEARCH_REVISIT_START)?4:v219IsDay3Activity()?3:scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1)))))}catch(_){}
+ try{if(!scene.v270Wiban&&!scene.v289MorningConf&&!(v219IsDay3Activity()&&Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||0)>=4)&&!(scene.confMorning&&v219IsDay3Activity()&&Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||0)>=3))localStorage.setItem('shindo_current_story_day_v109',String(scene.v218GongyangDay|| (scene.v287Day4Library || scene.v288Day4Library || (scene.mainHall && v288CanOpenAnyDay4Library())?4:(scene.v291Day3Confession?3:(scene.v262Day5Eunjae?5:(index>=V256_DAY4_EUNJAE_CASE13_START&&index<V256_DAY4_JEONGHAN_SEARCH_REVISIT_START)?4:v219IsDay3Activity()?3:scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1)))))}catch(_){}
  if(index===DAY2_START)localStorage.setItem(SKIP_REACHED,'1');
  updateAreaSkipButton();if(scene.v270Wiban)areaSkipButton.hidden=true;
  if(index===DAY2_START&&!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169')){
@@ -4842,7 +4870,7 @@ function v219MarkMorningRoom(room){
  window.SHINDO_applyAffinityEvent?.('room',room,3);
 }
 function v219ShowMorningEnd(message){
- if(v291ContinueAfterMorning())return;
+ if(v292ContinueAfterMorning())return;
  locked=true;areaSkipButton.hidden=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;
  overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
@@ -4851,19 +4879,22 @@ function v219ShowMorningEnd(message){
  el.style.display='flex';
 }
 function v219StartLocation(room){
- const v287MainOnDay4=room==='본당' && localStorage.getItem('shindo_current_story_day_v109')==='4';
- const v289ConfDay=room==='고해소'?Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||3):0;
+  const currentMorningDay=Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||3);
+  const laterMorningDay=currentMorningDay>=4&&currentMorningDay<=13;
+  const v287MainOnDay4=room==='본당' && currentMorningDay===4;
+  const v289ConfDay=room==='고해소'?currentMorningDay:0;
  const v289VisitDay=room==='고해소'&&v289ConfDay>=3&&v289ConfDay<=13?v289ConfDay:3;
  const v290GongDay=room==='공양실'?Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||3):0;
  const v290VisitDay=room==='공양실'&&v290GongDay>=3&&v290GongDay<=13?v290GongDay:3;
- localStorage.setItem(V219_MODE_KEY,'1');
- if(!v287MainOnDay4 && !(room==='고해소'&&v289VisitDay!==3) && !(room==='공양실'&&v290VisitDay!==3))localStorage.setItem('shindo_day3_location_v219',room);
- localStorage.setItem('shindo_current_story_day_v109',room==='고해소'?String(v289VisitDay):room==='공양실'?String(v290VisitDay):v287MainOnDay4?'4':'3');
+  localStorage.setItem(V219_MODE_KEY,'1');
+  const morningDay=room==='고해소'?v289VisitDay:room==='공양실'?v290VisitDay:laterMorningDay?currentMorningDay:3;
+  if(morningDay===3)localStorage.setItem('shindo_day3_location_v219',room);
+  localStorage.setItem('shindo_current_story_day_v109',String(morningDay));
  day2Morning=room;
  if(room==='고해소'&&v289VisitDay!==3)window.SHINDO_applyAffinityEvent?.('room',room,v289VisitDay);
  else if(room==='공양실'&&v290VisitDay!==3)window.SHINDO_applyAffinityEvent?.('room',room,v290VisitDay);
- else if(v287MainOnDay4)window.SHINDO_applyAffinityEvent?.('room',room,4);
- else v219MarkMorningRoom(room);
+  else if(v287MainOnDay4)window.SHINDO_applyAffinityEvent?.('room',room,4);
+  else v219MarkMorningRoom(room);
  const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;
  artLocation='main';artImage='';prayerBranch=artBranch=livingBranch=mainBranch=confMorningBranch=0;
@@ -5413,7 +5444,7 @@ function showV197IncineratorCheck(){
  locked=false;next();
 }
 function showMainEnd(){
- if(v291ContinueAfterMorning())return;
+ if(v292ContinueAfterMorning())return;
  locked=true;box.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
@@ -5440,7 +5471,7 @@ function showConfMorningChoice(){
  });
 }
 function showConfMorningEnd(){
- if(v291ContinueAfterMorning())return;
+ if(v292ContinueAfterMorning())return;
  // Allow the fixed 3.5-second forest cue and its fade to finish across the ending menu.
  locked=true;box.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
@@ -5478,7 +5509,7 @@ function showGongyangItemCheck(){
  locked=false;next();
 }
 function showGongyangEnd(){
- if(v291ContinueAfterMorning())return;
+ if(v292ContinueAfterMorning())return;
  locked=true;box.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
@@ -5648,7 +5679,7 @@ function showLivingEnd(){
    }catch(_){}
   }
  }
-  if(v291ContinueAfterMorning())return;
+  if(v292ContinueAfterMorning())return;
  locked=true;box.style.display='none';portrait.hidden=true;currentPortrait='';illustration.hidden=true;
  overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
@@ -5755,7 +5786,7 @@ function showArtChoice(){
 }
 function showArtEnd(){
  duoLayer.classList.remove('is-active');overlay.classList.remove('is-recall');
- if(v291ContinueAfterMorning())return;
+ if(v292ContinueAfterMorning())return;
  locked=true;box.style.display='none';portrait.hidden=true;currentPortrait='';illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
@@ -5766,7 +5797,7 @@ function showArtEnd(){
 
 }
 function showPrayerEnd(){
- if(v291ContinueAfterMorning())return;
+ if(v292ContinueAfterMorning())return;
  locked=true;box.style.display='none';portrait.hidden=true;currentPortrait='';illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-morning-grid','shindo-prayer-grid');
@@ -6122,7 +6153,8 @@ function v287FadeIntoNext(){
  },710);
 }
 function v287ShowDay4LibraryEnd(){
- storyBackdrop.classList.remove('v288-library-dim');
+  storyBackdrop.classList.remove('v288-library-dim');
+  if(v292ContinueAfterMorning())return;
  locked=true;areaSkipButton.hidden=true;box.style.display='none';
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;
  overlay.querySelector('.vn-hint').style.display='none';
