@@ -5349,23 +5349,73 @@ function v270StartMusic(target=.2){
  }
  v270FadeMusic(target,1800);
 }
+// V284: the WIBAN bell uses the original offering-bell file, loaded once as a
+// decoded buffer so its playback can start after the fade on mobile browsers.
+// Prime it from the player's direct click on the WIBAN test/entry button.
+let v284BellBuffer=null,v284BellBufferPromise=null,v284BellContext=null;
+let v284BellSource=null,v284BellGainNode=null,v284BellGeneration=0;
+function v284PrimeBell(){
+ if(v284BellBuffer)return Promise.resolve(v284BellBuffer);
+ if(v284BellBufferPromise)return v284BellBufferPromise;
+ const ctx=audioContext();
+ if(!ctx)return Promise.resolve(null);
+ v284BellContext=ctx;
+ v284BellBufferPromise=fetch('story-audio/gongyang-bell-01.wav')
+  .then(res=>{if(!res.ok)throw Error('gongyang-bell-01.wav HTTP '+res.status);return res.arrayBuffer()})
+  .then(raw=>ctx.decodeAudioData(raw))
+  .then(buffer=>{v284BellBuffer=buffer;return buffer})
+  .catch(err=>{v284BellBufferPromise=null;console.warn('[SHINDO V284] 위반 종소리 로드/디코딩 실패',err);return null});
+ return v284BellBufferPromise;
+}
 function v270StopBell(){
+ v284BellGeneration++;
  if(v270BellFade!==null)clearInterval(v270BellFade);v270BellFade=null;
+ if(v284BellSource){try{v284BellSource.onended=null;v284BellSource.stop(0);v284BellSource.disconnect()}catch(_){}v284BellSource=null}
+ if(v284BellGainNode){try{v284BellGainNode.disconnect()}catch(_){}v284BellGainNode=null}
  if(v270BellAudio){v270BellAudio.pause();v270BellAudio.currentTime=0;v270BellAudio=null}
+}
+function v284BellHtmlFallback(token){
+ if(token!==v284BellGeneration)return;
+ const bell=new Audio('story-audio/gongyang-bell-01.wav');
+ bell.preload='auto';bell.volume=1;bell.loop=false;
+ v270BellAudio=bell;
+ bell.play().then(()=>{
+  if(token!==v284BellGeneration||v270BellAudio!==bell)return;
+  const started=performance.now();
+  v270BellFade=setInterval(()=>{
+   if(token!==v284BellGeneration||v270BellAudio!==bell)return;
+   const elapsed=performance.now()-started;
+   if(elapsed>=6300){v270StopBell();return}
+   if(elapsed>=5450)bell.volume=Math.max(0,(6300-elapsed)/850);
+  },40);
+ }).catch(err=>console.warn('[SHINDO V284] 위반 종소리 HTMLAudio 재생 실패',err));
 }
 function v270PlayBell(){
  v270StopBell();
- const bell=new Audio('story-audio/gongyang-bell-01.wav');
- bell.volume=1;bell.loop=false;
- v270BellAudio=bell;bell.play().catch(e=>console.warn('[SHINDO V270] 공양제 종소리 재생 불가',e));
- const started=performance.now();
- v270BellFade=setInterval(()=>{
-  if(v270BellAudio!==bell)return;
-  const elapsed=performance.now()-started;
-  if(elapsed>=6300){v270StopBell();return}
-  if(elapsed>=5450)bell.volume=Math.max(0,(6300-elapsed)/850);
- },60);
+ const token=v284BellGeneration;
+ v284PrimeBell().then(buffer=>{
+  if(token!==v284BellGeneration)return;
+  const ctx=v284BellContext;
+  if(!buffer||!ctx||ctx.state!=='running'){
+   v284BellHtmlFallback(token);return;
+  }
+  try{
+   const source=ctx.createBufferSource(),gain=ctx.createGain(),now=ctx.currentTime;
+   source.buffer=buffer;
+   gain.gain.setValueAtTime(1,now);
+   gain.gain.setValueAtTime(1,now+5.45);
+   gain.gain.linearRampToValueAtTime(0,now+6.3);
+   source.connect(gain);gain.connect(ctx.destination);
+   v284BellSource=source;v284BellGainNode=gain;
+   source.onended=()=>{if(token===v284BellGeneration)v270StopBell()};
+   source.start(now,0,6.3);
+  }catch(err){
+   console.warn('[SHINDO V284] 위반 종소리 WebAudio 재생 실패',err);
+   if(token===v284BellGeneration)v284BellHtmlFallback(token);
+  }
+ });
 }
+
 function v270FadeToNext(){
  const cover=v270EnsureCurtain();locked=true;
  // WIBAN-046 -> WIBAN-047: finish a 640ms clock fade BEFORE the offering bell.
@@ -5378,6 +5428,8 @@ function v270FadeToNext(){
  },690);
 }
 function v270EnterEnding(isTest=false){
+ // The entry/test button is a user gesture; unlock and preload the bell now.
+ void v284PrimeBell();
  v281ClearFinalArtwork();
  v273StopKnock();v270StopMusic();v270StopBell();
  const day=Number(localStorage.getItem('shindo_current_story_day_v109'))||3;
