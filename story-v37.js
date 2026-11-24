@@ -2093,7 +2093,7 @@ scenes.push(
  v270Scene('dialogue','오늘따라 정리가 더 잘 되는 느낌이네.','주인공','bed',{recall:true,boldAll:true,v270BgmTarget:.6,v270BgmFade:1600}),
  v270Scene('dialogue','운수가 좋군.','주인공','bed',{recall:true,boldAll:true,fontScale:1.4,v270FadeAfter:true}),
  v270Scene('narration','뎅- 종소리가 울릴 때 지훈이 나지막이 되뇐다.',null,'square',{portrait:'jihoon-body1-default',v270BgmHardStop:true,v270Bell:true}),
- v270Scene('dialogue','우리는 흔들리지 않습니다. 위반하지 않습니다.','지훈','square',{portrait:'jihoon-body2-default',boldAll:true,fontScale:1.3,redText:true,portraitFadeOutAfter:false}),
+ v270Scene('dialogue','우리는 흔들리지 않습니다. 위반하지 않습니다.','지훈','square',{clearPortrait:true,boldAll:true,fontScale:1.3,redText:true,v281WibanFinal:true}),
  v270Scene('v270-wiban-ending','',null,'black')
 );
 
@@ -2330,6 +2330,11 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .shindo-ending-wiban{padding:0}
 #shindo-vn .shindo-ending-wiban .shindo-ending-stage{width:100%;height:100%;overflow:hidden}
 #shindo-vn .shindo-ending-wiban .shindo-ending-illustration{object-fit:cover;object-position:50% 50%}
+/* V281: last WIBAN line uses the ending artwork as the live scene background. */
+#shindo-vn .v281-wiban-final-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;z-index:1;opacity:0;pointer-events:none;transition:opacity 1s ease;will-change:opacity}
+#shindo-vn .v281-wiban-final-art.is-visible{opacity:1}
+#shindo-vn .v281-wiban-final-art.is-fading-out{opacity:0}
+#shindo-vn.v281-wiban-autoline .vn-box::after{display:none!important}
 
 #shindo-vn .shindo-ending-copy{animation:vn-image-appear 1s ease both;max-width:900px}
 #shindo-vn .shindo-ending-stage .shindo-ending-copy{animation:none;position:relative;z-index:1;opacity:0;transition:opacity 1s ease;padding:24px;box-sizing:border-box}
@@ -3506,6 +3511,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   index=V257_DAY3_JEONGHAN_POLICE_PACKAGE_START;save();render();return;
  }
  const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){finish();return}
+ if(!scene.v281WibanFinal)v281ClearFinalArtwork();
  if(scene.v280Skipped){index=v279NextIndexFor(index);save();render();return}
  // A stale controller can leave the WIBAN soundtrack playing on the ordinary story.
  if(!scene.v270Wiban && (v270Music||v279ClockAudio)){
@@ -3529,7 +3535,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   if(scene.v270BgmHardStop){v279StopClock();v270StopMusic();tone(90,.13,.05,'triangle');}
   if(scene.v270BgmStart)v270StartMusic(scene.v270BgmTarget||.2);
   else if(scene.v270BgmTarget!=null){if(!v270Music)v270StartMusic(scene.v270BgmTarget);else v270FadeMusic(scene.v270BgmTarget,scene.v270BgmFade||1600);}
-  if(scene.v270Bell){v270PlayBell();}
+  if(scene.v270Bell){v281PreloadFinalArtwork();v270PlayBell();}
   if(scene.v273KnockVolume!=null)v273PlayKnock(scene.v273KnockVolume);
   // The one-second tick plays alongside horror BGM through line 46.
   if(scene.v279ClockActive&&!v279ClockAudio)v279StartClock();
@@ -3914,6 +3920,7 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
   }
  if(scene.boldScale){const target=scene.boldWord||'';for(const node of content.querySelectorAll('strong')){if(node.textContent===target)node.style.fontSize=String(scene.boldScale)+'em'}}
  if(scene.kind==='dialogue'||scene.kind==='narration')queueMicrotask(()=>warmUpcomingPortraits(index));
+ if(scene.v281WibanFinal){v281PlayFinalDialogue();return;}
  if(scene.kind==='dialogue'||scene.kind==='narration'||scene.kind==='line')beginVnTyping(scene.recall?(()=>{timer=setTimeout(()=>{locked=false;next()},1300)}):(scene.delayedConfessionBlackout?startConfessionQuestionTransition:null));
  if(scene.follow){locked=true;timer=setTimeout(()=>{locked=false;next()},1600)}
  else if(index===12){locked=true;timer=setTimeout(()=>{locked=false;next()},2000)}
@@ -3951,6 +3958,7 @@ function v277RestoreDay3Snapshot(){
 }
 // Reset transient scene elements before teleporting to a non-linear checkpoint.
 function v277ClearTransientScenes(){
+ v281ClearFinalArtwork();
  v270StopMusic();v270StopBell();v273StopKnock();v280ClearWibanCheckpoint();v207StopEscapeMusic();
  v218StopOfferingBell();v205StopChoice();v205HammerBlocked=false;
  if(v205HammerAudio){v205HammerAudio.pause();v205HammerAudio=null}
@@ -5277,6 +5285,7 @@ function v270FadeToNext(){
  },690);
 }
 function v270EnterEnding(isTest=false){
+ v281ClearFinalArtwork();
  v273StopKnock();v270StopMusic();v270StopBell();
  const day=Number(localStorage.getItem('shindo_current_story_day_v109'))||3;
  // The provided preview explicitly displays Day 6; real play shows the next day.
@@ -5312,28 +5321,82 @@ function v270ShowDayTitle(){
   index=V270_WIBAN_START+35;save();render();
  },2400);
 }
+// V281: the image now appears only behind the final *dialogue*, not on this title screen.
+const V281_WIBAN_FINAL_ART_SRC='story-illustrations/ending-wiban-art.png';
+let v281FinalPreload=null;
+function v281PreloadFinalArtwork(){
+ if(v281FinalPreload)return;
+ v281FinalPreload=new Image();v281FinalPreload.decoding='async';
+ v281FinalPreload.src=V281_WIBAN_FINAL_ART_SRC;
+}
+let v281FinalArt=null;
+let v281FinalGeneration=0;
+const V281_FINAL_READ_HOLD_MS=1700; // readable full line after its typewriter finishes
+const V281_FINAL_ART_ONLY_MS=2000; // exactly two seconds after the dialogue disappears
+const V281_FINAL_FADE_MS=1000;
+function v281ClearFinalArtwork(){
+ v281FinalGeneration++;
+ overlay.classList.remove('v281-wiban-autoline');
+ if(v281FinalArt){v281FinalArt.remove();v281FinalArt=null;}
+}
+function v281PlayFinalDialogue(){
+ v281ClearFinalArtwork();
+ const generation=v281FinalGeneration;
+ const finalIndex=index;
+ locked=true;
+ areaSkipButton.hidden=true;
+ portrait.hidden=true;currentPortrait='';
+ illustration.hidden=true;
+ overlay.classList.add('v281-wiban-autoline');
+ overlay.querySelector('.vn-hint').style.display='none';
+ const img=document.createElement('img');
+ img.className='v281-wiban-final-art';img.alt='';img.decoding='async';
+ overlay.insertBefore(img,box);v281FinalArt=img;
+ const alive=()=>generation===v281FinalGeneration&&index===finalIndex&&v281FinalArt===img&&overlay.classList.contains('active');
+ const reveal=()=>{
+  if(!alive())return;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{if(alive()){void img.offsetWidth;img.classList.add('is-visible');}}));
+ };
+ img.onload=reveal;
+ img.onerror=()=>console.warn('[SHINDO V281] 위반 마지막 대사 배경 이미지를 불러오지 못했습니다:',V281_WIBAN_FINAL_ART_SRC);
+ img.src=V281_WIBAN_FINAL_ART_SRC;
+ if(img.complete&&img.naturalWidth)reveal();
+ // Keep the text fully unskippable. Move on automatically only after typing
+ // and a short reading hold; then show JUST the artwork for 2 seconds.
+ beginVnTyping(()=>{
+  if(!alive())return;
+  timer=setTimeout(()=>{
+   if(!alive())return;
+   box.style.display='none';
+   timer=setTimeout(()=>{
+    if(!alive())return;
+    img.classList.add('is-fading-out');
+    timer=setTimeout(()=>{
+     if(!alive())return;
+     index=V270_WIBAN_START+48; // existing ending scene, unchanged save index
+     save();render();
+    },V281_FINAL_FADE_MS);
+   },V281_FINAL_ART_ONLY_MS);
+  },V281_FINAL_READ_HOLD_MS);
+ });
+}
 function v270ShowEnding(){
+ v281ClearFinalArtwork();
  v273StopKnock();v279StopClock();
  v270StopMusic();v270StopBell();stopVnTyping(false);
  box.style.display='none';portrait.hidden=true;illustration.hidden=true;
  overlay.querySelector('.vn-hint').style.display='none';
  locked=true;
  const end=document.createElement('div');end.className='shindo-ending shindo-ending-wiban';
- end.innerHTML='<div class="shindo-ending-stage"><img class="shindo-ending-illustration" src="story-illustrations/ending-wiban-art.png" alt="위반 엔딩 지훈 일러스트"><div class="shindo-ending-copy"><div class="v270-wiban-title">위반</div><p>공포영화에서 살아남는 첫 번째 방법은 하지 말라는 행동은 하지 않는 것이다.</p></div></div>';
+ end.innerHTML='<div class="shindo-ending-stage"><div class="shindo-ending-copy"><div class="v270-wiban-title">위반</div><p>공포영화에서 살아남는 첫 번째 방법은 하지 말라는 행동은 하지 않는 것이다.</p></div></div>';
  overlay.appendChild(end);
- const art=end.querySelector('.shindo-ending-illustration'),copy=end.querySelector('.shindo-ending-copy');
+ const copy=end.querySelector('.shindo-ending-copy');
  const later=(fn,ms)=>endingTimers.push(setTimeout(fn,ms));
- // Do not count the illustration hold until the actual PNG has loaded.
- // On a missing asset, continue the ending and explicitly log the missing file.
- let started=false;
- const runEndingTimeline=()=>{
-  if(started)return;started=true;
-  requestAnimationFrame(()=>{void art.offsetWidth;art.classList.add('is-visible')});
-  // Fade in 1 s, hold fully visible for 2 s, fade out into title over 1 s.
-  later(()=>{art.classList.add('is-fading-out');copy.classList.add('is-visible')},3000);
-  later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도</div>'},6000);
-  later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도<span>神道</span></div>'},8000);
-  later(()=>{
+ requestAnimationFrame(()=>requestAnimationFrame(()=>copy?.classList.add('is-visible')));
+ // Keep the remainder of the original ending sequence (logo and replay button).
+ later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도</div>'},3000);
+ later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도<span>神道</span></div>'},5000);
+ later(()=>{
   const b=document.createElement('button');b.className='shindo-restart';b.textContent='처음부터 다시 하기';
   b.onclick=e=>{e.stopPropagation();v270StopMusic();v270StopBell();
    localStorage.removeItem('shindo_wiban_test_v270');localStorage.removeItem(V270_WIBAN_DAY_KEY);
@@ -5344,13 +5407,11 @@ function v270ShowEnding(){
    localStorage.removeItem('shindo_sleep_gate_v48');
    end.remove();window.SHINDO_restartFromDay1?.();
   };end.appendChild(b);
-  },10000);
- };
- art.onload=runEndingTimeline;
- art.onerror=()=>{console.warn('[SHINDO V270] 지훈 엔딩 일러스트 파일 없음: story-illustrations/ending-wiban-art.png');art.style.visibility='hidden';runEndingTimeline()};
- if(art.complete){if(!art.naturalWidth)art.style.visibility='hidden';runEndingTimeline()}
+ },7000);
 }
+
 function finish(){
+ v281ClearFinalArtwork();
  v273StopKnock();v270StopMusic();v270StopBell();v280ClearWibanCheckpoint();
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  v205StopChoice(); v207StopEscapeMusic();
@@ -5361,6 +5422,7 @@ v205HammerBlocked=false;if(v205HammerAudio){v205HammerAudio.pause();v205HammerAu
  window.SHINDO_openFeedback?.();
 }
 function next(userAdvance=false){
+ if(scenes[index]?.v281WibanFinal)return; // Unskippable: only V281's automatic timeline advances.
  if(v205HammerBlocked)return;
  if(locked)return;
  if(vnTypingTimer!==null){stopVnTyping(true);return;}
@@ -5414,6 +5476,7 @@ function next(userAdvance=false){
 }
 overlay.addEventListener('click',()=>{audioContext();if(scenes[index]?.eveningLocation==='village'&&!v207EscapeMusicFading)v207StartEscapeMusic();if(v178BellWanted&&!v178BellStarted){prepareV178BellFromGesture();if(v178BellBuffer)startV178Bell();}next(true)});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(phoneDrawer.classList.contains('is-open'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next(true)}});
 window.SHINDO_startStory=()=>{
+ v281ClearFinalArtwork();
  v273StopKnock();v270StopMusic();v270StopBell();
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  v207StopEscapeMusic();
