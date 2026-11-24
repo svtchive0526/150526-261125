@@ -690,7 +690,9 @@
   ['3일차 도입','day3_intro'],
   ['3일차 도입(조슈아 만남)','day3_joshua'],
   ['3일차 공양제','day3_offering'],
-  ['3일차 오전활동','day3_morning']
+  ['3일차 오전활동','day3_morning'],
+  ['3일차 고해소','day3_confession'],
+  ['3일차 오후활동','day3_afternoon']
  ];
  const grid=make('div','inv-checkpoint-grid');
  for(const [label,id] of options){

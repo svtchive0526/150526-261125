@@ -4822,7 +4822,8 @@ const V282_CHECKPOINT_LABELS=Object.freeze({
  day2_intro:'2일차 도입',day2_offering:'2일차 공양제',day2_morning:'2일차 오전활동',
  day2_confession:'2일차 고해소',day2_contact:'2일차 접선',day2_afternoon:'2일차 오후활동',
  day3_intro:'3일차 도입',day3_joshua:'3일차 도입(조슈아 만남)',
- day3_offering:'3일차 공양제',day3_morning:'3일차 오전활동'
+ day3_offering:'3일차 공양제',day3_morning:'3일차 오전활동',
+ day3_confession:'3일차 고해소',day3_afternoon:'3일차 오후활동'
 });
 function v282FindCheckpointScene(id){
  switch(id){
@@ -4839,6 +4840,8 @@ function v282FindCheckpointScene(id){
   case 'day3_intro':case 'day3_joshua':return scenes.findIndex((x,i)=>x.kind==='v205-day3'&&scenes[i+1]?.v178Hold==='day3-after-sleep');
   case 'day3_offering':return V218_GONGYANG_START_BY_DAY[3]??-1;
   case 'day3_morning':return scenes.findIndex(x=>x.kind==='v218-gongyang-end'&&x.v218GongyangDay===3);
+  case 'day3_confession':return V291_DAY3_PM_START;
+  case 'day3_afternoon':return V293_DAY3_NIGHT_START;
   default:return -1;
  }
 }
@@ -4872,6 +4875,18 @@ function v282RestartFromCheckpoint(id){
   eveningBranch=2;seungkwanTruthBranch=2;
   localStorage.setItem('shindo_evening_branch_day2_v173','2');
   localStorage.setItem('shindo_seungkwan_truth_branch_v177','2');
+ }
+ if(id==='day3_confession'||id==='day3_afternoon'){
+  // Afternoon checkpoints are not a morning location. Keep the regular
+  // Day-3 reset semantics, but enter the afternoon renderer explicitly.
+  localStorage.removeItem(V219_MODE_KEY);
+  localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+  localStorage.removeItem(V293_DAY3_NIGHT_KEY);
+  if(id==='day3_afternoon'){
+   // Reused Day-2 investigations must be labelled and routed as Day 3;
+   // in particular, the Day-2-only escape option must not appear.
+   localStorage.setItem(V293_DAY3_NIGHT_KEY,'1');
+  }
  }
  if(id==='reset'){
   // A complete VN reset starts before the Day 1 title, not at its checkpoint.
