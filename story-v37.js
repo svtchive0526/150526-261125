@@ -2052,10 +2052,10 @@ scenes.push(
  v270Scene('dialogue','오늘따라 정리가 더 잘 되는 느낌이네.','주인공','bed'),
  v270Scene('dialogue','운수가 좋군.','주인공','bed',{boldAll:true}),
  v270Scene('narration','그때였다.',null,'bed',{v270BgmTarget:.2,v270BgmStart:true}),
- v270Scene('narration','똑똑.',null,'bed',{v273KnockVolume:0.1,boldAll:true}),
+ v270Scene('narration','똑똑.',null,'bed',{v273KnockVolume:.4,boldAll:true}),
  v270Scene('dialogue','누구지?','주인공','bed'),
- v270Scene('narration','똑똑.',null,'bed',{v273KnockVolume:0.6,boldAll:true,fontScale:1.2}),
- v270Scene('narration','똑똑똑.',null,'bed',{v273KnockVolume:1.5,boldAll:true,fontScale:1.4}),
+ v270Scene('narration','똑똑.',null,'bed',{v273KnockVolume:.4,boldAll:true,fontScale:1.2}),
+ v270Scene('narration','똑똑똑.',null,'bed',{v273KnockVolume:.4,boldAll:true,fontScale:1.4}),
  v270Scene('dialogue','누구세요?','주인공','bed'),
  v270Scene('narration','문을 열어봤지만, 아무도 없다.',null,'bed'),
  v270Scene('dialogue','뭐람...','주인공','bed'),
@@ -2072,13 +2072,13 @@ scenes.push(
  v270Scene('dialogue','내일은... <은재의 방>에 가서 보고해야지.','주인공','village',{v270PoliceOnly:true}),
  v270Scene('dialogue','이제 자야겠다.','주인공','bed'),
  v270Scene('dialogue','오늘도 잘 버텨냈군.','주인공','bed',{v270BgmTarget:.5,v270BgmFade:2600}),
- v270Scene('narration','똑똑.',null,'bed',{v273KnockVolume:0.1}),
+ v270Scene('narration','똑똑.',null,'bed',{v273KnockVolume:.4}),
  v270Scene('dialogue','?','주인공','bed'),
- v270Scene('narration','똑똑똑.',null,'bed',{v273KnockVolume:0.6,boldAll:true}),
- v270Scene('narration','똑똑똑똑.',null,'bed',{v273KnockVolume:1.5,boldAll:true,fontScale:1.5,v270BgmTarget:.7,v270BgmFade:600}),
+ v270Scene('narration','똑똑똑.',null,'bed',{v273KnockVolume:.4,boldAll:true}),
+ v270Scene('narration','똑똑똑똑.',null,'bed',{v273KnockVolume:.4,boldAll:true,fontScale:1.5,v270BgmTarget:.7,v270BgmFade:600}),
  v270Scene('dialogue','누구세요?','주인공','bed',{v270BgmTarget:.2,v270BgmFade:1200}),
  v270Scene('dialogue','뭐야. 잘못 들었나.','주인공','bed'),
- v270Scene('dialogue','너무 피곤해서 그런가보다.','주인공','bed'),
+ v270Scene('dialogue','너무 피곤한 하루네...','주인공','bed'),
  v270Scene('dialogue','잠이나 자야지.','주인공','bed',{v270FadeAfter:true}),
  v270Scene('v270-wiban-day-title','',null,'black'),
  v270Scene('narration','김봉봉은 공양자로 선정되었다.',null,'square',{v270BgmTarget:.35,v270BgmFade:2000}),
@@ -2128,7 +2128,9 @@ scenes[V279_AFTER_13_START+1].v279NextIndex=V270_WIBAN_START+13;
 scenes[V270_WIBAN_START+20].v279NextIndex=V279_AFTER_21_START;
 scenes[V279_AFTER_21_START].v279NextIndex=V270_WIBAN_START+21;
 scenes[V270_WIBAN_START+30].v279NextIndex=V279_AFTER_31_START;
-scenes[V279_AFTER_31_START+5].v279NextIndex=V270_WIBAN_START+31;
+scenes[V279_AFTER_31_START+5].v279NextIndex=V270_WIBAN_START+32;
+// V280: the deleted old line #32 remains only to keep past save indices stable.
+scenes[V270_WIBAN_START+31].v280Skipped=true;
 // Original scene order is immutable; actual route progression follows links.
 for(let offset=5;offset<=45;offset++){
  scenes[V270_WIBAN_START+offset].v279ClockActive=true;
@@ -3161,7 +3163,13 @@ function startConfessionQuestionTransition(){
    confessionQuestionTimers.push(setTimeout(()=>{locked=false},130));
  },780));
 }
-function save(){try{localStorage.setItem(KEY,String(index));localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0')}catch(e){}refreshInventoryVisibility()}
+function save(){try{
+ localStorage.setItem(KEY,String(index));localStorage.setItem('shindo_story_started_v37','1');localStorage.setItem('shindo_sleep_gate_v48','0');
+ if(scenes[index]?.v270Wiban){
+  localStorage.setItem('shindo_wiban_active_v280','1');
+  localStorage.setItem('shindo_wiban_resume_scene_v280',String(index));
+ }
+ }catch(e){}refreshInventoryVisibility()}
 const DAY2_START=scenes.findIndex(x=>x.day===2 || (x.text&&x.text.includes("봉봉 씨! 새벽기도 안 가세요?")));
 const SKIP_REACHED='shindo_day1_reached_day2_v171';
 const SKIP_REPLAY='shindo_area_skip_replay_v171';
@@ -3498,6 +3506,11 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   index=V257_DAY3_JEONGHAN_POLICE_PACKAGE_START;save();render();return;
  }
  const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){finish();return}
+ if(scene.v280Skipped){index=v279NextIndexFor(index);save();render();return}
+ // A stale controller can leave the WIBAN soundtrack playing on the ordinary story.
+ if(!scene.v270Wiban && (v270Music||v279ClockAudio)){
+  v273StopKnock();v270StopMusic();v270StopBell();v280ClearWibanCheckpoint();
+ }
  // V279: 60% dark background only for old CSV lines 41~46.
  storyBackdrop.classList.toggle('v279-wiban-square-dim',!!scene.v279SquareDark);
  // V277: take the pre-Day-3 snapshot at the *first* Day-3 title, before
@@ -3938,7 +3951,7 @@ function v277RestoreDay3Snapshot(){
 }
 // Reset transient scene elements before teleporting to a non-linear checkpoint.
 function v277ClearTransientScenes(){
- v270StopMusic();v270StopBell();v273StopKnock();v207StopEscapeMusic();
+ v270StopMusic();v270StopBell();v273StopKnock();v280ClearWibanCheckpoint();v207StopEscapeMusic();
  v218StopOfferingBell();v205StopChoice();v205HammerBlocked=false;
  if(v205HammerAudio){v205HammerAudio.pause();v205HammerAudio=null}
  stopV178Bell();v178Patrol(null);stopEveningTick();stopEveningWalk();eveningLivingEntered=false;
@@ -4009,6 +4022,7 @@ function restartFromDay1(){
  v270StopMusic();v270StopBell();
  for(let day=4;day<=13;day++)localStorage.removeItem('shindo_jihoon_bad_day'+day+'_counted_v270');
  ['shindo_wiban_trigger_day_v270','shindo_wiban_test_v270','shindo_wiban_confession_answer_v270'].forEach(k=>localStorage.removeItem(k));
+ v280ClearWibanCheckpoint();
 
  localStorage.removeItem('shindo_jeonghan_room_search_v256');localStorage.removeItem('shindo_escape_package_owned');localStorage.removeItem('shindo_day3_jeonghan_case_v260');localStorage.removeItem('shindo_day3_living_room_deferred_v260');storyBackdrop.classList.remove('shindo-v256-faded');
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
@@ -4046,6 +4060,7 @@ function restartFromDay2(){
  v270StopMusic();v270StopBell();
  for(let day=4;day<=13;day++)localStorage.removeItem('shindo_jihoon_bad_day'+day+'_counted_v270');
  ['shindo_wiban_trigger_day_v270','shindo_wiban_test_v270','shindo_wiban_confession_answer_v270'].forEach(k=>localStorage.removeItem(k));
+ v280ClearWibanCheckpoint();
 
  localStorage.removeItem('shindo_jeonghan_room_search_v256');localStorage.removeItem('shindo_escape_package_owned');localStorage.removeItem('shindo_day3_jeonghan_case_v260');localStorage.removeItem('shindo_day3_living_room_deferred_v260');storyBackdrop.classList.remove('shindo-v256-faded');
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
@@ -4120,6 +4135,7 @@ function restartFromDay2Afternoon(startAtConfessional=false){
  v270StopMusic();v270StopBell();v273StopKnock();v207StopEscapeMusic();
  for(let day=4;day<=13;day++)localStorage.removeItem('shindo_jihoon_bad_day'+day+'_counted_v270');
  ['shindo_wiban_trigger_day_v270','shindo_wiban_test_v270','shindo_wiban_confession_answer_v270'].forEach(key=>localStorage.removeItem(key));
+ v280ClearWibanCheckpoint();
  localStorage.removeItem('shindo_jeonghan_room_search_v256');storyBackdrop.classList.remove('shindo-v256-faded');
  localStorage.removeItem('shindo_day2_police_met_seokmin_v241');
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
@@ -5139,13 +5155,22 @@ function showEnding(){stopEveningTick();stopVnTyping(false);stopGongyangBell();s
 
 // V270: audio, scene timing, and ending are scoped to this route.
 const V270_WIBAN_DAY_KEY='shindo_wiban_trigger_day_v270';
+// V280: isolated route checkpoint for the in-progress WIBAN ending.
+const V280_WIBAN_ACTIVE_KEY='shindo_wiban_active_v280';
+const V280_WIBAN_RESUME_KEY='shindo_wiban_resume_scene_v280';
+function v280ClearWibanCheckpoint(){
+ try{localStorage.removeItem(V280_WIBAN_ACTIVE_KEY);localStorage.removeItem(V280_WIBAN_RESUME_KEY)}catch(_){}
+}
+function v280ValidWibanIndex(candidate){
+ return Number.isInteger(candidate)&&candidate>=V270_WIBAN_START&&candidate<scenes.length&&!!scenes[candidate]?.v270Wiban;
+}
+
 let v270Music=null,v270MusicTween=null,v270BellAudio=null,v270BellFade=null,v270Curtain=null;
 function v270EnsureCurtain(){
  if(!v270Curtain){v270Curtain=document.createElement('div');v270Curtain.className='v270-curtain';overlay.appendChild(v270Curtain)}
  return v270Curtain;
 }
-// V273: Per-line knock cue for WIBAN-007/009/010/027/029/030.
-// Independent of the route's horror-music/BGM volume automation.
+// V280: All six WIBAN knocks play at 40%, independent of the BGM.
 let v273KnockAudio=null,v279KnockGain=null,v279KnockSource=null;
 function v273StopKnock(){
  if(v273KnockAudio){v273KnockAudio.pause();v273KnockAudio.currentTime=0;v273KnockAudio=null}
@@ -5252,7 +5277,7 @@ function v270FadeToNext(){
  },690);
 }
 function v270EnterEnding(isTest=false){
- v273StopKnock();v279StopClock();
+ v273StopKnock();v270StopMusic();v270StopBell();
  const day=Number(localStorage.getItem('shindo_current_story_day_v109'))||3;
  // The provided preview explicitly displays Day 6; real play shows the next day.
  localStorage.setItem(V270_WIBAN_DAY_KEY,String(isTest?5:day));
@@ -5279,7 +5304,13 @@ function v270ShowDayTitle(){
  const center=overlay.querySelector('.vn-center')||(()=>{const c=document.createElement('div');c.className='vn-center';overlay.appendChild(c);return c})();
  center.textContent=day+'일차 아침';center.style.display='block';
  overlay.querySelector('.vn-hint').style.display='none';
- timer=setTimeout(()=>{center.style.display='none';locked=false;next()},2400);
+ const dayTitleIndex=index;
+ timer=setTimeout(()=>{
+  if(index!==dayTitleIndex || scenes[index]?.kind!=='v270-wiban-day-title')return;
+  center.style.display='none';locked=false;
+  // Direct continuation to WIBAN line 36, never to the Day-1 introduction.
+  index=V270_WIBAN_START+35;save();render();
+ },2400);
 }
 function v270ShowEnding(){
  v273StopKnock();v279StopClock();
@@ -5320,7 +5351,7 @@ function v270ShowEnding(){
  if(art.complete){if(!art.naturalWidth)art.style.visibility='hidden';runEndingTimeline()}
 }
 function finish(){
- v273StopKnock();v279StopClock();
+ v273StopKnock();v270StopMusic();v270StopBell();v280ClearWibanCheckpoint();
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  v205StopChoice(); v207StopEscapeMusic();
 v205HammerBlocked=false;if(v205HammerAudio){v205HammerAudio.pause();v205HammerAudio=null}
@@ -5377,12 +5408,13 @@ function next(userAdvance=false){
  // V213: play the expanded Day 1 bedtime lines without renumbering saved scenes.
  if(scenes[index]?.v213BedtimeEntry){index=V213_DAY1_BEDTIME_EXTRA_START;save();render();return;}
  if(scenes[index]?.v213BedtimeFinal){index=DAY2_START;save();render();return;}
- if(index>=scenes.length-1){finish();return;}
- index=v279NextIndexFor(index);save();render();
+ const nextIndex=v279NextIndexFor(index);
+ if(!Number.isInteger(nextIndex)||nextIndex<0||nextIndex>=scenes.length){finish();return}
+ index=nextIndex;save();render();
 }
 overlay.addEventListener('click',()=>{audioContext();if(scenes[index]?.eveningLocation==='village'&&!v207EscapeMusicFading)v207StartEscapeMusic();if(v178BellWanted&&!v178BellStarted){prepareV178BellFromGesture();if(v178BellBuffer)startV178Bell();}next(true)});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(phoneDrawer.classList.contains('is-open'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next(true)}});
 window.SHINDO_startStory=()=>{
- v273StopKnock();v279StopClock();
+ v273StopKnock();v270StopMusic();v270StopBell();
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
  v207StopEscapeMusic();
  stopV178Bell();v178Patrol(null);stopEveningTick();eveningBranch=Number(localStorage.getItem('shindo_evening_branch_day2_v173')||0);
@@ -5407,7 +5439,17 @@ try{
   localStorage.setItem('shindo_scene_index_migrated_v176','1');
  }
 }catch(_){/* no persistent storage available */}
-const n=Number(localStorage.getItem(KEY));index=Number.isInteger(n)&&n>=0&&n<scenes.length?n:0;revealed=scenes.slice(0,index+1).some(x=>x.reveal);jihoonRevealed=scenes.slice(0,index+1).some(x=>x.revealJihoon);
+let n=Number(localStorage.getItem(KEY));
+ if(localStorage.getItem(V280_WIBAN_ACTIVE_KEY)==='1'){
+  const checkpoint=Number(localStorage.getItem(V280_WIBAN_RESUME_KEY));
+  if(v280ValidWibanIndex(checkpoint) && !v280ValidWibanIndex(n)){
+   n=checkpoint;
+   try{localStorage.setItem(KEY,String(checkpoint))}catch(_){}
+  }else if(!v280ValidWibanIndex(checkpoint))v280ClearWibanCheckpoint();
+ }
+ index=Number.isInteger(n)&&n>=0&&n<scenes.length?n:0;
+ if(!scenes[index]?.v270Wiban)v280ClearWibanCheckpoint();
+ revealed=scenes.slice(0,index+1).some(x=>x.reveal);jihoonRevealed=scenes.slice(0,index+1).some(x=>x.revealJihoon);
 currentPortrait='';for(const scene of scenes.slice(0,index+1)){if(scene.clearPortrait)currentPortrait='';if(scene.portrait)currentPortrait=scene.portrait}
 storyUnderlay.classList.add('visible');storyBackdrop.classList.add('visible');overlay.classList.add('active');if(scenes.slice(0,index+1).some(x=>x.enterSanctuary)&&!scenes.slice(0,index+1).some(x=>x.leaveSanctuary)){overlay.classList.add("sanctuary");if(!scenes[index].enterSanctuary)stopSanctuaryTick()}refreshInventoryVisibility();render()};
 })();
