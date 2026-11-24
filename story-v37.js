@@ -3576,9 +3576,13 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   if(scene.kind==='v178-coop-choice'){areaSkipButton.hidden=true;stopV178Bell();v178Patrol(null);currentPortrait='';applySceneBackdrop(index,scene);showV178CoopChoice();return}
   if(scene.kind==='v178-ending'){areaSkipButton.hidden=true;showV178Dogodai();return}
   if(scene.kind==='v215-day3-branch'){
+   // V282: one-use test checkpoint for the Joshua variant. Leave evidence
+   // and original affinity rules untouched; do not persist the override.
+   const forcedJoshua=localStorage.getItem(V282_TEST_JOSHUA_KEY)==='1';
+   localStorage.removeItem(V282_TEST_JOSHUA_KEY);
    const officeEvidence=hasEvidenceItem('accounting-ledger');
-   if(officeEvidence)localStorage.setItem('shindo_day3_joshua_intro_needed_v215',joshuaRevealed?'0':'1');
-   index=officeEvidence?V215_DAY3_JOSHUA_START:V215_DAY3_NORMAL_START;
+   if(officeEvidence||forcedJoshua)localStorage.setItem('shindo_day3_joshua_intro_needed_v215',forcedJoshua?'1':(joshuaRevealed?'0':'1'));
+   index=(officeEvidence||forcedJoshua)?V215_DAY3_JOSHUA_START:V215_DAY3_NORMAL_START;
    save();render();return;
   }
   if(scene.kind==='v215-day3-prayer-choice'){showV215Day3PrayerChoice();return}
@@ -4226,6 +4230,85 @@ function restartFromDay2Afternoon(startAtConfessional=false){
 }
 window.SHINDO_restartFromDay2Afternoon=restartFromDay2Afternoon;
 window.SHINDO_restartFromDay2Confessional=()=>restartFromDay2Afternoon(true);
+
+// V282: Feedback-menu test checkpoints. All targets are derived from existing
+// authored scenes. This is a debug teleport: it does NOT invent skipped choices,
+// award skipped affinity/evidence or silently change another route's dialogue.
+const V282_TEST_JOSHUA_KEY='shindo_test_force_day3_joshua_v282';
+const V282_CHECKPOINT_LABELS=Object.freeze({
+ reset:'초기화',day1_intro:'1일차 도입',day1_sanctuary:'1일차 본당',day1_confession:'1일차 고해소',
+ day2_intro:'2일차 도입',day2_offering:'2일차 공양제',day2_morning:'2일차 오전활동',
+ day2_confession:'2일차 고해소',day2_contact:'2일차 접선',day2_afternoon:'2일차 오후활동',
+ day3_intro:'3일차 도입',day3_joshua:'3일차 도입(조슈아 만남)',
+ day3_offering:'3일차 공양제',day3_morning:'3일차 오전활동'
+});
+function v282FindCheckpointScene(id){
+ switch(id){
+  case 'reset':return 0; // original pre-Day-1 prologue
+  case 'day1_intro':return scenes.findIndex(x=>x.kind==='transition'&&x.text==='1일차 아침');
+  case 'day1_sanctuary':return scenes.findIndex(x=>x.enterSanctuary===true);
+  case 'day1_confession':return scenes.findIndex(x=>x.text==='고해소는 본당 옆에 있는 작은 경당이었다.');
+  case 'day2_intro':return DAY2_START;
+  case 'day2_offering':return scenes.findIndex(x=>x.text==='아침이 밝았다. 중앙광장으로 가볼까...'&&x.branch===1);
+  case 'day2_morning':return scenes.findIndex(x=>x.kind==='day2-morning-choice'&&x.branch===1);
+  case 'day2_confession':return EVENING_DAY2_START;
+  case 'day2_contact':return scenes.findIndex(x=>x.eveningDay2===true&&x.eveningBranch===2&&x.text==='서늘한 저녁 공기 사이로 누군가의 어깨가 툭 와 부딪혔다.');
+  case 'day2_afternoon':return scenes.findIndex(x=>x.kind==='v178-hold'&&x.v178Hold==='deny');
+  case 'day3_intro':case 'day3_joshua':return scenes.findIndex((x,i)=>x.kind==='v205-day3'&&scenes[i+1]?.v178Hold==='day3-after-sleep');
+  case 'day3_offering':return V218_GONGYANG_START_BY_DAY[3]??-1;
+  case 'day3_morning':return scenes.findIndex(x=>x.kind==='v218-gongyang-end'&&x.v218GongyangDay===3);
+  default:return -1;
+ }
+}
+function v282RestartFromCheckpoint(id){
+ if(!Object.prototype.hasOwnProperty.call(V282_CHECKPOINT_LABELS,id))return false;
+ const target=v282FindCheckpointScene(id);
+ if(!Number.isInteger(target)||target<0||target>=scenes.length){
+  console.error('[SHINDO V282] 확인되지 않은 재시작 지점:',id);return false;
+ }
+ // Preserve the existing day-specific reset procedures and their safeguards.
+ // They manage inventory and prior decisions without modifying mail login.
+ if(id==='reset'||id.startsWith('day1_'))restartFromDay1();
+ else if(id.startsWith('day2_'))restartFromDay2();
+ else restartFromDay3();
+ v277ClearTransientScenes();
+ localStorage.removeItem(V282_TEST_JOSHUA_KEY);
+ if(id==='day3_joshua'){
+  // Test-only branch override, cleared at the branch decision.
+  // Do not fabricate the accounting ledger evidence to activate it.
+  localStorage.setItem(V282_TEST_JOSHUA_KEY,'1');
+ }
+ if(id==='day2_contact'){
+  // Actual authored encounter follows the '일단 함구하자' confession response.
+  // No affinity is awarded until its original scene is played.
+  eveningBranch=2;
+  localStorage.setItem('shindo_evening_branch_day2_v173','2');
+ }
+ if(id==='day2_afternoon'){
+  // Existing activity-selection screen after declining to disclose to Seungkwan.
+  // No earlier police cooperation or affinity event is fabricated.
+  eveningBranch=2;seungkwanTruthBranch=2;
+  localStorage.setItem('shindo_evening_branch_day2_v173','2');
+  localStorage.setItem('shindo_seungkwan_truth_branch_v177','2');
+ }
+ if(id==='reset'){
+  // A complete VN reset starts before the Day 1 title, not at its checkpoint.
+  localStorage.removeItem('shindo_confession_branch');
+  localStorage.removeItem('shindo_story_v55_extended');
+  localStorage.removeItem('shindo_story_v66_sanctuary');
+ }
+ if(id==='day1_sanctuary'||id==='day1_confession'){
+  revealed=scenes.slice(0,target+1).some(x=>x.reveal);
+  jihoonRevealed=scenes.slice(0,target+1).some(x=>x.revealJihoon);
+ }
+ localStorage.setItem('shindo_current_story_day_v109',id.startsWith('day3_')?'3':id.startsWith('day2_')?'2':'1');
+ index=target;locked=false;save();
+ document.dispatchEvent(new Event('shindo-inventory-change'));
+ render();return true;
+}
+window.SHINDO_restartFromCheckpointV282=v282RestartFromCheckpoint;
+window.SHINDO_CHECKPOINT_LABELS_V282=V282_CHECKPOINT_LABELS;
+
 
 // V219: distinguish a Day 2 morning encounter from a name known since Day 1.
 // V223: This flag is shared by Days 3–13 and is written only after

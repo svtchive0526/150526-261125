@@ -538,10 +538,18 @@
  #shindo-phone-panel .inv-history{display:flex;flex-direction:column;gap:5px;font-size:13px}
  #shindo-phone-panel .inv-time{font-size:11px;color:#999}
  #shindo-phone-panel .inv-feedback{width:100%;padding:14px 10px;border-radius:8px;background:#4b3434;border:1px solid #9e6767}
- #shindo-phone-panel .inv-feedback-reset{display:block;margin-top:12px;background:#353535;border-color:#868686;color:#f3f3f3}
- @media(max-width:750px){#shindo-phone-panel .inv-shell{gap:10px;padding:12px}#shindo-phone-panel .inv-content{margin-top:7px;padding-top:8px}#shindo-phone-panel .inv-tabs{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}#shindo-phone-panel .inv-tab{font-size:11px;padding:9px 2px}#shindo-phone-panel .inv-avatar{width:48px;height:60px}}
+ #shindo-phone-panel .inv-feedback-reset{display:block;width:calc(100% - 32px);max-width:360px;margin:9px auto 0;padding:9px 10px;min-height:36px;box-sizing:border-box;font-size:12px;line-height:1.45;text-align:center;background:#353535;border-color:#868686;color:#f3f3f3}
+ @media(max-width:750px){#shindo-phone-panel .inv-shell{gap:10px;padding:12px}#shindo-phone-panel .inv-content{margin-top:7px;padding-top:8px}#shindo-phone-panel .inv-tabs{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}#shindo-phone-panel .inv-tab{font-size:11px;padding:9px 2px}#shindo-phone-panel .inv-avatar{width:48px;height:60px}#shindo-phone-panel .inv-feedback-reset{width:calc(100% - 20px);padding:9px 8px;font-size:12px}}
  `;
  document.head.appendChild(style);
+ // V282: two columns, including narrow-screen phone drawer; no full-width row buttons.
+ const v282GridStyle=document.createElement('style');
+ v282GridStyle.textContent=`
+ #shindo-phone-panel .inv-checkpoint-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 6px 4px;align-items:stretch}
+ #shindo-phone-panel .inv-checkpoint-grid .inv-feedback-reset{display:flex;align-items:center;justify-content:center;width:100%;max-width:none;min-width:0;min-height:42px;margin:0;padding:8px 5px;white-space:normal;overflow-wrap:break-word;font-size:11.5px;line-height:1.35;border-radius:7px}
+ @media(max-width:750px){#shindo-phone-panel .inv-checkpoint-grid{gap:7px;margin:12px 2px 4px}#shindo-phone-panel .inv-checkpoint-grid .inv-feedback-reset{padding:8px 4px;font-size:11px;min-height:44px}}
+ `;
+ document.head.appendChild(v282GridStyle);
  panel.innerHTML='<div class="inv-shell"><div><div class="inv-title">기록 보관함</div></div><div class="inv-tabs" role="tablist"><button class="inv-tab" data-tab="evidence" role="tab">증거품</button><button class="inv-tab" data-tab="people" role="tab">친밀도</button><button class="inv-tab" data-tab="history" role="tab">플레이 기록</button><button class="inv-tab" data-tab="feedback" role="tab">피드백</button></div><div class="inv-content" id="shindo-inv-content" role="tabpanel"></div></div>';
  const content=panel.querySelector('.inv-content');let active='evidence';
  function make(tag,klass,txt){const el=document.createElement(tag);if(klass)el.className=klass;if(txt!==undefined)el.textContent=txt;return el}
@@ -669,23 +677,41 @@
  const btn=make('button','inv-feedback','피드백 페이지 열기');btn.type='button';
  btn.addEventListener('click',()=>{if(typeof window.SHINDO_openFeedback!=='function'){empty('현재 피드백 페이지를 열 수 없습니다.');return}drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');window.SHINDO_openFeedback()});content.append(btn);
  const options=[
-  ['1일차부터 다시 시작','SHINDO_restartFromDay1'],
-  ['2일차부터 다시 시작','SHINDO_restartFromDay2'],
-  ['2일차 오후부터 다시 시작(고해소 장면부터)','SHINDO_restartFromDay2Confessional'],
-  ['3일차부터 다시 시작','SHINDO_restartFromDay3']
+  ['초기화','reset'],
+  ['1일차 도입','day1_intro'],
+  ['1일차 본당','day1_sanctuary'],
+  ['1일차 고해소','day1_confession'],
+  ['2일차 도입','day2_intro'],
+  ['2일차 공양제','day2_offering'],
+  ['2일차 오전활동','day2_morning'],
+  ['2일차 고해소','day2_confession'],
+  ['2일차 접선','day2_contact'],
+  ['2일차 오후활동','day2_afternoon'],
+  ['3일차 도입','day3_intro'],
+  ['3일차 도입(조슈아 만남)','day3_joshua'],
+  ['3일차 공양제','day3_offering'],
+  ['3일차 오전활동','day3_morning']
  ];
- for(const [label,callback] of options){
+ const grid=make('div','inv-checkpoint-grid');
+ for(const [label,id] of options){
   const restart=make('button','inv-feedback inv-feedback-reset',label);restart.type='button';
+  restart.setAttribute('data-checkpoint',id);
   restart.addEventListener('click',()=>{
-   if(typeof window[callback]!=='function'){window.alert('해당 재시작 기능을 불러오지 못했습니다.');return}
-   const legacyNote=callback==='SHINDO_restartFromDay3' && window.SHINDO_hasDay3RestartSnapshot?.()===false
-     ?'\n\n이전에 시작한 저장 데이터에는 3일차 시작 스냅샷이 없을 수 있습니다. 그 경우 이미 획득한 친밀도·증거품은 보존하고 장면만 재시작합니다.' : '';
-   if(!window.confirm(label+'할까요?\n진행 지점 이후의 일부 선택 기록이 초기화될 수 있습니다.'+legacyNote))return;
+   if(typeof window.SHINDO_restartFromCheckpointV282!=='function'){
+    window.alert('재시작 기능을 불러오지 못했습니다.');return;
+   }
+   const legacyNote=id.startsWith('day3_')&&window.SHINDO_hasDay3RestartSnapshot?.()===false
+    ?'\n\n이전 저장에는 3일차 시작 상태가 없을 수 있습니다. 그 경우 친밀도와 증거품을 임의로 역산하지 않고 장면만 이동합니다.' : '';
+   const detail=id==='reset'?'게임 스토리 진행 기록을 초기화하고 첫 도입으로 돌아갑니다.':
+    '이 지점으로 테스트 이동하며 건너뛴 장면의 보상이나 증거품을 자동 지급하지 않습니다.';
+   if(!window.confirm(label+' — 이동할까요?\n'+detail+legacyNote))return;
+   const result=window.SHINDO_restartFromCheckpointV282(id);
+   if(result!==true){window.alert('해당 장면을 찾지 못해 이동하지 않았습니다.');return}
    drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');
-   window[callback]();
   });
-  content.append(restart);
+  grid.append(restart);
  }
+ content.append(grid);
 }
 function render(){panel.querySelectorAll('.inv-tab').forEach(b=>{b.setAttribute('aria-selected',String(b.dataset.tab===active))});refreshUnreadIndicators();content.replaceChildren();({evidence,people,history,feedback})[active]()}
  panel.querySelectorAll('.inv-tab').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();closeEvidenceDetail();active=b.dataset.tab;render()}));
