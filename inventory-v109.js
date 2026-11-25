@@ -706,13 +706,25 @@
   ['3일차 공양제','day3_offering'],
   ['3일차 오전활동','day3_morning'],
   ['3일차 고해소','day3_confession'],
-  ['3일차 오후활동','day3_afternoon']
+  ['3일차 오후활동','day3_afternoon'],
+  ['질시 엔딩','jilsi_ending_test']
  ];
  const grid=make('div','inv-checkpoint-grid');
  for(const [label,id] of options){
   const restart=make('button','inv-feedback inv-feedback-reset',label);restart.type='button';
   restart.setAttribute('data-checkpoint',id);
   restart.addEventListener('click',()=>{
+   if(id==='jilsi_ending_test'){
+    if(typeof window.SHINDO_startJilsiEndingTestV303!=='function'){
+     window.alert('질시 엔딩 테스트 기능을 불러오지 못했습니다.');return;
+    }
+    if(!window.confirm('질시 엔딩을 공통 도입부부터 테스트할까요?\n친밀도 80 조건만 건너뛰며, 현재 스토리 진행 위치가 테스트 장면으로 이동합니다.'))return;
+    const result=window.SHINDO_startJilsiEndingTestV303();
+    if(result!==true){window.alert('질시 엔딩 테스트 장면으로 이동하지 못했습니다.');return;}
+    drawer.classList.remove('is-open');
+    document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');
+    return;
+   }
    if(typeof window.SHINDO_restartFromCheckpointV282!=='function'){
     window.alert('재시작 기능을 불러오지 못했습니다.');return;
    }

@@ -2584,6 +2584,36 @@ function v299StartChanSequence(day){
  areaSkipButton.hidden=true;portrait.hidden=true;currentPortrait='';illustration.hidden=true;
  locked=false;index=V299_CHAN_COMMON_START;save();render();
 }
+// V303: Feedback-only preview. This bypasses the affinity gate without
+// changing the normal route's condition or marking the event as consumed.
+const V303_JILSI_TEST_KEY='shindo_jilsi_feedback_test_v303';
+const V303_JILSI_LOCK_BACKUP='shindo_jilsi_feedback_lock_backup_v303';
+const V303_JILSI_LOCKS_KEY='shindo_affinity_locks_v222';
+function v303JilsiTestActive(){return sessionStorage.getItem(V303_JILSI_TEST_KEY)==='1'}
+function v303RestoreJilsiTestLock(){
+ const record=sessionStorage.getItem(V303_JILSI_LOCK_BACKUP);
+ if(record!==null){
+  try{
+   const prior=JSON.parse(record);
+   if(prior.existed)localStorage.setItem(V303_JILSI_LOCKS_KEY,String(prior.value));
+   else localStorage.removeItem(V303_JILSI_LOCKS_KEY);
+   document.dispatchEvent(new Event('shindo-inventory-change'));
+  }catch(err){console.warn('[SHINDO V303] 친밀도 잠금 복원 실패',err)}
+ }
+ sessionStorage.removeItem(V303_JILSI_LOCK_BACKUP);
+}
+function v303StartJilsiEndingTest(){
+ // Existing VN scene handling, timed choices and S01/S02 are reused verbatim.
+ // The test's 'next morning' card is shown as 7일차, per the test specification.
+ const current=Number(localStorage.getItem('shindo_current_story_day_v109'))||3;
+ const day=Math.min(13,Math.max(3,Math.floor(current)));
+ const existingLock=localStorage.getItem(V303_JILSI_LOCKS_KEY);
+ sessionStorage.setItem(V303_JILSI_LOCK_BACKUP,JSON.stringify({existed:existingLock!==null,value:existingLock}));
+ sessionStorage.setItem(V303_JILSI_TEST_KEY,'1');
+ try{v299StartChanSequence(day);return true}
+ catch(err){v303RestoreJilsiTestLock();sessionStorage.removeItem(V303_JILSI_TEST_KEY);console.error('[SHINDO V303] 질시 테스트 진입 실패',err);return false}
+}
+window.SHINDO_startJilsiEndingTestV303=v303StartJilsiEndingTest;
 function v299ApplyMemorySlot(scene){
  if(!Object.prototype.hasOwnProperty.call(scene,'v299MemorySlot'))return;
  let pair=[];try{pair=JSON.parse(localStorage.getItem(V299_CHAN_MEMORY_PAIR)||'[]')}catch(_){}
@@ -2707,8 +2737,10 @@ function v298ShouldOfferJilsi(day){
 function v298ContinueRegularAfternoon(day){
  const d=Math.max(1,Math.floor(Number(day)||0));
  overlay.classList.remove('v299-chan-recall');storyBackdrop.classList.remove('v299-chan-recall-dim');
- localStorage.setItem(V298_JILSI_DAY_KEY,String(d));
- localStorage.setItem(V298_JILSI_RESULT_KEY,'1');
+ if(!v303JilsiTestActive()){
+  localStorage.setItem(V298_JILSI_DAY_KEY,String(d));
+  localStorage.setItem(V298_JILSI_RESULT_KEY,'1');
+ }
  if(d===3){v291EnterDay3Afternoon();return;}
  const target=scenes.findIndex(s=>s.v292AfternoonConfessionalStart===true && s.v292AfternoonConfessionalDay===d);
  if(target>=0){stopEveningTick();localStorage.removeItem(V219_MODE_KEY);const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';currentPortrait='';portrait.hidden=true;illustration.hidden=true;locked=false;index=target;save();render();return}
@@ -2729,7 +2761,7 @@ function v298ShowChoice(day){
  const started=performance.now();
  requestAnimationFrame(()=>{if(gauge){gauge.style.transition='width 10s linear';gauge.style.width='0%'}});
  const cleanup=()=>{if(timerId!==null){clearTimeout(timerId);timerId=null}if(countdownId!==null){clearInterval(countdownId);countdownId=null}clock.pause();clock.currentTime=0;};
- const resolve=(choice,timeout=false)=>{if(resolved)return;resolved=true;cleanup();el.style.display='none';localStorage.setItem(V298_JILSI_DAY_KEY,String(d));localStorage.setItem(V298_JILSI_RESULT_KEY,String(choice));if(timeout)window.SHINDO_addPlayRecord?.('선택','질시 분기: 시간 초과로 2번 자동 선택',d);else window.SHINDO_addPlayRecord?.('선택','질시 분기: '+(choice===1?options[0]:options[1]),d);if(choice===1){locked=false;index=V299_CHAN_S01_START;save();render();return;}locked=false;index=V298_JILSI_START;save();render();};
+ const resolve=(choice,timeout=false)=>{if(resolved)return;resolved=true;cleanup();el.style.display='none';if(!v303JilsiTestActive()){localStorage.setItem(V298_JILSI_DAY_KEY,String(d));localStorage.setItem(V298_JILSI_RESULT_KEY,String(choice));}if(timeout)window.SHINDO_addPlayRecord?.('선택','질시 분기: 시간 초과로 2번 자동 선택',d);else window.SHINDO_addPlayRecord?.('선택','질시 분기: '+(choice===1?options[0]:options[1]),d);if(choice===1){locked=false;index=V299_CHAN_S01_START;save();render();return;}locked=false;index=V298_JILSI_START;save();render();};
  timerId=setTimeout(()=>resolve(2,true),V298_JILSI_TIMEOUT_MS);
  countdownId=setInterval(()=>{remain=Math.max(0,Math.ceil((V298_JILSI_TIMEOUT_MS-(performance.now()-started))/1000));if(countdown)countdown.textContent=remain+'초 남음';if(remain>0){clock.currentTime=0;clock.play().catch(()=>{});}if(remain<=0&&countdownId!==null){clearInterval(countdownId);countdownId=null}},1000);
  el.querySelectorAll('[data-v298-choice]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();resolve(Number(btn.dataset.v298Choice)||2,false)});
@@ -4604,7 +4636,13 @@ if(scene.kind==='day2-morning-choice'){
  if(scene.afternoonAffinity)window.SHINDO_applyAffinityEvent?.('afternoon',scene.afternoonAffinity,2);
 
  if(scene.kind==='v299-chan-choice'){v298ShowChoice(Number(localStorage.getItem(V299_CHAN_EVENT_DAY))||3);return;}
- if(scene.kind==='v299-chan-s01-end'){v298ContinueRegularAfternoon(Number(localStorage.getItem(V299_CHAN_EVENT_DAY))||3);return;}
+ if(scene.kind==='v299-chan-s01-end'){
+  const wasTest=v303JilsiTestActive();
+  if(wasTest)v303RestoreJilsiTestLock();
+  v298ContinueRegularAfternoon(Number(localStorage.getItem(V299_CHAN_EVENT_DAY))||3);
+  if(wasTest)sessionStorage.removeItem(V303_JILSI_TEST_KEY);
+  return;
+ }
  if(scene.v299LockChan)window.SHINDO_lockAffinity?.('찬');
  if(scene.kind==='v291-day3-choice'){v291ShowDay3ConfessionalChoice();return;}
  if(scene.kind==='v291-day3-end'){v293EnterNight();return;}
@@ -4756,7 +4794,7 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
  portrait.hidden=true;portrait.classList.remove('evening-shadow','v270-shadow');
 }
 
- if(scene.kind==='transition'){box.style.display='none';let center=overlay.querySelector('.vn-center');if(!center){center=document.createElement('div');center.className='vn-center';overlay.appendChild(center)}const transitionText=scene.v298Intertitle?`${Math.max(1,(Number(localStorage.getItem(V299_CHAN_EVENT_DAY))||3)+1)}일차`:scene.text;center.textContent=transitionText;center.style.display='block';overlay.querySelector('.vn-hint').style.display='none';locked=true;timer=setTimeout(()=>{locked=false;next()},transitionText?2300:3300);return}
+ if(scene.kind==='transition'){box.style.display='none';let center=overlay.querySelector('.vn-center');if(!center){center=document.createElement('div');center.className='vn-center';overlay.appendChild(center)}const transitionText=scene.v298Intertitle?`${v303JilsiTestActive()?7:Math.max(1,(Number(localStorage.getItem(V299_CHAN_EVENT_DAY))||3)+1)}일차`:scene.text;center.textContent=transitionText;center.style.display='block';overlay.querySelector('.vn-hint').style.display='none';locked=true;timer=setTimeout(()=>{locked=false;next()},transitionText?2300:3300);return}
  const center=overlay.querySelector('.vn-center');if(center)center.style.display='none';box.style.display='flex';overlay.querySelector('.vn-hint').style.display='block';box.classList.remove('box-shake-soft');if(scene.boxShakeSoft){void box.offsetWidth;box.classList.add('box-shake-soft')}content.textContent=scene.maskWonwoo?scene.text.replace('원우','??'):scene.text;
   // V247: reveal each visitor's name only after that specific character is known.
   if(scene.v256MaskSeokminName){
@@ -4899,7 +4937,7 @@ window.SHINDO_hasDay3RestartSnapshot=()=>{
 };
 
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
-function restartFromDay1(){['shindo_chan_event_day_v299','shindo_chan_memory_pair_v299','shindo_character_status_v299','shindo_jilsi_choice_day_v298','shindo_jilsi_choice_result_v298'].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay1(){sessionStorage.removeItem(V303_JILSI_TEST_KEY);sessionStorage.removeItem(V303_JILSI_LOCK_BACKUP);['shindo_chan_event_day_v299','shindo_chan_memory_pair_v299','shindo_character_status_v299','shindo_jilsi_choice_day_v298','shindo_jilsi_choice_result_v298'].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -6313,6 +6351,10 @@ const DOKSIL_ENDING_ILLUSTRATION='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA
 // V299: V298 S02 finished with a missing rendering function. The full route
 // remains unchanged; only its previously broken final title is made callable.
 function showJilsiEnding(){
+ if(v303JilsiTestActive()){
+  v303RestoreJilsiTestLock();
+  sessionStorage.removeItem(V303_JILSI_TEST_KEY);
+ }
  stopEveningTick();stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopConfessionTick();stopEndingBell();stopSanctuaryTick();
  areaSkipButton.hidden=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;
  overlay.querySelector('.vn-hint').style.display='none';overlay.classList.add('confession-blackout');locked=true;
