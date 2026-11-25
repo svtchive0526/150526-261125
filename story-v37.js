@@ -2932,6 +2932,9 @@ function v293ShowDay4Pending(){
 const V316_PM_BRANCH_KEY='shindo_pm_accusation_branch_v316';
 const V316_PM_DAY_KEY='shindo_pm_accusation_day_v316';
 const V316_PM_TARGET_KEY='shindo_pm_accusation_target_v316';
+// V317: temporary feedback-only override; never modify character unlock records.
+const V317_CONF_TEST_KEY='shindo_v317_day4_confession_test';
+function v317ConfTestActive(){return sessionStorage.getItem(V317_CONF_TEST_KEY)==='1'}
 const v316Scene=(kind,text='',speaker='',extra={})=>({kind,text,...(speaker?{speaker}:{}),v316Confession:true,eveningLocation:'inside',...extra,...(extra.v316Shade?{eveningShade:.6}:{})});
 const V316_PM_START=scenes.length;
 scenes.push(
@@ -2982,8 +2985,11 @@ const V316_PM_TARGET_SCREEN=scenes.length;
 scenes.push(v316Scene('v316-target-select',''));
 // Later days reuse the same authored dialogue without duplicating or renumbering it.
 // Only day 4 currently has a playable entrance; days 5 and 6 use this registration.
+let v317ConfTestEntering=false;
 function v316AfternoonStart(day){
  const d=Number(day);if(![4,5,6].includes(d))return false;
+ // Ordinary gameplay must always obey actual character-name unlocks.
+ if(!v317ConfTestEntering)sessionStorage.removeItem(V317_CONF_TEST_KEY);
  v316StopTick();v316ClearDeadline();
  localStorage.setItem(V316_PM_DAY_KEY,String(d));
  localStorage.setItem('shindo_current_story_day_v109',String(d));
@@ -2994,6 +3000,24 @@ function v316AfternoonStart(day){
  overlay.classList.remove('confession-blackout','v293-day4-title');
  locked=false;index=V316_PM_START;save();render();return true;
 }
+// V317: feedback test entry for the complete Day-4 confession dialogue.
+// The test bypasses only the twelve name-unlock filters in the target grid.
+// Authored S01 outcomes remain intact; unauthored accusation results remain pending.
+function v317StartDay4ConfessionTest(){
+ v317ConfTestEntering=true;
+ sessionStorage.setItem(V317_CONF_TEST_KEY,'1');
+ let ok=false;
+ try{
+  if(!overlay.classList.contains('active'))overlay.classList.add('active');
+  stopEveningTick();
+  localStorage.removeItem(V219_MODE_KEY);
+  currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+  ok=v316AfternoonStart(4);
+ }catch(error){console.error('[SHINDO V317] Day-4 confession test failed',error)}
+ finally{v317ConfTestEntering=false;if(!ok)sessionStorage.removeItem(V317_CONF_TEST_KEY)}
+ return ok;
+}
+window.SHINDO_startDay4ConfessionTestV317=v317StartDay4ConfessionTest;
 let v316TickTimer=null,v316DeadlineTimer=null;
 function v316ClearDeadline(){if(v316DeadlineTimer!==null){clearInterval(v316DeadlineTimer);v316DeadlineTimer=null}localStorage.removeItem('shindo_v316_selection_deadline')}
 function v316StopTick(){if(v316TickTimer!==null){clearInterval(v316TickTimer);v316TickTimer=null}}
@@ -3043,6 +3067,7 @@ const V316_TARGETS=[
  ['찬','chan','지나치게 맹목적인 신도다. 그를 고발하자.']
 ];
 function v316Unlocked(name){
+ if(v317ConfTestActive())return V316_TARGETS.some(p=>p[0]===name);
  let met=[];try{met=JSON.parse(localStorage.getItem('shindo_met_characters_v108')||'[]')}catch(_){}
  if(Array.isArray(met)&&met.includes(name))return true;
  const legacy={정한:'shindo_jeonghan_known_v156',조슈아:'shindo_joshua_known_v160',준휘:'shindo_junhui_known_v167',순영:'shindo_soonyoung_known_v105',명호:'shindo_minghao_known_v105',민규:'shindo_mingyu_known_v156',석민:'shindo_seokmin_known_v99',승관:'shindo_seungkwan_known_v177',한솔:'shindo_hansol_known_v99',찬:'shindo_chan_known_v99'};
@@ -5392,7 +5417,7 @@ window.SHINDO_hasDay3RestartSnapshot=()=>{
 };
 
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
-function restartFromDay1(){v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));v304StopChanBgm();sessionStorage.removeItem(V303_JILSI_TEST_KEY);sessionStorage.removeItem(V303_JILSI_LOCK_BACKUP);['shindo_chan_event_day_v299','shindo_chan_memory_pair_v299','shindo_character_status_v299','shindo_jilsi_choice_day_v298','shindo_jilsi_choice_result_v298'].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay1(){sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));v304StopChanBgm();sessionStorage.removeItem(V303_JILSI_TEST_KEY);sessionStorage.removeItem(V303_JILSI_LOCK_BACKUP);['shindo_chan_event_day_v299','shindo_chan_memory_pair_v299','shindo_character_status_v299','shindo_jilsi_choice_day_v298','shindo_jilsi_choice_result_v298'].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -5452,7 +5477,7 @@ function restartFromDay1(){v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KE
 window.SHINDO_restartFromDay1=restartFromDay1;
 
 // V169: Test restart at the black "2일차" title, keeping the authenticated mail/browser.
-function restartFromDay2(){v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));[V312_DAY4_OFFICE_KEY,V312_DAY2_SLEEP_KEY,V312_DAY3_SLEEP_KEY,V312_DAY4_PRAYER_KEY].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay2(){sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));[V312_DAY4_OFFICE_KEY,V312_DAY2_SLEEP_KEY,V312_DAY3_SLEEP_KEY,V312_DAY4_PRAYER_KEY].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -7260,7 +7285,7 @@ function next(userAdvance=false){
  index=nextIndex;save();render();
 }
 overlay.addEventListener('click',()=>{audioContext();if(scenes[index]?.eveningLocation==='village'&&!v207EscapeMusicFading)v207StartEscapeMusic();if(v178BellWanted&&!v178BellStarted){prepareV178BellFromGesture();if(v178BellBuffer)startV178Bell();}next(true)});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(phoneDrawer.classList.contains('is-open'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next(true)}});
-window.SHINDO_startStory=()=>{v316StopTick();overlay.querySelector('.shindo-v316-targets')?.remove();
+window.SHINDO_startStory=()=>{sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();overlay.querySelector('.shindo-v316-targets')?.remove();
  v304StopChanBgm();
  v281ClearFinalArtwork();
  v273StopKnock();v270StopMusic();v270StopBell();
