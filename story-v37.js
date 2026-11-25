@@ -3034,6 +3034,7 @@ function v320StopTimerDone(){
  try{v320TimerDoneAudio.currentTime=0}catch(_){ }
 }
 function v320PlayTimerDone(){
+ if(!v323AccusationVisible())return;
  v320PreloadTimerDone();
  const audio=v320TimerDoneAudio;
  if(!audio)return;
@@ -3064,22 +3065,51 @@ function v322StopTimerIng(fadeMs=0){
  },16);
 }
 function v322PlayTimerIng(elapsedMs=0){
+ if(!v323AccusationVisible())return;
  v322PreloadTimerIng();v322StopTimerIng();
  const audio=v322TimerIngAudio;
  const elapsed=Math.max(0,Math.min(12.95,elapsedMs/1000));
- const seek=()=>{try{audio.currentTime=elapsed}catch(_){}};
+ const seek=()=>{if(!v323AccusationVisible()||audio.paused)return;try{audio.currentTime=elapsed}catch(_){}};
  if(audio.readyState>=1)seek();else audio.addEventListener('loadedmetadata',seek,{once:true});
  audio.volume=1;
  audio.play().catch(error=>console.warn('[SHINDO V322] countdown sound could not play',error));
 }
 function v316ClearDeadline(){if(v316DeadlineTimer!==null){clearInterval(v316DeadlineTimer);v316DeadlineTimer=null}localStorage.removeItem('shindo_v316_selection_deadline')}
+// V323: accusation audio and its deadline belong exclusively to the visible
+// accusation target screen. Never let an old countdown finish on another scene.
+function v323AccusationVisible(){
+ const panel=overlay.querySelector('.shindo-v316-targets');
+ return overlay.classList.contains('active') &&
+   scenes[index]?.kind==='v316-target-select' &&
+   !!panel && panel.style.display!=='none' &&
+   !document.getElementById('shindo-feedback')?.classList.contains('sf-open');
+}
+function v323StopAccusationAudioAndTimers(){
+ v322StopTimerIng();
+ v320StopTimerDone();
+ v316ClearDeadline();
+}
+// Pause playback when the story is hidden, even without a new render (e.g. feedback).
+const v323AudioVisibilityObserver=new MutationObserver(()=>{
+ if(!v323AccusationVisible() && (v322TimerIngAudio && !v322TimerIngAudio.paused ||
+     v320TimerDoneAudio && !v320TimerDoneAudio.paused || v316DeadlineTimer!==null)){
+  v323StopAccusationAudioAndTimers();
+ }
+});
+v323AudioVisibilityObserver.observe(overlay,{attributes:true,attributeFilter:['class','style']});
+const v323FeedbackPanel=document.getElementById('shindo-feedback');
+if(v323FeedbackPanel)v323AudioVisibilityObserver.observe(v323FeedbackPanel,{attributes:true,attributeFilter:['class','style']});
+document.addEventListener('visibilitychange',()=>{
+ if(document.hidden && scenes[index]?.kind==='v316-target-select')v323StopAccusationAudioAndTimers();
+});
+
 function v316StopTick(){if(v316TickTimer!==null){clearInterval(v316TickTimer);v316TickTimer=null}}
 function v316StartTick(ms=1000){
  v316StopTick();
  const tick=()=>{if(overlay.classList.contains('active'))playExtraAudio('clock_tick_single.mp3',.26)};
  tick();v316TickTimer=setInterval(tick,ms);
 }
-function v316Go(target){const m=overlay.querySelector('.shindo-choices');if(m)m.style.display='none';locked=false;index=target;save();render()}
+function v316Go(target){if(target!==V316_PM_TARGET_SCREEN)v323StopAccusationAudioAndTimers();const m=overlay.querySelector('.shindo-choices');if(m)m.style.display='none';locked=false;index=target;save();render()}
 function v316ShowChoices(title,labels,handler){
  locked=true;areaSkipButton.hidden=true;box.style.display='none';
  overlay.querySelector('.vn-hint').style.display='none';
@@ -3130,6 +3160,9 @@ function v316Unlocked(name){
 }
 function v316TargetDescription(person){return person[3]&&v241MetSeokminAtPoliceDay2()?person[3]:person[2]}
 function v316ShowTargetSelection(){
+ // Preserve the existing absolute deadline across reloads; only replace active audio.
+ v322StopTimerIng();v320StopTimerDone();
+ if(v316DeadlineTimer!==null){clearInterval(v316DeadlineTimer);v316DeadlineTimer=null;}
  v320PreloadTimerDone();v322PreloadTimerIng();
  // V322: the countdown is a single edited soundtrack, not repeated ticks.
  v316StopTick();
@@ -3176,6 +3209,7 @@ function v316ShowTargetSelection(){
  if(deadline>Date.now())v322PlayTimerIng(13000-(deadline-Date.now()));
  const update=()=>{
   if(committed)return;
+  if(!v323AccusationVisible()){v323StopAccusationAudioAndTimers();return;}
   const left=Math.max(0,deadline-Date.now());
   el.querySelector('.v316-count').textContent=Math.ceil(left/1000)+'초';
   el.querySelector('.v316-fill').style.width=(left/13000*100)+'%';
@@ -4870,6 +4904,8 @@ function v178Patrol(mode){
 }
 function jumpV178(which){const target=V178_TARGETS[which];if(target===undefined)return;const el=overlay.querySelector('.shindo-choices');if(el)el.style.display='none';locked=false;index=V178_OFFSET+target;save();render()}
 function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTyping(false);
+ // V323: leaving the accusation screen must also stop its own media objects.
+ if(scenes[index]?.kind!=='v316-target-select')v323StopAccusationAudioAndTimers();
  // V257: migrate a save paused inside the former Day-3 ①/③ script to its new Day-3 scene.
  // The old lines remain untouched at their stable indices and belong to Day 4+ now.
  if(index>=V256_DAY4_EUNJAE_CASE13_START&&index<V256_DAY4_JEONGHAN_SEARCH_REVISIT_START&&
@@ -7256,6 +7292,7 @@ function v270ShowEnding(){
 }
 
 function finish(){
+ v323StopAccusationAudioAndTimers();
  v304StopChanBgm();
  v281ClearFinalArtwork();
  v273StopKnock();v270StopMusic();v270StopBell();v280ClearWibanCheckpoint();
