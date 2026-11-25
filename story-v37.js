@@ -3089,19 +3089,6 @@ function v323StopAccusationAudioAndTimers(){
  v320StopTimerDone();
  v316ClearDeadline();
 }
-// Pause playback when the story is hidden, even without a new render (e.g. feedback).
-const v323AudioVisibilityObserver=new MutationObserver(()=>{
- if(!v323AccusationVisible() && (v322TimerIngAudio && !v322TimerIngAudio.paused ||
-     v320TimerDoneAudio && !v320TimerDoneAudio.paused || v316DeadlineTimer!==null)){
-  v323StopAccusationAudioAndTimers();
- }
-});
-v323AudioVisibilityObserver.observe(overlay,{attributes:true,attributeFilter:['class','style']});
-const v323FeedbackPanel=document.getElementById('shindo-feedback');
-if(v323FeedbackPanel)v323AudioVisibilityObserver.observe(v323FeedbackPanel,{attributes:true,attributeFilter:['class','style']});
-document.addEventListener('visibilitychange',()=>{
- if(document.hidden && scenes[index]?.kind==='v316-target-select')v323StopAccusationAudioAndTimers();
-});
 
 function v316StopTick(){if(v316TickTimer!==null){clearInterval(v316TickTimer);v316TickTimer=null}}
 function v316StartTick(ms=1000){
@@ -3809,6 +3796,21 @@ function enterMorningBuilding(exterior,begin){
  });
 }
 const overlay=document.createElement('div');overlay.id='shindo-vn';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-label','1일차 스토리');overlay.innerHTML='<div class="vn-box"><span class="vn-text"></span></div><div class="vn-hint">화면을 터치하거나 클릭하여 진행</div>';document.body.appendChild(overlay);
+// V324: attach observers only after the story overlay exists.
+// Pause playback when the story is hidden, even without a new render (e.g. feedback).
+const v323AudioVisibilityObserver=new MutationObserver(()=>{
+ if(!v323AccusationVisible() && (v322TimerIngAudio && !v322TimerIngAudio.paused ||
+     v320TimerDoneAudio && !v320TimerDoneAudio.paused || v316DeadlineTimer!==null)){
+  v323StopAccusationAudioAndTimers();
+ }
+});
+v323AudioVisibilityObserver.observe(overlay,{attributes:true,attributeFilter:['class','style']});
+const v323FeedbackPanel=document.getElementById('shindo-feedback');
+if(v323FeedbackPanel)v323AudioVisibilityObserver.observe(v323FeedbackPanel,{attributes:true,attributeFilter:['class','style']});
+document.addEventListener('visibilitychange',()=>{
+ if(document.hidden && scenes[index]?.kind==='v316-target-select')v323StopAccusationAudioAndTimers();
+});
+
 const box=overlay.querySelector('.vn-box'),content=overlay.querySelector('.vn-text');
 const portrait=document.createElement('img');portrait.className='vn-portrait';portrait.alt='';portrait.hidden=true;overlay.insertBefore(portrait,box);
 const speakerTag=document.createElement('div');speakerTag.className='vn-speaker';box.insertBefore(speakerTag,content);
