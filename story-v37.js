@@ -1026,7 +1026,6 @@ scenes.push(
  {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"열혈 신도처럼 눈을 반짝이니 냉큼 허락이 떨어졌다.","clearPortrait":true},
  {"kind":"narration","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"손전등과 순찰일지, 그리고 열쇠 꾸러미를 건네받았다.","clearPortrait":true},
  {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"이것만 있으면 어지간한 곳은 죄다 갈 수 있겠군.","speaker":"주인공","clearPortrait":true},
- {"kind":"dialogue","eveningDay2":true,"eveningLocation":"corridor","v178":true,"text":"아무리 서로 믿는다지만, 너무 순진한거 아냐?","speaker":"주인공","clearPortrait":true},
  {"kind":"v178-hold","eveningDay2":true,"eveningLocation":"corridor","v178":true,"v178Hold":"patrol-choice"}
 );
 const V201_PATROL_LIBRARY=scenes.length;
