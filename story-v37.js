@@ -3085,6 +3085,9 @@ function v316ShowTargetSelection(){
  el.style.display='flex';
  const cards=el.querySelector('.v316-cards'),confirm=el.querySelector('.v316-confirm');
  let chosen=null,committed=false;
+ const warning=el.querySelector('.v316-warning');
+ const warningTexts=['고발하지 않는다는 선택지로는 돌아갈 수 없다.','제한시간 내 선택하지 못하면 랜덤 고발된다.'];
+ const warningStart=Date.now();
  const record=(p,automatic)=>{
   if(committed)return;committed=true;v316ClearDeadline();v316StopTick();
   const name=p?.[0]||'';localStorage.setItem(V316_PM_TARGET_KEY,name);
@@ -3097,14 +3100,17 @@ function v316ShowTargetSelection(){
  const choose=p=>{
   if(committed)return;chosen=p;cards.hidden=true;confirm.hidden=false;confirm.innerHTML='';
   const img=document.createElement('img');img.src='story-portraits/profile-'+p[1]+'.png';img.alt=p[0];img.className='v316-confirm-img';
-  const h=document.createElement('h3');h.textContent=p[0];
   const d=document.createElement('p');d.textContent=v316TargetDescription(p);
-  const b=document.createElement('button');b.type='button';b.textContent='고발 확정';b.onclick=e=>{e.stopPropagation();record(p,false)};
-  confirm.append(img,h,d,b);
+  const actions=document.createElement('div');actions.className='v316-confirm-actions';
+  const b=document.createElement('button');b.type='button';b.className='v316-accept';b.textContent='고발 확정';b.onclick=e=>{e.stopPropagation();record(p,false)};
+  const again=document.createElement('button');again.type='button';again.className='v316-reselect';again.textContent='다시 선택';
+  again.onclick=e=>{e.stopPropagation();if(committed)return;chosen=null;confirm.hidden=true;cards.hidden=false;confirm.innerHTML=''};
+  actions.append(b,again);
+  confirm.append(img,d,actions);
  };
  for(const p of eligible){const b=document.createElement('button');b.className='v316-card';b.type='button';b.setAttribute('aria-label',p[0]+' 고발 대상 선택');
   const img=document.createElement('img');img.src='story-portraits/profile-'+p[1]+'.png';img.alt=p[0];
-  const name=document.createElement('span');name.textContent=p[0];b.append(img,name);b.onclick=e=>{e.stopPropagation();choose(p)};cards.append(b)}
+  b.append(img);b.onclick=e=>{e.stopPropagation();choose(p)};cards.append(b)}
  const oldDeadline=localStorage.getItem('shindo_v316_selection_deadline');
  const saved=oldDeadline===null?NaN:Number(oldDeadline);
  const deadline=Number.isFinite(saved)&&saved>0?saved:Date.now()+13000;
@@ -3114,6 +3120,7 @@ function v316ShowTargetSelection(){
   const left=Math.max(0,deadline-Date.now());
   el.querySelector('.v316-count').textContent=Math.ceil(left/1000)+'초';
   el.querySelector('.v316-fill').style.width=(left/13000*100)+'%';
+  warning.textContent=warningTexts[Math.floor((Date.now()-warningStart)/1000)%warningTexts.length];
   if(left<=0){const target=eligible.length?eligible[Math.floor(Math.random()*eligible.length)]:null;record(target,true)}
  };
  if(v316DeadlineTimer!==null)clearInterval(v316DeadlineTimer);
