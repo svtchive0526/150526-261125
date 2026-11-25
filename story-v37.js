@@ -2433,9 +2433,8 @@ const V298_JILSI_TIMEOUT_MS=10000;
 const V298_JILSI_RED='#C77C7C';
 const V298_JILSI_ENDING_ILLUSTRATION='ending-chan-jilsi';
 
-// V304: Independent continuous Chan-route soundtrack. No dialogue advance resets it.
-const V304_CHAN_BGM_SRC='story-audio/chan_ending_BGM.ogg';
-const V304_CHAN_BGM_FALLBACK='story-audio/chan_ending_BGM.mp3';
+// V306: Play Chan-route BGM directly as MP3. No OGG request; independent of dialogue advance.
+const V304_CHAN_BGM_SRC='story-audio/chan_ending_BGM.mp3';
 let v304ChanBgm=null, v304ChanBgmFadeId=null;
 function v304ClearBgmFade(){if(v304ChanBgmFadeId!==null){clearInterval(v304ChanBgmFadeId);v304ChanBgmFadeId=null}}
 function v304StopChanBgm(){
@@ -2445,27 +2444,10 @@ function v304StopChanBgm(){
 function v304StartChanBgm(){
  if(v304ChanBgm)return;
  v304ClearBgmFade();
- const capability=new Audio();
- const useOgg=!!capability.canPlayType('audio/ogg; codecs="vorbis"');
- const music=new Audio(useOgg?V304_CHAN_BGM_SRC:V304_CHAN_BGM_FALLBACK);
+ const music=new Audio(V304_CHAN_BGM_SRC);
  music.preload='auto';music.loop=true;music.volume=0;
  v304ChanBgm=music;
- if(useOgg){
-  music.addEventListener('error',()=>{
-   if(v304ChanBgm!==music||music.datasetFallbackTried)return;
-   music.datasetFallbackTried=true;
-   music.src=V304_CHAN_BGM_FALLBACK;music.load();
-   music.play().catch(err=>console.warn('[SHINDO V304] MP3 fallback unavailable',err));
-  });
- }
- music.play().catch(err=>{
-  if(v304ChanBgm!==music)return;
-  if(useOgg&&!music.datasetFallbackTried){
-   music.datasetFallbackTried=true;
-   music.src=V304_CHAN_BGM_FALLBACK;music.load();
-   music.play().catch(fallbackErr=>console.warn('[SHINDO V304] Chan BGM unavailable',fallbackErr));
-  }else console.warn('[SHINDO V304] Chan BGM playback unavailable',err);
- });
+ music.play().catch(err=>console.warn('[SHINDO V306] Chan MP3 BGM playback unavailable',err));
  const start=performance.now();
  v304ChanBgmFadeId=setInterval(()=>{
   if(v304ChanBgm!==music){v304ClearBgmFade();return}
