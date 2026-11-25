@@ -2661,7 +2661,7 @@ function v312StopBeforeOffering(){
  if(!menu){menu=document.createElement('div');menu.className='shindo-choices';overlay.appendChild(menu)}
  menu.classList.remove('shindo-prayer-grid','shindo-art-grid');
  menu.classList.add('shindo-morning-grid');
- menu.innerHTML='<h2>4일차 오전 활동</h2><p>어디로 가볼까?</p><div class="shindo-morning-options">'+places.map((name,i)=>'<button type="button" data-v313-day4-room="'+i+'">'+name+'</button>').join('')+'</div>';
+ menu.innerHTML='<h2>4일차 오전 활동</h2><p>어디로 가볼까?</p><div class="shindo-morning-options">'+places.map((name,i)=>'<button type="button" data-v313-day4-room="'+i+'">'+name+'</button>').join('')+'</div><button type="button" class="v315-day4-afternoon-skip" data-v315-day4-afternoon="1">4일차 오후 고해소</button>';
  menu.style.display='flex';
  for(const button of menu.querySelectorAll('[data-v313-day4-room]'))button.onclick=e=>{
   e.stopPropagation();
@@ -2670,6 +2670,25 @@ function v312StopBeforeOffering(){
   window.SHINDO_addPlayRecord?.('선택','4일차 오전 활동 장소: '+room,4);
   v219StartLocation(room);
  };
+ // V315: Optional direct testing route. Do not register a morning choice or award room affinity.
+ const afternoonSkip=menu.querySelector('[data-v315-day4-afternoon]');
+ if(afternoonSkip)afternoonSkip.onclick=e=>{
+  e.stopPropagation();
+  v315OpenDay4Afternoon();
+ };
+}
+
+// V315: Day 4 afternoon checkpoint. Future authored scenes register with v292AfternoonConfessionalStart.
+function v315OpenDay4Afternoon(){
+ stopEveningTick();
+ localStorage.setItem('shindo_current_story_day_v109','4');
+ localStorage.removeItem(V219_MODE_KEY);
+ const menu=overlay.querySelector('.shindo-choices');
+ if(menu)menu.style.display='none';
+ currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+ const target=scenes.findIndex(s=>s.v292AfternoonConfessionalStart===true&&s.v292AfternoonConfessionalDay===4);
+ if(target>=0){locked=false;index=target;save();render();return;}
+ v292ShowPendingAfternoon(4);
 }
 
 // V299: One shared Chan encounter, followed by two fully separate decision routes.
