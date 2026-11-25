@@ -2433,7 +2433,7 @@ const V298_JILSI_TIMEOUT_MS=10000;
 const V298_JILSI_RED='#C77C7C';
 const V298_JILSI_ENDING_ILLUSTRATION='ending-chan-jilsi';
 
-// V306: Play Chan-route BGM directly as MP3. No OGG request; independent of dialogue advance.
+// V307: Direct, single-instance MP3 playback using freshly encoded CBR source.
 const V304_CHAN_BGM_SRC='story-audio/chan_ending_BGM.mp3';
 let v304ChanBgm=null, v304ChanBgmFadeId=null;
 function v304ClearBgmFade(){if(v304ChanBgmFadeId!==null){clearInterval(v304ChanBgmFadeId);v304ChanBgmFadeId=null}}
@@ -2441,18 +2441,38 @@ function v304StopChanBgm(){
  v304ClearBgmFade();
  if(v304ChanBgm){try{v304ChanBgm.pause();v304ChanBgm.currentTime=0}catch(_){}v304ChanBgm=null}
 }
+// V308: Clear lingering soundtracks only once when entering the Chan ending.
+// Keep scene-specific dialogue SFX available after the BGM has started.
+function v308StopCompetingAudio(){
+ v207StopEscapeMusic();
+ v270StopMusic();
+ v289StopForestCue();
+ stopEveningTick();
+ stopEveningWalk();
+ stopPrayerAudio();
+ stopPrayerClock();
+ stopConfessionTick();
+ stopSanctuaryTick();
+ stopArtAudio();
+}
 function v304StartChanBgm(){
  if(v304ChanBgm)return;
+ v308StopCompetingAudio();
  v304ClearBgmFade();
  const music=new Audio(V304_CHAN_BGM_SRC);
+ // V307: use a constant-bitrate MP3; one persistent player per ending.
  music.preload='auto';music.loop=true;music.volume=0;
+ music.playbackRate=1;music.defaultPlaybackRate=1;
  v304ChanBgm=music;
- music.play().catch(err=>console.warn('[SHINDO V306] Chan MP3 BGM playback unavailable',err));
+ music.addEventListener('waiting',()=>console.warn('[SHINDO V307] Chan BGM waiting for audio buffer'));
+ music.addEventListener('stalled',()=>console.warn('[SHINDO V307] Chan BGM network stalled'));
+ music.addEventListener('error',()=>console.warn('[SHINDO V307] Chan BGM media error',music.error?.code));
+ music.play().catch(err=>console.warn('[SHINDO V307] Chan MP3 BGM playback unavailable',err));
  const start=performance.now();
  v304ChanBgmFadeId=setInterval(()=>{
   if(v304ChanBgm!==music){v304ClearBgmFade();return}
   const t=Math.min(1,(performance.now()-start)/650);
-  music.volume=.40*t;
+  music.volume=.15*t;
   if(t>=1)v304ClearBgmFade();
  },40);
 }
