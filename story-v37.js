@@ -2647,14 +2647,29 @@ function v312ShowPrayerChoice(){
   menu.style.display='none';locked=false;index=V312_DAY4_BEFORE_OFFERING;save();render();
  };
 }
+// V313 — Temporary Day 4 offering bypass. Keep the V312 boundary scene
+// as the insertion point for a future authored offering ceremony.
 function v312StopBeforeOffering(){
- locked=true;areaSkipButton.hidden=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;
+ // Day 4 morning begins only after the Day 4 dawn prayer outcome is recorded.
+ localStorage.setItem('shindo_current_story_day_v109','4');
+ localStorage.setItem(V219_MODE_KEY,'1');
+ locked=true;areaSkipButton.hidden=true;box.style.display='none';
+ currentPortrait='';portrait.hidden=true;illustration.hidden=true;
  overlay.querySelector('.vn-hint').style.display='none';
+ const places=['기도관','예술당','생활관','본당','고해소','공양실'];
  let menu=overlay.querySelector('.shindo-choices');
  if(!menu){menu=document.createElement('div');menu.className='shindo-choices';overlay.appendChild(menu)}
- menu.classList.remove('shindo-morning-grid','shindo-prayer-grid','shindo-art-grid');
- menu.innerHTML='<h2>4일차 새벽기도 종료</h2><p>4일차 공양제부터의 스크립트는 아직 연결되지 않았습니다.</p>';
+ menu.classList.remove('shindo-prayer-grid','shindo-art-grid');
+ menu.classList.add('shindo-morning-grid');
+ menu.innerHTML='<h2>4일차 오전 활동</h2><p>어디로 가볼까?</p><div class="shindo-morning-options">'+places.map((name,i)=>'<button type="button" data-v313-day4-room="'+i+'">'+name+'</button>').join('')+'</div>';
  menu.style.display='flex';
+ for(const button of menu.querySelectorAll('[data-v313-day4-room]'))button.onclick=e=>{
+  e.stopPropagation();
+  const room=places[Number(button.dataset.v313Day4Room)];
+  if(!room)return;
+  window.SHINDO_addPlayRecord?.('선택','4일차 오전 활동 장소: '+room,4);
+  v219StartLocation(room);
+ };
 }
 
 // V299: One shared Chan encounter, followed by two fully separate decision routes.
@@ -5603,7 +5618,7 @@ function v219ShowMorningEnd(message){
  overlay.querySelector('.vn-hint').style.display='none';
  let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
  el.classList.remove('shindo-prayer-grid','shindo-morning-grid','shindo-art-grid');
- el.innerHTML='<h2>'+(day2Morning==='고해소'?String(Math.max(3,Math.min(13,Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||3))))+'일차 오전 활동':'3일차 오전 활동')+'</h2><p>'+message+'</p>';
+ el.innerHTML='<h2>'+String(Math.max(3,Math.min(13,Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||3))))+'일차 오전 활동</h2><p>'+message+'</p>';
  el.style.display='flex';
 }
 function v219StartLocation(room){
@@ -5621,7 +5636,7 @@ function v219StartLocation(room){
  day2Morning=room;
  if(room==='고해소'&&v289VisitDay!==3)window.SHINDO_applyAffinityEvent?.('room',room,v289VisitDay);
  else if(room==='공양실'&&v290VisitDay!==3)window.SHINDO_applyAffinityEvent?.('room',room,v290VisitDay);
-  else if(v287MainOnDay4)window.SHINDO_applyAffinityEvent?.('room',room,4);
+  else if(laterMorningDay)window.SHINDO_applyAffinityEvent?.('room',room,morningDay);
   else v219MarkMorningRoom(room);
  const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;
