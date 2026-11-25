@@ -691,6 +691,7 @@
  const btn=make('button','inv-feedback','피드백 페이지 열기');btn.type='button';
  btn.addEventListener('click',()=>{if(typeof window.SHINDO_openFeedback!=='function'){empty('현재 피드백 페이지를 열 수 없습니다.');return}drawer.classList.remove('is-open');document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');window.SHINDO_openFeedback()});content.append(btn);
  const options=[
+  ['전체 초기화','full_reset'],
   ['초기화','reset'],
   ['1일차 도입','day1_intro'],
   ['1일차 본당','day1_sanctuary'],
@@ -714,6 +715,28 @@
   const restart=make('button','inv-feedback inv-feedback-reset',label);restart.type='button';
   restart.setAttribute('data-checkpoint',id);
   restart.addEventListener('click',()=>{
+   if(id==='full_reset'){
+    if(!window.confirm('전체 초기화 — 타이틀 화면부터 다시 시작할까요?\n스토리, 친밀도, 증거품, 체크포인트, 메일 및 로그인/잠금화면 진행 기록이 삭제됩니다. 이 작업은 되돌릴 수 없습니다.'))return;
+    try{
+     // V310: reset only this game's persisted state, not unrelated site storage.
+     // Clear all progress before reload: the boot sequence checks remembered
+     // mail/lock flags and would otherwise skip the title automatically.
+     const isGameKey=key=>/^(?:shindo[_-]|svter[_-]|kamille[_-]|sh[_-]browser[_-])/i.test(key);
+     for(const store of [window.localStorage,window.sessionStorage]){
+      const keys=[];
+      for(let i=0;i<store.length;i++){
+       const key=store.key(i);
+       if(key&&isGameKey(key))keys.push(key);
+      }
+      keys.forEach(key=>store.removeItem(key));
+     }
+     window.location.reload();
+    }catch(error){
+     console.error('[SHINDO V310] 전체 초기화 실패',error);
+     window.alert('저장 기록 초기화에 실패했습니다. 브라우저 저장소 권한을 확인해주세요.');
+    }
+    return;
+   }
    if(id==='jilsi_ending_test'){
     if(typeof window.SHINDO_startJilsiEndingTestV303!=='function'){
      window.alert('질시 엔딩 테스트 기능을 불러오지 못했습니다.');return;
