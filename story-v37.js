@@ -2990,7 +2990,7 @@ function v316AfternoonStart(day){
  const d=Number(day);if(![4,5,6].includes(d))return false;
  // Ordinary gameplay must always obey actual character-name unlocks.
  if(!v317ConfTestEntering)sessionStorage.removeItem(V317_CONF_TEST_KEY);
- v316StopTick();v316ClearDeadline();
+ v316StopTick();v316ClearDeadline();v320StopTimerDone();
  localStorage.setItem(V316_PM_DAY_KEY,String(d));
  localStorage.setItem('shindo_current_story_day_v109',String(d));
  localStorage.removeItem(V316_PM_BRANCH_KEY);
@@ -3019,6 +3019,29 @@ function v317StartDay4ConfessionTest(){
 }
 window.SHINDO_startDay4ConfessionTestV317=v317StartDay4ConfessionTest;
 let v316TickTimer=null,v316DeadlineTimer=null;
+// V320: Only the 1.95-second-and-later segment of the supplied timer sound
+// is distributed, avoiding slow seeks on the exact 13-second deadline.
+let v320TimerDoneAudio=null;
+function v320PreloadTimerDone(){
+ if(v320TimerDoneAudio)return;
+ const audio=new Audio('story-audio/timer-done.wav');
+ audio.preload='auto';audio.loop=false;audio.volume=1;
+ v320TimerDoneAudio=audio;
+}
+function v320StopTimerDone(){
+ if(!v320TimerDoneAudio)return;
+ v320TimerDoneAudio.pause();
+ try{v320TimerDoneAudio.currentTime=0}catch(_){ }
+}
+function v320PlayTimerDone(){
+ v320PreloadTimerDone();
+ const audio=v320TimerDoneAudio;
+ if(!audio)return;
+ audio.loop=false;
+ try{audio.currentTime=0}catch(_){ }
+ audio.play().catch(error=>console.warn('[SHINDO V320] timer done sound could not play',error));
+}
+
 function v316ClearDeadline(){if(v316DeadlineTimer!==null){clearInterval(v316DeadlineTimer);v316DeadlineTimer=null}localStorage.removeItem('shindo_v316_selection_deadline')}
 function v316StopTick(){if(v316TickTimer!==null){clearInterval(v316TickTimer);v316TickTimer=null}}
 function v316StartTick(ms=1000){
@@ -3042,7 +3065,7 @@ function v316ShowAccuseChoice(){
   const branch=which===0?'S01':'S02';localStorage.setItem(V316_PM_BRANCH_KEY,branch);
   window.SHINDO_addPlayRecord?.('선택','오후 고해소: '+(which===0?'생각나는 아무 신도나 이야기한다.':'아는 이를 고발한다.'),Number(localStorage.getItem(V316_PM_DAY_KEY))||4);
   if(which===0){v316StopTick();storyBackdrop.style.filter='';v316Go(V316_PM_S01_START)}
-  else{v316StartTick(250);v316Go(V316_PM_TARGET_SCREEN)}
+  else{v320PreloadTimerDone();v316StopTick();v316Go(V316_PM_TARGET_SCREEN)}
  });
 }
 function v316ShowS01Choice(){
@@ -3077,7 +3100,9 @@ function v316Unlocked(name){
 }
 function v316TargetDescription(person){return person[3]&&v241MetSeokminAtPoliceDay2()?person[3]:person[2]}
 function v316ShowTargetSelection(){
- v316StartTick(250);
+ v320PreloadTimerDone();
+ // V321: keep the 13-second countdown silent; only the completion bell plays.
+ v316StopTick();
  locked=true;areaSkipButton.hidden=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  const eligible=V316_TARGETS.filter(p=>v316Unlocked(p[0]));
  let el=overlay.querySelector('.shindo-v316-targets');if(!el){el=document.createElement('div');el.className='shindo-v316-targets';overlay.appendChild(el)}
@@ -3090,6 +3115,8 @@ function v316ShowTargetSelection(){
  const warningStart=Date.now();
  const record=(p,automatic)=>{
   if(committed)return;committed=true;v316ClearDeadline();v316StopTick();
+  // V321: play exactly once on either manual confirmation or timeout.
+  v320PlayTimerDone();
   const name=p?.[0]||'';localStorage.setItem(V316_PM_TARGET_KEY,name);
   window.SHINDO_addPlayRecord?.('선택','오후 고해소 고발: '+name+(automatic?' (시간초과)':''),Number(localStorage.getItem(V316_PM_DAY_KEY))||4);
   cards.hidden=true;confirm.hidden=false;
@@ -5353,7 +5380,7 @@ function v277RestoreDay3Snapshot(){
  return snapshot.index;
 }
 // Reset transient scene elements before teleporting to a non-linear checkpoint.
-function v277ClearTransientScenes(){v316StopTick();v316ClearDeadline();overlay.querySelector('.shindo-v316-targets')?.remove();localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');
+function v277ClearTransientScenes(){v320StopTimerDone();v316StopTick();v316ClearDeadline();overlay.querySelector('.shindo-v316-targets')?.remove();localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');
  v289StopForestCue();
  v281ClearFinalArtwork();
  v270StopMusic();v270StopBell();v273StopKnock();v280ClearWibanCheckpoint();v207StopEscapeMusic();
@@ -5424,7 +5451,7 @@ window.SHINDO_hasDay3RestartSnapshot=()=>{
 };
 
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
-function restartFromDay1(){sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));v304StopChanBgm();sessionStorage.removeItem(V303_JILSI_TEST_KEY);sessionStorage.removeItem(V303_JILSI_LOCK_BACKUP);['shindo_chan_event_day_v299','shindo_chan_memory_pair_v299','shindo_character_status_v299','shindo_jilsi_choice_day_v298','shindo_jilsi_choice_result_v298'].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay1(){v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));v304StopChanBgm();sessionStorage.removeItem(V303_JILSI_TEST_KEY);sessionStorage.removeItem(V303_JILSI_LOCK_BACKUP);['shindo_chan_event_day_v299','shindo_chan_memory_pair_v299','shindo_character_status_v299','shindo_jilsi_choice_day_v298','shindo_jilsi_choice_result_v298'].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -5484,7 +5511,7 @@ function restartFromDay1(){sessionStorage.removeItem(V317_CONF_TEST_KEY);v316Sto
 window.SHINDO_restartFromDay1=restartFromDay1;
 
 // V169: Test restart at the black "2일차" title, keeping the authenticated mail/browser.
-function restartFromDay2(){sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));[V312_DAY4_OFFICE_KEY,V312_DAY2_SLEEP_KEY,V312_DAY3_SLEEP_KEY,V312_DAY4_PRAYER_KEY].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay2(){v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));[V312_DAY4_OFFICE_KEY,V312_DAY2_SLEEP_KEY,V312_DAY3_SLEEP_KEY,V312_DAY4_PRAYER_KEY].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -7292,7 +7319,7 @@ function next(userAdvance=false){
  index=nextIndex;save();render();
 }
 overlay.addEventListener('click',()=>{audioContext();if(scenes[index]?.eveningLocation==='village'&&!v207EscapeMusicFading)v207StartEscapeMusic();if(v178BellWanted&&!v178BellStarted){prepareV178BellFromGesture();if(v178BellBuffer)startV178Bell();}next(true)});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(phoneDrawer.classList.contains('is-open'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next(true)}});
-window.SHINDO_startStory=()=>{sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();overlay.querySelector('.shindo-v316-targets')?.remove();
+window.SHINDO_startStory=()=>{v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();overlay.querySelector('.shindo-v316-targets')?.remove();
  v304StopChanBgm();
  v281ClearFinalArtwork();
  v273StopKnock();v270StopMusic();v270StopBell();
