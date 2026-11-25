@@ -2432,13 +2432,88 @@ const V298_JILSI_RESULT_KEY='shindo_jilsi_choice_result_v298';
 const V298_JILSI_TIMEOUT_MS=10000;
 const V298_JILSI_RED='#C77C7C';
 const V298_JILSI_ENDING_ILLUSTRATION='ending-chan-jilsi';
+
+// V304: Independent continuous Chan-route soundtrack. No dialogue advance resets it.
+const V304_CHAN_BGM_SRC='story-audio/chan_ending_BGM.ogg';
+const V304_CHAN_BGM_FALLBACK='story-audio/chan_ending_BGM.mp3';
+let v304ChanBgm=null, v304ChanBgmFadeId=null;
+function v304ClearBgmFade(){if(v304ChanBgmFadeId!==null){clearInterval(v304ChanBgmFadeId);v304ChanBgmFadeId=null}}
+function v304StopChanBgm(){
+ v304ClearBgmFade();
+ if(v304ChanBgm){try{v304ChanBgm.pause();v304ChanBgm.currentTime=0}catch(_){}v304ChanBgm=null}
+}
+function v304StartChanBgm(){
+ if(v304ChanBgm)return;
+ v304ClearBgmFade();
+ const capability=new Audio();
+ const useOgg=!!capability.canPlayType('audio/ogg; codecs="vorbis"');
+ const music=new Audio(useOgg?V304_CHAN_BGM_SRC:V304_CHAN_BGM_FALLBACK);
+ music.preload='auto';music.loop=true;music.volume=0;
+ v304ChanBgm=music;
+ if(useOgg){
+  music.addEventListener('error',()=>{
+   if(v304ChanBgm!==music||music.datasetFallbackTried)return;
+   music.datasetFallbackTried=true;
+   music.src=V304_CHAN_BGM_FALLBACK;music.load();
+   music.play().catch(err=>console.warn('[SHINDO V304] MP3 fallback unavailable',err));
+  });
+ }
+ music.play().catch(err=>{
+  if(v304ChanBgm!==music)return;
+  if(useOgg&&!music.datasetFallbackTried){
+   music.datasetFallbackTried=true;
+   music.src=V304_CHAN_BGM_FALLBACK;music.load();
+   music.play().catch(fallbackErr=>console.warn('[SHINDO V304] Chan BGM unavailable',fallbackErr));
+  }else console.warn('[SHINDO V304] Chan BGM playback unavailable',err);
+ });
+ const start=performance.now();
+ v304ChanBgmFadeId=setInterval(()=>{
+  if(v304ChanBgm!==music){v304ClearBgmFade();return}
+  const t=Math.min(1,(performance.now()-start)/650);
+  music.volume=.40*t;
+  if(t>=1)v304ClearBgmFade();
+ },40);
+}
+function v304FadeChanBgm(ms=1100){
+ if(!v304ChanBgm)return;
+ v304ClearBgmFade();
+ const music=v304ChanBgm,from=music.volume,start=performance.now();
+ const duration=Math.max(80,Number(ms)||1100);
+ v304ChanBgmFadeId=setInterval(()=>{
+  if(v304ChanBgm!==music){v304ClearBgmFade();return}
+  const t=Math.min(1,(performance.now()-start)/duration);
+  music.volume=Math.max(0,from*(1-t));
+  if(t>=1)v304StopChanBgm();
+ },40);
+}
+function v304KillJilsiTicks(){
+ // The timed choice is the ONLY place these clock ticks are permitted.
+ stopEveningTick();
+ v279StopClock();
+ stopPrayerClock();
+ stopConfessionTick();
+}
+function v304FadeToJilsiEnding(){
+ // CSV 86: after the final dialogue is advanced, fade picture AND BGM to black.
+ if(locked)return;
+ v304KillJilsiTicks();
+ locked=true;areaSkipButton.hidden=true;
+ v304FadeChanBgm(1180);
+ let curtain=overlay.querySelector('.v304-jilsi-curtain');
+ if(!curtain){curtain=document.createElement('div');curtain.className='v304-jilsi-curtain';overlay.appendChild(curtain)}
+ requestAnimationFrame(()=>requestAnimationFrame(()=>curtain.classList.add('is-visible')));
+ timer=setTimeout(()=>{
+  locked=false;index++;save();render();curtain.remove();
+ },1320);
+}
+
 const V298_JILSI_START=scenes.length;
 const v298Scene=(kind,text='',extra={})=>({kind,text,v298Jilsi:true,eveningDay2:true,...extra});
 scenes.push(
  v298Scene('dialogue','글쎄요, 저는 그런 건 관심 없어서…',{speaker:'주인공',portrait:'chan/찬_바디1_정색',boldWord:'그런 건',boldWordColor:V298_JILSI_RED,eveningLocation:'square'}),
  v298Scene('dialogue','그런 건...?',{speaker:'찬',portrait:'chan/찬_바디3_정색',boldAll:true,textColor:V298_JILSI_RED,fontScale:1.2,eveningLocation:'square'}),
- v298Scene('narration','그땐 몰랐지.',{portrait:'chan/찬_바디3_정색',eveningLocation:'square'}),
- v298Scene('narration','몰락의 징조란 의외로 사소하게 다가온다.',{portrait:'chan/찬_바디1_정색',eveningLocation:'square'}),
+ v298Scene('narration','그땐 몰랐다.',{portrait:'chan/찬_바디3_정색',eveningLocation:'square'}),
+ v298Scene('narration','몰락의 징조란 의외로 사소하다는 걸.',{portrait:'chan/찬_바디1_정색',eveningLocation:'square'}),
  v298Scene('dialogue','봉봉 씨는 참 뭐랄까, 사람이 신기하네요.',{speaker:'찬',portrait:'chan/찬_바디1_초조',boldAll:true,textColor:V298_JILSI_RED,fontScale:1.3,eveningLocation:'square'}),
  v298Scene('dialogue','사제님들이랑 가까이 지내면서.',{speaker:'찬',portrait:'chan/찬_바디1_정색',boldAll:true,textColor:V298_JILSI_RED,fontScale:1.3,eveningLocation:'square'}),
  v298Scene('dialogue','정작 마음은 다른 곳에 가 있는 거 같아요.',{speaker:'찬',portrait:'chan/찬_바디1_무시',boldAll:true,textColor:V298_JILSI_RED,fontScale:1.4,eveningLocation:'square'}),
@@ -2457,25 +2532,25 @@ scenes.push(
  v298Scene('dialogue','오늘은 이만 자야겠다.',{speaker:'주인공',clearPortrait:true,eveningLocation:'bongbong'}),
  v298Scene('transition','',{v298Intertitle:true,eveningLocation:'dark'}),
  v298Scene('narration','김봉봉의 공양이 선고되었다.',{clearPortrait:true,eveningLocation:'square',gongyangBell:'01',gongyangBellMs:6300}),
- v298Scene('narration','뜻밖의 선고에 사제들마저 술렁인다.',{clearPortrait:true,eveningLocation:'square'}),
+ v298Scene('narration','뜻밖의 선고에 사제들마저 술렁였다.',{clearPortrait:true,eveningLocation:'square'}),
  v298Scene('narration','난 끌려가면서도 당당히 외쳤다.',{clearPortrait:true,eveningLocation:'square'}),
  v298Scene('dialogue','대체 누가, 어떠한 연유로 저를 고발한단 말입니까!',{speaker:'주인공',clearPortrait:true,eveningLocation:'square',boldAll:true,fontScale:1.4,screenShake:true}),
- v298Scene('dialogue','저 말을 듣지 마세요!',{speaker:'찬',portrait:'chan/찬_바디1_절박',boldAll:true,textColor:V298_JILSI_RED,eveningLocation:'square'}),
+ v298Scene('dialogue','저 말을 듣지 마세요!',{speaker:'찬',portrait:'chan/찬_바디1_절박',boldAll:true,eveningLocation:'square'}),
  v298Scene('narration','찬의 품에서 봉봉이 몰래 숨겨뒀던 증거품이 쏟아져 나왔다.',{portrait:'chan/찬_바디1_절박',eveningLocation:'square'}),
  v298Scene('dialogue','저 사람은 기자입니다.',{speaker:'찬',portrait:'chan/찬_바디2_질투',boldAll:true,textColor:V298_JILSI_RED,fontScale:1.3,eveningLocation:'square'}),
  v298Scene('dialogue','열혈 신자가 아닌, 카밀레교를 무너뜨릴 배도자라고요!',{speaker:'찬',portrait:'chan/찬_바디2_절박',boldAll:true,textColor:V298_JILSI_RED,fontScale:1.4,eveningLocation:'square'}),
  v298Scene('narration','숨겨온 자료, 파일철과 핸드폰, 그 안의 수많은 사진까지…',{portrait:'chan/찬_바디2_절박',eveningLocation:'square'}),
  v298Scene('narration','야망은 행동의 동기가 되기도 하지만, 의심의 동기가 되기도 한다.',{portrait:'chan/찬_바디2_절박',eveningLocation:'square'}),
- v298Scene('narration','찬의 야망은 그에게 진실을 보게 했다.',{portrait:'chan/찬_바디2_기본',boldAll:true,textColor:V298_JILSI_RED,fontScale:1.5,portraitFadeOutAfter:true,eveningLocation:'square'}),
- v298Scene('narration','나와의 대화를 곱씹던 찬은...',{clearPortrait:true,eveningLocation:'square'}),
- v298Scene('narration','이내 위화감을 눈치챘다.',{clearPortrait:true,eveningLocation:'dark'}),
- v298Scene('narration','봉봉이 자리를 비운 틈을 타, 몰래 방을 수색했다.',{clearPortrait:true,eveningLocation:'dark',v299JilsiArt:true,illustration:V298_JILSI_ENDING_ILLUSTRATION}),
- v298Scene('narration','그리고 진실을 까발려 김봉봉을 막다른 길로 몰아넣었다.',{clearPortrait:true,eveningLocation:'dark',v299JilsiArt:true,v299JilsiArtLast:true,illustration:V298_JILSI_ENDING_ILLUSTRATION}),
+ v298Scene('narration','찬의 야망은 그에게 진실을 보게 했다.',{portrait:'chan/찬_바디2_기본',boldAll:true,fontScale:1.5,portraitFadeOutAfter:true,eveningLocation:'square'}),
+ v298Scene('narration','봉봉과의 대화를 곱씹던 찬은...',{clearPortrait:true,eveningLocation:'square'}),
+ v298Scene('narration','이내 위화감을 눈치채고야 말았다.',{clearPortrait:true,eveningLocation:'dark'}),
+ v298Scene('narration','그리곤 봉봉이 자리를 비운 틈을 타, 몰래 방을 수색했다.',{clearPortrait:true,eveningLocation:'dark',v299JilsiArt:true,illustration:V298_JILSI_ENDING_ILLUSTRATION}),
+ v298Scene('narration','그렇게 진실을 까발려 김봉봉을 막다른 길로 몰아넣었다.',{clearPortrait:true,eveningLocation:'dark',v299JilsiArt:true,v299JilsiArtLast:true,illustration:V298_JILSI_ENDING_ILLUSTRATION}),
  v298Scene('dialogue','거짓 죄명을 꾸며 냈다면, 대놓고 시기해 배척했다면.',{speaker:'주인공',clearPortrait:true,eveningLocation:'square'}),
  v298Scene('dialogue','차라리 그 수를 읽고 대처라도 했을 텐데.',{speaker:'주인공',clearPortrait:true,eveningLocation:'square'}),
  v298Scene('narration','찬은 길가의 캐모마일 한 송이를 소중히 손에 담았다.',{portrait:'chan/찬_바디1_미소',eveningLocation:'square',gongyangBell:'01',gongyangBellMs:6300}),
  v298Scene('dialogue','그 자리는 내 자리여야 했어.',{speaker:'찬',portrait:'chan/찬_바디1_눈웃음',boldAll:true,textColor:V298_JILSI_RED,fontScale:1.5,eveningLocation:'square'}),
- v298Scene('dialogue','신이시여, 이제 저를 봐주세요.',{speaker:'찬',portrait:'chan/찬_바디1_눈웃음',boldAll:true,textColor:V298_JILSI_RED,fontScale:1.5,eveningLocation:'square'}),
+ v298Scene('dialogue','신이시여, 이제 저를 봐주세요.',{speaker:'찬',portrait:'chan/찬_바디1_눈웃음',boldAll:true,textColor:V298_JILSI_RED,fontScale:1.5,eveningLocation:'square',v304FinalFadeAfter:true}),
  {kind:'ending',endingRoute:'jilsi-chan',v298Jilsi:true,text:''}
 );
 
@@ -2515,12 +2590,12 @@ const V299_CHAN_COMMON_START=scenes.length;
 scenes.push(
  v299Chan('narration','오래 살아남기 위해서 사제들을 가까이한다.',{boldAll:true,fontScale:1.2,clearPortrait:true}),
  v299Chan('narration','그게 내 작전이었다.',{clearPortrait:true}),
- v299Chan('dialogue','',{v299MemorySlot:0}),
- v299Chan('dialogue','',{v299MemorySlot:1}),
+ v299Chan('dialogue','',{v299MemorySlot:0,v304HideRecallKicker:true}),
+ v299Chan('dialogue','',{v299MemorySlot:1,v304HideRecallKicker:true}),
  v299Chan('narration','작전은 순조로웠다.',{clearPortrait:true}),
  v299Chan('narration','사제들은 나를 점점 믿고 중요한 일을 맡기기 시작했다.',{clearPortrait:true}),
  v299Chan('narration','오늘도 고해성사 시간이 다가온다.',{clearPortrait:true}),
- v299Chan('narration','이를 위해 바쁘게 발걸음을 옮기던 때였다.',{sound:'footsteps_fast',portrait:'chan-body1-smile',livingSilhouette:true}),
+ v299Chan('narration','바쁘게 발걸음을 옮기던 때였다.',{sound:'footsteps_fast',portrait:'chan-body1-smile',livingSilhouette:true}),
  v299Chan('narration','급히 뛰어오는 발소리가 들리더니, 찬이 앞을 막아섰다.',{portrait:'chan-body1-smile'}),
  v299Chan('dialogue','저기, 봉봉 씨!',{speaker:'찬',portrait:'chan-body1-eyesmile'}),
  v299Chan('dialogue','저, 시간 괜찮으시면 잠깐 얘기 좀 나눌 수 있을까요?',{speaker:'찬',portrait:'chan-body3-eyesmile'}),
@@ -2531,8 +2606,8 @@ scenes.push(
  v299Chan('dialogue','요즘 사제님들이랑 잘 지내시잖아요.',{speaker:'찬',portrait:'chan-body1-determined'}),
  v299Chan('dialogue','혹시 부사제에 대한 말은 없으세요?',{speaker:'찬',portrait:'chan-body3-determined',boldWord:'부사제',boldScale:1.3}),
  v299Chan('dialogue','새로 뽑는다거나, 고민 중이라거나….',{speaker:'찬',portrait:'chan-body3-eyesmile'}),
- v299Chan('dialogue','눈이 마주친 순간, 흠칫 뒤로 물러나졌다.',{speaker:'주인공',portrait:'chan-body3-anxious'}),
- v299Chan('narration','잠깐 보인 눈빛이지만, 예사롭지 않은 눈빛을 본 기분...',{portrait:'chan-body3-eyesmile'}),
+ v299Chan('dialogue','눈이 마주친 순간, 나도 모르게 흠칫 뒤로 물러났다.',{speaker:'주인공',portrait:'chan-body3-anxious'}),
+ v299Chan('narration','잠깐 보인 눈빛이, 예사롭지 않아서...',{portrait:'chan-body3-eyesmile'}),
  {kind:'v299-chan-choice',v299Chan:true,eveningDay2:true,eveningLocation:'square',text:'찬은 부사제 자리를 욕심내는 듯하다.\n뭐라고 답하지?'}
 );
 const V299_CHAN_S01_START=scenes.length;
@@ -2576,6 +2651,7 @@ function v299ChooseMemoryPair(){
  return pool.slice(0,2);
 }
 function v299StartChanSequence(day){
+ v304StopChanBgm();
  const d=Math.max(3,Math.floor(Number(day)||3));
  localStorage.setItem(V299_CHAN_EVENT_DAY,String(d));
  localStorage.setItem(V299_CHAN_MEMORY_PAIR,JSON.stringify(v299ChooseMemoryPair()));
@@ -2934,6 +3010,9 @@ function getSceneBackdrop(sceneNumber,scene){
 }
 const style=document.createElement('style');style.textContent=`
 /* V299: only the 질시 title/ending artwork gets these full-bleed rules. */
+#shindo-vn .v304-jilsi-curtain{position:absolute;inset:0;background:#000;opacity:0;z-index:9999;pointer-events:none;transition:opacity 1.12s ease}
+#shindo-vn .v304-jilsi-curtain.is-visible{opacity:1}
+
 #shindo-vn.v299-jilsi-daytitle{background:#000!important;isolation:isolate}
 #shindo-vn.v299-jilsi-daytitle .vn-center{z-index:15;position:relative}
 #shindo-vn.v299-jilsi-art{background:#000!important}
@@ -4350,6 +4429,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   index=V257_DAY3_JEONGHAN_POLICE_PACKAGE_START;save();render();return;
  }
  const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){finish();return}
+ if(scene.v299Chan||scene.v298Jilsi){if(scene.kind!=='ending')v304StartChanBgm();if(scene.v298Jilsi)v304KillJilsiTicks();}
  if(scene.v299MemorySlot!==undefined){
    v299ApplyMemorySlot(scene);
    if(!scene.text){index++;save();render();return;}
@@ -4364,7 +4444,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  if(!scene.v270Wiban)overlay.classList.remove('v283-wiban-end-black','v283-wiban-day-black','v283-wiban-day-transition');
  overlay.classList.toggle('v283-wiban-recall',!!scene.v283RecallCount);
  overlay.classList.toggle('v287-library-recall',!!scene.v287Recall);
- overlay.classList.toggle('v299-chan-recall',scene.v299MemorySlot!==undefined);
+ overlay.classList.toggle('v299-chan-recall',scene.v299MemorySlot!==undefined&&!scene.v304HideRecallKicker);
  if(scene.v287Recall)overlay.classList.add('is-recall');else if(scenes[index-1]?.v287Recall)overlay.classList.remove('is-recall');
  recallKicker.textContent=scene.v283RecallCount?String(scene.v283RecallCount)+'회':'회상';
  if(!scene.v281WibanFinal)v281ClearFinalArtwork();
@@ -4522,7 +4602,7 @@ const existingChoiceModal=overlay.querySelector('.shindo-choices');if(existingCh
 if(!scene.specialMinghao&&!scene.patrolDuo){duoLayer.classList.remove('is-active');if(!scene.v287Recall)overlay.classList.remove('is-recall');}
 const fadingOutOfSquare=scene.kind==='day2-morning-choice'&&currentSceneBackdropKey==='bg-central-square.jpg';
 applySceneBackdrop(index,scene);
- if(scene.eveningDay2){if(scene.eveningLocation==='dark'&&!scene.v178){eveningLivingEntered=false;startEveningTick()}else if(scene.eveningLocation==='living'&&!scene.v178)enterEveningLiving();else stopEveningTick()}else{stopEveningTick();stopEveningWalk();eveningLivingEntered=false;}
+ if(scene.v298Jilsi||scene.v299Chan){stopEveningTick();stopEveningWalk();eveningLivingEntered=false;}else if(scene.eveningDay2){if(scene.eveningLocation==='dark'&&!scene.v178){eveningLivingEntered=false;startEveningTick()}else if(scene.eveningLocation==='living'&&!scene.v178)enterEveningLiving();else stopEveningTick()}else{stopEveningTick();stopEveningWalk();eveningLivingEntered=false;}
  if(scene.prayerRoom){overlay.classList.remove('confession-blackout')}else{stopPrayerClock();stopPrayerAudio();stopPrayerBell()}
  if(scene.prayerStart)startPrayerClock();
  if(scene.artHall){stopPrayerClock();stopPrayerAudio();stopPrayerBell();overlay.classList.remove('confession-blackout');setArtSceneArtwork(scene)}else{stopArtAudio();overlay.classList.remove('art-blackout')}
@@ -4637,6 +4717,7 @@ if(scene.kind==='day2-morning-choice'){
 
  if(scene.kind==='v299-chan-choice'){v298ShowChoice(Number(localStorage.getItem(V299_CHAN_EVENT_DAY))||3);return;}
  if(scene.kind==='v299-chan-s01-end'){
+  v304FadeChanBgm(900);
   const wasTest=v303JilsiTestActive();
   if(wasTest)v303RestoreJilsiTestLock();
   v298ContinueRegularAfternoon(Number(localStorage.getItem(V299_CHAN_EVENT_DAY))||3);
@@ -4937,7 +5018,7 @@ window.SHINDO_hasDay3RestartSnapshot=()=>{
 };
 
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
-function restartFromDay1(){sessionStorage.removeItem(V303_JILSI_TEST_KEY);sessionStorage.removeItem(V303_JILSI_LOCK_BACKUP);['shindo_chan_event_day_v299','shindo_chan_memory_pair_v299','shindo_character_status_v299','shindo_jilsi_choice_day_v298','shindo_jilsi_choice_result_v298'].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay1(){v304StopChanBgm();sessionStorage.removeItem(V303_JILSI_TEST_KEY);sessionStorage.removeItem(V303_JILSI_LOCK_BACKUP);['shindo_chan_event_day_v299','shindo_chan_memory_pair_v299','shindo_character_status_v299','shindo_jilsi_choice_day_v298','shindo_jilsi_choice_result_v298'].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -6351,6 +6432,7 @@ const DOKSIL_ENDING_ILLUSTRATION='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA
 // V299: V298 S02 finished with a missing rendering function. The full route
 // remains unchanged; only its previously broken final title is made callable.
 function showJilsiEnding(){
+ v304StopChanBgm();v304KillJilsiTicks();
  if(v303JilsiTestActive()){
   v303RestoreJilsiTestLock();
   sessionStorage.removeItem(V303_JILSI_TEST_KEY);
@@ -6359,8 +6441,10 @@ function showJilsiEnding(){
  areaSkipButton.hidden=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;
  overlay.querySelector('.vn-hint').style.display='none';overlay.classList.add('confession-blackout');locked=true;
  const end=document.createElement('div');end.className='shindo-ending shindo-ending-jilsi';
- end.innerHTML='<div class="shindo-ending-stage"><div class="shindo-ending-copy is-visible"><h1 style="font-size:clamp(52px,10vw,110px);margin-bottom:15px;">질시</h1><p>밑바닥 빠진 독처럼, 채워도 끝이 없는 마음.</p></div></div>';
+ end.innerHTML='<div class="shindo-ending-stage"><div class="shindo-ending-copy"><h1 style="font-size:clamp(52px,10vw,110px);margin-bottom:15px;">직실</h1><p>밑바닥 빠진 독처럼, 채워도 끝이 없는 마음.</p></div></div>';
  overlay.appendChild(end);
+ const titleCopy=end.querySelector('.shindo-ending-copy');
+ requestAnimationFrame(()=>requestAnimationFrame(()=>titleCopy?.classList.add('is-visible')));
  const later=(fn,ms)=>endingTimers.push(setTimeout(fn,ms));
  later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도</div>'},3500);
  later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도<span>神道</span></div>'},5500);
@@ -6689,6 +6773,7 @@ function v270ShowEnding(){
 }
 
 function finish(){
+ v304StopChanBgm();
  v281ClearFinalArtwork();
  v273StopKnock();v270StopMusic();v270StopBell();v280ClearWibanCheckpoint();
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
@@ -6722,7 +6807,8 @@ function v287ShowDay4LibraryEnd(){
  menu.style.display='flex';
 }
 function next(userAdvance=false){
- if(scenes[index]?.v281WibanFinal)return; // Unskippable: only V281's automatic timeline advances.
+ if(scenes[index]?.v281WibanFinal)return;
+ if(scenes[index]?.v304FinalFadeAfter){if(vnTypingTimer!==null){stopVnTyping(true);return;}v304FadeToJilsiEnding();return;} // Unskippable: only V281's automatic timeline advances.
  if(v205HammerBlocked)return;
  if(locked)return;
  if(vnTypingTimer!==null){stopVnTyping(true);return;}
@@ -6781,6 +6867,7 @@ function next(userAdvance=false){
 }
 overlay.addEventListener('click',()=>{audioContext();if(scenes[index]?.eveningLocation==='village'&&!v207EscapeMusicFading)v207StartEscapeMusic();if(v178BellWanted&&!v178BellStarted){prepareV178BellFromGesture();if(v178BellBuffer)startV178Bell();}next(true)});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(phoneDrawer.classList.contains('is-open'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next(true)}});
 window.SHINDO_startStory=()=>{
+ v304StopChanBgm();
  v281ClearFinalArtwork();
  v273StopKnock();v270StopMusic();v270StopBell();
  v218StopOfferingBell();overlay.classList.remove('v218-eye-cover','v218-eyes-closed');
