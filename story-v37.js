@@ -2635,6 +2635,32 @@ scenes.push(
  v299Chan('narration','애써 괜찮은 척 고해소로 발길을 재촉하게 된다.',{clearPortrait:true}),
  {kind:'v299-chan-s01-end',v299Chan:true,eveningDay2:true,eveningLocation:'square',text:''}
 );
+
+// V311: Follow-up after the actual 질시 S01 choice, on any strictly later morning.
+// Append-only to keep all V310 scene indices and saved checkpoints intact.
+const V311_JILSI_S01_PRAYER_FOLLOWUP_START=scenes.length;
+const v311ChanFollowup=(kind,text,speaker=null,extra={})=>({
+ kind,text,...(speaker?{speaker}:{}),prayerRoom:true,prayerBranch:4,
+ v311JilsiS01Prayer:true,...extra
+});
+scenes.push(
+ v311ChanFollowup('narration','구석에서 열심히 청소 중인 찬에게 다가갔다.',null,{clearPortrait:true}),
+ v311ChanFollowup('dialogue','저, 찬 씨.','주인공',{clearPortrait:true}),
+ v311ChanFollowup('narration','그러나 그는 일을 서둘러 마무리하고 자리를 뜨거나,',null,{portrait:'chan/찬_바디1_무시'}),
+ v311ChanFollowup('narration','정중한 ‘괜찮습니다’로 나를 밀어냈다.',null,{portrait:'chan/찬_바디1_정색'}),
+ v311ChanFollowup('narration','대답은 간결하고, 대화는 제자리걸음이다.',null,{portrait:'chan/찬_바디1_정색'}),
+ v311ChanFollowup('narration','찬의 마음은 완전히 닫혀 버렸다.',null,{portrait:'chan/찬_바디1_무시',portraitFadeOutAfter:true}),
+ v311ChanFollowup('narration','되돌릴 방법은 없어 보인다.',null,{clearPortrait:true}),
+ v311ChanFollowup('prayer-end','',null,{clearPortrait:true})
+);
+function v311ShouldPlayChanFollowup(){
+ if(!v219IsDay3Activity())return false;
+ if(localStorage.getItem(V298_JILSI_RESULT_KEY)!=='1')return false;
+ const chosenDay=Number(localStorage.getItem(V298_JILSI_DAY_KEY));
+ const currentDay=Number(localStorage.getItem('shindo_current_story_day_v109'));
+ return Number.isInteger(chosenDay)&&chosenDay>=3 && Number.isInteger(currentDay)&&currentDay>chosenDay&&currentDay<=13;
+}
+
 function v299EligiblePriests(){
  let statuses={};try{statuses=JSON.parse(localStorage.getItem(V299_CHAN_STATUS_KEY)||'{}')||{}}catch(_){}
  const aff=v298GetAffinityMap();
@@ -6318,6 +6344,14 @@ function showPrayerChoice(){
  const options=['단상 위 청소','자는 사람 깨우기','성경 한 장 넘기기','청소 돕기'];
  el.innerHTML='<h2>뭐부터 거들어 볼까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button data-prayer="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
  el.style.display='flex';el.querySelectorAll('[data-prayer]').forEach(b=>b.onclick=e=>{e.stopPropagation();stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopVnTyping(false);prayerBranch=Number(b.dataset.prayer);window.SHINDO_addPlayRecord?.('선택','기도관 활동: '+options[prayerBranch-1]);localStorage.setItem(v219IsDay3Activity()?'shindo_day3_prayer_branch_v219':'shindo_prayer_branch_v99',String(prayerBranch));window.SHINDO_applyAffinityEvent?.('person','기도관 활동: '+options[prayerBranch-1],getMorningAffinityDay());const branchStart=findPrayerBranchStart(prayerBranch);
+  // V311: prioritize the locked-relationship follow-up over earlier Chan encounters.
+  // Selective route: S01 was completed on an earlier day; S02 or same-day never triggers it.
+  if(prayerBranch===4 && v311ShouldPlayChanFollowup()){
+   el.style.display='none';el.classList.remove('shindo-prayer-grid');
+   currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+   index=V311_JILSI_S01_PRAYER_FOLLOWUP_START;
+   locked=false;save();render();return;
+  }
   // V242: Prior Day-2 morning visit + Day-2 police meeting decides ① vs ④.
   // v219WasMetDay2 checks the morning activity itself, never mere name unlock.
   if(v219IsDay3Activity()&&prayerBranch===3&&v219WasMetDay2('석민')){
