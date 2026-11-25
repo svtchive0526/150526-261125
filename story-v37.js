@@ -2757,6 +2757,48 @@ function v311ShouldPlayChanFollowup(){
  return Number.isInteger(chosenDay)&&chosenDay>=3 && Number.isInteger(currentDay)&&currentDay>chosenDay&&currentDay<=13;
 }
 
+// V314 — Day 4 prayer-hall [성경 한 장 넘기기].
+// Visit count reflects only completed Day-2/Day-3 morning choices, before
+// recording the new Day-4 choice. Reuse existing scripts for zero visits;
+// keep both two-visit outcomes explicitly pending until written.
+const V314_DAY4_SEOKMIN_SINGLE_VISIT_START=scenes.length;
+const v314Seokmin=(kind,text,speaker=null,extra={})=>({
+ kind,text,...(speaker?{speaker}:{}),prayerRoom:true,prayerBranch:3,
+ v314Day4Seokmin:true,...extra
+});
+scenes.push(
+ v314Seokmin('narration','오늘도 성경을 한 장 넘겨주려는데, 석민의 손이 빨랐다.',null,{clearPortrait:true}),
+ v314Seokmin('dialogue','에이, 이젠 나도 안 졸지.','석민',{portrait:'seokmin-body1-smile'}),
+ v314Seokmin('narration','그러고는 오히려 내 성경 페이지를 한 장 넘겨주고 윙크한다.',null,{portrait:'seokmin-body1-eyesmile'}),
+ v314Seokmin('dialogue','얼씨구?','주인공',{portrait:'seokmin-body1-eyesmile'}),
+ v314Seokmin('narration','그날의 교리 기도가 끝난 뒤,',null,{v241PrayerOutside:true,portrait:'seokmin-body1-smile'}),
+ v314Seokmin('narration','석민과 기도관 뒤뜰을 거닐며 이런저런 이야기를 나눴다.',null,{v241PrayerOutside:true,portrait:'seokmin-body1-default'}),
+ v314Seokmin('narration','석민은 최한솔 사제에게 흥미로운 이야기를 들었다고 했다.',null,{v241PrayerOutside:true,portrait:'seokmin-body2-smile'}),
+ v314Seokmin('dialogue','(아즈텍 문명도 인신공양을 했는데, 그건 그들의 문화였을 뿐이라고...)','주인공',{v241PrayerOutside:true,portrait:'seokmin-body2-eyesmile',inner:true}),
+ v314Seokmin('dialogue','(으음, 문화 상대주의를 말하려면 좀 다른 예시를 들고 와야 할 텐데.)','주인공',{v241PrayerOutside:true,portrait:'seokmin-body2-default',inner:true}),
+ v314Seokmin('narration','어쨌든 석민은 상기되어 보였다.',null,{v241PrayerOutside:true,portrait:'seokmin-body2-smile',portraitFadeOutAfter:true}),
+ v314Seokmin('dialogue','(행복해 보인다고도 할 수 있을까?)','주인공',{v241PrayerOutside:true,clearPortrait:true,inner:true}),
+ v314Seokmin('prayer-end','',null,{v241PrayerOutside:true,clearPortrait:true})
+);
+function v314Day4SeokminEarlierVisits(){
+ return (v219WasMetDay2('석민')?1:0)+
+  (localStorage.getItem('shindo_day3_location_v219')==='기도관' &&
+   localStorage.getItem('shindo_day3_prayer_branch_v219')==='3'?1:0);
+}
+function v314RouteDay4Seokmin(earlierVisits,policeMet,firstVisitStart){
+ if(earlierVisits>=2){
+  v219ShowMorningEnd('석민과 두 번 만난 경우의 4일차 대사는 아직 구현되지 않았습니다.');
+  return;
+ }
+ const target=earlierVisits===1?V314_DAY4_SEOKMIN_SINGLE_VISIT_START:
+  policeMet?V241_DAY3_PRAYER_SEOKMIN_CASE3_START:firstVisitStart;
+ const el=overlay.querySelector('.shindo-choices');
+ if(el){el.style.display='none';el.classList.remove('shindo-prayer-grid')}
+ currentPortrait='';portrait.hidden=true;illustration.hidden=true;
+ if(target>=0){index=target;locked=false;save();render();}
+ else v219ShowMorningEnd('석민의 첫 만남 대사로 이동할 수 없습니다.');
+}
+
 function v299EligiblePriests(){
  let statuses={};try{statuses=JSON.parse(localStorage.getItem(V299_CHAN_STATUS_KEY)||'{}')||{}}catch(_){}
  const aff=v298GetAffinityMap();
@@ -5182,7 +5224,7 @@ function restartFromDay1(){v304StopChanBgm();sessionStorage.removeItem(V303_JILS
  endingTimers.forEach(clearTimeout);endingTimers=[];
  selectedBranch=0;day2Prayer=0;day2Morning='';livingBranch=0;mainBranch=0;confMorningBranch=0;seungkwanTruthBranch=0;joshuaRevealed=false;revealed=false;jihoonRevealed=false;soonyoungRevealed=false;minghaoRevealed=false;jeonghanRevealed=false;mingyuRevealed=false;seungkwanRevealed=false;
  currentPortrait='';portrait.hidden=true;illustration.hidden=true;confessionTickLouder=false;
- ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jihoon_bad_day2_counted_v255','shindo_jihoon_bad_day3_counted_v255','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_seungkwan_truth_branch_v177','shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_evening_branch_day2_v173','shindo_confession_morning_branch_v163','shindo_day2_start_affinity_snapshot_v169','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_day3_jeonghan_case_v260','shindo_day3_living_room_deferred_v260','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person','shindo_junhui_locked_morning_seen_v223','shindo_day2_police_met_seokmin_v241'].forEach(k=>localStorage.removeItem(k));
+ ['shindo_confession_branch','shindo_day2_prayer','shindo_day2_morning','shindo_prayer_branch_v99','shindo_soonyoung_known_v105','shindo_minghao_known_v105','shindo_evidence_items_v105','shindo_art_branch_v105','shindo_play_history_v107','shindo_affinity_v107','shindo_affinity_events_v111','shindo_affinity_unread_v125','shindo_current_story_day_v109','shindo_living_branch_v156','shindo_jihoon_bad_conditions_v156','shindo_jihoon_bad_day2_counted_v255','shindo_jihoon_bad_day3_counted_v255','shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_main_branch_v160','shindo_joshua_known_v160','shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_seungkwan_truth_branch_v177','shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_evening_branch_day2_v173','shindo_confession_morning_branch_v163','shindo_day2_start_affinity_snapshot_v169','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day4_prayer_branch_v314','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_day3_jeonghan_case_v260','shindo_day3_living_room_deferred_v260','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person','shindo_junhui_locked_morning_seen_v223','shindo_day2_police_met_seokmin_v241'].forEach(k=>localStorage.removeItem(k));
  // V295: remove **all** game progress, not only the accumulated scores.
  // `shindo_met_characters_v108` is the source of unlocked profile cards; the
  // legacy `*_known_*` keys and inventory compatibility stores must not leak
@@ -5270,7 +5312,7 @@ function restartFromDay2(){[V312_DAY4_OFFICE_KEY,V312_DAY2_SLEEP_KEY,V312_DAY3_S
   'shindo_jeonghan_known_v156','shindo_mingyu_known_v156','shindo_joshua_known_v160',
   'shindo_junhui_known_v167','shindo_seungkwan_known_v177','shindo_soonyoung_known_v105','shindo_minghao_known_v105',
   'shindo_hansol_known_v99','shindo_seokmin_known_v99','shindo_chan_known_v99',
-  'shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_seungkwan_truth_branch_v177','shindo_police_coop_v178','shindo_day2_police_met_seokmin_v241','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_affinity_unread_v125','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_day3_jeonghan_case_v260','shindo_day3_living_room_deferred_v260','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person','shindo_junhui_locked_morning_seen_v223'
+  'shindo_escape_package_v167','shindo_gongyang_test_active_v172','shindo_seungkwan_truth_branch_v177','shindo_police_coop_v178','shindo_day2_police_met_seokmin_v241','shindo_day2_pre_evening_met_v184','shindo_junhui_affinity_locked_v205','shindo_affinity_locks_v222','shindo_affinity_unread_v125','shindo_day3_prayer_result_v215','shindo_day3_joshua_intro_needed_v215','shindo_day3_activity_v219','shindo_day3_location_v219','shindo_day3_main_branch_v219','shindo_day3_prayer_branch_v219','shindo_day4_prayer_branch_v314','shindo_day3_art_branch_v219','shindo_day3_living_branch_v219','shindo_day3_jeonghan_case_v260','shindo_day3_living_room_deferred_v260','shindo_v219_seungkwan_room','shindo_v219_seungkwan_person','shindo_junhui_locked_morning_seen_v223'
  ];
  resetKeys.forEach(key=>localStorage.removeItem(key));
  try{const names=JSON.parse(localStorage.getItem('shindo_met_characters_v108')||'[]');
@@ -5735,8 +5777,8 @@ function v219ShowMainChoice(){
 }
 
 function getMorningAffinityDay(){
- if(v219IsDay3Activity())return 3;
  const stored=Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||2);
+ if(v219IsDay3Activity())return stored>=4&&stored<=13?stored:3;
  return Math.max(2,Math.min(13,stored));
 }
 function showDay2Choice(type){locked=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';let el=overlay.querySelector('.shindo-choices');if(!el){el=document.createElement('div');el.className='shindo-choices';overlay.appendChild(el)}
@@ -6447,7 +6489,15 @@ function showPrayerChoice(){
  el.classList.remove('shindo-morning-grid');el.classList.add('shindo-prayer-grid');
  const options=['단상 위 청소','자는 사람 깨우기','성경 한 장 넘기기','청소 돕기'];
  el.innerHTML='<h2>뭐부터 거들어 볼까?</h2><div class="shindo-morning-options">'+options.map((t,i)=>'<button data-prayer="'+(i+1)+'">'+t+'</button>').join('')+'</div>';
- el.style.display='flex';el.querySelectorAll('[data-prayer]').forEach(b=>b.onclick=e=>{e.stopPropagation();stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopVnTyping(false);prayerBranch=Number(b.dataset.prayer);window.SHINDO_addPlayRecord?.('선택','기도관 활동: '+options[prayerBranch-1]);localStorage.setItem(v219IsDay3Activity()?'shindo_day3_prayer_branch_v219':'shindo_prayer_branch_v99',String(prayerBranch));window.SHINDO_applyAffinityEvent?.('person','기도관 활동: '+options[prayerBranch-1],getMorningAffinityDay());const branchStart=findPrayerBranchStart(prayerBranch);
+ el.style.display='flex';el.querySelectorAll('[data-prayer]').forEach(b=>b.onclick=e=>{e.stopPropagation();stopPrayerClock();stopPrayerAudio();stopPrayerBell();stopVnTyping(false);prayerBranch=Number(b.dataset.prayer);window.SHINDO_addPlayRecord?.('선택','기도관 활동: '+options[prayerBranch-1]);const morningDay=Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||2);
+  // Read historical visit choices before writing today's choice (Day 4 must
+  // never overwrite the Day-3 branch used by future repeat-visit routing).
+  const v314EarlierVisits=morningDay===4&&prayerBranch===3?v314Day4SeokminEarlierVisits():null;
+  localStorage.setItem(morningDay>=4?'shindo_day'+morningDay+'_prayer_branch_v314':v219IsDay3Activity()?'shindo_day3_prayer_branch_v219':'shindo_prayer_branch_v99',String(prayerBranch));window.SHINDO_applyAffinityEvent?.('person','기도관 활동: '+options[prayerBranch-1],getMorningAffinityDay());const branchStart=findPrayerBranchStart(prayerBranch);
+  if(morningDay===4 && prayerBranch===3){
+   v314RouteDay4Seokmin(v314EarlierVisits,v241MetSeokminAtPoliceDay2(),branchStart);
+   return;
+  }
   // V311: prioritize the locked-relationship follow-up over earlier Chan encounters.
   // Selective route: S01 was completed on an earlier day; S02 or same-day never triggers it.
   if(prayerBranch===4 && v311ShouldPlayChanFollowup()){
