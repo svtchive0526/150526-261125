@@ -3042,7 +3042,7 @@ function v316ShowAccuseChoice(){
   const branch=which===0?'S01':'S02';localStorage.setItem(V316_PM_BRANCH_KEY,branch);
   window.SHINDO_addPlayRecord?.('선택','오후 고해소: '+(which===0?'생각나는 아무 신도나 이야기한다.':'아는 이를 고발한다.'),Number(localStorage.getItem(V316_PM_DAY_KEY))||4);
   if(which===0){v316StopTick();storyBackdrop.style.filter='';v316Go(V316_PM_S01_START)}
-  else{v316StartTick(500);v316Go(V316_PM_TARGET_SCREEN)}
+  else{v316StartTick(250);v316Go(V316_PM_TARGET_SCREEN)}
  });
 }
 function v316ShowS01Choice(){
@@ -3077,7 +3077,7 @@ function v316Unlocked(name){
 }
 function v316TargetDescription(person){return person[3]&&v241MetSeokminAtPoliceDay2()?person[3]:person[2]}
 function v316ShowTargetSelection(){
- v316StartTick(500);
+ v316StartTick(250);
  locked=true;areaSkipButton.hidden=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  const eligible=V316_TARGETS.filter(p=>v316Unlocked(p[0]));
  let el=overlay.querySelector('.shindo-v316-targets');if(!el){el=document.createElement('div');el.className='shindo-v316-targets';overlay.appendChild(el)}
