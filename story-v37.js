@@ -2990,7 +2990,7 @@ function v316AfternoonStart(day){
  const d=Number(day);if(![4,5,6].includes(d))return false;
  // Ordinary gameplay must always obey actual character-name unlocks.
  if(!v317ConfTestEntering)sessionStorage.removeItem(V317_CONF_TEST_KEY);
- v316StopTick();v316ClearDeadline();v320StopTimerDone();
+ v316StopTick();v316ClearDeadline();v320StopTimerDone();v322StopTimerIng();
  localStorage.setItem(V316_PM_DAY_KEY,String(d));
  localStorage.setItem('shindo_current_story_day_v109',String(d));
  localStorage.removeItem(V316_PM_BRANCH_KEY);
@@ -3042,6 +3042,36 @@ function v320PlayTimerDone(){
  audio.play().catch(error=>console.warn('[SHINDO V320] timer done sound could not play',error));
 }
 
+// V322 — Thirteen-second edited countdown sound, with a soft exit into
+// the already trimmed timer-done bell. Never play the old 0.25s ticks.
+let v322TimerIngAudio=null;
+let v322TimerIngFade=null;
+function v322PreloadTimerIng(){
+ if(v322TimerIngAudio)return;
+ const audio=new Audio('story-audio/timer-ing-13s.mp3');
+ audio.preload='auto';audio.loop=false;audio.volume=1;
+ v322TimerIngAudio=audio;
+}
+function v322StopTimerIng(fadeMs=0){
+ if(v322TimerIngFade!==null){clearInterval(v322TimerIngFade);v322TimerIngFade=null}
+ const audio=v322TimerIngAudio;if(!audio)return;
+ if(!fadeMs||audio.paused){audio.pause();try{audio.currentTime=0}catch(_){}audio.volume=1;return}
+ const initial=audio.volume,started=performance.now();
+ v322TimerIngFade=setInterval(()=>{
+  const proportion=Math.min(1,(performance.now()-started)/fadeMs);
+  audio.volume=Math.max(0,initial*(1-proportion));
+  if(proportion>=1){clearInterval(v322TimerIngFade);v322TimerIngFade=null;audio.pause();try{audio.currentTime=0}catch(_){}audio.volume=1}
+ },16);
+}
+function v322PlayTimerIng(elapsedMs=0){
+ v322PreloadTimerIng();v322StopTimerIng();
+ const audio=v322TimerIngAudio;
+ const elapsed=Math.max(0,Math.min(12.95,elapsedMs/1000));
+ const seek=()=>{try{audio.currentTime=elapsed}catch(_){}};
+ if(audio.readyState>=1)seek();else audio.addEventListener('loadedmetadata',seek,{once:true});
+ audio.volume=1;
+ audio.play().catch(error=>console.warn('[SHINDO V322] countdown sound could not play',error));
+}
 function v316ClearDeadline(){if(v316DeadlineTimer!==null){clearInterval(v316DeadlineTimer);v316DeadlineTimer=null}localStorage.removeItem('shindo_v316_selection_deadline')}
 function v316StopTick(){if(v316TickTimer!==null){clearInterval(v316TickTimer);v316TickTimer=null}}
 function v316StartTick(ms=1000){
@@ -3100,8 +3130,8 @@ function v316Unlocked(name){
 }
 function v316TargetDescription(person){return person[3]&&v241MetSeokminAtPoliceDay2()?person[3]:person[2]}
 function v316ShowTargetSelection(){
- v320PreloadTimerDone();
- // V321: keep the 13-second countdown silent; only the completion bell plays.
+ v320PreloadTimerDone();v322PreloadTimerIng();
+ // V322: the countdown is a single edited soundtrack, not repeated ticks.
  v316StopTick();
  locked=true;areaSkipButton.hidden=true;box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  const eligible=V316_TARGETS.filter(p=>v316Unlocked(p[0]));
@@ -3115,7 +3145,8 @@ function v316ShowTargetSelection(){
  const warningStart=Date.now();
  const record=(p,automatic)=>{
   if(committed)return;committed=true;v316ClearDeadline();v316StopTick();
-  // V321: play exactly once on either manual confirmation or timeout.
+  // V322: crossfade out the countdown, then play the bell once.
+  v322StopTimerIng(automatic?0:130);
   v320PlayTimerDone();
   const name=p?.[0]||'';localStorage.setItem(V316_PM_TARGET_KEY,name);
   window.SHINDO_addPlayRecord?.('선택','오후 고해소 고발: '+name+(automatic?' (시간초과)':''),Number(localStorage.getItem(V316_PM_DAY_KEY))||4);
@@ -3142,6 +3173,7 @@ function v316ShowTargetSelection(){
  const saved=oldDeadline===null?NaN:Number(oldDeadline);
  const deadline=Number.isFinite(saved)&&saved>0?saved:Date.now()+13000;
  localStorage.setItem('shindo_v316_selection_deadline',String(deadline));
+ if(deadline>Date.now())v322PlayTimerIng(13000-(deadline-Date.now()));
  const update=()=>{
   if(committed)return;
   const left=Math.max(0,deadline-Date.now());
@@ -5380,7 +5412,7 @@ function v277RestoreDay3Snapshot(){
  return snapshot.index;
 }
 // Reset transient scene elements before teleporting to a non-linear checkpoint.
-function v277ClearTransientScenes(){v320StopTimerDone();v316StopTick();v316ClearDeadline();overlay.querySelector('.shindo-v316-targets')?.remove();localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');
+function v277ClearTransientScenes(){v322StopTimerIng();v320StopTimerDone();v316StopTick();v316ClearDeadline();overlay.querySelector('.shindo-v316-targets')?.remove();localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');
  v289StopForestCue();
  v281ClearFinalArtwork();
  v270StopMusic();v270StopBell();v273StopKnock();v280ClearWibanCheckpoint();v207StopEscapeMusic();
@@ -5451,7 +5483,7 @@ window.SHINDO_hasDay3RestartSnapshot=()=>{
 };
 
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
-function restartFromDay1(){v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));v304StopChanBgm();sessionStorage.removeItem(V303_JILSI_TEST_KEY);sessionStorage.removeItem(V303_JILSI_LOCK_BACKUP);['shindo_chan_event_day_v299','shindo_chan_memory_pair_v299','shindo_character_status_v299','shindo_jilsi_choice_day_v298','shindo_jilsi_choice_result_v298'].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay1(){v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));v304StopChanBgm();sessionStorage.removeItem(V303_JILSI_TEST_KEY);sessionStorage.removeItem(V303_JILSI_LOCK_BACKUP);['shindo_chan_event_day_v299','shindo_chan_memory_pair_v299','shindo_character_status_v299','shindo_jilsi_choice_day_v298','shindo_jilsi_choice_result_v298'].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -5511,7 +5543,7 @@ function restartFromDay1(){v320StopTimerDone();sessionStorage.removeItem(V317_CO
 window.SHINDO_restartFromDay1=restartFromDay1;
 
 // V169: Test restart at the black "2일차" title, keeping the authenticated mail/browser.
-function restartFromDay2(){v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));[V312_DAY4_OFFICE_KEY,V312_DAY2_SLEEP_KEY,V312_DAY3_SLEEP_KEY,V312_DAY4_PRAYER_KEY].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay2(){v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));[V312_DAY4_OFFICE_KEY,V312_DAY2_SLEEP_KEY,V312_DAY3_SLEEP_KEY,V312_DAY4_PRAYER_KEY].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -7319,7 +7351,7 @@ function next(userAdvance=false){
  index=nextIndex;save();render();
 }
 overlay.addEventListener('click',()=>{audioContext();if(scenes[index]?.eveningLocation==='village'&&!v207EscapeMusicFading)v207StartEscapeMusic();if(v178BellWanted&&!v178BellStarted){prepareV178BellFromGesture();if(v178BellBuffer)startV178Bell();}next(true)});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(phoneDrawer.classList.contains('is-open'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next(true)}});
-window.SHINDO_startStory=()=>{v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();overlay.querySelector('.shindo-v316-targets')?.remove();
+window.SHINDO_startStory=()=>{v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();overlay.querySelector('.shindo-v316-targets')?.remove();
  v304StopChanBgm();
  v281ClearFinalArtwork();
  v273StopKnock();v270StopMusic();v270StopBell();
