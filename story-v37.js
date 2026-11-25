@@ -2472,7 +2472,7 @@ function v304StartChanBgm(){
  v304ChanBgmFadeId=setInterval(()=>{
   if(v304ChanBgm!==music){v304ClearBgmFade();return}
   const t=Math.min(1,(performance.now()-start)/650);
-  music.volume=.15*t;
+  music.volume=.10*t;
   if(t>=1)v304ClearBgmFade();
  },40);
 }
