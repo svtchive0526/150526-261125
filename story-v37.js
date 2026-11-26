@@ -2983,6 +2983,17 @@ scenes.push(
 );
 const V316_PM_TARGET_SCREEN=scenes.length;
 scenes.push(v316Scene('v316-target-select',''));
+// V325: Append the S02 continuation after the existing target-screen index.
+// Do not insert ahead of it: older saves must keep their scene indices.
+const V325_PM_S02_START=scenes.length;
+scenes.push(
+ v316Scene('dialogue','아, 그 분이군요.','원우',{portrait:'wonwoo-body1-default'}),
+ v316Scene('dialogue','의외네요.','원우',{portrait:'wonwoo-body1-eyesclosed'}),
+ v316Scene('dialogue','...신도님의 의견은 잘 전달되었습니다.','원우',{portrait:'wonwoo-body1-eyesclosed',portraitFadeOutAfter:true}),
+ v316Scene('dialogue','뭔가 찜찜한 기분이다.','주인공',{eveningLocation:'living',clearPortrait:true}),
+ v316Scene('narration','별 일이 없길 바라며, 생활관으로 돌아가 하루를 마무리했다.','',{eveningLocation:'living',clearPortrait:true}),
+ v316Scene('v325-s02-end','')
+);
 // Later days reuse the same authored dialogue without duplicating or renumbering it.
 // Only day 4 currently has a playable entrance; days 5 and 6 use this registration.
 let v317ConfTestEntering=false;
@@ -3147,6 +3158,10 @@ function v316Unlocked(name){
 }
 function v316TargetDescription(person){return person[3]&&v241MetSeokminAtPoliceDay2()?person[3]:person[2]}
 function v316ShowTargetSelection(){
+ // A committed accusation survives a reload; never reopen selection or reroll.
+ if(localStorage.getItem(V316_PM_TARGET_KEY)){
+  v323StopAccusationAudioAndTimers();v316Go(V325_PM_S02_START);return;
+ }
  // Preserve the existing absolute deadline across reloads; only replace active audio.
  v322StopTimerIng();v320StopTimerDone();
  if(v316DeadlineTimer!==null){clearInterval(v316DeadlineTimer);v316DeadlineTimer=null;}
@@ -3171,9 +3186,23 @@ function v316ShowTargetSelection(){
   const name=p?.[0]||'';localStorage.setItem(V316_PM_TARGET_KEY,name);
   window.SHINDO_addPlayRecord?.('선택','오후 고해소 고발: '+name+(automatic?' (시간초과)':''),Number(localStorage.getItem(V316_PM_DAY_KEY))||4);
   cards.hidden=true;confirm.hidden=false;
-  confirm.innerHTML='';const title=document.createElement('h3');title.textContent=name?name+' — 고발 대상으로 결정되었습니다.':'고발 가능한 인물이 없습니다.';
-  const note=document.createElement('p');note.textContent='이후 고발 결과 스크립트는 아직 구현되지 않았습니다.';
-  confirm.append(title,note);
+  confirm.innerHTML='';
+  const title=document.createElement('h3');title.textContent=name?'고발 대상이 결정되었습니다.':'고발 가능한 인물이 없습니다.';
+  confirm.append(title);
+  // Finish the already-committed bell once before transitioning. Its playback
+  // is intentionally not cut off by the scene-change audio cleanup.
+  let forwarded=false;
+  const advance=()=>{
+   if(forwarded || index!==V316_PM_TARGET_SCREEN)return;
+   forwarded=true;v320TimerDoneAudio?.removeEventListener('ended',advance);
+   v316Go(V325_PM_S02_START);
+  };
+  if(v320TimerDoneAudio){
+   v320TimerDoneAudio.addEventListener('ended',advance,{once:true});
+   // If autoplay was denied, don't trap the player on the confirmation screen.
+   setTimeout(advance,7400);
+  }else setTimeout(advance,150);
+
  };
  const choose=p=>{
   if(committed)return;chosen=p;cards.hidden=true;confirm.hidden=false;confirm.innerHTML='';
@@ -3205,6 +3234,11 @@ function v316ShowTargetSelection(){
  };
  if(v316DeadlineTimer!==null)clearInterval(v316DeadlineTimer);
  v316DeadlineTimer=setInterval(update,80);update();
+}
+function v325ShowS02End(){
+ v316StopTick();locked=true;areaSkipButton.hidden=true;box.style.display='none';
+ const menu=overlay.querySelector('.shindo-choices');
+ if(menu){menu.classList.remove('shindo-morning-grid');menu.innerHTML='<h2>4~6일차 오후 고해소</h2><p>이후 일차 스크립트는 아직 연결되지 않았습니다.</p>';menu.style.display='flex';}
 }
 function v316ShowS01End(){
  v316StopTick();locked=true;areaSkipButton.hidden=true;box.style.display='none';
@@ -5224,6 +5258,7 @@ if(scene.kind==='day2-morning-choice'){
  if(scene.kind==='v316-s01-choice'){v316ShowS01Choice();return;}
  if(scene.kind==='v316-target-select'){v316ShowTargetSelection();return;}
  if(scene.kind==='v316-s01-end'){v316ShowS01End();return;}
+ if(scene.kind==='v325-s02-end'){v325ShowS02End();return;}
  if(scene.kind==='v291-day3-choice'){v291ShowDay3ConfessionalChoice();return;}
  if(scene.kind==='v291-day3-end'){v293EnterNight();return;}
  if(scene.kind==='v293-night-choice'){showV178Holding('deny');return;}
