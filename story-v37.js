@@ -62,7 +62,7 @@ const scenes=[
  {kind:'line',text:'시동이 꺼졌다. 도착한 모양이다.'},
  {kind:'line',text:'…얼마나 잤지?'},
  {kind:'line',text:'하필 이런 데서 졸다니. 사이비교 본거지로 걸어 들어가면서, 태평하게 쿨쿨 잠이나 자는 기자가 어디 있단 말이냐.'},
- {kind:'line',text:'...여기 있다.',delay:2000},
+ {kind:'line',text:'...여기 있다.'},
  {kind:'line',text:'특종 쫓느라 며칠 밤낮으로 고생했더니 몸이 먼저 항복해버렸다.'},
  {kind:'line',text:'내 이름은 김봉봉. 어리버리한 새 신도인 척하고 있지만, 사실은 기자다.',follow:true},
  {kind:'line',text:'그것도 특종에 아주 목마른.'},
@@ -70,6 +70,10 @@ const scenes=[
  {kind:'line',text:'그런 판에 <카밀레교>라는 취재 아이템이 굴러왔다. 이게 웬 떡이냐.'},
  {kind:'line',text:'그야말로 하늘이 내려준 선물이 아닐 수 없다.'},
  {kind:'line',text:'그래서 미친 척하고 이곳, <카밀레교>의 본거지까지 찾아오게 된 거다.'},
+ {kind:'dialogue',speaker:'주인공',inner:true,text:'(회사에 요청해서 내가 벌어둔 시간은 13일….)',boldWord:'13일'},
+ {kind:'dialogue',speaker:'주인공',inner:true,text:'(그걸 넘어가면 내 밥벌이가 위험할지도 몰라.)'},
+ {kind:'dialogue',speaker:'주인공',inner:true,text:'(그 안에 최대한 빨리, 많이 정보를 모아서 탈출하자.)'},
+ {kind:'dialogue',speaker:'주인공',inner:true,text:'(물론 그 전에 탈출할 수 있다면 더 좋고.)'},
  {kind:'line',text:'와, 공기 죽여준다.',sound:'forest'},
  {kind:'line',text:'주변이 전부 산이다. 이런 데라면 쥐도 새도 모르게 사라지기 딱 좋겠지…',sound:'forest'},
  {kind:"dialogue",speaker:"승철",text:"좋은 계절입니다.",inner:false,portrait:"seungcheol-body1-default"},
@@ -3143,7 +3147,7 @@ function v316ShowChoices(title,labels,handler){
 }
 function v316ShowAccuseChoice(){
  v316StartTick(1000);
- const options=['아는 이를 고발한다.','모르는 이를 고발한다.','눈앞에 있는 이를 고발한다.'];
+ const options=['고발한다.','고발하지 않는다.','눈앞에 있는 이를 고발한다.'];
  v316ShowChoices('누구를 고발할까?',options,which=>{
   const branch=['S01','S02','S03'][which];
   localStorage.setItem(V316_PM_BRANCH_KEY,branch);
