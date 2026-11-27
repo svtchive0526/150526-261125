@@ -2933,16 +2933,55 @@ function v293ShowDay4Pending(){
  menu.style.display='flex';
 }
 
+// V336: GYEOLSOK ending music is a single, scene-spanning audio object.
+let v336GyeolsokAudio=null,v336GyeolsokFadeFrame=null,v336GyeolsokFadeToken=0;
+function v336CancelGyeolsokFade(){v336GyeolsokFadeToken++;if(v336GyeolsokFadeFrame!==null){cancelAnimationFrame(v336GyeolsokFadeFrame);v336GyeolsokFadeFrame=null}}
+function v336StopGyeolsokBgm(){v336CancelGyeolsokFade();if(v336GyeolsokAudio){v336GyeolsokAudio.pause();v336GyeolsokAudio.currentTime=0;v336GyeolsokAudio=null}}
+function v336FadeGyeolsokVolume(target,duration=1700,done=null){
+ const audio=v336GyeolsokAudio;if(!audio)return;
+ v336CancelGyeolsokFade();const token=v336GyeolsokFadeToken;
+ const initial=audio.volume;let start=null;
+ const frame=stamp=>{
+  if(v336GyeolsokFadeToken!==token || v336GyeolsokAudio!==audio)return;
+  if(start===null)start=stamp;
+  const t=Math.min(1,(stamp-start)/duration);
+  audio.volume=Math.max(0,Math.min(1,initial+(target-initial)*t));
+  if(t<1)v336GyeolsokFadeFrame=requestAnimationFrame(frame);
+  else {v336GyeolsokFadeFrame=null;if(done)done()}
+ };
+ v336GyeolsokFadeFrame=requestAnimationFrame(frame);
+}
+function v336StartGyeolsokBgm(){
+ if(v336GyeolsokAudio)return;
+ const audio=new Audio('story-audio/gyeolsok-ending.mp3');audio.preload='auto';audio.loop=false;audio.volume=0;
+ v336GyeolsokAudio=audio;
+ audio.addEventListener('ended',()=>{if(v336GyeolsokAudio===audio)v336StopGyeolsokBgm()},{once:true});
+ audio.play().then(()=>{if(v336GyeolsokAudio===audio)v336FadeGyeolsokVolume(.30,1700)}).catch(error=>{
+  // A browser that blocks delayed autoplay can retry at the next actual tap.
+  console.warn('[V336] Gyeolsok BGM playback needs a user interaction',error);
+  if(v336GyeolsokAudio!==audio)return;
+  const retry=()=>{
+   overlay.removeEventListener('pointerdown',retry);
+   if(v336GyeolsokAudio!==audio)return;
+   audio.play().then(()=>{if(v336GyeolsokAudio===audio)v336FadeGyeolsokVolume(.30,1700)}).catch(()=>{});
+  };
+  overlay.addEventListener('pointerdown',retry,{once:true});
+ });
+}
+function v336EndGyeolsokBgm(){v336FadeGyeolsokVolume(0,2400,()=>v336StopGyeolsokBgm())}
+
 function v335ShowGyeolsokDayTitle(){
  const nextDay=Math.min(7,v335AccusationDay()+1);
  localStorage.setItem('shindo_current_story_day_v109',String(nextDay));
- overlay.classList.add('confession-blackout','v293-day4-title');
- overlay.classList.remove('sleep-fadein','sleep-fadeout');
- storyBackdrop.style.opacity='0';storyUnderlay.style.opacity='1';
+ overlay.classList.add('confession-blackout','v293-day4-title','v336-gyeolsok-day-shield');
+ overlay.classList.remove('sleep-fadein','sleep-fadeout','v336-gyeolsok-preblack','v336-gyeolsok-day-reveal');
+ storyBackdrop.style.opacity='0';storyUnderlay.style.opacity='0';
  box.style.display='none';portrait.hidden=true;illustration.hidden=true;
  overlay.querySelector('.vn-hint').style.display='none';
  const center=overlay.querySelector('.vn-center')||(()=>{const e=document.createElement('div');e.className='vn-center';overlay.appendChild(e);return e})();
  center.textContent=nextDay+'일차';center.style.display='block';locked=true;
+ // Begin the ending music once the black day-title card is actually visible.
+ v336StartGyeolsokBgm();
  const dayTitleIndex=index;
  timer=setTimeout(()=>{
   if(index!==dayTitleIndex || scenes[index]?.kind!=='v335-gyeolsok-day-title')return;
@@ -2952,11 +2991,19 @@ function v335ShowGyeolsokDayTitle(){
    if(backdropSwapTimer){clearTimeout(backdropSwapTimer);backdropSwapTimer=null}
    currentSceneBackdropKey='bg-central-square.jpg';
    setSceneBackdropImage('bg-central-square.jpg');
-   storyBackdrop.style.opacity='1';
-   overlay.classList.remove('confession-blackout');
+   storyBackdrop.style.opacity='1';storyUnderlay.style.opacity='1';
    center.style.display='none';locked=false;
    index=V335_PM_GYEOLSOK_DAYTITLE_START+1;save();render();
-  });
+   // The fully black shield is removed only *after* the square photo is loaded.
+   requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    if(index!==V335_PM_GYEOLSOK_DAYTITLE_START+1)return;
+    overlay.classList.remove('confession-blackout','v293-day4-title');
+    overlay.classList.add('v336-gyeolsok-day-reveal');
+    setTimeout(()=>{
+     overlay.classList.remove('v336-gyeolsok-day-shield','v336-gyeolsok-day-reveal');
+    },1020);
+   }));
+  }).catch(error=>{console.warn('[V336] Could not preload central-square scene',error)});
  },2300);
 }
 // V316 — Day 4–6 afternoon confessional. Appended after existing scenes to retain indices.
@@ -3066,7 +3113,7 @@ scenes.push(
  v316Scene('narration','뎅- 종소리가 울릴 때, 승철이 이를 악물고 중얼거린다.','',{eveningLocation:'square',illustration:'ending-gyeolsok-seungcheol',v335GyeolsokArt:true,clearPortrait:true,gongyangBell:'01',gongyangBellMs:6300,v335AutoAdvanceMs:1400}),
  v316Scene('dialogue','겁도 없는 새끼가 누굴 꼰질러.','승철',{eveningLocation:'square',illustration:'ending-gyeolsok-seungcheol',v335GyeolsokArt:true,clearPortrait:true,boldAll:true,fontScale:1.2,v335AutoAdvanceMs:1600}),
  v316Scene('narration','아직 충분한 신뢰가 쌓이지 않았다.','',{eveningLocation:'square',illustration:'ending-gyeolsok-seungcheol',v335GyeolsokArt:true,clearPortrait:true,v335AutoFadeIllustrationMs:1600}),
- v316Scene('narration','결속이 약해졌을 때를 기다리자….','',{eveningLocation:'dark',clearPortrait:true,v335FadeToEnding:true}),
+ v316Scene('narration','결속이 약해졌을 때를 기다리자….','',{eveningLocation:'dark',clearPortrait:true,v335FadeToEnding:true,v336GyeolsokBlack:true}),
  v316Scene('ending','','',{endingRoute:'gyeolsok'})
 );
 
@@ -3085,7 +3132,8 @@ function v316AfternoonStart(day){
  localStorage.removeItem(V316_PM_TARGET_KEY);
  stopEveningTick();
  const menu=overlay.querySelector('.shindo-choices');if(menu)menu.style.display='none';
- overlay.classList.remove('confession-blackout','v293-day4-title');
+ overlay.classList.remove('confession-blackout','v293-day4-title','v336-gyeolsok-day-shield','v336-gyeolsok-day-reveal','v336-gyeolsok-preblack','v336-gyeolsok-art-fading');
+ v336StopGyeolsokBgm();
  locked=false;index=V316_PM_START;save();render();return true;
 }
 // V317: feedback test entry for the complete Day-4 confession dialogue.
@@ -3327,11 +3375,13 @@ function v335ShouldRunGyeolsokRoute(){
 }
 function v335EnterGyeolsokRoute(){
  v316StopTick();locked=true;areaSkipButton.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
- overlay.classList.add('confession-fade');
+ // Dedicated fade prevents the old confession photograph from flashing between screens.
+ overlay.classList.remove('confession-fade','v336-gyeolsok-day-reveal');
+ overlay.classList.add('v336-gyeolsok-preblack');
  box.style.display='none';portrait.hidden=true;illustration.hidden=true;
  timer=setTimeout(()=>{
-  overlay.classList.remove('confession-fade');
-  overlay.classList.add('confession-blackout','v293-day4-title');
+  overlay.classList.add('confession-blackout','v293-day4-title','v336-gyeolsok-day-shield');
+  overlay.classList.remove('v336-gyeolsok-preblack');
   locked=false;index=V335_PM_GYEOLSOK_DAYTITLE_START;save();render();
  },950);
 }
@@ -3623,10 +3673,24 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn.v299-jilsi-art .vn-illustration{left:0;top:0;transform:none;inset:0;width:100%;height:100%;max-height:none;object-fit:cover;object-position:center center;z-index:1;opacity:1}
 #shindo-vn.v299-jilsi-art .vn-illustration.vn-fade{animation:vn-image-appear .8s ease-out both}
 #shindo-vn.v299-jilsi-art .vn-box{z-index:5;position:relative}
-#shindo-vn.v335-gyeolsok-art{background:#000!important}
+#shindo-vn.v335-gyeolsok-art{background:#000 url('story-illustrations/ending-gyeolsok-seungcheol.png') center center / cover no-repeat!important}
 #shindo-vn.v335-gyeolsok-art .vn-illustration{left:0;top:0;transform:none;inset:0;width:100%;height:100%;max-height:none;object-fit:cover;object-position:center center;z-index:1;opacity:1}
 #shindo-vn.v335-gyeolsok-art .vn-illustration.vn-fade{animation:vn-image-appear .8s ease-out both}
 #shindo-vn.v335-gyeolsok-art .vn-box{z-index:5;position:relative}
+/* V336: Fade completely to black *before* revealing the final line. */
+#shindo-vn.v336-gyeolsok-art-fading::before{content:'';position:absolute;inset:0;background:#000;z-index:4;pointer-events:none;animation:v336-blackout .95s ease forwards}
+@keyframes v336-blackout{from{opacity:0}to{opacity:1}}
+/* Keep the previous background completely covered throughout the day title. */
+#shindo-vn.v336-gyeolsok-preblack::before{content:'';position:absolute;inset:0;background:#000;z-index:49;pointer-events:none;animation:v336-blackout .95s ease forwards}
+#shindo-vn.v336-gyeolsok-day-shield::before{content:'';position:absolute;inset:0;background:#000;z-index:49;pointer-events:none;opacity:1;transition:opacity .95s ease}
+#shindo-vn.v336-gyeolsok-day-shield.v336-gyeolsok-day-reveal::before{opacity:0}
+#shindo-vn.v336-gyeolsok-day-shield .vn-center{position:relative;z-index:51;color:#fff}
+#shindo-vn.v336-gyeolsok-day-reveal .vn-box{position:relative;z-index:51!important}
+@media(min-width:1024px){
+ #shindo-vn.v335-gyeolsok-art .vn-illustration{left:50%;top:50%;transform:translate(-50%,-50%) scale(.96)}
+ #shindo-vn .shindo-ending-gyeolsok .shindo-ending-stage{background:#000 url('story-illustrations/ending-gyeolsok-seungcheol.png') center / cover no-repeat}
+ #shindo-vn .shindo-ending-gyeolsok .shindo-ending-illustration{transform:scale(.96);object-position:center center}
+}
 /* V299 Chan: recall is 60% dark on the central square and has the established recall label. */
 #shindo-story-backdrop.v299-chan-recall-dim{filter:brightness(.4)!important;transition:filter .4s ease}
 #shindo-vn.v299-chan-recall .special-memory-kicker{display:block;font-size:clamp(18px,2vw,25px);font-weight:800;letter-spacing:0;color:#fff}
@@ -3764,7 +3828,8 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .shindo-ending-illustration.is-fading-out{opacity:0}
 /* V328: Fill the entire viewport only for Wonwoo/Doksil ending artwork. */
 #shindo-vn .shindo-ending-doksil .shindo-ending-illustration{object-fit:cover;object-position:center center}
-@media (min-width:1024px){#shindo-vn .shindo-ending-doksil .shindo-ending-illustration{object-position:72% 16%}}
+@media (min-width:1024px){#shindo-vn .shindo-ending-doksil:not(.shindo-ending-gyeolsok) .shindo-ending-illustration{object-position:72% 16%}}
+#shindo-vn .shindo-ending-gyeolsok .shindo-ending-illustration{object-position:center center}
 
 /* V275: Only the WIBAN ending artwork fills the story viewport on PC and mobile.
    object-fit:cover deliberately crops landscape artwork on portrait screens. */
@@ -4520,19 +4585,20 @@ function stopGongyangBell(){
  if(gongyangBellAudio){gongyangBellAudio.pause();gongyangBellAudio.currentTime=0;gongyangBellAudio=null}
 }
 function stopGongyangApplause(){if(gongyangApplauseAudio){gongyangApplauseAudio.pause();gongyangApplauseAudio.currentTime=0;gongyangApplauseAudio=null}}
-function playGongyangBell(id,holdMs=6000){
+function playGongyangBell(id,holdMs=6000,fadeWithinDuration=false){
  stopGongyangBell();
  // V299: only authored 6.3-second cues begin their fade at 6.3s.
  const audio=playExtraAudio('gongyang-bell-01.wav',.9);
  gongyangBellAudio=audio;audio.loop=false;
  if(holdMs>6000){
-  const end=holdMs+850;
+  const end=fadeWithinDuration?holdMs:holdMs+850;
+  const fadeStart=fadeWithinDuration?Math.max(0,holdMs-750):holdMs;
   gongyangBellTimer=setTimeout(()=>{if(gongyangBellAudio===audio)stopGongyangBell()},end);
   const start=performance.now();
   gongyangBellFadeTimer=setInterval(()=>{
    if(gongyangBellAudio!==audio)return;
    const elapsed=performance.now()-start;
-   if(elapsed>=holdMs)audio.volume=Math.max(0,.9*(end-elapsed)/850);
+   if(elapsed>=fadeStart)audio.volume=Math.max(0,.9*(end-elapsed)/(end-fadeStart));
   },40);
  }else{
   gongyangBellTimer=setTimeout(()=>{if(gongyangBellAudio===audio)stopGongyangBell()},6000);
@@ -5097,8 +5163,9 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
     localStorage.getItem('shindo_current_story_day_v109')==='3'){
   index=V257_DAY3_JEONGHAN_POLICE_PACKAGE_START;save();render();return;
  }
- const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){v334StopTongkwaeBgm();finish();return}
+ const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){v334StopTongkwaeBgm();v336StopGyeolsokBgm();finish();return}
  // Prevent this cue leaking to ordinary dialogue/other endings when skipping/restarting.
+ if(v336GyeolsokAudio && !(index>=V335_PM_GYEOLSOK_DAYTITLE_START && index<=V335_PM_GYEOLSOK_DAYTITLE_START+15))v336StopGyeolsokBgm();
  const v334InTongkwaeRoute=index>=V326_PM_S03_START&&index<V326_PM_S03_START+18;
  if(!v334InTongkwaeRoute&&v334TongkwaeAudio)v334StopTongkwaeBgm();
  if(scene.v334TongkwaeBgmStart)v334StartTongkwaeBgm();
@@ -5270,7 +5337,7 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
  // Keep the day in sync with real story progress, including refreshed sessions.
  try{if(!scene.v299Chan&&!scene.v298Jilsi&&!v293Day3EveningScene(scene)&&!scene.v270Wiban&&!scene.v289MorningConf&&!(v219IsDay3Activity()&&Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||0)>=4)&&!(scene.confMorning&&v219IsDay3Activity()&&Math.floor(Number(localStorage.getItem('shindo_current_story_day_v109'))||0)>=3)&&!scene.v312Day4)localStorage.setItem('shindo_current_story_day_v109',String(scene.v218GongyangDay|| (scene.v287Day4Library || scene.v288Day4Library || (scene.mainHall && v288CanOpenAnyDay4Library())?4:(scene.v316Confession?(Number(localStorage.getItem(V316_PM_DAY_KEY))||4):scene.v291Day3Confession?3:(scene.v262Day5Eunjae?5:(index>=V256_DAY4_EUNJAE_CASE13_START&&index<V256_DAY4_JEONGHAN_SEARCH_REVISIT_START)?4:v219IsDay3Activity()?3:scene.v213Day1Bedtime?1:scene.day3Morning||scene.kind==='v205-day3'||scene.v178Hold==='day3-after-escape'||scene.v178Hold==='day3-after-sleep'?3:index>=DAY2_START?2:1)))))}catch(_){}
  if(index===DAY2_START)localStorage.setItem(SKIP_REACHED,'1');
- updateAreaSkipButton();if(scene.v270Wiban||scene.v299Chan||scene.v298Jilsi||scene.v299JilsiArt)areaSkipButton.hidden=true;
+ updateAreaSkipButton();if(scene.v270Wiban||scene.v299Chan||scene.v298Jilsi||scene.v299JilsiArt||scene.v335GyeolsokArt||scene.v336GyeolsokBlack||scene.kind==='v335-gyeolsok-day-title')areaSkipButton.hidden=true;
  if(index===DAY2_START&&!localStorage.getItem('shindo_day2_start_affinity_snapshot_v169')){
   try{localStorage.setItem('shindo_day2_start_affinity_snapshot_v169',localStorage.getItem('shindo_affinity_v107')||'{"조슈아":100}')}catch(_){}
  }
@@ -5294,7 +5361,8 @@ applySceneBackdrop(index,scene);
 const squareBellStart=scenes.findIndex(x=>x.text==='그때였다.' && x.gongyangBell==='01');
 const squareBellExit=scenes.findIndex(x=>x.kind==='day2-morning-choice' && x.branch===1);
 const insideSquareStory=squareBellStart>=0 && squareBellExit>=0 && index>=squareBellStart && index<squareBellExit && selectedBranch===1;
-if(!insideSquareStory && !scene.v298Jilsi){
+const v336GyeolsokBellSegment=index>=V335_PM_GYEOLSOK_DAYTITLE_START+11 && index<=V335_PM_GYEOLSOK_DAYTITLE_START+15;
+if(!insideSquareStory && !scene.v298Jilsi && !v336GyeolsokBellSegment){
  stopGongyangBell();
  stopLeaderShout();
 }
@@ -5442,12 +5510,13 @@ if(scene.kind==='day2-morning-choice'){
  }
  if(scene.kind==='prayer-sfx'){index++;save();render();return}
 
+if(scene.v336GyeolsokBlack){overlay.classList.add('confession-blackout');illustration.hidden=true;storyBackdrop.style.opacity='0';storyUnderlay.style.opacity='0'}
 if(scene.kind==='ending'){v316StopTick();if(scene.endingRoute==='jilsi-chan'){showJilsiEnding();return}if(scene.endingRoute==='gyeolsok'){showGyeolsokEnding();return}showEnding();return}
 if(scene.square)overlay.classList.remove("confession-blackout");
 // V155: all central-square dialogue keeps the background visible; no mid-scene blackouts.
 if(scene.wakeShake){sound('wake-rustle');overlay.classList.add("day2-shake");setTimeout(()=>overlay.classList.remove("day2-shake"),2000)}
 if(scene.screenShake){overlay.classList.add("day2-shake");setTimeout(()=>overlay.classList.remove("day2-shake"),800)}
-if(scene.gongyangBell)playGongyangBell(scene.gongyangBell,scene.gongyangBellMs);
+if(scene.gongyangBell)playGongyangBell(scene.gongyangBell,scene.gongyangBellMs,!!scene.v335GyeolsokArt);
 if(scene.leaderShout)playLeaderShout();
 if(scene.gongyangApplause==='start')startGongyangApplause();
 if(gongyangApplauseAudio && scene.gongyangApplause!=='start' && scene.gongyangApplause!=='continue')stopGongyangApplause();
@@ -5607,7 +5676,7 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
       timer=setTimeout(()=>{locked=false;index++;save();render()},800);
      }else{locked=false;index++;save();render();}
     },2000);
-   }):(scene.v335AutoFadeIllustrationMs?(()=>{locked=true;timer=setTimeout(()=>{illustration.style.transition='opacity .9s ease';illustration.style.opacity='0';overlay.classList.add('confession-blackout');timer=setTimeout(()=>{locked=false;index++;save();render()},900)},scene.v335AutoFadeIllustrationMs)}):(scene.v335AutoAdvanceMs?(()=>{locked=true;timer=setTimeout(()=>{locked=false;index++;save();render()},scene.v335AutoAdvanceMs)}):(scene.recall?(()=>{timer=setTimeout(()=>{locked=false;next()},1300)}):(scene.delayedConfessionBlackout?startConfessionQuestionTransition:null))));
+   }):(scene.v335AutoFadeIllustrationMs?(()=>{locked=true;timer=setTimeout(()=>{overlay.classList.add('v336-gyeolsok-art-fading');timer=setTimeout(()=>{overlay.classList.add('confession-blackout');overlay.classList.remove('v336-gyeolsok-art-fading');illustration.hidden=true;locked=false;index++;save();render()},970)},scene.v335AutoFadeIllustrationMs)}):(scene.v335AutoAdvanceMs?(()=>{locked=true;timer=setTimeout(()=>{locked=false;index++;save();render()},scene.v335AutoAdvanceMs)}):(scene.recall?(()=>{timer=setTimeout(()=>{locked=false;next()},1300)}):(scene.delayedConfessionBlackout?startConfessionQuestionTransition:null))));
  if(scene.kind==='dialogue'||scene.kind==='narration'||scene.kind==='line')beginVnTyping(v335TypingComplete);
  if(scene.follow){locked=true;timer=setTimeout(()=>{locked=false;next()},1600)}
  else if(index===12){locked=true;timer=setTimeout(()=>{locked=false;next()},2000)}
@@ -5715,7 +5784,7 @@ window.SHINDO_hasDay3RestartSnapshot=()=>{
 };
 
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
-function restartFromDay1(){v334StopTongkwaeBgm();v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));v304StopChanBgm();sessionStorage.removeItem(V303_JILSI_TEST_KEY);sessionStorage.removeItem(V303_JILSI_LOCK_BACKUP);['shindo_chan_event_day_v299','shindo_chan_memory_pair_v299','shindo_character_status_v299','shindo_jilsi_choice_day_v298','shindo_jilsi_choice_result_v298'].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay1(){v336StopGyeolsokBgm();v334StopTongkwaeBgm();v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));v304StopChanBgm();sessionStorage.removeItem(V303_JILSI_TEST_KEY);sessionStorage.removeItem(V303_JILSI_LOCK_BACKUP);['shindo_chan_event_day_v299','shindo_chan_memory_pair_v299','shindo_character_status_v299','shindo_jilsi_choice_day_v298','shindo_jilsi_choice_result_v298'].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -5775,7 +5844,7 @@ function restartFromDay1(){v334StopTongkwaeBgm();v322StopTimerIng();v320StopTime
 window.SHINDO_restartFromDay1=restartFromDay1;
 
 // V169: Test restart at the black "2일차" title, keeping the authenticated mail/browser.
-function restartFromDay2(){v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));[V312_DAY4_OFFICE_KEY,V312_DAY2_SLEEP_KEY,V312_DAY3_SLEEP_KEY,V312_DAY4_PRAYER_KEY].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay2(){v336StopGyeolsokBgm();v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));[V312_DAY4_OFFICE_KEY,V312_DAY2_SLEEP_KEY,V312_DAY3_SLEEP_KEY,V312_DAY4_PRAYER_KEY].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -7168,7 +7237,7 @@ function showJilsiEnding(){
  later(()=>{const button=document.createElement('button');button.className='shindo-restart';button.textContent='처음부터 다시 하기';button.onclick=e=>{e.stopPropagation();end.remove();restartFromDay1();};end.appendChild(button)},7500);
 }
 function v335RestartAfterEnding(){
- stopEndingBell();stopConfessionTick();v334StopTongkwaeBgm();
+ stopEndingBell();stopConfessionTick();v334StopTongkwaeBgm();v336StopGyeolsokBgm();
  localStorage.removeItem('shindo_confession_branch');localStorage.removeItem('shindo_day2_prayer');localStorage.removeItem('shindo_day2_morning');
  localStorage.removeItem('shindo_affinity_v107');localStorage.removeItem('shindo_affinity_events_v111');localStorage.removeItem('shindo_affinity_unread_v125');
  localStorage.removeItem(KEY);localStorage.removeItem('shindo_story_started_v37');localStorage.removeItem('shindo_sleep_gate_v48');localStorage.removeItem('shindo_story_v55_extended');localStorage.removeItem('shindo_story_v66_sanctuary');
@@ -7176,7 +7245,7 @@ function v335RestartAfterEnding(){
  ['svter_first_launch_at_v1','svter_lock_reached_v1','svter_lock_deleted_notices_v33','kamille_new_mail_received_v32','kamille_new_mail_read_v32','kamille_newmail_popup_ack_v51','shindo_church_link_unlocked_v30','shindo_attachment_unlocked_v31'].forEach(k=>localStorage.removeItem(k));
  sessionStorage.removeItem('shindo_story_started_v37');location.reload();
 }
-function showGyeolsokEnding(){stopEveningTick();stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopConfessionTick();stopEndingBell();stopSanctuaryTick();box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';overlay.classList.add('confession-blackout');locked=true;const end=document.createElement('div');end.className='shindo-ending shindo-ending-doksil shindo-ending-gyeolsok';end.innerHTML='<div class="shindo-ending-stage"><img class="shindo-ending-illustration" src="'+GYEOLSOK_ENDING_ILLUSTRATION+'" alt="결속 엔딩 일러스트"><div class="shindo-ending-copy"><h1 style="font-size:clamp(52px,10vw,110px);margin-bottom:15px;">결속</h1><p>거짓 낙원이라 한들, 그 품에 안긴 이에게는 진실된 낙원이다.<br>그 속에서 행복하기만 하다면.</p></div></div>';overlay.appendChild(end);const art=end.querySelector('.shindo-ending-illustration');const copy=end.querySelector('.shindo-ending-copy');const later=(fn,ms)=>endingTimers.push(setTimeout(fn,ms));requestAnimationFrame(()=>{if(art){void art.offsetWidth;art.classList.add('is-visible')}});later(()=>{art?.classList.add('is-fading-out');copy?.classList.add('is-visible')},3000);later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도</div>'},6000);later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도<span>神道</span></div>'},8000);later(()=>{const b=document.createElement('button');b.className='shindo-restart';b.textContent='처음부터 다시 하기';b.onclick=e=>{e.stopPropagation();v335RestartAfterEnding()};end.appendChild(b)},10000)}
+function showGyeolsokEnding(){stopEveningTick();stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopConfessionTick();stopEndingBell();stopSanctuaryTick();box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';overlay.classList.add('confession-blackout');locked=true;const end=document.createElement('div');end.className='shindo-ending shindo-ending-doksil shindo-ending-gyeolsok';end.innerHTML='<div class="shindo-ending-stage"><img class="shindo-ending-illustration" src="'+GYEOLSOK_ENDING_ILLUSTRATION+'" alt="결속 엔딩 일러스트"><div class="shindo-ending-copy"><h1 style="font-size:clamp(52px,10vw,110px);margin-bottom:15px;">결속</h1><p>거짓 낙원이라 한들, 그 품에 안긴 이에게는 진실된 낙원이다.<br>그 속에서 행복하기만 하다면.</p></div></div>';overlay.appendChild(end);const art=end.querySelector('.shindo-ending-illustration');const copy=end.querySelector('.shindo-ending-copy');const later=(fn,ms)=>endingTimers.push(setTimeout(fn,ms));requestAnimationFrame(()=>{if(art){void art.offsetWidth;art.classList.add('is-visible')}});later(()=>{art?.classList.add('is-fading-out');copy?.classList.add('is-visible')},3000);later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도</div>'},6000);later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도<span>神道</span></div>'},8000);later(()=>{v336EndGyeolsokBgm();const b=document.createElement('button');b.className='shindo-restart';b.textContent='처음부터 다시 하기';b.onclick=e=>{e.stopPropagation();v335RestartAfterEnding()};end.appendChild(b)},10000)}
 function showEnding(){stopEveningTick();stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopConfessionTick();stopEndingBell();stopSanctuaryTick();box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';overlay.classList.add('confession-blackout');locked=true;const end=document.createElement('div');end.className='shindo-ending shindo-ending-doksil';end.innerHTML='<div class="shindo-ending-stage"><img class="shindo-ending-illustration" src="'+TONGKWAE_ENDING_ILLUSTRATION+'" alt="통쾌 엔딩 일러스트"><div class="shindo-ending-copy"><h1 style="font-size:clamp(52px,10vw,110px);margin-bottom:15px;">통쾌</h1><p>사람이 하고 싶은 말은 하고 살아야지!<br>물론 그러다 죽을 수도 있긴 하지만.</p></div></div>';overlay.appendChild(end);const art=end.querySelector('.shindo-ending-illustration');const copy=end.querySelector('.shindo-ending-copy');const later=(fn,ms)=>endingTimers.push(setTimeout(fn,ms));requestAnimationFrame(()=>{if(art){void art.offsetWidth;art.classList.add('is-visible')}});later(()=>{art?.classList.add('is-fading-out');copy?.classList.add('is-visible')},3000);later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도</div>'},6000);later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도<span>神道</span></div>'},8000);later(()=>{v334EndTongkwaeBgm();const b=document.createElement('button');b.className='shindo-restart';b.textContent='처음부터 다시 하기';b.onclick=e=>{e.stopPropagation();v335RestartAfterEnding()};end.appendChild(b)},10000)}
 
 // V270: audio, scene timing, and ending are scoped to this route.
@@ -7600,7 +7669,7 @@ function next(userAdvance=false){
  index=nextIndex;save();render();
 }
 overlay.addEventListener('click',()=>{audioContext();if(scenes[index]?.eveningLocation==='village'&&!v207EscapeMusicFading)v207StartEscapeMusic();if(v178BellWanted&&!v178BellStarted){prepareV178BellFromGesture();if(v178BellBuffer)startV178Bell();}next(true)});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(phoneDrawer.classList.contains('is-open'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next(true)}});
-window.SHINDO_startStory=()=>{v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();overlay.querySelector('.shindo-v316-targets')?.remove();
+window.SHINDO_startStory=()=>{v336StopGyeolsokBgm();v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();overlay.querySelector('.shindo-v316-targets')?.remove();
  v304StopChanBgm();
  v281ClearFinalArtwork();
  v273StopKnock();v270StopMusic();v270StopBell();
