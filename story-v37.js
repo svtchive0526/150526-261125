@@ -2994,6 +2994,31 @@ scenes.push(
  v316Scene('narration','별 일이 없길 바라며, 생활관으로 돌아가 하루를 마무리했다.','',{eveningLocation:'living',clearPortrait:true}),
  v316Scene('v325-s02-end','')
 );
+// V326 — S03: accuse Wonwoo directly. Append after existing V325 scenes so
+// saved absolute indices and all earlier S01/S02 continuation checkpoints remain valid.
+// The specified `원우_바디1_어이없음` portrait is not yet bundled in the source.
+// Temporarily use the available body1 '쎄함' art for those two moments only.
+const V326_PM_S03_START=scenes.length;
+scenes.push(
+ v316Scene('dialogue','수상한 신도가 있습니다.','주인공',{portrait:'wonwoo-body1-eyesmile',v326S03:true}),
+ v316Scene('dialogue','그건 바로,','주인공',{portrait:'wonwoo-body1-smile'}),
+ v316Scene('dialogue','당신입니다. 전원우.','주인공',{portrait:'wonwoo-body1-ominous',boldWord:'전원우',boldScale:1.2}),
+ v316Scene('dialogue','.....','원우',{portrait:'wonwoo-body1-ominous'}),
+ v316Scene('dialogue','.....','주인공',{portrait:'wonwoo-body1-eyesclosed'}),
+ v316Scene('dialogue','......','원우',{portrait:'wonwoo-body1-eyesclosed'}),
+ v316Scene('dialogue','......','주인공',{portrait:'wonwoo-body1-ominous'}),
+ v316Scene('narration','불편한 고요가 고해소를 채웠다.','',{portrait:'wonwoo-body1-eyesclosed'}),
+ v316Scene('dialogue','그렇습니까.','원우',{portrait:'wonwoo-body2-eyesmile'}),
+ v316Scene('dialogue','.......','주인공',{portrait:'wonwoo-body2-eyesmile'}),
+ v316Scene('dialogue','하실 말씀 다 하셨으면, 이만 나가보시지요.','원우',{portrait:'wonwoo-body2-eyesmile',portraitFadeOutAfter:true}),
+ v316Scene('dialogue','지금 처음으로 ‘당신의 생활에 행복과 안식이 있기를’ 안 했지?','주인공',{eveningLocation:'outside',clearPortrait:true,boldWord:'‘당신의 생활에 행복과 안식이 있기를’'}),
+ v316Scene('narration','그러거나 말거나, 고해소 문을 퍽 밀고 나섰다.','',{eveningLocation:'outside',clearPortrait:true}),
+ v316Scene('dialogue','아~ 바깥 공기 시원하다!','주인공',{eveningLocation:'living',clearPortrait:true}),
+ v316Scene('dialogue','(내일이면 죽겠지. 뭐 어쩌라고.)','주인공',{eveningLocation:'living',clearPortrait:true}),
+ v316Scene('dialogue','(먼저 답답하게 군 니들 잘못이야.)','주인공',{eveningLocation:'living',clearPortrait:true}),
+ v316Scene('dialogue','(속이 다 시원하다.)','주인공',{eveningLocation:'living',clearPortrait:true}),
+ v316Scene('ending','', '',{endingRoute:'doksil-wonwoo-accusation-v326'})
+);
 // Later days reuse the same authored dialogue without duplicating or renumbering it.
 // Only day 4 currently has a playable entrance; days 5 and 6 use this registration.
 let v317ConfTestEntering=false;
@@ -3119,16 +3144,20 @@ function v316ShowChoices(title,labels,handler){
 }
 function v316ShowAccuseChoice(){
  v316StartTick(1000);
- v316ShowChoices('누구를 고발할까?',['생각나는 아무 신도나 이야기한다.','아는 이를 고발한다.'],which=>{
-  const branch=which===0?'S01':'S02';localStorage.setItem(V316_PM_BRANCH_KEY,branch);
-  window.SHINDO_addPlayRecord?.('선택','오후 고해소: '+(which===0?'생각나는 아무 신도나 이야기한다.':'아는 이를 고발한다.'),Number(localStorage.getItem(V316_PM_DAY_KEY))||4);
-  if(which===0){v316StopTick();storyBackdrop.style.filter='';v316Go(V316_PM_S01_START)}
-  else{v320PreloadTimerDone();v316StopTick();v316Go(V316_PM_TARGET_SCREEN)}
+ const options=['아는 이를 고발한다.','모르는 이를 고발한다.','눈앞에 있는 이를 고발한다.'];
+ v316ShowChoices('누구를 고발할까?',options,which=>{
+  const branch=['S01','S02','S03'][which];
+  localStorage.setItem(V316_PM_BRANCH_KEY,branch);
+  window.SHINDO_addPlayRecord?.('선택','오후 고해소: '+options[which],Number(localStorage.getItem(V316_PM_DAY_KEY))||4);
+  v316StopTick();
+  if(which===0){v320PreloadTimerDone();v316Go(V316_PM_TARGET_SCREEN)}
+  else if(which===1){storyBackdrop.style.filter='';v316Go(V316_PM_S01_START)}
+  else{storyBackdrop.style.filter='';v316Go(V326_PM_S03_START)}
  });
 }
 function v316ShowS01Choice(){
  v316ShowChoices('어떻게 반응할까?',['카밀레교의 역사에 대해 물어본다.','그냥 함구한다.'],which=>{
-  localStorage.setItem(V316_PM_BRANCH_KEY,which===0?'S01-1':'S01-2');
+  localStorage.setItem(V316_PM_BRANCH_KEY,which===0?'S02-1':'S02-2');
   window.SHINDO_addPlayRecord?.('선택','오후 고해소: '+(which===0?'카밀레교의 역사에 대해 물어본다.':'그냥 함구한다.'),Number(localStorage.getItem(V316_PM_DAY_KEY))||4);
   v316Go(which===0?V316_PM_S011_START:V316_PM_S012_START);
  });
@@ -5129,7 +5158,7 @@ applySceneBackdrop(index,scene);
  if(scene.v316Confession){
   storyBackdrop.style.filter=scene.v316Shade?'brightness(.4)':'';
   if(scene.v316TickStart)v316StartTick(1000);
-  if(scene.v316S01)v316StopTick();
+  if(scene.v316S01||scene.v326S03)v316StopTick();
  }
  if(scene.prayerRoom){overlay.classList.remove('confession-blackout')}else{stopPrayerClock();stopPrayerAudio();stopPrayerBell()}
  if(scene.prayerStart)startPrayerClock();
