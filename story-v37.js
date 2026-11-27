@@ -3015,7 +3015,7 @@ scenes.push(
  v316Scene('dialogue','.......','주인공',{portrait:'wonwoo-body2-eyesmile'}),
  v316Scene('dialogue','하실 말씀 다 하셨으면, 이만 나가보시지요.','원우',{portrait:'wonwoo-body2-eyesmile',portraitFadeOutAfter:true}),
  v316Scene('dialogue','지금 처음으로 ‘당신의 생활에 행복과 안식이 있기를’ 안 했지?','주인공',{eveningLocation:'outside',clearPortrait:true,boldWord:'‘당신의 생활에 행복과 안식이 있기를’'}),
- v316Scene('narration','그러거나 말거나, 고해소 문을 퍽 밀고 나섰다.','',{eveningLocation:'outside',clearPortrait:true}),
+ v316Scene('narration','그러거나 말거나, 고해소 문을 퍽 밀고 나섰다.','',{eveningLocation:'outside',clearPortrait:true,v334TongkwaeBgmStart:true}),
  v316Scene('dialogue','아~ 바깥 공기 시원하다!','주인공',{eveningLocation:'living',clearPortrait:true}),
  v316Scene('dialogue','(내일이면 죽겠지. 뭐 어쩌라고.)','주인공',{eveningLocation:'living',clearPortrait:true}),
  v316Scene('dialogue','(먼저 답답하게 군 니들 잘못이야.)','주인공',{eveningLocation:'living',clearPortrait:true}),
@@ -3026,6 +3026,7 @@ scenes.push(
 // Only day 4 currently has a playable entrance; days 5 and 6 use this registration.
 let v317ConfTestEntering=false;
 function v316AfternoonStart(day){
+ v334StopTongkwaeBgm();
  const d=Number(day);if(![4,5,6].includes(d))return false;
  // Ordinary gameplay must always obey actual character-name unlocks.
  if(!v317ConfTestEntering)sessionStorage.removeItem(V317_CONF_TEST_KEY);
@@ -3873,6 +3874,7 @@ const v323AudioVisibilityObserver=new MutationObserver(()=>{
      v320TimerDoneAudio && !v320TimerDoneAudio.paused || v316DeadlineTimer!==null)){
   v323StopAccusationAudioAndTimers();
  }
+ if(!overlay.classList.contains('active') && v334TongkwaeAudio)v334StopTongkwaeBgm();
 });
 v323AudioVisibilityObserver.observe(overlay,{attributes:true,attributeFilter:['class','style']});
 const v323FeedbackPanel=document.getElementById('shindo-feedback');
@@ -4975,6 +4977,45 @@ function v178Patrol(mode){
  }
 }
 function jumpV178(which){const target=V178_TARGETS[which];if(target===undefined)return;const el=overlay.querySelector('.shindo-choices');if(el)el.style.display='none';locked=false;index=V178_OFFSET+target;save();render()}
+// V334 — S03 통쾌 ending audio: plays only from the specified confession-exit line.
+let v334TongkwaeAudio=null, v334TongkwaeFade=null, v334TongkwaeFadeId=0;
+function v334CancelTongkwaeFade(){
+ v334TongkwaeFadeId++;
+ if(v334TongkwaeFade!==null){cancelAnimationFrame(v334TongkwaeFade);v334TongkwaeFade=null;}
+}
+function v334StopTongkwaeBgm(){
+ v334CancelTongkwaeFade();
+ if(v334TongkwaeAudio){v334TongkwaeAudio.pause();v334TongkwaeAudio.removeAttribute('src');v334TongkwaeAudio.load();v334TongkwaeAudio=null;}
+}
+function v334FadeTongkwaeVolume(target,duration,onDone){
+ const a=v334TongkwaeAudio;
+ if(!a)return;
+ v334CancelTongkwaeFade();
+ const token=v334TongkwaeFadeId;
+ const from=a.volume,started=performance.now();
+ function frame(now){
+  if(token!==v334TongkwaeFadeId||v334TongkwaeAudio!==a)return;
+  const t=Math.min(1,(now-started)/duration);
+  a.volume=Math.max(0,Math.min(1,from+(target-from)*t));
+  if(t<1){v334TongkwaeFade=requestAnimationFrame(frame)}
+  else{v334TongkwaeFade=null;if(onDone)onDone();}
+ }
+ v334TongkwaeFade=requestAnimationFrame(frame);
+}
+function v334StartTongkwaeBgm(){
+ if(v334TongkwaeAudio)return; // never restart at each dialogue step
+ // The source audio is extracted from the supplied video; keep it in its own player.
+ const a=new Audio('story-audio/tongkwae-ending.mp3');
+ a.loop=true;a.preload='auto';a.volume=0;
+ v334TongkwaeAudio=a;
+ a.play().then(()=>{
+  if(v334TongkwaeAudio===a)v334FadeTongkwaeVolume(.30,1700);
+ }).catch(()=>{if(v334TongkwaeAudio===a)v334StopTongkwaeBgm();});
+}
+function v334EndTongkwaeBgm(){
+ if(!v334TongkwaeAudio)return;
+ v334FadeTongkwaeVolume(0,2400,()=>v334StopTongkwaeBgm());
+}
 function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTyping(false);
  // V323: leaving the accusation screen must also stop its own media objects.
  if(scenes[index]?.kind!=='v316-target-select')v323StopAccusationAudioAndTimers();
@@ -4984,7 +5025,11 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
     localStorage.getItem('shindo_current_story_day_v109')==='3'){
   index=V257_DAY3_JEONGHAN_POLICE_PACKAGE_START;save();render();return;
  }
- const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){finish();return}
+ const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){v334StopTongkwaeBgm();finish();return}
+ // Prevent this cue leaking to ordinary dialogue/other endings when skipping/restarting.
+ const v334InTongkwaeRoute=index>=V326_PM_S03_START&&index<V326_PM_S03_START+18;
+ if(!v334InTongkwaeRoute&&v334TongkwaeAudio)v334StopTongkwaeBgm();
+ if(scene.v334TongkwaeBgmStart)v334StartTongkwaeBgm();
  if(scene.v299Chan||scene.v298Jilsi){if(scene.kind!=='ending')v304StartChanBgm();if(scene.v298Jilsi)v304KillJilsiTicks();}
  if(scene.v299MemorySlot!==undefined){
    v299ApplyMemorySlot(scene);
@@ -5592,7 +5637,7 @@ window.SHINDO_hasDay3RestartSnapshot=()=>{
 };
 
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
-function restartFromDay1(){v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));v304StopChanBgm();sessionStorage.removeItem(V303_JILSI_TEST_KEY);sessionStorage.removeItem(V303_JILSI_LOCK_BACKUP);['shindo_chan_event_day_v299','shindo_chan_memory_pair_v299','shindo_character_status_v299','shindo_jilsi_choice_day_v298','shindo_jilsi_choice_result_v298'].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay1(){v334StopTongkwaeBgm();v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));v304StopChanBgm();sessionStorage.removeItem(V303_JILSI_TEST_KEY);sessionStorage.removeItem(V303_JILSI_LOCK_BACKUP);['shindo_chan_event_day_v299','shindo_chan_memory_pair_v299','shindo_character_status_v299','shindo_jilsi_choice_day_v298','shindo_jilsi_choice_result_v298'].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -7043,7 +7088,7 @@ function showJilsiEnding(){
  later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도<span>神道</span></div>'},5500);
  later(()=>{const button=document.createElement('button');button.className='shindo-restart';button.textContent='처음부터 다시 하기';button.onclick=e=>{e.stopPropagation();end.remove();restartFromDay1();};end.appendChild(button)},7500);
 }
-function showEnding(){stopEveningTick();stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopConfessionTick();stopEndingBell();stopSanctuaryTick();box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';overlay.classList.add('confession-blackout');locked=true;const end=document.createElement('div');end.className='shindo-ending shindo-ending-doksil';end.innerHTML='<div class="shindo-ending-stage"><img class="shindo-ending-illustration" src="'+TONGKWAE_ENDING_ILLUSTRATION+'" alt="통쾌 엔딩 일러스트"><div class="shindo-ending-copy"><h1 style="font-size:clamp(52px,10vw,110px);margin-bottom:15px;">통쾌</h1><p>사람이 하고 싶은 말은 하고 살아야지!<br>물론 그러다 죽을 수도 있긴 하지만.</p></div></div>';overlay.appendChild(end);const art=end.querySelector('.shindo-ending-illustration');const copy=end.querySelector('.shindo-ending-copy');const later=(fn,ms)=>endingTimers.push(setTimeout(fn,ms));requestAnimationFrame(()=>{if(art){void art.offsetWidth;art.classList.add('is-visible')}});later(()=>{art?.classList.add('is-fading-out');copy?.classList.add('is-visible')},3000);later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도</div>'},6000);later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도<span>神道</span></div>'},8000);later(()=>{const b=document.createElement('button');b.className='shindo-restart';b.textContent='처음부터 다시 하기';b.onclick=e=>{e.stopPropagation();stopEndingBell();stopConfessionTick();localStorage.removeItem('shindo_confession_branch');localStorage.removeItem('shindo_day2_prayer');localStorage.removeItem('shindo_day2_morning');localStorage.removeItem('shindo_affinity_v107');localStorage.removeItem('shindo_affinity_events_v111');localStorage.removeItem('shindo_affinity_unread_v125');localStorage.removeItem(KEY);localStorage.removeItem('shindo_story_started_v37');localStorage.removeItem('shindo_sleep_gate_v48');localStorage.removeItem('shindo_story_v55_extended');localStorage.removeItem('shindo_story_v66_sanctuary');localStorage.removeItem(V298_JILSI_DAY_KEY);localStorage.removeItem(V298_JILSI_RESULT_KEY);['svter_first_launch_at_v1','svter_lock_reached_v1','svter_lock_deleted_notices_v33','kamille_new_mail_received_v32','kamille_new_mail_read_v32','kamille_newmail_popup_ack_v51','shindo_church_link_unlocked_v30','shindo_attachment_unlocked_v31'].forEach(k=>localStorage.removeItem(k));sessionStorage.removeItem('shindo_story_started_v37');location.reload()};end.appendChild(b)},10000)}
+function showEnding(){stopEveningTick();stopVnTyping(false);stopGongyangBell();stopLeaderShout();stopGongyangApplause();stopConfessionTick();stopEndingBell();stopSanctuaryTick();box.style.display='none';portrait.hidden=true;illustration.hidden=true;overlay.querySelector('.vn-hint').style.display='none';overlay.classList.add('confession-blackout');locked=true;const end=document.createElement('div');end.className='shindo-ending shindo-ending-doksil';end.innerHTML='<div class="shindo-ending-stage"><img class="shindo-ending-illustration" src="'+TONGKWAE_ENDING_ILLUSTRATION+'" alt="통쾌 엔딩 일러스트"><div class="shindo-ending-copy"><h1 style="font-size:clamp(52px,10vw,110px);margin-bottom:15px;">통쾌</h1><p>사람이 하고 싶은 말은 하고 살아야지!<br>물론 그러다 죽을 수도 있긴 하지만.</p></div></div>';overlay.appendChild(end);const art=end.querySelector('.shindo-ending-illustration');const copy=end.querySelector('.shindo-ending-copy');const later=(fn,ms)=>endingTimers.push(setTimeout(fn,ms));requestAnimationFrame(()=>{if(art){void art.offsetWidth;art.classList.add('is-visible')}});later(()=>{art?.classList.add('is-fading-out');copy?.classList.add('is-visible')},3000);later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도</div>'},6000);later(()=>{end.innerHTML='<div class="shindo-ending-logo">신도<span>神道</span></div>'},8000);later(()=>{v334EndTongkwaeBgm();const b=document.createElement('button');b.className='shindo-restart';b.textContent='처음부터 다시 하기';b.onclick=e=>{e.stopPropagation();v334StopTongkwaeBgm();stopEndingBell();stopConfessionTick();localStorage.removeItem('shindo_confession_branch');localStorage.removeItem('shindo_day2_prayer');localStorage.removeItem('shindo_day2_morning');localStorage.removeItem('shindo_affinity_v107');localStorage.removeItem('shindo_affinity_events_v111');localStorage.removeItem('shindo_affinity_unread_v125');localStorage.removeItem(KEY);localStorage.removeItem('shindo_story_started_v37');localStorage.removeItem('shindo_sleep_gate_v48');localStorage.removeItem('shindo_story_v55_extended');localStorage.removeItem('shindo_story_v66_sanctuary');localStorage.removeItem(V298_JILSI_DAY_KEY);localStorage.removeItem(V298_JILSI_RESULT_KEY);['svter_first_launch_at_v1','svter_lock_reached_v1','svter_lock_deleted_notices_v33','kamille_new_mail_received_v32','kamille_new_mail_read_v32','kamille_newmail_popup_ack_v51','shindo_church_link_unlocked_v30','shindo_attachment_unlocked_v31'].forEach(k=>localStorage.removeItem(k));sessionStorage.removeItem('shindo_story_started_v37');location.reload()};end.appendChild(b)},10000)}
 
 // V270: audio, scene timing, and ending are scoped to this route.
 const V270_WIBAN_DAY_KEY='shindo_wiban_trigger_day_v270';
@@ -7366,6 +7411,7 @@ function v270ShowEnding(){
 }
 
 function finish(){
+ v334StopTongkwaeBgm();
  v323StopAccusationAudioAndTimers();
  v304StopChanBgm();
  v281ClearFinalArtwork();
