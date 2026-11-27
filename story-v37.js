@@ -3174,7 +3174,7 @@ function v320PlayTimerDone(){
  v320PreloadTimerDone();
  const audio=v320TimerDoneAudio;
  if(!audio)return;
- audio.loop=false;
+ audio.loop=false;audio.volume=1;
  try{audio.currentTime=0}catch(_){ }
  audio.play().catch(error=>console.warn('[SHINDO V320] timer done sound could not play',error));
 }
@@ -3318,19 +3318,26 @@ function v316ShowTargetSelection(){
   confirm.innerHTML='';
   const title=document.createElement('h3');title.textContent=name?'고발 대상이 결정되었습니다.':'고발 가능한 인물이 없습니다.';
   confirm.append(title);
-  // Finish the already-committed bell once before transitioning. Its playback
-  // is intentionally not cut off by the scene-change audio cleanup.
+  // V337: move into Wonwoo's response 2.5 seconds after confirmation,
+  // regardless of bell duration or autoplay state. Prevent any SFX overlap.
   let forwarded=false;
+  let fadeTimer=null;
   const advance=()=>{
    if(forwarded || index!==V316_PM_TARGET_SCREEN)return;
-   forwarded=true;v320TimerDoneAudio?.removeEventListener('ended',advance);
-   v316Go(V325_PM_S02_START);
+   forwarded=true;
+   if(fadeTimer!==null){clearInterval(fadeTimer);fadeTimer=null;}
+   v316Go(V325_PM_S02_START); // This also stops the bell and countdown audio.
   };
-  if(v320TimerDoneAudio){
-   v320TimerDoneAudio.addEventListener('ended',advance,{once:true});
-   // If autoplay was denied, don't trap the player on the confirmation screen.
-   setTimeout(advance,7400);
-  }else setTimeout(advance,150);
+  setTimeout(()=>{
+   const bell=v320TimerDoneAudio;
+   if(forwarded || index!==V316_PM_TARGET_SCREEN || !bell || bell.paused)return;
+   const fadeStart=performance.now(),initialVolume=bell.volume;
+   fadeTimer=setInterval(()=>{
+    if(forwarded || index!==V316_PM_TARGET_SCREEN || bell.paused){clearInterval(fadeTimer);fadeTimer=null;return;}
+    bell.volume=Math.max(0,initialVolume*(1-(performance.now()-fadeStart)/250));
+   },25);
+  },2250);
+  setTimeout(advance,2500);
 
  };
  const choose=p=>{
