@@ -6138,6 +6138,57 @@ function v282FindCheckpointScene(id){
 // V295 exact checkpoint state. Capturing a point at the moment it is reached
 // lets feedback rewinds retain all earlier affinity and discard all later awards,
 // including once-only event IDs, locks, discoveries, and replay history.
+// V343: The feedback menu can open an old location for inspection even when a
+// V295 exact historical snapshot does not exist.  This is explicitly a TEST
+// preview, never a reconstructed affinity record. The original game storage is
+// backed up persistently and can be restored from the feedback menu.
+const V343_PREVIEW_BACKUP_KEY='svter_checkpoint_preview_backup_v343';
+function v343IsGameStorageKey(key){
+ return typeof key==='string'&&/^(?:shindo[_-]|svter[_-]|kamille[_-]|sh[_-]browser[_-])/i.test(key)&&key!==V343_PREVIEW_BACKUP_KEY;
+}
+function v343CaptureStorage(store){
+ const result={};
+ for(let i=0;i<store.length;i++){
+  const key=store.key(i);if(v343IsGameStorageKey(key))result[key]=store.getItem(key);
+ }
+ return result;
+}
+function v343ReadPreviewBackup(){
+ try{
+  const raw=localStorage.getItem(V343_PREVIEW_BACKUP_KEY);
+  if(!raw)return null;
+  const obj=JSON.parse(raw);
+  return obj&&obj.version===343&&obj.local&&typeof obj.local==='object'&&obj.session&&typeof obj.session==='object'?obj:null;
+ }catch(error){console.warn('[SHINDO V343] Preview backup cannot be read',error);return null}
+}
+function v343CreatePreviewBackup(){
+ if(v343ReadPreviewBackup())return true;
+ try{
+  localStorage.setItem(V343_PREVIEW_BACKUP_KEY,JSON.stringify({version:343,local:v343CaptureStorage(localStorage),session:v343CaptureStorage(sessionStorage)}));
+  return !!v343ReadPreviewBackup();
+ }catch(error){console.error('[SHINDO V343] Cannot safely back up live save for preview',error);return false}
+}
+function v343RestoreStorage(store,values){
+ const keys=[];
+ for(let i=0;i<store.length;i++){const key=store.key(i);if(v343IsGameStorageKey(key))keys.push(key)}
+ keys.forEach(key=>store.removeItem(key));
+ for(const [key,value] of Object.entries(values)){
+  if(v343IsGameStorageKey(key)&&typeof value==='string')store.setItem(key,value);
+ }
+}
+function v343RestorePreviewBackup(){
+ const backup=v343ReadPreviewBackup();if(!backup)return false;
+ try{
+  v343RestoreStorage(localStorage,backup.local);
+  v343RestoreStorage(sessionStorage,backup.session);
+  localStorage.removeItem(V343_PREVIEW_BACKUP_KEY);
+  window.location.reload(); // Restore the runtime to the exact original saved story.
+  return true;
+ }catch(error){console.error('[SHINDO V343] Preview restore failed',error);return false}
+}
+window.SHINDO_checkpointPreviewActiveV343=()=>!!v343ReadPreviewBackup();
+window.SHINDO_restoreCheckpointPreviewV343=v343RestorePreviewBackup;
+
 const V295_CHECKPOINT_SNAPSHOTS='shindo_checkpoint_states_v295';
 const V295_NON_STORY_KEYS=new Set([
  KEY,'shindo_story_started_v37','shindo_sleep_gate_v48',V295_CHECKPOINT_SNAPSHOTS,
@@ -6160,7 +6211,8 @@ function v295ReadCurrentStoryState(){
  }return state;
 }
 function v295CaptureExactCheckpoint(){
- if(v295InCheckpointTeleport)return;
+ // Never write a test teleport to the genuine V295 history map.
+ if(v295InCheckpointTeleport||v343ReadPreviewBackup())return;
  const matches=Object.keys(V282_CHECKPOINT_LABELS).filter(id=>id!=='reset'&&v282FindCheckpointScene(id)===index);
  if(!matches.length)return;
  const map=v295ReadCheckpointMap(),state=v295ReadCurrentStoryState();
@@ -6227,15 +6279,17 @@ function v295SyncRuntimeFromStorage(){
  revealed=Number(index)>=81;jihoonRevealed=Number(index)>=99;
 }
 window.SHINDO_hasExactCheckpointStateV295=id=>id==='reset'||id==='day1_intro'||!!v295ReadCheckpointMap()[id]||(id==='day3_joshua'&&!!v295ReadCheckpointMap().day3_intro)||(id==='day3_intro'&&!!v295ReadCheckpointMap().day3_joshua);
-function v282RestartFromCheckpoint(id){
+function v282RestartFromCheckpoint(id,previewMode=false){
  if(!Object.prototype.hasOwnProperty.call(V282_CHECKPOINT_LABELS,id))return false;
  const target=v282FindCheckpointScene(id);
  if(!Number.isInteger(target)||target<0||target>=scenes.length){
   console.error('[SHINDO V282] 확인되지 않은 재시작 지점:',id);return false;
  }
- // No precise historic per-scene affinity state exists for older saves.
- // Refuse the jump BEFORE changing any data, rather than guessing score deltas.
- if(!window.SHINDO_hasExactCheckpointStateV295(id)){
+ // Missing historic states must NOT be treated as restored affinities.
+ // The V343 opt-in test mode is a temporary jump with a separately preserved
+ // live save; normal checkpoint restoration still requires an exact snapshot.
+ const isPreview=previewMode===true&&!!v343ReadPreviewBackup();
+ if(!isPreview&&!window.SHINDO_hasExactCheckpointStateV295(id)){
   console.warn('[SHINDO V295] 재시작 지점의 실제 친밀도 이력이 없습니다:',id);
   return false;
  }
@@ -6246,8 +6300,16 @@ function v282RestartFromCheckpoint(id){
   restartFromDay1();
  }else{
   v277ClearTransientScenes();
-  if(!v295RestoreExactCheckpoint(id)){v295InCheckpointTeleport=false;return false}
+  if(!isPreview&&!v295RestoreExactCheckpoint(id)){v295InCheckpointTeleport=false;return false}
   if(id.startsWith('day2_'))localStorage.removeItem(V277_DAY3_SNAPSHOT);
+  if(isPreview){
+   // Temporary navigational defaults only; NO affinity/evidence is invented.
+   if(id.startsWith('day2_')&&!Number(localStorage.getItem('shindo_confession_branch')))
+    localStorage.setItem('shindo_confession_branch','1');
+   if(id==='day2_contact')localStorage.setItem('shindo_evening_branch_day2_v173','2');
+   if(id==='day3_morning')localStorage.setItem(V219_MODE_KEY,'1');
+   if(id==='day3_afternoon')localStorage.removeItem(V219_MODE_KEY);
+  }
   flagReplay(); // Area-skip is available only when replaying a past section.
  }
  localStorage.removeItem(V282_TEST_JOSHUA_KEY);
@@ -6280,6 +6342,14 @@ function v282RestartFromCheckpoint(id){
  try{render()}finally{v295InCheckpointTeleport=false}return true;
 }
 window.SHINDO_restartFromCheckpointV282=v282RestartFromCheckpoint;
+window.SHINDO_startCheckpointPreviewV343=id=>{
+ if(!Object.prototype.hasOwnProperty.call(V282_CHECKPOINT_LABELS,id)||id==='reset')return false;
+ const target=v282FindCheckpointScene(id);
+ if(!Number.isInteger(target)||target<0||target>=scenes.length)return false;
+ if(!v343CreatePreviewBackup())return false;
+ try{return v282RestartFromCheckpoint(id,true)===true}
+ catch(error){v295InCheckpointTeleport=false;console.error('[SHINDO V343] Test checkpoint navigation failed',error);return false}
+};
 window.SHINDO_CHECKPOINT_LABELS_V282=V282_CHECKPOINT_LABELS;
 
 

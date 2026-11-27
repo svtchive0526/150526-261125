@@ -686,6 +686,15 @@
  }
  function feedback(){
  empty('피드백 및 이미지 배치 확인 도구입니다. 아래 버튼에서 진행 지점을 선택할 수 있습니다.');
+ if(window.SHINDO_checkpointPreviewActiveV343?.()){
+  empty('현재 테스트 이동 상태입니다. 과거 친밀도 기록을 재구성한 것이 아니므로, 테스트 결과는 실제 플레이와 다를 수 있습니다.');
+  const restore=make('button','inv-feedback inv-feedback-reset','테스트 종료 · 원래 저장 복원');restore.type='button';
+  restore.addEventListener('click',()=>{
+   if(!window.confirm('테스트를 종료하고 테스트 시작 전의 저장 상태로 돌아갈까요?\n테스트 중 변경한 진행 기록은 폐기됩니다.'))return;
+   if(window.SHINDO_restoreCheckpointPreviewV343?.()!==true)window.alert('원본 저장 복원에 실패했습니다. 이 탭을 닫거나 브라우저 데이터를 삭제하지 말고 다시 시도해주세요.');
+  });
+  content.append(restore);
+ }
  const simButton=make('button','inv-feedback','PC · 모바일 이미지 배치 시뮬레이터');
  simButton.type='button';simButton.addEventListener('click',()=>{const url=new URL('image-simulator.html',window.location.href).href;window.open(url,'_blank','noopener')});content.append(simButton);
  const btn=make('button','inv-feedback','피드백 페이지 열기');btn.type='button';
@@ -765,7 +774,15 @@
     window.alert('재시작 기능을 불러오지 못했습니다.');return;
    }
    if(window.SHINDO_hasExactCheckpointStateV295?.(id)===false){
-    window.alert('이 지점의 정확한 친밀도 기록이 없습니다.\n현재 저장을 임의로 역산하지 않기 위해 이동하지 않았습니다.\n해당 지점을 V295 이후 실제 플레이로 지나면 기록이 생성됩니다.');return;
+    if(typeof window.SHINDO_startCheckpointPreviewV343!=='function'){
+     window.alert('테스트 이동 기능을 불러오지 못했습니다. story-v37.js와 inventory-v109.js를 함께 배포했는지 확인해주세요.');return;
+    }
+    if(!window.confirm(label+' — 정확한 과거 친밀도 기록이 없습니다.\n\n기존 저장을 보관하고 이 지점을 테스트 화면으로 열까요?\n실제 과거 점수·증거품·선택을 추정하지 않으므로 일부 분기는 현재 기록과 다를 수 있습니다.\n피드백 메뉴의 [테스트 종료 · 원래 저장 복원]으로 원래 상태로 돌아갈 수 있습니다.'))return;
+    if(window.SHINDO_startCheckpointPreviewV343(id)!==true){
+     window.alert('테스트 이동에 실패했습니다. 저장을 안전하게 보관할 수 있는지 브라우저 저장소를 확인해주세요.');return;
+    }
+    drawer.classList.remove('is-open');
+    document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');return;
    }
    const detail=id==='reset'?'스토리와 모든 친밀도 점수·지급 이벤트·잠금 이력을 초기화하고 1일차부터 시작합니다. (조슈아 기본 100점은 게임 초기 설정입니다.)':
     '해당 지점에 실제 도달했을 때 저장된 상태로 되돌립니다. 그 이후의 친밀도·지급 이벤트·잠금·플레이 기록은 삭제됩니다.';
