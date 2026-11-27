@@ -3691,6 +3691,7 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn .shindo-ending-illustration.is-fading-out{opacity:0}
 /* V328: Fill the entire viewport only for Wonwoo/Doksil ending artwork. */
 #shindo-vn .shindo-ending-doksil .shindo-ending-illustration{object-fit:cover;object-position:center center}
+@media (min-width:1024px){#shindo-vn .shindo-ending-doksil .shindo-ending-illustration{object-position:72% 16%}}
 
 /* V275: Only the WIBAN ending artwork fills the story viewport on PC and mobile.
    object-fit:cover deliberately crops landscape artwork on portrait screens. */
