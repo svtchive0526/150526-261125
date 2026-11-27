@@ -3734,10 +3734,11 @@ const style=document.createElement('style');style.textContent=`
 #shindo-vn.v336-gyeolsok-day-shield.v336-gyeolsok-day-reveal::before{opacity:0}
 #shindo-vn.v336-gyeolsok-day-shield .vn-center{position:relative;z-index:51;color:#fff}
 #shindo-vn.v336-gyeolsok-day-reveal .vn-box{position:relative;z-index:51!important}
+/* V340: the Seungcheol/Gyeolsok scene art fits the PC viewport directly.
+   No separate zoom or shrinking layer; the existing black background stays behind it. */
 @media(min-width:1024px){
- #shindo-vn.v335-gyeolsok-art .vn-illustration{left:50%;top:50%;transform:translate(-50%,-50%) scale(.96)}
+ #shindo-vn.v335-gyeolsok-art .vn-illustration{inset:0;left:0;top:0;transform:none;width:100%;height:100%;max-height:none;object-fit:cover;object-position:center center}
  #shindo-vn .shindo-ending-gyeolsok .shindo-ending-stage{background:#000}
- #shindo-vn .shindo-ending-gyeolsok .shindo-ending-illustration{transform:scale(.96);object-position:center center}
 }
 /* V299 Chan: recall is 60% dark on the central square and has the established recall label. */
 #shindo-story-backdrop.v299-chan-recall-dim{filter:brightness(.4)!important;transition:filter .4s ease}
