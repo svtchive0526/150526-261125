@@ -2933,11 +2933,18 @@ function v293ShowDay4Pending(){
  menu.style.display='flex';
 }
 
-// V339: one audio object, started silently on the player's S01 user gesture.
-// Do NOT pause it while the player completes the accusation. At the day title,
-// seek to the start and fade to 30%; no second autoplay request is required.
+// V342: iOS/mobile may ignore HTMLMediaElement.volume. A Web Audio GainNode
+// is therefore mandatory for *early* silent playback on S01. If unavailable,
+// preload the MP3 but DO NOT start playback until the next-day title.
 let v336GyeolsokAudio=null,v336GyeolsokFadeFrame=null,v336GyeolsokFadeToken=0;
 let v339GyeolsokAudible=false,v339GyeolsokRetry=null;
+let v342GyeolsokGain=null,v342GyeolsokSource=null;
+function v342GyeolsokLevel(a){return v342GyeolsokGain?v342GyeolsokGain.gain.value:a.volume}
+function v342SetGyeolsokLevel(a,value){
+ const level=Math.max(0,Math.min(1,value));
+ if(v342GyeolsokGain)v342GyeolsokGain.gain.value=level;
+ else a.volume=level;
+}
 function v339ClearGyeolsokRetry(){
  if(!v339GyeolsokRetry)return;
  overlay.removeEventListener('pointerdown',v339GyeolsokRetry);
@@ -2950,16 +2957,38 @@ function v336CancelGyeolsokFade(){
 }
 function v336StopGyeolsokBgm(){
  v339ClearGyeolsokRetry();v336CancelGyeolsokFade();v339GyeolsokAudible=false;
- if(v336GyeolsokAudio){const a=v336GyeolsokAudio;v336GyeolsokAudio=null;a.pause();try{a.currentTime=0}catch(_){}}
+ if(v336GyeolsokAudio){const a=v336GyeolsokAudio;v336GyeolsokAudio=null;
+  if(v342GyeolsokGain)v342GyeolsokGain.gain.value=0;
+  a.pause();try{a.currentTime=0}catch(_){}
+ }
+ if(v342GyeolsokSource){try{v342GyeolsokSource.disconnect()}catch(_){}v342GyeolsokSource=null}
+ if(v342GyeolsokGain){try{v342GyeolsokGain.disconnect()}catch(_){}v342GyeolsokGain=null}
 }
 function v339CreateGyeolsokAudio(){
  if(v336GyeolsokAudio)return v336GyeolsokAudio;
- const a=new Audio('story-audio/gyeolsok-ending.mp3?v=339');
- a.preload='auto';a.loop=false;a.volume=0;a.muted=false;
+ const a=new Audio('story-audio/gyeolsok-ending.mp3?v=342');
+ a.preload='auto';a.loop=true;a.volume=0;a.muted=false; // silent pre-arm can outlast a long accusation sequence
  a.addEventListener('error',()=>console.error('[결속 BGM] MP3 loading error: story-audio/gyeolsok-ending.mp3',a.error?.code));
  a.addEventListener('ended',()=>{if(v336GyeolsokAudio===a)v336StopGyeolsokBgm()});
  v336GyeolsokAudio=a;
  return a;
+}
+function v342PrepareGyeolsokSilentGraph(a){
+ if(v342GyeolsokGain)return true;
+ try{
+  // Run synchronously inside the actual S01 click, while audio is unlocked.
+  const ctx=audioContext();
+  if(!ctx||!ctx.createMediaElementSource||!ctx.createGain)return false;
+  const src=ctx.createMediaElementSource(a);
+  const gain=ctx.createGain();gain.gain.value=0;
+  src.connect(gain);gain.connect(ctx.destination);
+  v342GyeolsokSource=src;v342GyeolsokGain=gain;
+  a.volume=1; // Web Audio gain, not the unreliable mobile volume property.
+  return true;
+ }catch(error){
+  console.warn('[결속 BGM] Silent Web Audio routing unavailable; defer playback until day title.',error);
+  a.volume=0;return false;
+ }
 }
 function v339TryGyeolsokPlay(a){
  if(v336GyeolsokAudio!==a)return;
@@ -2978,20 +3007,23 @@ function v339TryGyeolsokPlay(a){
  });
 }
 function v339ArmGyeolsokBgm(){
- // Called synchronously during clicking the S01 choice or [고발 확정].
- // Keep the player running at zero volume until the new-day title.
+ // Only permit pre-title playback with reliable, zero-gain Web Audio routing.
+ // On browsers without it, merely fetch; do not let iOS ignore volume=0.
  const a=v339CreateGyeolsokAudio();
- if(a.paused)v339TryGyeolsokPlay(a);
+ if(v342PrepareGyeolsokSilentGraph(a)){
+  v342SetGyeolsokLevel(a,0);
+  if(a.paused)v339TryGyeolsokPlay(a);
+ }else a.load();
 }
 function v336FadeGyeolsokVolume(target,duration=1700,done=null){
  const a=v336GyeolsokAudio;if(!a)return;
  v336CancelGyeolsokFade();const token=v336GyeolsokFadeToken;
- const initial=a.volume;let start=null;
+ const initial=v342GyeolsokLevel(a);let start=null;
  const frame=stamp=>{
   if(v336GyeolsokFadeToken!==token||v336GyeolsokAudio!==a)return;
   if(start===null)start=stamp;
   const t=Math.min(1,(stamp-start)/duration);
-  a.volume=Math.max(0,Math.min(1,initial+(target-initial)*t));
+  v342SetGyeolsokLevel(a,initial+(target-initial)*t);
   if(t<1)v336GyeolsokFadeFrame=requestAnimationFrame(frame);
   else {v336GyeolsokFadeFrame=null;if(done)done()}
  };
@@ -2999,8 +3031,9 @@ function v336FadeGyeolsokVolume(target,duration=1700,done=null){
 }
 function v336StartGyeolsokBgm(){
  const a=v339CreateGyeolsokAudio();
+ a.loop=false; // actual ending music runs once from the title
  try{a.currentTime=0}catch(_){}
- a.volume=0;a.muted=false;v339GyeolsokAudible=true;
+ v342SetGyeolsokLevel(a,0);a.muted=false;v339GyeolsokAudible=true;
  if(a.paused)v339TryGyeolsokPlay(a);
  else v336FadeGyeolsokVolume(.30,1700);
 }
