@@ -3147,9 +3147,9 @@ scenes.push(
  v316Scene('narration','김봉봉이 어젯밤 고발한 OO의 손을 꼭 잡은, 최승철이.','',{eveningLocation:'square',portrait:'seungcheol-body1-default',v335UseAccusationTarget:true,v335BoldTarget:true,v257BoldPhrases:['최승철']}),
  v316Scene('narration','승철이 이쪽을 노려본다.','',{eveningLocation:'square',portrait:'seungcheol-body1-default'}),
  v316Scene('narration','형형한 눈빛이 마치 ‘어림도 없다’라고 말하는 듯했다.','',{eveningLocation:'square',portrait:'seungcheol-body1-default',boldWord:'어림도 없다',portraitFadeOutAfter:true}),
- v316Scene('narration','뎅- 종소리가 울릴 때, 승철이 이를 악물고 중얼거린다.','',{eveningLocation:'square',illustration:'ending-gyeolsok-seungcheol',v335GyeolsokArt:true,clearPortrait:true,gongyangBell:'01',gongyangBellMs:6300,v335AutoAdvanceMs:1400}),
- v316Scene('dialogue','겁도 없는 새끼가 누굴 꼰질러.','승철',{eveningLocation:'square',illustration:'ending-gyeolsok-seungcheol',v335GyeolsokArt:true,clearPortrait:true,boldAll:true,fontScale:1.2,v335AutoAdvanceMs:1600}),
- v316Scene('narration','아직 충분한 신뢰가 쌓이지 않았다.','',{eveningLocation:'square',illustration:'ending-gyeolsok-seungcheol',v335GyeolsokArt:true,clearPortrait:true,v335AutoFadeIllustrationMs:1600}),
+ v316Scene('narration','뎅- 종소리가 울릴 때, 승철이 이를 악물고 중얼거린다.','',{eveningLocation:'square',illustration:'ending-gyeolsok-seungcheol',v335GyeolsokArt:true,clearPortrait:true,gongyangBell:'01',gongyangBellMs:6300}),
+ v316Scene('dialogue','겁도 없는 새끼가 누굴 꼰질러.','승철',{eveningLocation:'square',illustration:'ending-gyeolsok-seungcheol',v335GyeolsokArt:true,clearPortrait:true,boldAll:true,fontScale:1.2}),
+ v316Scene('narration','아직 충분한 신뢰가 쌓이지 않았다.','',{eveningLocation:'square',illustration:'ending-gyeolsok-seungcheol',v335GyeolsokArt:true,clearPortrait:true,v341GyeolsokFadeOnClick:true}),
  v316Scene('narration','결속이 약해졌을 때를 기다리자….','',{eveningLocation:'dark',clearPortrait:true,v335FadeToEnding:true,v336GyeolsokBlack:true}),
  v316Scene('ending','','',{endingRoute:'gyeolsok'})
 );
@@ -5729,7 +5729,7 @@ if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.
       timer=setTimeout(()=>{locked=false;index++;save();render()},800);
      }else{locked=false;index++;save();render();}
     },2000);
-   }):(scene.v335AutoFadeIllustrationMs?(()=>{locked=true;timer=setTimeout(()=>{overlay.classList.add('v336-gyeolsok-art-fading');timer=setTimeout(()=>{overlay.classList.add('confession-blackout','v339-gyeolsok-ending');overlay.classList.remove('v336-gyeolsok-art-fading','v335-gyeolsok-art');illustration.hidden=true;storyBackdrop.classList.add('v339-gyeolsok-hidden');storyUnderlay.classList.add('visible');storyUnderlay.style.opacity='1';locked=false;index++;save();render()},970)},scene.v335AutoFadeIllustrationMs)}):(scene.v335AutoAdvanceMs?(()=>{locked=true;timer=setTimeout(()=>{locked=false;index++;save();render()},scene.v335AutoAdvanceMs)}):(scene.recall?(()=>{timer=setTimeout(()=>{locked=false;next()},1300)}):(scene.delayedConfessionBlackout?startConfessionQuestionTransition:null))));
+   }):(scene.recall?(()=>{timer=setTimeout(()=>{locked=false;next()},1300)}):(scene.delayedConfessionBlackout?startConfessionQuestionTransition:null));
  if(scene.kind==='dialogue'||scene.kind==='narration'||scene.kind==='line')beginVnTyping(v335TypingComplete);
  if(scene.follow){locked=true;timer=setTimeout(()=>{locked=false;next()},1600)}
  else if(index===12){locked=true;timer=setTimeout(()=>{locked=false;next()},2000)}
@@ -7679,17 +7679,31 @@ function next(userAdvance=false){
  if(scenes[index]?.kind==='v335-gyeolsok-day-title')return;
  if(scenes[index]?.v281WibanFinal)return;
  if(scenes[index]?.v304FinalFadeAfter){if(vnTypingTimer!==null){stopVnTyping(true);return;}v304FadeToJilsiEnding();return;} // Unskippable: only V281's automatic timeline advances.
- if(scenes[index]?.v335AutoAdvanceMs || scenes[index]?.v335AutoFadeIllustrationMs)return;
  if(v205HammerBlocked)return;
  if(locked)return;
  if(vnTypingTimer!==null){stopVnTyping(true);return;}
+ // V341: the three Seungcheol illustration lines advance on user clicks.
+ // Only after the third line is fully displayed does clicking trigger the fade.
+ if(scenes[index]?.v341GyeolsokFadeOnClick){
+  locked=true;
+  overlay.classList.add('v336-gyeolsok-art-fading');
+  timer=setTimeout(()=>{
+   overlay.classList.add('confession-blackout','v339-gyeolsok-ending');
+   overlay.classList.remove('v336-gyeolsok-art-fading','v335-gyeolsok-art');
+   illustration.hidden=true;
+   storyBackdrop.classList.add('v339-gyeolsok-hidden');
+   storyUnderlay.classList.add('visible');storyUnderlay.style.opacity='1';
+   locked=false;index++;save();render();
+  },970);
+  return;
+ }
  if(scenes[index]?.v293FadeToDay4){
   locked=true;overlay.classList.add('sleep-fadeout');
   timer=setTimeout(()=>{overlay.classList.add('confession-blackout','v293-day4-title');overlay.classList.remove('sleep-fadeout');locked=false;index=V293_DAY4_TITLE;save();render();},950);return;
  }
  if(scenes[index]?.v287TransitionAfter){v287FadeIntoNext();return;}
  if(scenes[index]?.v270FadeAfter){v270FadeToNext();return;}
- if(scenes[index]?.v335FadeToEnding){locked=true;overlay.classList.add('confession-blackout');timer=setTimeout(()=>{locked=false;index++;save();render()},850);return;}
+ if(scenes[index]?.v335FadeToEnding){locked=true;overlay.classList.add('confession-blackout');timer=setTimeout(()=>{locked=false;index++;save();render()},400);return;}
  // V248: a two-page line 32 without re-indexing every scene or corrupting saves.
  if(scenes[index]?.v248MinghaoFirst){
   index=V248_MINGHAO_FINALE;save();render();return;
