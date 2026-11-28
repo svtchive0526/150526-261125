@@ -3827,14 +3827,36 @@ function v289StartForestCue(){
  clip.addEventListener('ended',()=>{if(v289ForestAudio===clip)v289StopForestCue()},{once:true});
 }
 
+// V362: Day 1 backgrounds follow dialogue anchors, not hard-coded line counts.
+// The four additional van monologues previously shifted every subsequent Day 1
+// backdrop four lines early. A later script insertion must not repeat this bug.
+const V362_DAY1_BACKDROP_ANCHORS=[
+ ['봉고차가 천천히 속도를 줄인다.','bg-van-interior.png'],
+ ['와, 공기 죽여준다.','bg-forest-path.png'],
+ ['(…고요 속에 걷다 보니 어느덧 마을 입구 앞이다.)','bg-village-front.png'],
+ ['(정신을 차리고 보니 어느덧 본당 앞이었다.)','bg-sanctuary-front.png'],
+ ['(본당은 제법 그럴싸한 교회의 모습을 하고 있네... 아닌가, 성당인가.)','bg-sanctuary-inside.png'],
+ ['본당을 나설 때쯤엔 온몸이 녹초가 되어있었다.','bg-confession-outside.png'],
+ ['고해소 내부로 입장한다. 문이 닫히자, 나긋하되 중압감 있는 목소리가 좁은 공간에 울린다.','bg-confession-inside.png']
+];
+const V362_DAY1_BACKDROP_SEGMENTS=V362_DAY1_BACKDROP_ANCHORS.map(([text,file])=>{
+ const index=scenes.findIndex(scene=>scene.text===text);
+ if(index<0)console.error('[SHINDO V362] Missing Day 1 backdrop anchor:',text);
+ return {start:index+1,file};
+});
+const V362_DAY1_LAST_INDEX=scenes.findIndex((scene,index)=>index>=V362_DAY1_BACKDROP_SEGMENTS[0].start&&scene.kind==='ending'&&scene.branch===2)+1;
+function v362Day1Backdrop(sceneNumber){
+ if(!V362_DAY1_BACKDROP_SEGMENTS.every(p=>p.start>0)||V362_DAY1_LAST_INDEX<1)return null;
+ if(sceneNumber<V362_DAY1_BACKDROP_SEGMENTS[0].start||sceneNumber>V362_DAY1_LAST_INDEX)return null;
+ let file=null;
+ for(const segment of V362_DAY1_BACKDROP_SEGMENTS){
+  if(sceneNumber<segment.start)break;
+  file=segment.file;
+ }
+ return file;
+}
+// The following legacy fallback ranges are for post-Day-1 scenes only.
 const sceneBackdropRanges=[
- {start:5,end:17,file:"bg-van-interior.png"},
- {start:18,end:57,file:"bg-forest-path.png"},
- {start:58,end:62,file:"bg-village-front.png"},
- {start:63,end:68,file:"bg-sanctuary-front.png"},
- {start:69,end:94,file:"bg-sanctuary-inside.png"},
- {start:95,end:99,file:"bg-confession-outside.png"},
- {start:100,end:133,file:"bg-confession-inside.png"},
  {start:134,end:139,file:"bg-living-quarters-interior.png"},
  {start:140,end:143,file:"bg-central-square.jpg"},
  {start:150,end:172,file:"bg-central-square.jpg"}
@@ -3878,6 +3900,8 @@ function getSceneBackdrop(sceneNumber,scene){
  const squareEnd=scenes.findIndex((x,i)=>i>squareStart&&x.kind==='day2-morning-choice');
  if(scene&&scene.branch===1&&squareStart>=0&&sceneNumber-1>=squareStart&&(squareEnd<0||sceneNumber-1<squareEnd))return 'bg-central-square.jpg';
  if(scene&&scene.backdrop)return scene.backdrop;
+ const day1File=v362Day1Backdrop(sceneNumber);
+ if(day1File!==null)return day1File;
  for(const range of sceneBackdropRanges){
   if(sceneNumber>=range.start && sceneNumber<=range.end)return range.file;
  }
@@ -4347,6 +4371,10 @@ function v359ApplySoloProfile(name,metrics){
  let shift=0;
  if(metrics){shift=metrics.shiftRatio*v359SoloBoxContentHeight(name,metrics)}
  else shift=junhuiCenterCompensation(name); // Safe fallback for new/unavailable assets.
+ // V362: the mobile Elder artwork is visibly left of the viewport center
+ // even after the alpha bounds correction (verified against the supplied capture).
+ // Keep the normal alpha correction for all others and retain Elder's PC position.
+ if(/^elder-/.test(name)&&window.innerWidth<=750)shift+=window.innerWidth*.089;
  const x=profile.x||'-50%';
  shift=Math.round(shift*100)/100;
  portrait.style.setProperty('--portrait-offset-x',Math.abs(shift)>=.01?`calc(${x} ${shift>=0?'+':'-'} ${Math.abs(shift)}px)`:x);
