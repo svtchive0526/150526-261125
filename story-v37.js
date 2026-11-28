@@ -4749,7 +4749,11 @@ function v360ApplyDuoPositions(bounds){
  });
 }
 function v360PrepareMobileDuo(scene){
- if(!scene.duo||!v360IsMobileDuo()){v360ClearMobileDuo();return;}
+ if(!scene.duo||!v360IsMobileDuo()){
+  // V361: do not reset a ready PC pair on every dialogue render.
+  if(v360DuoPair)v360ClearMobileDuo();
+  return;
+ }
  const keys=scene.duo.map(key=>'duo-'+key);
  const pair=keys.join('|');
  // The same two drawings remain locked at the exact same coordinates across
@@ -4805,12 +4809,116 @@ function v360ResizeDuo(){
 }
 window.addEventListener('resize',v360ResizeDuo,{passive:true});
 
+// V361: PC ONLY. Retain the existing 31% / 69% anchors, image scale, max-width,
+// and bottom baseline. Raise only the portrait whose visible top sits lower,
+// so the two nontransparent upper edges appear at exactly the same screen Y.
+// This is an opaque-pixel hairline approximation (raised hands/props need an override).
+let v361PcDuoPair='',v361PcDuoSerial=0,v361PcDuoReady=false;
+let v361PcDuoPending=-1,v361PcDuoBounds=null;
+function v361IsPcDuo(){return window.innerWidth>650&&!duoLayer.classList.contains('v178-patrol')}
+function v361ClearPcDuo(hideForMobile=false){
+ ++v361PcDuoSerial;v361PcDuoPair='';v361PcDuoReady=false;
+ v361PcDuoPending=-1;v361PcDuoBounds=null;
+ for(const img of [duoLeft,duoRight]){
+  img.style.bottom='';
+  // On a mobile handover, keep previous PC art hidden until V360 is ready.
+  img.style.visibility=hideForMobile?'hidden':'';
+ }
+}
+function v361BeginPcDuo(scene){
+ if(!v361IsPcDuo()||!scene.duo)return;
+ const pair=scene.duo.map(key=>'duo-'+key).join('|');
+ if(pair===v361PcDuoPair)return;
+ v361PcDuoPair=pair;v361PcDuoReady=false;v361PcDuoBounds=null;
+ v361PcDuoPending=-1;++v361PcDuoSerial;
+ for(const img of [duoLeft,duoRight]){
+  img.style.bottom='';img.style.visibility='hidden';
+ }
+}
+function v361AlignPcDuo(bounds){
+ if(!v361IsPcDuo()||!duoLayer.classList.contains('is-active'))return false;
+ const images=[duoLeft,duoRight];
+ // Measure native CSS geometry, including its existing 48vw max-width and
+ // object-fit:contain, object-position:bottom. Do NOT change image dimensions.
+ images.forEach(img=>{img.style.bottom='';});
+ const topYs=images.map((img,i)=>{
+  const rect=img.getBoundingClientRect();
+  if(!rect.width||!rect.height||!img.naturalWidth||!img.naturalHeight)return NaN;
+  const fitH=Math.min(rect.height,rect.width*img.naturalHeight/img.naturalWidth);
+  const path=officialKeyToFilename(img.dataset.portraitKey);
+  const top=V360_DUO_HEAD_TOP_OVERRIDES[path]??bounds[i][0];
+  return rect.bottom-fitH+top*fitH;
+ });
+ if(topYs.some(y=>!Number.isFinite(y)))return false;
+ const targetTop=Math.min(...topYs);
+ images.forEach((img,i)=>{
+  const baseline=parseFloat(getComputedStyle(img).bottom);
+  const upward=Math.max(0,topYs[i]-targetTop);
+  img.style.bottom=(baseline+upward).toFixed(2)+'px';
+ });
+ return true;
+}
+function v361PreparePcDuo(scene){
+ if(!v361IsPcDuo()||!scene.duo)return;
+ const keys=scene.duo.map(key=>'duo-'+key);
+ const pair=keys.join('|');
+ if(pair!==v361PcDuoPair)v361BeginPcDuo(scene);
+ if(v361PcDuoReady||v361PcDuoPending===v361PcDuoSerial)return;
+ const serial=v361PcDuoSerial;
+ v361PcDuoPending=serial;
+ Promise.all(keys.map(key=>preloadOfficialPortrait(key))).then(async paths=>{
+  const bounds=await Promise.all(keys.map((key,i)=>v360BoundsFor(key,paths[i])));
+  if(serial!==v361PcDuoSerial||!v361IsPcDuo()||!duoLayer.classList.contains('is-active'))return;
+  const images=[duoLeft,duoRight];
+  images.forEach((img,i)=>{
+   const relative=officialKeyToFilename(keys[i]);
+   if(img.dataset.officialDisplayedKey!==relative||!img.getAttribute('src')){
+    img.src=paths[i];img.dataset.officialDisplayedKey=relative;img.dataset.officialValid='1';
+   }
+   img.hidden=false;
+  });
+  await Promise.all(images.map(img=>img.decode?.().catch(()=>{})||Promise.resolve()));
+  if(serial!==v361PcDuoSerial||!v361IsPcDuo()||!duoLayer.classList.contains('is-active'))return;
+  // Wait until DOM has usable geometry; keep portraits hidden until aligned.
+  requestAnimationFrame(()=>{
+   if(serial!==v361PcDuoSerial)return;
+   const aligned=v361AlignPcDuo(bounds);
+   if(!aligned){
+    // Fall back to unmodified PC layout, never strand a scene invisible.
+    images.forEach(img=>{img.style.bottom='';img.style.visibility='visible'});
+    v361PcDuoReady=true;v361PcDuoBounds=null;return;
+   }
+   v361PcDuoReady=true;v361PcDuoBounds=bounds;
+   images.forEach(img=>{img.style.visibility='visible'});
+  });
+ }).catch(error=>{
+  if(serial!==v361PcDuoSerial)return;
+  console.warn('[SHINDO V361] PC duo top alignment unavailable:',error);
+  v361PcDuoReady=true;v361PcDuoBounds=null;
+  for(const img of [duoLeft,duoRight]){img.style.bottom='';img.style.visibility='visible'}
+ });
+}
+function v361ResizePcDuo(){
+ if(!v361IsPcDuo()){
+  if(v361PcDuoPair)v361ClearPcDuo(true);
+  return;
+ }
+ const scene=scenes[index];
+ if(!scene?.duo||!duoLayer.classList.contains('is-active'))return;
+ if(!v361PcDuoPair){v361BeginPcDuo(scene);v361PreparePcDuo(scene);return;}
+ if(v361PcDuoReady&&v361PcDuoBounds)v361AlignPcDuo(v361PcDuoBounds);
+}
+window.addEventListener('resize',v361ResizePcDuo,{passive:true});
+
 const recallKicker=document.createElement('div');recallKicker.className='special-memory-kicker';recallKicker.textContent='회상';overlay.appendChild(recallKicker);
 const v287Curtain=document.createElement('div');v287Curtain.className='v287-memory-curtain';overlay.appendChild(v287Curtain);
 function setSpecialPortraits(scene){
  overlay.classList.toggle('is-recall',!!scene.recall);
- if(!scene.duo){v360ClearMobileDuo();duoLayer.classList.remove('is-active');for(const image of [duoLeft,duoRight]){image.dataset.officialRequest=String((Number(image.dataset.officialRequest)||0)+1);image.hidden=true;image.removeAttribute('src')}return false}
- if(!v360IsMobileDuo()){v360ClearMobileDuo();duoLeft.style.visibility='visible';duoRight.style.visibility='visible'}
+ if(!scene.duo){v361ClearPcDuo();v360ClearMobileDuo();duoLayer.classList.remove('is-active');for(const image of [duoLeft,duoRight]){image.dataset.officialRequest=String((Number(image.dataset.officialRequest)||0)+1);image.hidden=true;image.removeAttribute('src')}return false}
+ if(v361IsPcDuo()){
+  if(v360DuoPair)v360ClearMobileDuo();
+  v361BeginPcDuo(scene);
+ }else if(v361PcDuoPair){v361ClearPcDuo(true)}
  duoLeft.hidden=false;duoRight.hidden=false;
  duoLeft.dataset.portraitKey='duo-'+scene.duo[0];duoRight.dataset.portraitKey='duo-'+scene.duo[1];
  duoLeft.dataset.officialShouldShow='1';duoRight.dataset.officialShouldShow='1';
@@ -4821,6 +4929,7 @@ function setSpecialPortraits(scene){
  portrait.hidden=true; // V116: always suppress previous solo portrait during duo scenes
   duoLayer.classList.add('is-active');
   v360PrepareMobileDuo(scene);
+  if(v361IsPcDuo())v361PreparePcDuo(scene);
   return true;
 }
 function getMinghaoAffinity(){
@@ -6248,7 +6357,7 @@ if(scene.kind==='image'){
 
 if(scene.kind==='dialogue'&&scene.speaker==='원우'&&!scene.maskSpeaker)window.SHINDO_markCharacterMet?.('원우');
 const duoVisible=(scene.specialMinghao||scene.v247MinghaoFollowup||scene.v257PoliceDuo||(scene.v344Hyungje&&scene.duo))?setSpecialPortraits(scene):false;
- if(!duoVisible&&duoLayer.classList.contains('is-active')){v360ClearMobileDuo();duoLayer.classList.remove('is-active');duoLeft.hidden=true;duoRight.hidden=true;}
+ if(!duoVisible&&duoLayer.classList.contains('is-active')){v361ClearPcDuo();v360ClearMobileDuo();duoLayer.classList.remove('is-active');duoLeft.hidden=true;duoRight.hidden=true;}
 // V224: regular single-portrait recall needs the same visual mode as duo recalls.
 if((scene.v224OfficeType3||scene.v226OfficeType1||scene.v257PoliceRecall) && scene.recall)overlay.classList.add('is-recall');
 // V115: the special branch has its own recognition moments, independent of earlier branches.
