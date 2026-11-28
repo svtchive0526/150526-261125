@@ -4837,10 +4837,9 @@ function v360ResizeDuo(){
 }
 window.addEventListener('resize',v360ResizeDuo,{passive:true});
 
-// V361: PC ONLY. Retain the existing 31% / 69% anchors, image scale, max-width,
-// and bottom baseline. Raise only the portrait whose visible top sits lower,
-// so the two nontransparent upper edges appear at exactly the same screen Y.
-// This is an opaque-pixel hairline approximation (raised hands/props need an override).
+// V363: PC duo uses the 31% / 69% centers for the actual visible art, not
+// for the transparent PNG canvases. V361's head-top equalization and the
+// existing portrait scale/width are preserved. Mobile duo is unchanged.
 let v361PcDuoPair='',v361PcDuoSerial=0,v361PcDuoReady=false;
 let v361PcDuoPending=-1,v361PcDuoBounds=null;
 function v361IsPcDuo(){return window.innerWidth>650&&!duoLayer.classList.contains('v178-patrol')}
@@ -4848,7 +4847,7 @@ function v361ClearPcDuo(hideForMobile=false){
  ++v361PcDuoSerial;v361PcDuoPair='';v361PcDuoReady=false;
  v361PcDuoPending=-1;v361PcDuoBounds=null;
  for(const img of [duoLeft,duoRight]){
-  img.style.bottom='';
+  img.style.bottom='';img.style.left='';
   // On a mobile handover, keep previous PC art hidden until V360 is ready.
   img.style.visibility=hideForMobile?'hidden':'';
  }
@@ -4860,7 +4859,7 @@ function v361BeginPcDuo(scene){
  v361PcDuoPair=pair;v361PcDuoReady=false;v361PcDuoBounds=null;
  v361PcDuoPending=-1;++v361PcDuoSerial;
  for(const img of [duoLeft,duoRight]){
-  img.style.bottom='';img.style.visibility='hidden';
+  img.style.bottom='';img.style.left='';img.style.visibility='hidden';
  }
 }
 function v361AlignPcDuo(bounds){
@@ -4882,6 +4881,16 @@ function v361AlignPcDuo(bounds){
  images.forEach((img,i)=>{
   const baseline=parseFloat(getComputedStyle(img).bottom);
   const upward=Math.max(0,topYs[i]-targetTop);
+  // The 3rd V360 bound is (PNG center - visible alpha center) / PNG height.
+  // fitH is the actual image content height after object-fit:contain, so
+  // multiplying by fitH converts it to the correct screen-pixel correction.
+  // This preserves the existing 31%/69% anchor, height and width on PC.
+  const rect=img.getBoundingClientRect();
+  const fitH=Math.min(rect.height,rect.width*img.naturalHeight/img.naturalWidth);
+  const dx=(Number(bounds[i][2])||0)*fitH;
+  const anchor=i===0?31:69;
+  const rounded=Math.round(Math.abs(dx)*100)/100;
+  img.style.left=rounded>=0.01?`calc(${anchor}% ${dx<0?'-':'+'} ${rounded}px)`:anchor+'%';
   img.style.bottom=(baseline+upward).toFixed(2)+'px';
  });
  return true;
@@ -4913,7 +4922,7 @@ function v361PreparePcDuo(scene){
    const aligned=v361AlignPcDuo(bounds);
    if(!aligned){
     // Fall back to unmodified PC layout, never strand a scene invisible.
-    images.forEach(img=>{img.style.bottom='';img.style.visibility='visible'});
+    images.forEach(img=>{img.style.bottom='';img.style.left='';img.style.visibility='visible'});
     v361PcDuoReady=true;v361PcDuoBounds=null;return;
    }
    v361PcDuoReady=true;v361PcDuoBounds=bounds;
@@ -4923,7 +4932,7 @@ function v361PreparePcDuo(scene){
   if(serial!==v361PcDuoSerial)return;
   console.warn('[SHINDO V361] PC duo top alignment unavailable:',error);
   v361PcDuoReady=true;v361PcDuoBounds=null;
-  for(const img of [duoLeft,duoRight]){img.style.bottom='';img.style.visibility='visible'}
+  for(const img of [duoLeft,duoRight]){img.style.bottom='';img.style.left='';img.style.visibility='visible'}
  });
 }
 function v361ResizePcDuo(){
@@ -5774,14 +5783,124 @@ function startV178Bell(){
  Promise.resolve(pending).then(attempt);
 }
 function v178Cue(cue){if(cue==='bell'&&!v178BellStarted&&!v178BellWanted)startV178Bell()}
+const V178_PATROL_KEYS=['seungcheol-body1-default','jihoon-body1-default'];
+let v363PatrolSerial=0,v363PatrolBounds=null,v363PatrolReady=false;
+function v363IsPatrolActive(){return duoLayer.classList.contains('v178-patrol')&&duoLayer.classList.contains('is-active')}
+function v363ResetPatrolInline(hide=false,dropSource=false){
+ for(const img of [duoLeft,duoRight]){
+  img.style.height='';img.style.maxWidth='';img.style.width='';
+  img.style.bottom='';img.style.left='';img.style.transform='';
+  img.style.opacity='';img.style.transition='';img.style.visibility=hide?'hidden':'';
+  if(dropSource){img.hidden=true;img.removeAttribute('src');img.dataset.officialDisplayedKey='';}
+ }
+}
+function v363ClearPatrolLayout(){
+ ++v363PatrolSerial;v363PatrolBounds=null;v363PatrolReady=false;
+ v363ResetPatrolInline(false,true);
+}
+function v363ApplyPatrolMobileLayout(bounds){
+ if(window.innerWidth>650||!v363IsPatrolActive())return false;
+ const screenH=window.innerHeight;
+ const bottomAnchor=Math.min(230,Math.max(165,screenH*.21));
+ const paintedHeight=Math.min(screenH*.45,440);
+ [duoLeft,duoRight].forEach((img,i)=>{
+  const [alphaTop,alphaBottom,centerOffset]=bounds[i];
+  const path=officialKeyToFilename(img.dataset.portraitKey);
+  const top=V360_DUO_HEAD_TOP_OVERRIDES[path]??alphaTop;
+  const visibleFraction=Math.max(.08,alphaBottom-top);
+  const cssHeight=paintedHeight/visibleFraction;
+  const blankBottom=(1-alphaBottom)*cssHeight;
+  const bottom=bottomAnchor-blankBottom;
+  const offset=(Number(centerOffset)||0)*cssHeight;
+  const anchor=i===0?29:71;
+  img.style.height=cssHeight.toFixed(2)+'px';
+  img.style.width='auto';img.style.maxWidth='none';
+  img.style.bottom=bottom.toFixed(2)+'px';
+  img.style.left=`calc(${anchor}% ${offset<0?'-':'+'} ${Math.abs(offset).toFixed(2)}px)`;
+  img.style.transform='translateX(-50%)';
+ });
+ return true;
+}
+function v363ApplyPatrolPcLayout(bounds){
+ if(window.innerWidth<=650||!v363IsPatrolActive())return false;
+ const images=[duoLeft,duoRight];
+ images.forEach(img=>{
+  img.style.height='';img.style.maxWidth='';img.style.width='';
+  img.style.transform='translateX(-50%)';img.style.bottom='';
+ });
+ const topYs=images.map((img,i)=>{
+  const rect=img.getBoundingClientRect();
+  if(!rect.width||!rect.height||!img.naturalWidth||!img.naturalHeight)return NaN;
+  const fitH=Math.min(rect.height,rect.width*img.naturalHeight/img.naturalWidth);
+  const path=officialKeyToFilename(img.dataset.portraitKey);
+  const top=V360_DUO_HEAD_TOP_OVERRIDES[path]??bounds[i][0];
+  return rect.bottom-fitH+top*fitH;
+ });
+ if(topYs.some(y=>!Number.isFinite(y)))return false;
+ const targetTop=Math.min(...topYs);
+ images.forEach((img,i)=>{
+  const baseline=parseFloat(getComputedStyle(img).bottom);
+  const upward=Math.max(0,topYs[i]-targetTop);
+  const rect=img.getBoundingClientRect();
+  const fitH=Math.min(rect.height,rect.width*img.naturalHeight/img.naturalWidth);
+  const dx=(Number(bounds[i][2])||0)*fitH;
+  const anchor=i===0?31:69;
+  const rounded=Math.round(Math.abs(dx)*100)/100;
+  img.style.left=rounded>=0.01?`calc(${anchor}% ${dx<0?'-':'+'} ${rounded}px)`:anchor+'%';
+  img.style.bottom=(baseline+upward).toFixed(2)+'px';
+ });
+ return true;
+}
+function v363PatrolFallbackVisible(){
+ for(const img of [duoLeft,duoRight]){img.hidden=false;img.style.visibility='visible';img.style.opacity='1';img.style.transform='translateX(-50%)';}
+ duoLayer.classList.add('is-visible');
+}
+function v363PreparePatrol(){
+ if(!v363IsPatrolActive())return;
+ const serial=++v363PatrolSerial;v363PatrolReady=false;v363PatrolBounds=null;
+ const images=[duoLeft,duoRight];
+ images.forEach(img=>{img.hidden=false;img.style.visibility='hidden';img.style.opacity='0';img.style.transition='opacity 850ms ease';});
+ Promise.all(V178_PATROL_KEYS.map(key=>preloadOfficialPortrait(key))).then(async paths=>{
+  const bounds=await Promise.all(V178_PATROL_KEYS.map((key,i)=>v360BoundsFor(key,paths[i])));
+  if(serial!==v363PatrolSerial||!v363IsPatrolActive())return;
+  images.forEach((img,i)=>{
+   const relative=officialKeyToFilename(V178_PATROL_KEYS[i]);
+   if(img.dataset.officialDisplayedKey!==relative||!img.getAttribute('src')){
+    img.src=paths[i];img.dataset.officialDisplayedKey=relative;img.dataset.officialValid='1';
+   }
+   img.hidden=false;
+  });
+  await Promise.all(images.map(img=>img.decode?.().catch(()=>{})||Promise.resolve()));
+  if(serial!==v363PatrolSerial||!v363IsPatrolActive())return;
+  const aligned=window.innerWidth<=650?v363ApplyPatrolMobileLayout(bounds):v363ApplyPatrolPcLayout(bounds);
+  if(!aligned){v363PatrolReady=true;v363PatrolBounds=null;v363PatrolFallbackVisible();return;}
+  v363PatrolReady=true;v363PatrolBounds=bounds;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   if(serial!==v363PatrolSerial||!v363IsPatrolActive())return;
+   for(const img of images){img.style.visibility='visible';img.style.opacity='1';}
+   duoLayer.classList.add('is-visible');
+  }));
+ }).catch(error=>{
+  if(serial!==v363PatrolSerial)return;
+  console.warn('[SHINDO V363] Patrol duo normalization failed:',error);
+  v363PatrolReady=true;v363PatrolBounds=null;v363PatrolFallbackVisible();
+ });
+}
+function v363ResizePatrol(){
+ if(!v363IsPatrolActive())return;
+ if(!v363PatrolReady||!v363PatrolBounds){v363PreparePatrol();return;}
+ if(window.innerWidth<=650)v363ApplyPatrolMobileLayout(v363PatrolBounds);
+ else v363ApplyPatrolPcLayout(v363PatrolBounds);
+}
+window.addEventListener('resize',v363ResizePatrol,{passive:true});
 function v178Patrol(mode){
- if(!mode){duoLayer.classList.remove('v178-patrol','is-visible','is-active');return}
+ if(!mode){duoLayer.classList.remove('v178-patrol','is-visible','is-active');v363ClearPatrolLayout();return}
  if(mode==='in'){
   duoLayer.classList.add('v178-patrol');duoLeft.hidden=false;duoRight.hidden=false;
   duoLeft.dataset.portraitKey='seungcheol-body1-default';duoRight.dataset.portraitKey='jihoon-body1-default';
   duoLeft.dataset.officialShouldShow='1';duoRight.dataset.officialShouldShow='1';
-  assignOfficialPortrait(duoLeft,'seungcheol-body1-default');assignOfficialPortrait(duoRight,'jihoon-body1-default');
-  duoLayer.classList.add('is-active');duoLayer.classList.remove('is-visible');requestAnimationFrame(()=>requestAnimationFrame(()=>duoLayer.classList.add('is-visible')));
+  duoLayer.classList.add('is-active');duoLayer.classList.remove('is-visible');
+  v363PreparePatrol();
  }else if(mode==='out'){
   duoLayer.classList.remove('is-visible');const captured=index;setTimeout(()=>{if(index>=captured&&duoLayer.classList.contains('v178-patrol'))v178Patrol(null)},900)
  }
