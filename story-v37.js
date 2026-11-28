@@ -3208,7 +3208,7 @@ scenes.push(
  v344Scene('dialogue','급하기는. 냉정하게 굴어.','준휘',{backdrop:'bg-central-square.jpg',portrait:'junhui-body1-eyesmile',boldAll:true,portraitFadeOutAfter:true}),
  v344Scene('narration','그 말을 마지막으로 준휘는 끌려갔다.','',{backdrop:'bg-central-square.jpg',clearPortrait:true}),
  v344Scene('narration','절규하는 명호를 끝까지 붙든 건… 원우였다.','',{backdrop:'bg-central-square.jpg',duo:['minghao-body1-despair','wonwoo-body2-default'],duoMask:'none',v257BoldPhrases:['명호','원우'],v344FadeToBlackNext:true}),
- v344Scene('narration','그날은 이례적으로 예술당이 폐쇄되었다.','',{backdrop:'',clearPortrait:true}),
+ v344Scene('narration','그날은 이례적으로 예술당이 폐쇄되었다.','',{backdrop:'',clearPortrait:true,v348AftermathStart:true}),
  v344Scene('narration','온종일 집기가 부서지고, 캔버스 찢기는 소리가 끊이질 않았다.','',{backdrop:'bg-art-hall-exterior.jpg',clearPortrait:true,wakeFadeIn:true,screenShake:true}),
  v344Scene('narration','온종일 마음이 불안했다.','',{backdrop:'bg-art-hall-exterior.jpg',clearPortrait:true,v344FadeToBlackNext:true}),
  v344Scene('narration','당장이라도 뛰쳐나가려는 명호의 팔을 단단히 움켜쥐던...','',{backdrop:'',clearPortrait:true}),
@@ -3217,9 +3217,10 @@ scenes.push(
  v344Scene('dialogue','며칠 간은 얌전히 지내야겠다.','주인공',{backdrop:'',clearPortrait:true}),
  v344Scene('dialogue','오후에 몰래 나가는 것도 당분간은 접어두기로 했다.','주인공',{backdrop:'',clearPortrait:true}),
 );
+const V348_HYUNGJE_AFTER_CENTRAL_START=scenes.findIndex(scene=>scene.v348AftermathStart===true);
 const V344_PM_HYUNGJE_AFTERMATH_START=scenes.length;
 scenes.push(
- v344Scene('narration','그날 저녁, 잠자리에 누웠을 때였다.','',{backdrop:'bg-bongbong-room.jpg',clearPortrait:true,wakeFadeIn:true,v344AftermathStart:true}),
+ v344Scene('narration','그날 저녁, 잠자리에 누웠을 때였다.','',{backdrop:'bg-bongbong-room.jpg',clearPortrait:true,wakeFadeIn:true}),
  v344Scene('narration','침대 옆 커튼에서 부스럭거리는 소리가 났다.','',{backdrop:'bg-bongbong-room.jpg',clearPortrait:true}),
  v344Scene('dialogue','잠깐, 내가 창문을 열어 놨던가?','주인공',{backdrop:'bg-bongbong-room.jpg',clearPortrait:true,v344CutToBlackNext:true}),
  v344Scene('dialogue','…!','주인공',{backdrop:'',clearPortrait:true}),
@@ -5429,9 +5430,9 @@ function render(){clearTimeout(timer);clearConfessionQuestionTimers();stopVnTypi
   index=V257_DAY3_JEONGHAN_POLICE_PACKAGE_START;save();render();return;
  }
  const scene=scenes[index];portrait.classList.remove('v178-fadeout');if(!scene){v334StopTongkwaeBgm();v336StopGyeolsokBgm();v344StopAftermathBgm();finish();return}
- const v344InAftermathRoute=index>=V344_PM_HYUNGJE_AFTERMATH_START&&index<=V344_PM_HYUNGJE_ENDING_INDEX;
+ const v344InAftermathRoute=index>=V348_HYUNGJE_AFTER_CENTRAL_START&&index<=V344_PM_HYUNGJE_ENDING_INDEX;
  if(!v344InAftermathRoute&&scene.endingRoute!=='hyungje'&&v344AftermathAudio)v344StopAftermathBgm();
- if((v344InAftermathRoute||scene.v344AftermathStart)&&!v344AftermathAudio)v344StartAftermathBgm();
+ if(v344InAftermathRoute&&!v344AftermathAudio)v344StartAftermathBgm();
  // Prevent this cue leaking to ordinary dialogue/other endings when skipping/restarting.
  const v339AccusationPending=localStorage.getItem(V316_PM_BRANCH_KEY)==='S01' &&
   (index===V316_PM_TARGET_SCREEN||(index>=V325_PM_S02_START&&index<V325_PM_S02_START+6));
@@ -8075,7 +8076,7 @@ function next(userAdvance=false){
   locked=true;overlay.classList.add('sleep-fadeout');
   timer=setTimeout(()=>{overlay.classList.add('confession-blackout','v293-day4-title');overlay.classList.remove('sleep-fadeout');locked=false;index=V293_DAY4_TITLE;save();render();},950);return;
  }
- if(scenes[index]?.v346JumpAftermath){locked=true;overlay.classList.add('confession-blackout');timer=setTimeout(()=>{locked=false;index=V344_PM_HYUNGJE_AFTERMATH_START;save();render();},420);return;}
+ if(scenes[index]?.v346JumpAftermath){locked=true;overlay.classList.add('confession-blackout');timer=setTimeout(()=>{locked=false;index=V348_HYUNGJE_AFTER_CENTRAL_START;save();render();},420);return;}
  if(scenes[index]?.v344CutToBlackNext){locked=true;overlay.classList.add('confession-blackout');timer=setTimeout(()=>{locked=false;index++;save();render();},20);return;}
  if(scenes[index]?.v344FadeToBlackNext){locked=true;overlay.classList.add('confession-blackout');timer=setTimeout(()=>{locked=false;index++;save();render();},420);return;}
  if(scenes[index]?.v287TransitionAfter){v287FadeIntoNext();return;}
