@@ -3252,7 +3252,7 @@ scenes.push(
  v344Scene('narration','신도들이 중앙광장에 집결했다.','',{backdrop:'bg-central-square.jpg',clearPortrait:true}),
  v344Scene('narration','앞으로 끌려 나온 건…','',{backdrop:'bg-central-square.jpg',portrait:'hansol-body1-default',silhouette:true}),
  v344Scene('narration','한솔이었다.','',{backdrop:'bg-central-square.jpg',portrait:'hansol-body1-default',boldWord:'한솔'}),
- v344Scene('narration','그러나 선고가 끝나기도 전에 찢어지는 비명이 일었다.','',{backdrop:'bg-central-square.jpg',portrait:'junhui-body1-default'}),
+ v344Scene('narration','그러나 선고가 끝나기도 전에 찢어지는 비명이 일었다.','',{backdrop:'bg-central-square.jpg',portrait:'hansol-body1-default'}),
  v344Scene('narration','군중 속에서 명호가 인파를 헤치고 달려 나왔다.','',{backdrop:'bg-central-square.jpg',portrait:'minghao-body2-despair',boldWord:'명호'}),
  v344Scene('narration','정갈한 사제의 모습은 온데간데없었다.','',{backdrop:'bg-central-square.jpg',portrait:'minghao-body1-despair'}),
  v344Scene('narration','잠시 놀란 얼굴을 하던 한솔은,','',{backdrop:'bg-central-square.jpg',portrait:'minghao-body1-despair'}),
