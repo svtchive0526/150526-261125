@@ -4677,12 +4677,140 @@ const duoLeft=document.createElement('img'),duoRight=document.createElement('img
 duoLeft.className='duo-left';duoRight.className='duo-right';duoLeft.alt='';duoRight.alt='';
 duoLayer.append(duoLeft,duoRight);overlay.insertBefore(duoLayer,box);
 attachPortraitErrorHandler(duoLeft);attachPortraitErrorHandler(duoRight);
+// V360: MOBILE TWO-CHARACTER COMPOSITION ONLY.
+// Align both *opaque drawing* top edges (not PNG canvas edges), and keep a common
+// visible baseline. Images are positioned before reveal, so there is no jump.
+// Overrides below may be extended for artworks whose highest colored pixel is
+// a raised hand/prop rather than the actual hairline.
+const V360_DUO_BOUNDS=Object.freeze({"chan/찬_바디1_기본.png":[0.1600379,0.9914773,-0.1152936],"chan/찬_바디1_눈웃음.png":[0.1600379,0.9914773,-0.1152936],"chan/찬_바디1_무시.png":[0.1600379,0.9914773,-0.1152936],"chan/찬_바디1_미소.png":[0.1600379,0.9914773,-0.1152936],"chan/찬_바디1_뾰로통.png":[0.1600379,0.9914773,-0.1152936],"chan/찬_바디1_억울,공포.png":[0.1600379,0.9914773,-0.1152936],"chan/찬_바디1_의지가득.png":[0.1600379,0.9914773,-0.1152936],"chan/찬_바디1_절박.png":[0.1600379,0.9914773,-0.1152936],"chan/찬_바디1_정색.png":[0.1600379,0.9914773,-0.1152936],"chan/찬_바디1_질투.png":[0.1600379,0.9914773,-0.1152936],"chan/찬_바디1_초조.png":[0.1600379,0.9914773,-0.1152936],"chan/찬_바디2_기본.png":[0.1600379,0.9919508,-0.1690341],"chan/찬_바디2_눈웃음.png":[0.1600379,0.9919508,-0.1690341],"chan/찬_바디2_무시.png":[0.1600379,0.9919508,-0.1690341],"chan/찬_바디2_미소.png":[0.1600379,0.9919508,-0.1690341],"chan/찬_바디2_뾰로통.png":[0.1600379,0.9919508,-0.1690341],"chan/찬_바디2_억울,공포.png":[0.1600379,0.9919508,-0.1690341],"chan/찬_바디2_의지가득.png":[0.1600379,0.9919508,-0.1690341],"chan/찬_바디2_절박.png":[0.1600379,0.9919508,-0.1690341],"chan/찬_바디2_정색.png":[0.1600379,0.9919508,-0.1690341],"chan/찬_바디2_질투.png":[0.1600379,0.9919508,-0.1690341],"chan/찬_바디2_초조.png":[0.1600379,0.9919508,-0.1690341],"chan/찬_바디3_기본.png":[0.1600379,0.9914773,-0.0762311],"chan/찬_바디3_눈웃음.png":[0.1600379,0.9914773,-0.0762311],"chan/찬_바디3_무시.png":[0.1600379,0.9914773,-0.0762311],"chan/찬_바디3_미소.png":[0.1600379,0.9914773,-0.0762311],"chan/찬_바디3_뾰로통.png":[0.1600379,0.9914773,-0.0762311],"chan/찬_바디3_억울,공포.png":[0.1600379,0.9914773,-0.0762311],"chan/찬_바디3_의지가득.png":[0.1600379,0.9914773,-0.0762311],"chan/찬_바디3_절박.png":[0.1600379,0.9914773,-0.0762311],"chan/찬_바디3_정색.png":[0.1600379,0.9914773,-0.0762311],"chan/찬_바디3_질투.png":[0.1600379,0.9914773,-0.0762311],"chan/찬_바디3_초조.png":[0.1600379,0.9914773,-0.0762311],"chan/찬_바디4_기본.png":[0.1505682,0.9914773,-0.1150568],"chan/찬_바디4_눈웃음.png":[0.1505682,0.9914773,-0.1150568],"chan/찬_바디4_무시.png":[0.1505682,0.9914773,-0.1150568],"chan/찬_바디4_미소.png":[0.1505682,0.9914773,-0.1150568],"chan/찬_바디4_뾰로통.png":[0.1505682,0.9914773,-0.1150568],"chan/찬_바디4_억울,공포,공양.png":[0.1505682,0.9914773,-0.1150568],"chan/찬_바디4_의지가득.png":[0.1505682,0.9914773,-0.1150568],"chan/찬_바디4_절박.png":[0.1505682,0.9914773,-0.1150568],"chan/찬_바디4_정색.png":[0.1505682,0.9914773,-0.1150568],"chan/찬_바디4_질투.png":[0.1505682,0.9914773,-0.1150568],"chan/찬_바디4_초조.png":[0.1505682,0.9914773,-0.1150568],"elder/노인네_극대노.png":[0.140625,0.9910038,-0.1214489],"elder/노인네_기본.png":[0.1401515,0.9914773,-0.1143466],"elder/노인네_찌푸림.png":[0.1401515,0.9914773,-0.1143466],"hansol/한솔_바디1_고민.png":[0.1131629,0.9914773,-0.1205019],"hansol/한솔_바디1_광기.png":[0.1131629,0.9914773,-0.1205019],"hansol/한솔_바디1_귀찮음.png":[0.1131629,0.9914773,-0.1205019],"hansol/한솔_바디1_기본.png":[0.1131629,0.9914773,-0.1205019],"hansol/한솔_바디1_눈웃음.png":[0.1131629,0.9914773,-0.1205019],"hansol/한솔_바디1_미소.png":[0.1131629,0.9914773,-0.1205019],"hansol/한솔_바디1_비아냥.png":[0.1131629,0.9914773,-0.1205019],"hansol/한솔_바디1_지침.png":[0.1131629,0.9914773,-0.1205019],"hansol/한솔_바디1_휴거.png":[0.1131629,0.9914773,-0.1205019],"hansol/한솔_바디2_고민.png":[0.1131629,0.9914773,-0.1193182],"hansol/한솔_바디2_광기.png":[0.1131629,0.9914773,-0.1193182],"hansol/한솔_바디2_귀찮음.png":[0.1131629,0.9914773,-0.1193182],"hansol/한솔_바디2_기본.png":[0.1131629,0.9914773,-0.1193182],"hansol/한솔_바디2_눈웃음.png":[0.1131629,0.9914773,-0.1193182],"hansol/한솔_바디2_미소.png":[0.1131629,0.9914773,-0.1193182],"hansol/한솔_바디2_비아냥.png":[0.1131629,0.9914773,-0.1193182],"hansol/한솔_바디2_지침.png":[0.1131629,0.9914773,-0.1193182],"hansol/한솔_바디2_휴거.png":[0.1131629,0.9914773,-0.1193182],"hansol/한솔_바디3_고민.png":[0.1131629,0.9914773,-0.1200284],"hansol/한솔_바디3_광기.png":[0.1131629,0.9914773,-0.1200284],"hansol/한솔_바디3_귀찮음.png":[0.1131629,0.9914773,-0.1200284],"hansol/한솔_바디3_기본.png":[0.1131629,0.9914773,-0.1200284],"hansol/한솔_바디3_눈웃음.png":[0.1131629,0.9914773,-0.1200284],"hansol/한솔_바디3_미소.png":[0.1131629,0.9914773,-0.1200284],"hansol/한솔_바디3_비아냥.png":[0.1131629,0.9914773,-0.1200284],"hansol/한솔_바디3_지침.png":[0.1131629,0.9914773,-0.1200284],"hansol/한솔_바디3_휴거.png":[0.1131629,0.9914773,-0.1200284],"hansol/한솔_바디4_고민.png":[0.1131629,0.9914773,-0.1207386],"hansol/한솔_바디4_광기.png":[0.1131629,0.9914773,-0.1207386],"hansol/한솔_바디4_귀찮음.png":[0.1131629,0.9914773,-0.1207386],"hansol/한솔_바디4_기본.png":[0.1131629,0.9914773,-0.1207386],"hansol/한솔_바디4_눈웃음.png":[0.1131629,0.9914773,-0.1207386],"hansol/한솔_바디4_미소.png":[0.1131629,0.9914773,-0.1207386],"hansol/한솔_바디4_비아냥.png":[0.1131629,0.9914773,-0.1207386],"hansol/한솔_바디4_지침,공양.png":[0.1131629,0.9914773,-0.1207386],"hansol/한솔_바디4_휴거.png":[0.1131629,0.9914773,-0.1207386],"jeonghan/정한_바디1_기본.png":[0.1283144,0.9914773,-0.1541193],"jeonghan/정한_바디1_눈웃음.png":[0.1283144,0.9914773,-0.1541193],"jeonghan/정한_바디1_당황.png":[0.1283144,0.9914773,-0.1541193],"jeonghan/정한_바디1_미묘.png":[0.1283144,0.9914773,-0.1541193],"jeonghan/정한_바디1_미소.png":[0.1283144,0.9914773,-0.1541193],"jeonghan/정한_바디1_정색.png":[0.1283144,0.9914773,-0.1541193],"jeonghan/정한_바디1_초조.png":[0.1283144,0.9914773,-0.1541193],"jeonghan/정한_바디2_기본.png":[0.1283144,1.0,-0.0875947],"jeonghan/정한_바디2_눈웃음.png":[0.1283144,1.0,-0.0875947],"jeonghan/정한_바디2_당황.png":[0.1283144,1.0,-0.0875947],"jeonghan/정한_바디2_미묘.png":[0.1283144,1.0,-0.0875947],"jeonghan/정한_바디2_미소.png":[0.1283144,1.0,-0.0875947],"jeonghan/정한_바디2_정색.png":[0.1283144,1.0,-0.0875947],"jeonghan/정한_바디2_초조.png":[0.1283144,1.0,-0.0875947],"jeonghan/정한_바디3_공양,정색.png":[0.1283144,0.9919508,-0.1536458],"jeonghan/정한_바디3_기본.png":[0.1283144,0.9919508,-0.1536458],"jeonghan/정한_바디3_눈웃음.png":[0.1283144,0.9919508,-0.1536458],"jeonghan/정한_바디3_당황.png":[0.1283144,0.9919508,-0.1536458],"jeonghan/정한_바디3_미묘.png":[0.1283144,0.9919508,-0.1536458],"jeonghan/정한_바디3_미소.png":[0.1283144,0.9919508,-0.1536458],"jeonghan/정한_바디3_초조.png":[0.1283144,0.9919508,-0.1536458],"jihoon/지훈_바디1_기본.png":[0.2064394,0.9914773,-0.1136364],"jihoon/지훈_바디1_눈웃음.png":[0.2064394,0.9914773,-0.1136364],"jihoon/지훈_바디1_당황.png":[0.2064394,0.9914773,-0.1136364],"jihoon/지훈_바디1_미소.png":[0.2064394,0.9914773,-0.1136364],"jihoon/지훈_바디1_정색.png":[0.2064394,0.9914773,-0.1136364],"jihoon/지훈_바디1_초조.png":[0.2064394,0.9914773,-0.1136364],"jihoon/지훈_바디2_기본.png":[0.2064394,0.9914773,-0.1408617],"jihoon/지훈_바디2_눈웃음.png":[0.2064394,0.9914773,-0.1408617],"jihoon/지훈_바디2_당황.png":[0.2064394,0.9914773,-0.1408617],"jihoon/지훈_바디2_미소.png":[0.2064394,0.9914773,-0.1408617],"jihoon/지훈_바디2_정색.png":[0.2064394,0.9914773,-0.1408617],"jihoon/지훈_바디2_초조.png":[0.2064394,0.9914773,-0.1408617],"jihoon/지훈_바디3_기본.png":[0.2064394,0.9914773,-0.1117424],"jihoon/지훈_바디3_눈웃음.png":[0.2064394,0.9914773,-0.1117424],"jihoon/지훈_바디3_당황.png":[0.2064394,0.9914773,-0.1117424],"jihoon/지훈_바디3_미소.png":[0.2064394,0.9914773,-0.1117424],"jihoon/지훈_바디3_정색.png":[0.2064394,0.9914773,-0.1117424],"jihoon/지훈_바디3_초조,공양.png":[0.2064394,0.9914773,-0.1117424],"joshua/조슈아_바디(신도)_걱정(교주).png":[0.1112689,0.9919508,-0.1690341],"joshua/조슈아_바디(신도)_걱정(신도).png":[0.1112689,0.9919508,-0.1690341],"joshua/조슈아_바디(신도)_고민(교주).png":[0.1112689,0.9919508,-0.1690341],"joshua/조슈아_바디(신도)_광기(교주).png":[0.1112689,0.9919508,-0.1690341],"joshua/조슈아_바디(신도)_기본(교주).png":[0.1112689,0.9919508,-0.1690341],"joshua/조슈아_바디(신도)_기본(신도).png":[0.1112689,0.9919508,-0.1690341],"joshua/조슈아_바디(신도)_놀람,흥미(교주).png":[0.1112689,0.9919508,-0.1690341],"joshua/조슈아_바디(신도)_미소(교주).png":[0.1112689,0.9919508,-0.1690341],"joshua/조슈아_바디(신도)_미소.png":[0.1112689,0.9919508,-0.1690341],"joshua/조슈아_바디(신도)_비웃음(교주).png":[0.1112689,0.9919508,-0.1690341],"joshua/조슈아_바디(신도)_정색(교주).png":[0.1112689,0.9919508,-0.1690341],"joshua/조슈아_바디1(교주)_걱정(교주).png":[0.1126894,0.9914773,-0.1690341],"joshua/조슈아_바디1(교주)_걱정(신도).png":[0.1126894,0.9914773,-0.1690341],"joshua/조슈아_바디1(교주)_고민(교주).png":[0.1126894,0.9914773,-0.1690341],"joshua/조슈아_바디1(교주)_광기(교주).png":[0.1126894,0.9914773,-0.1690341],"joshua/조슈아_바디1(교주)_기본(교주).png":[0.1126894,0.9914773,-0.1690341],"joshua/조슈아_바디1(교주)_기본(신도).png":[0.1126894,0.9914773,-0.1690341],"joshua/조슈아_바디1(교주)_놀람,흥미(교주).png":[0.1126894,0.9914773,-0.1690341],"joshua/조슈아_바디1(교주)_미소(교주).png":[0.1126894,0.9914773,-0.1690341],"joshua/조슈아_바디1(교주)_미소.png":[0.1126894,0.9914773,-0.1690341],"joshua/조슈아_바디1(교주)_비웃음(교주).png":[0.1126894,0.9914773,-0.1690341],"joshua/조슈아_바디1(교주)_정색(교주).png":[0.1126894,0.9914773,-0.1690341],"joshua/조슈아_바디2(교주)_걱정(교주).png":[0.1126894,0.9914773,-0.0724432],"joshua/조슈아_바디2(교주)_걱정(신도).png":[0.1126894,0.9914773,-0.0724432],"joshua/조슈아_바디2(교주)_고민(교주).png":[0.1126894,0.9914773,-0.0724432],"joshua/조슈아_바디2(교주)_광기(교주).png":[0.1126894,0.9914773,-0.0724432],"joshua/조슈아_바디2(교주)_기본(교주).png":[0.1126894,0.9914773,-0.0724432],"joshua/조슈아_바디2(교주)_기본(신도).png":[0.1126894,0.9914773,-0.0724432],"joshua/조슈아_바디2(교주)_놀람,흥미(교주).png":[0.1126894,0.9914773,-0.0724432],"joshua/조슈아_바디2(교주)_미소(교주).png":[0.1126894,0.9914773,-0.0724432],"joshua/조슈아_바디2(교주)_미소.png":[0.1126894,0.9914773,-0.0724432],"joshua/조슈아_바디2(교주)_비웃음(교주).png":[0.1126894,0.9914773,-0.0724432],"joshua/조슈아_바디2(교주)_정색(교주).png":[0.1126894,0.9914773,-0.0724432],"junhui/준휘_바디1_과자먹음이.png":[0.0350379,0.9914773,-0.125947],"junhui/준휘_바디1_기본.png":[0.0350379,0.9914773,-0.125947],"junhui/준휘_바디1_눈웃음.png":[0.0350379,0.9914773,-0.125947],"junhui/준휘_바디1_미소.png":[0.0350379,0.9914773,-0.125947],"junhui/준휘_바디1_씁슬.png":[0.0350379,0.9914773,-0.125947],"junhui/준휘_바디1_의심.png":[0.0350379,0.9914773,-0.125947],"junhui/준휘_바디1_즉결처형.png":[0.0350379,0.9914773,-0.125947],"junhui/준휘_바디2_과자먹음이.png":[0.0,0.9995052,-0.0593765],"junhui/준휘_바디2_기본.png":[0.0430871,0.9910038,-0.125947],"junhui/준휘_바디2_눈웃음.png":[0.0,0.9995052,-0.0593765],"junhui/준휘_바디2_미소.png":[0.0430871,0.9910038,-0.125947],"junhui/준휘_바디2_의심.png":[0.0430871,0.9910038,-0.125947],"junhui/준휘_바디3_과자먹음이.png":[0.0350379,0.9914773,-0.1257102],"junhui/준휘_바디3_기본.png":[0.0350379,0.9914773,-0.1257102],"junhui/준휘_바디3_눈웃음.png":[0.0350379,0.9914773,-0.1257102],"junhui/준휘_바디3_미소.png":[0.0350379,0.9914773,-0.1257102],"junhui/준휘_바디3_씁슬.png":[0.0350379,0.9914773,-0.1257102],"junhui/준휘_바디3_의심.png":[0.0350379,0.9914773,-0.1257102],"junhui/준휘_바디3_즉결처형.png":[0.0350379,0.9914773,-0.1257102],"junhui/준휘_바디4_과자먹음이.png":[0.0350379,0.9914773,-0.125947],"junhui/준휘_바디4_기본.png":[0.0350379,0.9914773,-0.125947],"junhui/준휘_바디4_눈웃음.png":[0.0350379,0.9914773,-0.125947],"junhui/준휘_바디4_미소.png":[0.0350379,0.9914773,-0.125947],"junhui/준휘_바디4_씁슬,공양.png":[0.0350379,0.9914773,-0.125947],"junhui/준휘_바디4_의심.png":[0.0350379,0.9914773,-0.125947],"junhui/준휘_바디4_즉결처형.png":[0.0350379,0.9914773,-0.125947],"junhui/준휘_즉결처형_과자먹음이.png":[0.0350379,0.9914773,-0.0506629],"junhui/준휘_즉결처형_기본.png":[0.0350379,0.9914773,-0.0506629],"junhui/준휘_즉결처형_눈웃음.png":[0.0350379,0.9914773,-0.0506629],"junhui/준휘_즉결처형_미소.png":[0.0350379,0.9914773,-0.0506629],"junhui/준휘_즉결처형_씁슬.png":[0.0350379,0.9914773,-0.0506629],"junhui/준휘_즉결처형_의심.png":[0.0350379,0.9914773,-0.0506629],"junhui/준휘_즉결처형_즉결처형.png":[0.0350379,0.9914773,-0.0506629],"limbo/림보_기본.png":[0.6141098,0.9919508,-0.1143466],"limbo/림보_냥.png":[0.6141098,0.9919508,-0.1143466],"minghao/명호_바디1_감은눈.png":[0.0601326,0.9905303,-0.0965909],"minghao/명호_바디1_기본.png":[0.0601326,0.9905303,-0.0965909],"minghao/명호_바디1_눈웃음.png":[0.0601326,0.9905303,-0.0965909],"minghao/명호_바디1_당황.png":[0.0601326,0.9905303,-0.0965909],"minghao/명호_바디1_미소.png":[0.0601326,0.9905303,-0.0965909],"minghao/명호_바디1_분노.png":[0.0040796,1.0,-0.2218256],"minghao/명호_바디1_절망.png":[0.0601326,0.9905303,-0.0965909],"minghao/명호_바디1_증오.png":[0.0040796,1.0,-0.2218256],"minghao/명호_바디1_현실부정.png":[0.0601326,0.9905303,-0.0965909],"minghao/명호_바디2_감은눈.png":[0.0601326,0.9905303,-0.0963542],"minghao/명호_바디2_기본.png":[0.0601326,0.9905303,-0.0963542],"minghao/명호_바디2_눈웃음.png":[0.0601326,0.9905303,-0.0963542],"minghao/명호_바디2_당황.png":[0.0601326,0.9905303,-0.0963542],"minghao/명호_바디2_미소.png":[0.0601326,0.9905303,-0.0963542],"minghao/명호_바디2_분노.png":[0.0061193,1.0,-0.1619072],"minghao/명호_바디2_절망.png":[0.0601326,0.9905303,-0.0963542],"minghao/명호_바디2_증오.png":[0.0061193,1.0,-0.1619072],"minghao/명호_바디2_현실부정.png":[0.0601326,0.9905303,-0.0963542],"minghao/명호_바디3_감은눈.png":[0.0686553,0.9914773,-0.0762311],"minghao/명호_바디3_기본.png":[0.0686553,0.9914773,-0.0762311],"minghao/명호_바디3_당황.png":[0.0686553,0.9914773,-0.0762311],"minghao/명호_바디3_미소.png":[0.0686553,0.9914773,-0.0762311],"minghao/명호_바디3_분노.png":[0.0686553,0.9914773,-0.0762311],"minghao/명호_바디3_즉결처형.png":[0.0,1.0,0.0130036],"minghao/명호_바디3_증오.png":[0.0686553,0.9914773,-0.0762311],"minghao/명호_바디4_즉결처형.png":[0.0625,0.9910038,0.0861742],"minghao/명호_바디4_현실부정.png":[0.0625,0.9910038,0.0861742],"minghao/명호_바디5_절망.png":[0.0625,0.9938447,-0.1145833],"minghao/명호_바디5_현실부정.png":[0.0625,0.9938447,-0.1145833],"minghao/명호_바디6_현실부정,공양.png":[0.0577652,0.9905303,-0.0963542],"mingyu/민규_바디1_공포.png":[0.0,0.9914773,-0.0774148],"mingyu/민규_바디1_기본.png":[0.0,0.9914773,-0.0774148],"mingyu/민규_바디1_눈웃음.png":[0.0,0.9914773,-0.0774148],"mingyu/민규_바디1_무시.png":[0.0,0.9914773,-0.0774148],"mingyu/민규_바디1_무표정.png":[0.0,0.9914773,-0.0774148],"mingyu/민규_바디1_부탁.png":[0.0,0.9914773,-0.0774148],"mingyu/민규_바디1_삐짐.png":[0.0,0.9914773,-0.0774148],"mingyu/민규_바디2_공포.png":[0.0,0.9914773,-0.118608],"mingyu/민규_바디2_기본.png":[0.0,0.9914773,-0.118608],"mingyu/민규_바디2_눈웃음.png":[0.0,0.9914773,-0.118608],"mingyu/민규_바디2_무시.png":[0.0,0.9914773,-0.118608],"mingyu/민규_바디2_무표정.png":[0.0,0.9914773,-0.118608],"mingyu/민규_바디2_부탁.png":[0.0,0.9914773,-0.118608],"mingyu/민규_바디2_삐짐.png":[0.0,0.9914773,-0.118608],"mingyu/민규_바디3_공포,공양.png":[0.0,0.9914773,-0.1273674],"mingyu/민규_바디3_기본.png":[0.0,0.9914773,-0.1273674],"mingyu/민규_바디3_눈웃음.png":[0.0,0.9914773,-0.1273674],"mingyu/민규_바디3_무시.png":[0.0,0.9914773,-0.1273674],"mingyu/민규_바디3_무표정.png":[0.0,0.9914773,-0.1273674],"mingyu/민규_바디3_부탁.png":[0.0,0.9914773,-0.1273674],"mingyu/민규_바디3_삐짐.png":[0.0,0.9914773,-0.1273674],"psycho/싸이코_기본.png":[0.5785985,0.9933712,-0.1590909],"psycho/싸이코_냥.png":[0.5785985,0.9933712,-0.1590909],"seokmin/석민_바디1_공포.png":[0.0516098,0.9914773,-0.0982481],"seokmin/석민_바디1_광기.png":[0.0516098,0.9914773,-0.0982481],"seokmin/석민_바디1_기본.png":[0.0516098,0.9914773,-0.0982481],"seokmin/석민_바디1_놀람.png":[0.0516098,0.9914773,-0.0982481],"seokmin/석민_바디1_눈웃음.png":[0.0516098,0.9914773,-0.0982481],"seokmin/석민_바디1_당황.png":[0.0516098,0.9914773,-0.0982481],"seokmin/석민_바디1_무표정.png":[0.0516098,0.9914773,-0.0982481],"seokmin/석민_바디1_미소.png":[0.0516098,0.9914773,-0.0982481],"seokmin/석민_바디1_신도화.png":[0.0516098,0.9914773,-0.0982481],"seokmin/석민_바디1_윙크.png":[0.0516098,0.9914773,-0.0982481],"seokmin/석민_바디1_은은미소.png":[0.0516098,0.9914773,-0.0982481],"seokmin/석민_바디1_초조.png":[0.0516098,0.9914773,-0.0982481],"seokmin/석민_바디2_공포.png":[0.0516098,0.9914773,-0.0497159],"seokmin/석민_바디2_광기.png":[0.0516098,0.9914773,-0.0497159],"seokmin/석민_바디2_기본.png":[0.0516098,0.9914773,-0.0497159],"seokmin/석민_바디2_놀람.png":[0.0516098,0.9914773,-0.0497159],"seokmin/석민_바디2_눈웃음.png":[0.0516098,0.9914773,-0.0497159],"seokmin/석민_바디2_당황.png":[0.0516098,0.9914773,-0.0497159],"seokmin/석민_바디2_무표정.png":[0.0516098,0.9914773,-0.0497159],"seokmin/석민_바디2_미소.png":[0.0516098,0.9914773,-0.0497159],"seokmin/석민_바디2_신도화.png":[0.0516098,0.9914773,-0.0497159],"seokmin/석민_바디2_윙크.png":[0.0516098,0.9914773,-0.0497159],"seokmin/석민_바디2_은은미소.png":[0.0516098,0.9914773,-0.0497159],"seokmin/석민_바디2_초조.png":[0.0516098,0.9914773,-0.0497159],"seokmin/석민_바디3_공포,공양.png":[0.0516098,0.9914773,-0.0980114],"seokmin/석민_바디3_광기.png":[0.0516098,0.9914773,-0.0980114],"seokmin/석민_바디3_기본.png":[0.0516098,0.9914773,-0.0980114],"seokmin/석민_바디3_놀람.png":[0.0516098,0.9914773,-0.0980114],"seokmin/석민_바디3_눈웃음.png":[0.0516098,0.9914773,-0.0980114],"seokmin/석민_바디3_당황.png":[0.0516098,0.9914773,-0.0980114],"seokmin/석민_바디3_무표정.png":[0.0516098,0.9914773,-0.0980114],"seokmin/석민_바디3_미소.png":[0.0516098,0.9914773,-0.0980114],"seokmin/석민_바디3_신도화.png":[0.0516098,0.9914773,-0.0980114],"seokmin/석민_바디3_윙크.png":[0.0516098,0.9914773,-0.0980114],"seokmin/석민_바디3_은은미소.png":[0.0516098,0.9914773,-0.0980114],"seokmin/석민_바디3_초조.png":[0.0516098,0.9914773,-0.0980114],"seungcheol/승철_바디1_기본.png":[0.1197917,0.9928977,-0.1477273],"seungcheol/승철_바디1_노려봄.png":[0.1197917,0.9928977,-0.1477273],"seungcheol/승철_바디1_눈웃음.png":[0.1197917,0.9928977,-0.1477273],"seungcheol/승철_바디1_당황.png":[0.1197917,0.9928977,-0.1477273],"seungcheol/승철_바디1_미소.png":[0.1197917,0.9928977,-0.1477273],"seungcheol/승철_바디1_분노.png":[0.1197917,0.9928977,-0.1477273],"seungcheol/승철_바디1_절망.png":[0.1197917,0.9928977,-0.1477273],"seungcheol/승철_바디2_기본.png":[0.1197917,0.9919508,-0.0857008],"seungcheol/승철_바디2_노려봄.png":[0.1197917,0.9919508,-0.0857008],"seungcheol/승철_바디2_눈웃음.png":[0.1197917,0.9919508,-0.0857008],"seungcheol/승철_바디2_당황.png":[0.1197917,0.9919508,-0.0857008],"seungcheol/승철_바디2_미소.png":[0.1197917,0.9919508,-0.0857008],"seungcheol/승철_바디2_분노.png":[0.1197917,0.9919508,-0.0857008],"seungcheol/승철_바디2_절망.png":[0.1197917,0.9919508,-0.0857008],"seungcheol/승철_바디3_공양.png":[0.1444129,0.9924242,-0.1751894],"seungkwan/승관_바디1_걱정.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디1_고민.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디1_공포.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디1_기겁.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디1_기본.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디1_놀람.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디1_눈웃음.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디1_단호.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디1_미소.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디1_삐질삐질.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디1_신도화.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디1_씁슬.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디1_절망.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디2_걱정.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디2_고민.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디2_공포.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디2_기겁.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디2_기본.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디2_놀람.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디2_눈웃음.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디2_단호.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디2_미소.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디2_삐질삐질.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디2_신도화.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디2_씁슬.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디2_절망.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디3_걱정.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디3_고민.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디3_공양.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디3_공포, 공양.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디3_공포.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디3_기겁.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디3_기본.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디3_놀람.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디3_눈웃음.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디3_단호.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디3_미소.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디3_삐질삐질.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디3_신도화.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디3_씁슬.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디3_절망.png":[0.1264205,0.9914773,-0.1238163],"seungkwan/승관_바디4_걱정.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디4_고민.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디4_공포, 공양.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디4_기겁.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디4_기본.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디4_놀람.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디4_눈웃음.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디4_단호.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디4_미소.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디4_삐질삐질.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디4_신도화.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디4_씁슬.png":[0.1264205,0.9914773,-0.124053],"seungkwan/승관_바디4_절망.png":[0.1264205,0.9914773,-0.124053],"soonyoung/순영_바디1_고민.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디1_공양.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디1_기본.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디1_노려봄.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디1_눈뜬의아.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디1_당황.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디1_미소.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디1_의아.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디1_질색.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디2_고민.png":[0.1188447,0.9900568,-0.1434659],"soonyoung/순영_바디2_공양.png":[0.1188447,0.9900568,-0.1434659],"soonyoung/순영_바디2_기본.png":[0.1188447,0.9900568,-0.1434659],"soonyoung/순영_바디2_노려봄.png":[0.1188447,0.9900568,-0.1434659],"soonyoung/순영_바디2_눈뜬의아.png":[0.1188447,0.9900568,-0.1434659],"soonyoung/순영_바디2_당황.png":[0.1188447,0.9900568,-0.1434659],"soonyoung/순영_바디2_미소.png":[0.1188447,0.9900568,-0.1434659],"soonyoung/순영_바디2_의아.png":[0.1188447,0.9900568,-0.1434659],"soonyoung/순영_바디2_질색.png":[0.1188447,0.9900568,-0.1434659],"soonyoung/순영_바디3_고민.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디3_공양.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디3_기본.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디3_노려봄.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디3_눈뜬 의아.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디3_당황.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디3_미소.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디3_의아.png":[0.1188447,0.9914773,-0.1437027],"soonyoung/순영_바디3_질색.png":[0.1188447,0.9914773,-0.1437027],"wonwoo/원우_바디1_계략.png":[0.0407197,0.9919508,-0.1257102],"wonwoo/원우_바디1_기본.png":[0.0407197,0.9919508,-0.1257102],"wonwoo/원우_바디1_노려봄.png":[0.0407197,0.9919508,-0.1257102],"wonwoo/원우_바디1_눈감음.png":[0.0407197,0.9919508,-0.1257102],"wonwoo/원우_바디1_눈웃음.png":[0.0407197,0.9919508,-0.1257102],"wonwoo/원우_바디1_미소.png":[0.0407197,0.9919508,-0.1257102],"wonwoo/원우_바디1_쎄함.png":[0.0407197,0.9919508,-0.1257102],"wonwoo/원우_바디1_어이없음.png":[0.0407197,0.9919508,-0.1257102],"wonwoo/원우_바디2_계략.png":[0.0407197,0.9933712,-0.125947],"wonwoo/원우_바디2_기본.png":[0.0407197,0.9933712,-0.125947],"wonwoo/원우_바디2_노려봄.png":[0.0407197,0.9933712,-0.125947],"wonwoo/원우_바디2_눈감음.png":[0.0407197,0.9933712,-0.125947],"wonwoo/원우_바디2_눈웃음.png":[0.0407197,0.9933712,-0.125947],"wonwoo/원우_바디2_미소.png":[0.0407197,0.9933712,-0.125947],"wonwoo/원우_바디2_쎄함.png":[0.0407197,0.9933712,-0.125947],"wonwoo/원우_바디2_어이없음.png":[0.0407197,0.9933712,-0.125947]});
+const V360_DUO_HEAD_TOP_OVERRIDES=Object.freeze({});
+const v360NewBoundsCache=new Map();
+let v360DuoPair='',v360DuoSerial=0,v360DuoReady=false;
+function v360IsMobileDuo(){return window.innerWidth<=650&&!duoLayer.classList.contains('v178-patrol')}
+function v360ClearMobileDuo(){
+ ++v360DuoSerial;v360DuoPair='';v360DuoReady=false;
+ for(const img of [duoLeft,duoRight]){
+  img.style.height='';img.style.maxWidth='';img.style.width='';
+  img.style.bottom='';img.style.left='';img.style.transform='';
+  img.style.transition='';img.style.opacity='';img.style.visibility='';
+ }
+}
+function v360AnalyzeUnknownDuo(path){
+ if(v360NewBoundsCache.has(path))return v360NewBoundsCache.get(path);
+ const promise=(async()=>{
+  const image=new Image();image.decoding='async';
+  await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=()=>reject(new Error('Missing duo portrait: '+path));image.src=path});
+  const w=image.naturalWidth,h=image.naturalHeight;
+  if(!w||!h)throw new Error('Empty duo portrait: '+path);
+  const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+  const c=canvas.getContext('2d',{willReadFrequently:true});
+  c.drawImage(image,0,0);
+  const pixels=c.getImageData(0,0,w,h).data;
+  let minX=w,minY=h,maxX=-1,maxY=-1;
+  for(let y=0;y<h;y++){
+   const row=y*w*4;
+   for(let x=0;x<w;x++)if(pixels[row+x*4+3]>0){
+    if(x<minX)minX=x;if(x>maxX)maxX=x;
+    if(y<minY)minY=y;if(y>maxY)maxY=y;
+   }
+  }
+  if(maxX<0)throw new Error('Fully transparent duo portrait: '+path);
+  return [minY/h,(maxY+1)/h,(w/2-(minX+(maxX+1))/2)/h];
+ })().catch(error=>{v360NewBoundsCache.delete(path);throw error});
+ v360NewBoundsCache.set(path,promise);return promise;
+}
+function v360BoundsFor(key,path){
+ const relative=officialKeyToFilename(key);
+ const staticBounds=V360_DUO_BOUNDS[relative];
+ if(staticBounds)return Promise.resolve(staticBounds);
+ return v360AnalyzeUnknownDuo(path);
+}
+function v360ApplyDuoPositions(bounds){
+ if(!v360IsMobileDuo())return;
+ const screenH=window.innerHeight;
+ const bottomAnchor=Math.min(230,Math.max(165,screenH*.21));
+ const paintedHeight=Math.min(screenH*.45,440);
+ [duoLeft,duoRight].forEach((img,i)=>{
+  const [alphaTop,alphaBottom,centerOffset]=bounds[i];
+  const key=i===0?duoLeft.dataset.portraitKey:duoRight.dataset.portraitKey;
+  const relative=officialKeyToFilename(key);
+  const top=V360_DUO_HEAD_TOP_OVERRIDES[relative]??alphaTop;
+  const visibleFraction=Math.max(.08,alphaBottom-top);
+  const cssHeight=paintedHeight/visibleFraction;
+  const blankBottom=(1-alphaBottom)*cssHeight;
+  const bottom=bottomAnchor-blankBottom;
+  const offset=centerOffset*cssHeight;
+  const anchor=i===0?29:71;
+  img.style.height=cssHeight.toFixed(2)+'px';
+  img.style.width='auto';img.style.maxWidth='none';
+  img.style.bottom=bottom.toFixed(2)+'px';
+  img.style.left=`calc(${anchor}% ${offset<0?'-':'+'} ${Math.abs(offset).toFixed(2)}px)`;
+  img.style.transform='translateX(-50%)';
+ });
+}
+function v360PrepareMobileDuo(scene){
+ if(!scene.duo||!v360IsMobileDuo()){v360ClearMobileDuo();return;}
+ const keys=scene.duo.map(key=>'duo-'+key);
+ const pair=keys.join('|');
+ // The same two drawings remain locked at the exact same coordinates across
+ // adjacent dialogue boxes, including when no new image load is necessary.
+ if(pair===v360DuoPair){
+  if(!v360DuoReady)for(const img of [duoLeft,duoRight])img.style.visibility='hidden';
+  return;
+ }
+ v360DuoPair=pair;v360DuoReady=false;
+ const serial=++v360DuoSerial;
+ for(const img of [duoLeft,duoRight]){
+  img.style.visibility='hidden';img.style.opacity='0';
+  img.style.transition='opacity 230ms ease';
+ }
+ Promise.all(keys.map(key=>preloadOfficialPortrait(key))).then(async paths=>{
+  const bounds=await Promise.all(keys.map((key,i)=>v360BoundsFor(key,paths[i])));
+  if(serial!==v360DuoSerial||!v360IsMobileDuo()||!duoLayer.classList.contains('is-active'))return;
+  v360ApplyDuoPositions(bounds);
+  const images=[duoLeft,duoRight];
+  // Assign the decoded official paths before revealing either character.
+  images.forEach((img,i)=>{
+   const relative=officialKeyToFilename(keys[i]);
+   if(img.dataset.officialDisplayedKey!==relative||!img.getAttribute('src')){
+    img.src=paths[i];img.dataset.officialDisplayedKey=relative;img.dataset.officialValid='1';
+   }
+   img.hidden=false;
+  });
+  await Promise.all(images.map(img=>img.decode?.().catch(()=>{})||Promise.resolve()));
+  if(serial!==v360DuoSerial||!v360IsMobileDuo()||!duoLayer.classList.contains('is-active'))return;
+  v360DuoReady=true;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   if(serial!==v360DuoSerial)return;
+   for(const img of images){img.style.visibility='visible';img.style.opacity='1'}
+  }));
+ }).catch(error=>{
+  if(serial!==v360DuoSerial)return;
+  console.warn('[SHINDO V360] Mobile duo normalization failed:',error);
+  // Don't leave an entire scene blank if a future/unavailable image fails.
+  v360ClearMobileDuo();
+ });
+}
+function v360ResizeDuo(){
+ if(!v360DuoPair){
+  const activeScene=scenes[index];
+  if(activeScene?.duo&&duoLayer.classList.contains('is-active')&&v360IsMobileDuo())v360PrepareMobileDuo(activeScene);
+  return;
+ }
+ if(!v360IsMobileDuo()){v360ClearMobileDuo();return;}
+ if(!v360DuoReady)return;
+ const keys=[duoLeft.dataset.portraitKey,duoRight.dataset.portraitKey];
+ const bounds=keys.map(key=>V360_DUO_BOUNDS[officialKeyToFilename(key)]);
+ if(bounds.every(Boolean))v360ApplyDuoPositions(bounds);
+}
+window.addEventListener('resize',v360ResizeDuo,{passive:true});
+
 const recallKicker=document.createElement('div');recallKicker.className='special-memory-kicker';recallKicker.textContent='회상';overlay.appendChild(recallKicker);
 const v287Curtain=document.createElement('div');v287Curtain.className='v287-memory-curtain';overlay.appendChild(v287Curtain);
 function setSpecialPortraits(scene){
  overlay.classList.toggle('is-recall',!!scene.recall);
- if(!scene.duo){duoLayer.classList.remove('is-active');for(const image of [duoLeft,duoRight]){image.dataset.officialRequest=String((Number(image.dataset.officialRequest)||0)+1);image.hidden=true;image.removeAttribute('src')}return false}
- duoLeft.style.visibility='visible';duoRight.style.visibility='visible';
+ if(!scene.duo){v360ClearMobileDuo();duoLayer.classList.remove('is-active');for(const image of [duoLeft,duoRight]){image.dataset.officialRequest=String((Number(image.dataset.officialRequest)||0)+1);image.hidden=true;image.removeAttribute('src')}return false}
+ if(!v360IsMobileDuo()){v360ClearMobileDuo();duoLeft.style.visibility='visible';duoRight.style.visibility='visible'}
  duoLeft.hidden=false;duoRight.hidden=false;
  duoLeft.dataset.portraitKey='duo-'+scene.duo[0];duoRight.dataset.portraitKey='duo-'+scene.duo[1];
  duoLeft.dataset.officialShouldShow='1';duoRight.dataset.officialShouldShow='1';
@@ -4691,7 +4819,9 @@ function setSpecialPortraits(scene){
   duoLeft.classList.toggle('is-shadow',scene.v247GuestDuo?!mingyuRevealed:(scene.duoMask==='both'||scene.duoMask==='hansol'));
  duoRight.classList.toggle('is-shadow',scene.v247GuestDuo?!seokminRevealed:scene.duoMask==='both');
  portrait.hidden=true; // V116: always suppress previous solo portrait during duo scenes
-  duoLayer.classList.add('is-active');return true;
+  duoLayer.classList.add('is-active');
+  v360PrepareMobileDuo(scene);
+  return true;
 }
 function getMinghaoAffinity(){
  try{const data=JSON.parse(localStorage.getItem('shindo_affinity_v107')||'{}');
@@ -6118,7 +6248,7 @@ if(scene.kind==='image'){
 
 if(scene.kind==='dialogue'&&scene.speaker==='원우'&&!scene.maskSpeaker)window.SHINDO_markCharacterMet?.('원우');
 const duoVisible=(scene.specialMinghao||scene.v247MinghaoFollowup||scene.v257PoliceDuo||(scene.v344Hyungje&&scene.duo))?setSpecialPortraits(scene):false;
- if(!duoVisible&&duoLayer.classList.contains('is-active')){duoLayer.classList.remove('is-active');duoLeft.hidden=true;duoRight.hidden=true;}
+ if(!duoVisible&&duoLayer.classList.contains('is-active')){v360ClearMobileDuo();duoLayer.classList.remove('is-active');duoLeft.hidden=true;duoRight.hidden=true;}
 // V224: regular single-portrait recall needs the same visual mode as duo recalls.
 if((scene.v224OfficeType3||scene.v226OfficeType1||scene.v257PoliceRecall) && scene.recall)overlay.classList.add('is-recall');
 // V115: the special branch has its own recognition moments, independent of earlier branches.
