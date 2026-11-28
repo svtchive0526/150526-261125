@@ -1,99 +1,471 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SVTER | 이미지 배치 시뮬레이터</title><style>
-:root{font-family:Pretendard,'Apple SD Gothic Neo',system-ui,sans-serif;color:#f4f4f5;background:#101114;font-synthesis:none}*{box-sizing:border-box}body{margin:0;padding:0}header{padding:25px clamp(16px,3vw,40px);display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #303036}h1{font-size:21px;margin:0}header p{color:#9799a5;margin:5px 0 0;font-size:13px}header a{color:#f3f3f6;text-decoration:none;border:1px solid #51515a;border-radius:8px;padding:9px 13px;font-size:13px}main{display:grid;grid-template-columns:minmax(260px,330px) minmax(0,1fr);gap:18px;padding:20px;max-width:1760px;margin:0 auto}aside{padding:15px;background:#1b1c21;border:1px solid #36363e;border-radius:12px;align-self:start;display:grid;gap:11px}h2{font-size:15px;margin:0 0 3px}label{font-size:12px;color:#c4c4cf;display:grid;gap:6px}select,input,textarea{width:100%;padding:10px 11px;border:1px solid #454651;border-radius:7px;background:#111216;color:#fafafa;font:inherit;font-size:13px}textarea{resize:vertical;min-height:65px}input[type=file]{padding:8px;font-size:12px}input[type=range]{padding:0;accent-color:#a2a2c4}input[type=checkbox]{width:auto}button{cursor:pointer;font:inherit}section.preview{min-width:0}#screens{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;align-items:start}.screen{min-width:0;background:#1d1f22;border:1px solid #393c41;border-radius:10px;overflow:hidden}.screen-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;font-size:13px;color:#bbb}.stage{position:relative;width:100%;background:#000;overflow:hidden}.stage iframe{border:0;position:absolute;top:0;left:0;transform-origin:0 0;background:#000}.note{font-size:12px;line-height:1.7;color:#aaa;padding:13px 0}.small{font-size:11px;color:#898b92} .row{display:flex;justify-content:space-between;align-items:center;gap:10px} .chips{display:flex;flex-wrap:wrap;gap:6px}.chips button{border:1px solid #40414a;background:#24252b;color:#d6d6e0;padding:6px 9px;border-radius:6px;font-size:11px} .chips button:hover{background:#373844}.divider{border-top:1px solid #37373d;margin:3px 0}.highlight{color:#ebdca1}.status{color:#aaa;font-size:11px;min-height:16px} .buttons{display:flex;gap:8px}.buttons button{background:#393940;color:#fff;border:1px solid #64656d;padding:8px 12px;border-radius:7px;font-size:12px} @media(max-width:1050px){main{grid-template-columns:1fr}aside{grid-template-columns:repeat(2,minmax(0,1fr))}aside h2,.full{grid-column:1/-1}}@media(max-width:640px){main{padding:12px;gap:12px}aside{grid-template-columns:1fr}#screens{grid-template-columns:1fr}header{padding:17px 14px}h1{font-size:17px}}body.mode-pc #screens{grid-template-columns:1fr}body.mode-mobile #screens{grid-template-columns:minmax(0,1fr)}body.mode-pc #mobile-screen,body.mode-mobile #pc-screen{display:none}
-</style></head><body>
-<header><div><h1>SVTER · 이미지 배치 시뮬레이터</h1><p>실제 게임 V190의 스타일 · PC / 모바일 비교</p></div><a href="index.html">게임으로 돌아가기</a></header>
-<main><aside><h2 class="full">사진 올리기</h2>
-<label>배경 사진<input id="upload-bg" type="file" accept="image/*"></label><label>캐릭터 일러스트<input id="upload-portrait" type="file" accept="image/*"></label>
-<label>이벤트·아이템 그림<input id="upload-art" type="file" accept="image/*"></label>
-<div class="divider full"></div>
-<label>화면 유형<select id="type"><option value="portrait">캐릭터 1명 + 대화창</option><option value="illustration">이벤트 그림 + 대화창</option><option value="duo">캐릭터 2명 + 대화창</option><option value="evidence">아이템 획득 팝업</option><option value="background">배경 + 대화창</option></select></label>
-<label>표시 환경<select id="device"><option value="both">PC + 모바일 나란히</option><option value="pc">PC만</option><option value="mobile">모바일만</option></select></label>
-<label>캐릭터 프로필<select id="character"><option value="auto">파일명으로 자동 감지</option><option value="junhui">준휘</option><option value="hansol">한솔</option><option value="soonyoung">순영</option><option value="minghao">명호</option><option value="wonwoo">원우</option><option value="jihoon">지훈</option><option value="seungcheol">승철</option><option value="seokmin">석민</option><option value="chan">찬</option><option value="elder">노인네</option><option value="other">기본 프로필</option></select></label>
-<label>캐릭터 표시 조건<select id="portrait-style"><option value="normal">일반</option><option value="silhouette">실루엣 (밝기 0)</option><option value="prayer">기도관 실루엣</option><option value="dim">어두워짐 (10~50%)</option><option value="special">명호 특별 대화 단독</option></select></label>
-<div class="divider full"></div>
-<h2 class="full">캐릭터 기본 높이 · 화면 높이 대비</h2>
-<label>PC 높이 <span id="pc-height-value">66%</span><input id="pc-height" type="range" min="20" max="110" step="1" value="66"></label>
-<label>모바일 높이 <span id="mobile-height-value">60%</span><input id="mobile-height" type="range" min="20" max="110" step="1" value="60"></label>
-<div class="full buttons"><button type="button" id="reset-height">기본 높이 복원 (PC 66% / 모바일 60%)</button></div>
-<p class="small full">미리보기만 조절돼. 캐릭터별 크기 보정은 유지되고, 게임 실제 배치값은 변경되지 않아. 일반·실루엣·특별 대화의 단독 일러스트에 적용돼.</p>
-<div class="divider full"></div>
-<h2 class="full">캐릭터 일러스트 사이즈 · 기본값 대비 배율</h2>
-<label>PC 사이즈 <span id="pc-pscale-value">100%</span><input id="pc-pscale" type="range" min="50" max="200" step="1" value="100"></label>
-<label>모바일 사이즈 <span id="mobile-pscale-value">100%</span><input id="mobile-pscale" type="range" min="50" max="200" step="1" value="100"></label>
-<div class="full buttons"><button type="button" id="reset-pscale">기본 사이즈 복원 (PC 100% / 모바일 100%)</button></div>
-<p class="small full">캐릭터별 기본 보정값 위에 곱해지는 추가 배율이야. 100%는 현재 게임 기준이고, 120%는 조금 크게, 80%는 조금 작게 보여줘. 일반 대화·실루엣·2인 장면 모두에 반영돼.</p>
-<label>일러스트 어두워짐 <span id="dim-value">0%</span><input id="dim" type="range" min="0" max="50" step="10" value="0"></label>
-<div class="divider full"></div>
-<h2 class="full">배경 크기 · 기본 cover 기준 확대율</h2>
-<label>PC 배경 크기 <span id="pc-bgscale-value">100%</span><input id="pc-bgscale" type="range" min="50" max="200" step="1" value="100"></label>
-<label>모바일 배경 크기 <span id="mobile-bgscale-value">100%</span><input id="mobile-bgscale" type="range" min="50" max="200" step="1" value="100"></label>
-<div class="full buttons"><button type="button" id="reset-bgscale">기본 배경 크기 복원 (PC 100% / 모바일 100%)</button></div>
-<p class="small full">100%는 실제 게임의 배경 cover 배치와 같아. 100% 초과 시 확대·잘림, 미만 시 축소·검은 여백이 생길 수 있어. 시뮬레이션에만 반영돼.</p>
-<label>배경 어두워짐 <span id="bgdim-value">0%</span><input id="bgdim" type="range" min="0" max="50" step="10" value="0"></label>
-<div class="divider full"></div>
-<h2 class="full">배경 위치 조절</h2><label>PC 배경 X <span id="pc-bgx-value">0px</span><input id="pc-bgx" type="range" min="-500" max="500" step="1" value="0"></label><label>PC 배경 Y <span id="pc-bgy-value">0px</span><input id="pc-bgy" type="range" min="-500" max="500" step="1" value="0"></label><label>모바일 배경 X <span id="mobile-bgx-value">0px</span><input id="mobile-bgx" type="range" min="-500" max="500" step="1" value="0"></label><label>모바일 배경 Y <span id="mobile-bgy-value">0px</span><input id="mobile-bgy" type="range" min="-500" max="500" step="1" value="0"></label><div class="full buttons"><button type="button" id="reset-bgpos">배경 위치 복원 (X 0 / Y 0)</button></div><p class="small full">배경 이미지를 좌우·상하로 이동해 실제 구도에 가깝게 맞출 수 있어. 시뮬레이션에만 반영돼.</p><div class="divider full"></div><h2 class="full">캐릭터 위치 조절</h2><label>PC 캐릭터 X <span id="pc-px-value">0px</span><input id="pc-px" type="range" min="-400" max="400" step="1" value="0"></label><label>PC 캐릭터 Y <span id="pc-py-value">0px</span><input id="pc-py" type="range" min="-400" max="400" step="1" value="0"></label><label>모바일 캐릭터 X <span id="mobile-px-value">0px</span><input id="mobile-px" type="range" min="-400" max="400" step="1" value="0"></label><label>모바일 캐릭터 Y <span id="mobile-py-value">0px</span><input id="mobile-py" type="range" min="-400" max="400" step="1" value="0"></label><div class="full buttons"><button type="button" id="reset-ppos">캐릭터 위치 복원 (X 0 / Y 0)</button></div><p class="small full">단독 캐릭터 장면에서만 반영돼. 2인 장면은 아래 개별 조절 항목을 써줘.</p><div class="divider full"></div><h2 class="full">2인 장면 개별 조절</h2><div class="small full">왼쪽 인물</div><label>PC 왼쪽 X <span id="pc-duolx-value">0px</span><input id="pc-duolx" type="range" min="-400" max="400" step="1" value="0"></label><label>PC 왼쪽 Y <span id="pc-duoly-value">0px</span><input id="pc-duoly" type="range" min="-400" max="400" step="1" value="0"></label><label>PC 왼쪽 사이즈 <span id="pc-duolscale-value">100%</span><input id="pc-duolscale" type="range" min="50" max="200" step="1" value="100"></label><label>모바일 왼쪽 X <span id="mobile-duolx-value">0px</span><input id="mobile-duolx" type="range" min="-400" max="400" step="1" value="0"></label><label>모바일 왼쪽 Y <span id="mobile-duoly-value">0px</span><input id="mobile-duoly" type="range" min="-400" max="400" step="1" value="0"></label><label>모바일 왼쪽 사이즈 <span id="mobile-duolscale-value">100%</span><input id="mobile-duolscale" type="range" min="50" max="200" step="1" value="100"></label><div class="small full">오른쪽 인물</div><label>PC 오른쪽 X <span id="pc-duorx-value">0px</span><input id="pc-duorx" type="range" min="-400" max="400" step="1" value="0"></label><label>PC 오른쪽 Y <span id="pc-duory-value">0px</span><input id="pc-duory" type="range" min="-400" max="400" step="1" value="0"></label><label>PC 오른쪽 사이즈 <span id="pc-duorscale-value">100%</span><input id="pc-duorscale" type="range" min="50" max="200" step="1" value="100"></label><label>모바일 오른쪽 X <span id="mobile-duorx-value">0px</span><input id="mobile-duorx" type="range" min="-400" max="400" step="1" value="0"></label><label>모바일 오른쪽 Y <span id="mobile-duory-value">0px</span><input id="mobile-duory" type="range" min="-400" max="400" step="1" value="0"></label><label>모바일 오른쪽 사이즈 <span id="mobile-duorscale-value">100%</span><input id="mobile-duorscale" type="range" min="50" max="200" step="1" value="100"></label><div class="full buttons"><button type="button" id="reset-duo">2인 장면 개별값 복원</button></div><p class="small full">2인 장면에서 각 인물을 따로 움직이고 크기도 따로 조절할 수 있어. 위의 캐릭터 공통 사이즈 배율과 함께 곱해서 적용돼.</p><div class="divider full"></div><label>두 번째 캐릭터 (2인 장면)<input id="upload-right" type="file" accept="image/*"></label>
-<label class="row">두 인물 실루엣 <input id="duo-silhouette" type="checkbox"></label>
-<label>화자 이름<input id="speaker" value="김봉봉" maxlength="28"></label>
-<label>대사 미리보기<textarea id="dialogue">업로드한 이미지가 실제 화면에 어떻게 배치되는지 확인할 수 있어요.</textarea></label>
-<label>아이템 팝업 제목<input id="evidence-title" value="파기된 문서3"></label><label>아이템 팝업 설명<textarea id="evidence-description">누군가의 일기. 심하게 훼손되어 읽을 수 있는 페이지가 거의 없다.</textarea></label>
-<div class="full"><div class="small">빠른 프리셋</div><div class="chips" style="margin-top:6px"><button type="button" data-preset="portrait">일반 대화</button><button type="button" data-preset="silhouette">실루엣</button><button type="button" data-preset="illustration">그림 컷</button><button type="button" data-preset="evidence">아이템 팝업</button><button type="button" data-preset="duo">2인 동시</button></div></div>
-<div class="status full" id="status" role="status">이미지를 올리면 두 화면에 바로 반영됩니다.</div>
-</aside>
-<section class="preview"><div id="screens"><div class="screen" id="pc-screen"><div class="screen-head"><span>PC · 1280 × 800</span><span>게임 배치 기준</span></div><div class="stage" id="pc-stage"><iframe id="pc-frame" src="image-simulator-frame.html" title="PC 시뮬레이션"></iframe></div></div><div class="screen" id="mobile-screen"><div class="screen-head"><span>모바일 · 390 × 844</span><span>세로 화면</span></div><div class="stage" id="mobile-stage"><iframe id="mobile-frame" src="image-simulator-frame.html" title="모바일 시뮬레이션"></iframe></div></div></div>
-<p class="note">이 페이지는 게임의 <span class="highlight">배경 커버 처리, 대화창, 캐릭터 크기·하단 위치, 실루엣, 인물별 보정, 2인 배치, 아이템 팝업</span> 스타일을 재사용해. 업로드한 사진은 이 브라우저 안에서만 미리보고 서버로 전송하지 않아. 게임 진행 기록은 변경하지 않아.</p>
-<p class="small">참고: 실제 기기 브라우저의 글꼴·화면 비율에 따라 미세한 차이가 있을 수 있어. 모바일 실루엣과 인물별 정렬은 게임 규칙을 따르며, 실제 특정 대사의 표시 여부는 스토리 스크립트에서 결정돼.</p></section></main>
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SHINDO 이미지 배치 시뮬레이터 (V357)</title>
+<style>
+ :root{
+  --bg:#111315;--panel:#181b1f;--line:#2b3138;--line2:#3a4149;--text:#f2f4f7;--sub:#a9b1bb;--accent:#c5b39a;
+ }
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--text);font-family:Pretendard,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+ .app{max-width:1680px;margin:0 auto;padding:24px;display:grid;grid-template-columns:minmax(320px,430px) 1fr;gap:20px}
+ .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 8px 22px rgba(0,0,0,.28)}
+ h1{font-size:clamp(24px,3vw,34px);margin:0 0 8px}
+ h2{font-size:18px;margin:0 0 12px}
+ p{margin:0 0 10px;color:var(--sub);line-height:1.55}
+ .tip{font-size:13px;color:#d8c9b6;background:rgba(197,179,154,.08);border:1px solid rgba(197,179,154,.25);border-radius:10px;padding:10px 12px;margin-top:12px}
+ .controls{display:flex;flex-direction:column;gap:16px}
+ .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+ .field{display:flex;flex-direction:column;gap:6px}
+ .field label{font-size:13px;color:#d9dde3;font-weight:700}
+ .field input,.field select{width:100%;padding:10px 12px;border:1px solid var(--line2);border-radius:10px;background:#0f1216;color:var(--text);font:inherit}
+ .field input[type="range"]{padding:0;background:transparent;border:none}
+ .slot{border:1px solid var(--line);border-radius:14px;padding:14px;background:#12151a}
+ .slot h3{font-size:15px;margin:0 0 10px}
+ .small{font-size:12px;color:var(--sub)}
+ .value-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--sub)}
+ .status{font-size:13px;color:var(--sub);margin-top:8px;min-height:18px}
+ .preview-area{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+ .screen-wrap{display:flex;flex-direction:column;gap:10px}
+ .screen-title{display:flex;align-items:center;justify-content:space-between;gap:10px}
+ .screen-title strong{font-size:16px}
+ .screen{position:relative;border-radius:20px;overflow:hidden;border:1px solid #3a4047;background:linear-gradient(180deg,#2b2b2d 0%,#151618 100%);box-shadow:0 20px 40px rgba(0,0,0,.35)}
+ .screen.pc{aspect-ratio:16/9}
+ .screen.mobile{aspect-ratio:390/844;max-width:390px;margin:0 auto}
+ .sim-stage{position:absolute;inset:0;overflow:hidden}
+ .sim-stage::before{content:"";position:absolute;inset:0;background:
+   radial-gradient(circle at 50% 30%, rgba(255,255,255,.08), transparent 42%),
+   linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.15)),
+   linear-gradient(180deg,#787b80 0%, #4f5358 44%, #2a2f35 100%);
+ }
+ .sim-stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:28%;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.18) 28%,rgba(0,0,0,.65));pointer-events:none}
+ .sim-box{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);width:min(92%,930px);min-height:110px;background:rgba(18,18,18,.9);border:1px solid #767676;border-radius:8px;box-shadow:0 8px 18px rgba(0,0,0,.25)}
+ .sim-box::before{content:"대화창";position:absolute;top:-15px;left:24px;padding:4px 15px;border:1px solid #777;border-radius:6px;background:#202124;font-weight:700;font-size:14px}
+ .sprite{position:absolute;display:block;pointer-events:none;transform-origin:center bottom;image-rendering:auto;filter:drop-shadow(0 8px 18px rgba(0,0,0,.18))}
+ .metrics{font-size:12px;color:var(--sub);line-height:1.45;border-top:1px solid var(--line);padding-top:10px;margin-top:10px;white-space:pre-line}
+ .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+ .toolbar .check{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--line2);border-radius:10px;background:#101317;font-size:13px}
+ .toolbar button{padding:10px 12px;border:1px solid var(--line2);border-radius:10px;background:#101317;color:var(--text);font:inherit;cursor:pointer}
+ .toolbar button:hover{background:#161b21}
+ .legend{font-size:12px;color:var(--sub)}
+ .empty-note{position:absolute;inset:auto 18px 145px 18px;text-align:center;color:rgba(255,255,255,.45);font-size:15px;font-weight:600;letter-spacing:-.02em}
+ @media (max-width:1180px){.app{grid-template-columns:1fr}.preview-area{grid-template-columns:1fr}.screen.mobile{max-width:320px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="panel controls">
+    <div>
+      <h1>이미지 배치 시뮬레이터</h1>
+      <p>형이 말한 “같은 배율인데 2인 배치에서 크기가 달라 보이는 문제”를 확인할 수 있게, <strong>투명 여백 기준 자동 보정</strong>을 넣은 시뮬레이터를 만들었어.</p>
+      <p class="small">V357 기준. 실제 게임의 기본 1인/2인 배치 높이·하단 위치를 따라가되, 선택한 이미지의 비어 있는 투명 영역을 분석해서 기본 크기를 맞춰줘.</p>
+    </div>
+
+    <div class="toolbar">
+      <label class="check"><input id="normalizeToggle" type="checkbox" checked> 자동 크기 보정</label>
+      <label class="check"><input id="centerToggle" type="checkbox" checked> 자동 중심 보정</label>
+      <button type="button" id="resetButton">값 초기화</button>
+      <span class="legend">같은 %를 줬을 때 보이는 인물 키를 최대한 비슷하게 맞춤</span>
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <label for="layoutMode">배치 모드</label>
+        <select id="layoutMode">
+          <option value="duo" selected>2인 배치</option>
+          <option value="solo">1인 배치</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="backgroundTone">배경 톤</label>
+        <select id="backgroundTone">
+          <option value="default">기본</option>
+          <option value="dark">어둡게</option>
+          <option value="light">밝게</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="slot" id="slotA">
+      <h3>왼쪽 / 단독 이미지</h3>
+      <div class="field">
+        <label for="portraitA">일러스트 선택</label>
+        <input id="portraitA" list="portraitOptions" placeholder="예: wonwoo/원우_바디1_기본.png">
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="scaleA">배율</label>
+          <input id="scaleA" type="range" min="50" max="160" step="1" value="100">
+          <div class="value-row"><span>50%</span><strong id="scaleAValue">100%</strong><span>160%</span></div>
+        </div>
+        <div class="field">
+          <label for="xA">좌우 이동</label>
+          <input id="xA" type="range" min="-260" max="260" step="1" value="0">
+          <div class="value-row"><span>-260</span><strong id="xAValue">0px</strong><span>260</span></div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="yA">상하 이동</label>
+        <input id="yA" type="range" min="-220" max="220" step="1" value="0">
+        <div class="value-row"><span>-220</span><strong id="yAValue">0px</strong><span>220</span></div>
+      </div>
+      <div class="metrics" id="metricsA">이미지를 선택하면 분석값이 표시돼.</div>
+    </div>
+
+    <div class="slot" id="slotB">
+      <h3>오른쪽 이미지</h3>
+      <div class="field">
+        <label for="portraitB">일러스트 선택</label>
+        <input id="portraitB" list="portraitOptions" placeholder="예: minghao/명호_바디2_기본.png">
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="scaleB">배율</label>
+          <input id="scaleB" type="range" min="50" max="160" step="1" value="100">
+          <div class="value-row"><span>50%</span><strong id="scaleBValue">100%</strong><span>160%</span></div>
+        </div>
+        <div class="field">
+          <label for="xB">좌우 이동</label>
+          <input id="xB" type="range" min="-260" max="260" step="1" value="0">
+          <div class="value-row"><span>-260</span><strong id="xBValue">0px</strong><span>260</span></div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="yB">상하 이동</label>
+        <input id="yB" type="range" min="-220" max="220" step="1" value="0">
+        <div class="value-row"><span>-220</span><strong id="yBValue">0px</strong><span>220</span></div>
+      </div>
+      <div class="metrics" id="metricsB">이미지를 선택하면 분석값이 표시돼.</div>
+    </div>
+
+    <div class="status" id="statusText">story-v37.js에서 공식 일러스트 목록을 불러오는 중…</div>
+    <div class="tip">자동 크기 보정 ON이면, 이미지의 <strong>실제 보이는 영역(alpha bounding box)</strong>을 기준으로 높이를 맞춰줘. 그래서 같은 100%여도 인물 크기가 훨씬 덜 들쭉날쭉해져.</div>
+  </section>
+
+  <section class="panel">
+    <div class="preview-area">
+      <div class="screen-wrap">
+        <div class="screen-title"><strong>PC 미리보기</strong><span class="small" id="pcSummary">16:9 · 게임형 2인 배치</span></div>
+        <div class="screen pc" id="pcScreen">
+          <div class="sim-stage" id="pcStage">
+            <div class="empty-note" id="pcEmpty">왼쪽에서 일러스트를 선택해봐.</div>
+            <div class="sim-box"></div>
+          </div>
+        </div>
+      </div>
+      <div class="screen-wrap">
+        <div class="screen-title"><strong>모바일 미리보기</strong><span class="small" id="mobileSummary">390×844 · 게임형 2인 배치</span></div>
+        <div class="screen mobile" id="mobileScreen">
+          <div class="sim-stage" id="mobileStage">
+            <div class="empty-note" id="mobileEmpty">왼쪽에서 일러스트를 선택해봐.</div>
+            <div class="sim-box"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<datalist id="portraitOptions"></datalist>
+
 <script>
-const $=id=>document.getElementById(id);
-const urls={background:'',portrait:'',illustration:'',duoRight:''},names={background:'',portrait:'',illustration:'',duoRight:''};
-const frames=[{id:'pc',width:1280,height:800},{id:'mobile',width:390,height:844}];
-const inputIds=[
-  'type','device','character','portrait-style','pc-height','mobile-height','pc-pscale','mobile-pscale','pc-bgscale','mobile-bgscale',
-  'pc-bgx','pc-bgy','mobile-bgx','mobile-bgy','pc-px','pc-py','mobile-px','mobile-py',
-  'pc-duolx','pc-duoly','pc-duolscale','mobile-duolx','mobile-duoly','mobile-duolscale',
-  'pc-duorx','pc-duory','pc-duorscale','mobile-duorx','mobile-duory','mobile-duorscale',
-  'dim','bgdim','duo-silhouette','speaker','dialogue','evidence-title','evidence-description'
-];
-function renderScale(){for(const f of frames){const stage=$(f.id+'-stage');const iframe=$(f.id+'-frame');const visible=stage.getBoundingClientRect().width||390;const s=visible/f.width;stage.style.height=(f.height*s)+'px';iframe.style.width=f.width+'px';iframe.style.height=f.height+'px';iframe.style.transform=`scale(${s})`;}}
-function payload(){return{...urls,portraitFilename:names.portrait,type:$('type').value,character:$('character').value==='auto'?'':$('character').value,portraitStyle:$('portrait-style').value,dim:Number($('dim').value)/100,bgShade:Number($('bgdim').value)/100,duoSilhouette:$('duo-silhouette').checked,speaker:$('speaker').value,dialogue:$('dialogue').value,evidenceTitle:$('evidence-title').value,evidenceDescription:$('evidence-description').value,duoLeft:urls.portrait};}
-function framePayload(id){
-  return {
-    ...payload(),
-    baseHeightPct:Number($(id+'-height').value),
-    backgroundScalePct:Number($(id+'-bgscale').value),
-    portraitScalePct:Number($(id+'-pscale').value),
-    backgroundOffsetX:Number($(id+'-bgx').value),
-    backgroundOffsetY:Number($(id+'-bgy').value),
-    portraitOffsetX:Number($(id+'-px').value),
-    portraitOffsetY:Number($(id+'-py').value),
-    duoLeftX:Number($(id+'-duolx').value),
-    duoLeftY:Number($(id+'-duoly').value),
-    duoLeftScalePct:Number($(id+'-duolscale').value),
-    duoRightX:Number($(id+'-duorx').value),
-    duoRightY:Number($(id+'-duory').value),
-    duoRightScalePct:Number($(id+'-duorscale').value)
+(() => {
+  const OFFICIAL_ROOT = 'story-portraits/official/';
+  const TARGET_CONTENT_RATIO = 0.88;
+  const TARGET_BOTTOM_PAD_RATIO = 0.0085;
+  const $ = id => document.getElementById(id);
+  const els = {
+    layoutMode: $('layoutMode'), backgroundTone: $('backgroundTone'), normalizeToggle: $('normalizeToggle'), centerToggle: $('centerToggle'), resetButton: $('resetButton'), statusText: $('statusText'),
+    portraitA: $('portraitA'), portraitB: $('portraitB'), scaleA: $('scaleA'), scaleB: $('scaleB'), xA: $('xA'), xB: $('xB'), yA: $('yA'), yB: $('yB'),
+    scaleAValue: $('scaleAValue'), scaleBValue: $('scaleBValue'), xAValue: $('xAValue'), xBValue: $('xBValue'), yAValue: $('yAValue'), yBValue: $('yBValue'),
+    metricsA: $('metricsA'), metricsB: $('metricsB'),
+    pcStage: $('pcStage'), mobileStage: $('mobileStage'), pcEmpty: $('pcEmpty'), mobileEmpty: $('mobileEmpty'), pcSummary: $('pcSummary'), mobileSummary: $('mobileSummary'),
+    slotB: $('slotB')
   };
-}
-function reflectValues(){
-  const valuePairs=[
-    ['pc-height-value','pc-height','%'],['mobile-height-value','mobile-height','%'],['pc-pscale-value','pc-pscale','%'],['mobile-pscale-value','mobile-pscale','%'],
-    ['pc-bgscale-value','pc-bgscale','%'],['mobile-bgscale-value','mobile-bgscale','%'],['dim-value','dim','%'],['bgdim-value','bgdim','%'],
-    ['pc-bgx-value','pc-bgx','px'],['pc-bgy-value','pc-bgy','px'],['mobile-bgx-value','mobile-bgx','px'],['mobile-bgy-value','mobile-bgy','px'],
-    ['pc-px-value','pc-px','px'],['pc-py-value','pc-py','px'],['mobile-px-value','mobile-px','px'],['mobile-py-value','mobile-py','px'],
-    ['pc-duolx-value','pc-duolx','px'],['pc-duoly-value','pc-duoly','px'],['pc-duolscale-value','pc-duolscale','%'],['mobile-duolx-value','mobile-duolx','px'],['mobile-duoly-value','mobile-duoly','px'],['mobile-duolscale-value','mobile-duolscale','%'],
-    ['pc-duorx-value','pc-duorx','px'],['pc-duory-value','pc-duory','px'],['pc-duorscale-value','pc-duorscale','%'],['mobile-duorx-value','mobile-duorx','px'],['mobile-duory-value','mobile-duory','px'],['mobile-duorscale-value','mobile-duorscale','%']
-  ];
-  valuePairs.forEach(([out,input,suffix])=>{$(out).textContent=$(input).value+suffix;});
-}
-function update(){frames.forEach(f=>{const data={type:'shindo-image-sim:update',payload:framePayload(f.id)};$(f.id+'-frame').contentWindow?.postMessage(data,'*')});reflectValues();renderScale()}
-function loadImage(input,key){const file=input.files&&input.files[0];if(!file)return;if(!file.type.startsWith('image/')){$('status').textContent='이미지 파일을 선택해줘.';return} const reader=new FileReader();reader.onload=()=>{urls[key]=reader.result;names[key]=file.name.normalize('NFC');$('status').textContent=file.name+' 로딩 완료';update()};reader.onerror=()=>{$('status').textContent='이미지를 읽지 못했어.'};reader.readAsDataURL(file)}
-[['upload-bg','background'],['upload-portrait','portrait'],['upload-art','illustration'],['upload-right','duoRight']].forEach(([id,k])=>$(id).addEventListener('change',e=>loadImage(e.target,k)));
-inputIds.forEach(id=>$(id).addEventListener(['speaker','dialogue','evidence-title','evidence-description'].includes(id)||id.includes('height')||id.includes('scale')||id.endsWith('px')||id.endsWith('py')||id.endsWith('bgx')||id.endsWith('bgy')||id.endsWith('duolx')||id.endsWith('duoly')||id.endsWith('duorx')||id.endsWith('duory')||id==='dim'||id==='bgdim'?'input':'change',()=>{if(id==='device')document.body.className='mode-'+$('device').value;update()}));
-document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{const p=b.dataset.preset;$('type').value=p==='silhouette'?'portrait':p;$('portrait-style').value=p==='silhouette'?'silhouette':'normal';update()}));
-$('reset-height').addEventListener('click',()=>{$('pc-height').value='66';$('mobile-height').value='60';update()});
-$('reset-pscale').addEventListener('click',()=>{$('pc-pscale').value='100';$('mobile-pscale').value='100';update()});
-$('reset-bgscale').addEventListener('click',()=>{$('pc-bgscale').value='100';$('mobile-bgscale').value='100';update()});
-$('reset-bgpos').addEventListener('click',()=>{['pc-bgx','pc-bgy','mobile-bgx','mobile-bgy'].forEach(id=>$(id).value='0');update()});
-$('reset-ppos').addEventListener('click',()=>{['pc-px','pc-py','mobile-px','mobile-py'].forEach(id=>$(id).value='0');update()});
-$('reset-duo').addEventListener('click',()=>{['pc-duolx','pc-duoly','mobile-duolx','mobile-duoly','pc-duorx','pc-duory','mobile-duorx','mobile-duory'].forEach(id=>$(id).value='0');['pc-duolscale','mobile-duolscale','pc-duorscale','mobile-duorscale'].forEach(id=>$(id).value='100');update()});
-window.addEventListener('message',e=>{if(e.data?.type==='shindo-image-sim:ready')update()});window.addEventListener('resize',renderScale);new ResizeObserver(renderScale).observe($('screens'));reflectValues();renderScale();
-</script></body></html>
+  const spriteNodes = new Map();
+  const metricsCache = new Map();
+  let portraitList = [];
+
+  function encodePath(path){
+    return OFFICIAL_ROOT + path.split('/').map(segment => encodeURIComponent(segment)).join('/');
+  }
+
+  function formatPercent(value){ return `${value}%`; }
+  function formatPx(value){ return `${value}px`; }
+  function clamp(n,min,max){ return Math.min(max,Math.max(min,n)); }
+
+  function updateControlValues(){
+    [['scaleA','scaleAValue','%'],['scaleB','scaleBValue','%'],['xA','xAValue','px'],['xB','xBValue','px'],['yA','yAValue','px'],['yB','yBValue','px']].forEach(([inputId,outId,unit])=>{
+      const value = $(inputId).value;
+      $(outId).textContent = unit==='%' ? `${value}%` : `${value}px`;
+    });
+  }
+
+  async function loadManifest(){
+    const source = await fetch('story-v37.js').then(r => {
+      if(!r.ok) throw new Error('story-v37.js를 읽지 못했습니다.');
+      return r.text();
+    });
+    const match = source.match(/const\s+OFFICIAL_PORTRAITS\s*=\s*Object\.freeze\((\{[\s\S]*?\})\);/);
+    if(!match) throw new Error('OFFICIAL_PORTRAITS 목록을 찾지 못했습니다.');
+    const mapping = JSON.parse(match[1]);
+    portraitList = [...new Set(Object.values(mapping))].sort((a,b)=>a.localeCompare(b,'ko'));
+    const datalist = $('portraitOptions');
+    const fragment = document.createDocumentFragment();
+    portraitList.forEach(path => {
+      const option = document.createElement('option');
+      option.value = path;
+      fragment.appendChild(option);
+    });
+    datalist.appendChild(fragment);
+    els.statusText.textContent = `공식 일러스트 ${portraitList.length}장을 불러왔어. 입력창에 파일명을 검색해봐.`;
+  }
+
+  async function analyzePortrait(path){
+    if(!path) return null;
+    if(metricsCache.has(path)) return metricsCache.get(path);
+    const promise = new Promise((resolve,reject)=>{
+      const img = new Image();
+      img.onload = () => {
+        try{
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+          const ctx = canvas.getContext('2d', {willReadFrequently:true});
+          ctx.drawImage(img,0,0);
+          const {data,width,height} = ctx.getImageData(0,0,canvas.width,canvas.height);
+          let minX=width,minY=height,maxX=-1,maxY=-1;
+          for(let y=0;y<height;y++){
+            for(let x=0;x<width;x++){
+              const alpha = data[(y*width+x)*4+3];
+              if(alpha>6){
+                if(x<minX) minX=x;
+                if(y<minY) minY=y;
+                if(x>maxX) maxX=x;
+                if(y>maxY) maxY=y;
+              }
+            }
+          }
+          if(maxX<0){
+            resolve({ path, url: img.src, naturalWidth: width, naturalHeight: height, bboxWidth: width, bboxHeight: height, heightRatio:1, widthRatio:1, centerOffsetRatio:0, bottomPadRatio:0 });
+            return;
+          }
+          const bboxWidth = maxX-minX+1;
+          const bboxHeight = maxY-minY+1;
+          const bboxCenterX = (minX+maxX+1)/2;
+          resolve({
+            path, url: img.src, naturalWidth: width, naturalHeight: height,
+            bboxWidth, bboxHeight,
+            heightRatio: bboxHeight/height,
+            widthRatio: bboxWidth/width,
+            centerOffsetRatio: (bboxCenterX - width/2)/height,
+            bottomPadRatio: (height-(maxY+1))/height
+          });
+        }catch(error){ reject(error); }
+      };
+      img.onerror = () => reject(new Error(`이미지를 불러오지 못했습니다: ${path}`));
+      img.src = encodePath(path);
+    });
+    metricsCache.set(path,promise);
+    return promise;
+  }
+
+  function getSlotState(slot){
+    const suffix = slot==='A' ? 'A' : 'B';
+    return {
+      path: els[`portrait${suffix}`].value.trim(),
+      scale: Number(els[`scale${suffix}`].value),
+      userX: Number(els[`x${suffix}`].value),
+      userY: Number(els[`y${suffix}`].value)
+    };
+  }
+
+  function getStageConfig(stageEl, mobile){
+    const rect = stageEl.getBoundingClientRect();
+    const layout = els.layoutMode.value;
+    return {
+      width: rect.width,
+      height: rect.height,
+      mobile,
+      layout,
+      anchorA: layout==='solo' ? 50 : (mobile ? 29 : 31),
+      anchorB: layout==='solo' ? 50 : (mobile ? 71 : 69),
+      baseHeight: layout==='solo'
+        ? (mobile ? Math.min(rect.height*0.60,620) : Math.min(rect.height*0.66,740))
+        : (mobile ? Math.min(rect.height*0.32,375) : Math.min(rect.height*0.47,560)),
+      maxWidth: layout==='solo'
+        ? rect.width*0.95
+        : rect.width*(mobile ? 0.47 : 0.48),
+      bottom: layout==='solo'
+        ? (mobile ? 170 : clamp(rect.height*0.23,160,245))
+        : (mobile ? clamp(rect.height*0.21,165,230) : clamp(rect.height*0.23,155,245))
+    };
+  }
+
+  function ensureSprite(stageId, slot){
+    const key = `${stageId}-${slot}`;
+    if(spriteNodes.has(key)) return spriteNodes.get(key);
+    const img = document.createElement('img');
+    img.className = 'sprite';
+    img.alt = '';
+    spriteNodes.set(key,img);
+    $(stageId).appendChild(img);
+    return img;
+  }
+
+  function applyBackgroundTone(){
+    const tone = els.backgroundTone.value;
+    [['pcStage','pcScreen'],['mobileStage','mobileScreen']].forEach(([stageId,screenId])=>{
+      const screen=$(screenId);
+      if(tone==='dark') screen.style.filter='brightness(.78) saturate(.9)';
+      else if(tone==='light') screen.style.filter='brightness(1.12) saturate(1.02)';
+      else screen.style.filter='';
+    });
+  }
+
+  function visibleContentHeight(metrics, displayHeight, autoScale){
+    return displayHeight * autoScale * metrics.heightRatio;
+  }
+
+  function visibleContentWidth(metrics, displayHeight, autoScale){
+    return displayHeight * autoScale * (metrics.naturalWidth/metrics.naturalHeight) * metrics.widthRatio;
+  }
+
+  function computePlacement(metrics, slotState, config){
+    const rawDisplayHeight = Math.min(config.baseHeight, config.maxWidth * (metrics.naturalHeight / metrics.naturalWidth));
+    let autoScale = 1;
+    if(els.normalizeToggle.checked){
+      autoScale = (config.baseHeight * TARGET_CONTENT_RATIO) / Math.max(1, rawDisplayHeight * metrics.heightRatio);
+      autoScale = clamp(autoScale, 0.7, 1.35);
+    }
+    const manualScale = slotState.scale / 100;
+    const finalScale = autoScale * manualScale;
+    let autoShiftX = 0;
+    if(els.centerToggle.checked){
+      autoShiftX = -metrics.centerOffsetRatio * rawDisplayHeight * autoScale;
+    }
+    const autoShiftY = els.normalizeToggle.checked
+      ? (metrics.bottomPadRatio - TARGET_BOTTOM_PAD_RATIO) * rawDisplayHeight * autoScale
+      : 0;
+    return {
+      rawDisplayHeight,
+      finalScale,
+      autoScale,
+      leftPercent: config.layout==='solo' ? 50 : (slotState === null ? 50 : undefined),
+      translateX: autoShiftX + slotState.userX,
+      translateY: autoShiftY + slotState.userY,
+      visibleHeight: visibleContentHeight(metrics, rawDisplayHeight, finalScale),
+      visibleWidth: visibleContentWidth(metrics, rawDisplayHeight, finalScale)
+    };
+  }
+
+  function renderStage(stageId, mobile, metricsA, metricsB){
+    const stage = $(stageId);
+    const empty = $(stageId==='pcStage' ? 'pcEmpty' : 'mobileEmpty');
+    const config = getStageConfig(stage, mobile);
+    const layout = els.layoutMode.value;
+    const slotA = getSlotState('A');
+    const slotB = getSlotState('B');
+    empty.style.display = (slotA.path || (layout==='duo' && slotB.path)) ? 'none' : 'block';
+
+    const sprites = {
+      A: ensureSprite(stageId,'A'),
+      B: ensureSprite(stageId,'B')
+    };
+
+    function hide(slot){ sprites[slot].style.display='none'; }
+    function show(slot, metrics, slotState, anchorPercent){
+      const placement = computePlacement(metrics, slotState, config);
+      const img = sprites[slot];
+      img.src = metrics.url;
+      img.style.display = 'block';
+      img.style.left = `${anchorPercent}%`;
+      img.style.bottom = `${config.bottom}px`;
+      img.style.height = `${placement.rawDisplayHeight}px`;
+      img.style.maxWidth = `${config.maxWidth}px`;
+      img.style.transform = `translate(calc(-50% + ${placement.translateX}px), ${placement.translateY}px) scale(${placement.finalScale})`;
+      img.dataset.visibleHeight = String(placement.visibleHeight.toFixed(2));
+      img.dataset.visibleWidth = String(placement.visibleWidth.toFixed(2));
+      img.dataset.autoScale = String(placement.autoScale.toFixed(4));
+    }
+
+    if(metricsA) show('A',metricsA,slotA, config.anchorA); else hide('A');
+    if(layout==='duo' && metricsB) show('B',metricsB,slotB, config.anchorB); else hide('B');
+
+    if(layout==='solo'){ hide('B'); }
+  }
+
+  function updateMetricsBlock(targetEl, metrics, slotState, stageConfig){
+    if(!metrics){ targetEl.textContent='이미지를 선택하면 분석값이 표시돼.'; return; }
+    const placement = computePlacement(metrics, slotState, stageConfig);
+    const lines = [
+      `파일: ${metrics.path}`,
+      `원본 크기: ${metrics.naturalWidth} × ${metrics.naturalHeight}`,
+      `실제 보이는 영역: ${metrics.bboxWidth} × ${metrics.bboxHeight}`,
+      `실제 높이 비율: ${(metrics.heightRatio*100).toFixed(2)}%`,
+      `실제 너비 비율: ${(metrics.widthRatio*100).toFixed(2)}%`,
+      `자동 보정 배율: ×${placement.autoScale.toFixed(3)}`,
+      `적용 후 체감 높이: ${placement.visibleHeight.toFixed(1)}px`
+    ];
+    if(els.centerToggle.checked){
+      lines.push(`자동 중심 보정: ${(-metrics.centerOffsetRatio * placement.rawDisplayHeight * placement.autoScale).toFixed(1)}px`);
+    }
+    targetEl.textContent = lines.join('\n');
+  }
+
+  async function rerender(){
+    updateControlValues();
+    applyBackgroundTone();
+    const layout = els.layoutMode.value;
+    els.slotB.style.opacity = layout==='solo' ? '.55' : '1';
+    els.slotB.style.pointerEvents = layout==='solo' ? 'none' : 'auto';
+    els.pcSummary.textContent = layout==='solo' ? '16:9 · 게임형 1인 배치' : '16:9 · 게임형 2인 배치';
+    els.mobileSummary.textContent = layout==='solo' ? '390×844 · 게임형 1인 배치' : '390×844 · 게임형 2인 배치';
+
+    try{
+      const [metricsA, metricsB] = await Promise.all([
+        analyzePortrait(els.portraitA.value.trim()),
+        layout==='duo' ? analyzePortrait(els.portraitB.value.trim()) : Promise.resolve(null)
+      ]);
+      renderStage('pcStage', false, metricsA, metricsB);
+      renderStage('mobileStage', true, metricsA, metricsB);
+      updateMetricsBlock(els.metricsA, metricsA, getSlotState('A'), getStageConfig(els.pcStage,false));
+      updateMetricsBlock(els.metricsB, metricsB, getSlotState('B'), getStageConfig(els.pcStage,false));
+      els.statusText.textContent = '미리보기를 갱신했어.';
+    }catch(error){
+      console.error(error);
+      els.statusText.textContent = error?.message || '미리보기를 갱신하지 못했어.';
+    }
+  }
+
+  function resetControls(){
+    ['scaleA','scaleB'].forEach(id=>$(id).value='100');
+    ['xA','xB','yA','yB'].forEach(id=>$(id).value='0');
+    rerender();
+  }
+
+  async function init(){
+    updateControlValues();
+    const defaultA='wonwoo/원우_바디1_기본.png';
+    const defaultB='minghao/명호_바디2_기본.png';
+    try{
+      await loadManifest();
+      if(portraitList.includes(defaultA)) els.portraitA.value = defaultA;
+      if(portraitList.includes(defaultB)) els.portraitB.value = defaultB;
+    }catch(error){
+      console.error(error);
+      els.statusText.textContent = error?.message || '초기화에 실패했어.';
+    }
+    ['layoutMode','backgroundTone','normalizeToggle','centerToggle','portraitA','portraitB'].forEach(id=>$(id).addEventListener('change', rerender));
+    ['scaleA','scaleB','xA','xB','yA','yB'].forEach(id=>$(id).addEventListener('input', rerender));
+    els.resetButton.addEventListener('click', resetControls);
+    window.addEventListener('resize', rerender, {passive:true});
+    rerender();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
