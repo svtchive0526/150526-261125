@@ -4391,19 +4391,40 @@ function v367DuoReferenceTopY(){
  const valid=tops.filter(Number.isFinite);
  return valid.length?Math.min(...valid):vh-bottom-cssHeight*.92;
 }
-function v366SoloOffsetY(name,relative,metrics,profile){
- const base=v366ParsePixelValue(profile?.y||'0');
- const headTop=v366HeadTopRatio(relative,metrics?.headTopRatio,metrics?.faceData);
- if(!metrics||!Number.isFinite(headTop))return base;
- const vh=window.innerHeight,vw=window.innerWidth;
- const special=portrait.classList.contains('special-solo');
- // Preserve the existing 1-person scale, size, and bottom position; change Y only.
- const bottom=(vw<=750)?170:Math.max(160,Math.min(vh*.23,245));
- const paintedHeight=v359SoloBoxContentHeight(name,metrics);
- const existingHeadY=vh-bottom-paintedHeight*(1-headTop)+base;
- const targetHeadY=v367DuoReferenceTopY();
- return Math.round((base+targetHeadY-existingHeadY)*100)/100;
+// V368: A SOLO uses the same per-person visual size and head line as the
+// existing two-person composition. Do not move/resize any duo portrait.
+function v368SoloLayout(name,relative,metrics){
+ const vw=window.innerWidth,vh=window.innerHeight;
+ const mobile=vw<=650;  // duo breakpoint, not the old 750px solo breakpoint
+ const alphaBounds=V360_DUO_BOUNDS[relative];
+ const validHead=v366HeadTopRatio(relative,metrics?.headTopRatio,metrics?.faceData);
+ const top=Number.isFinite(validHead)?validHead:(alphaBounds?.[0]??0.12);
+ const alphaBottom=Math.max(top+.08,Math.min(1,alphaBounds?.[1]??metrics?.bottomRatio??.99));
+ const naturalW=metrics?.width||2550,naturalH=metrics?.height||2112;
+ let cssHeight,paintedHeight,maxWidth,bottom,offsetY;
+ if(mobile){
+  // V360 two-person mobile shows 45vh worth of VISIBLE portrait art.
+  const visibleHeight=Math.min(vh*.45,440);
+  const fraction=Math.max(.08,alphaBottom-top);
+  cssHeight=visibleHeight/fraction;
+  paintedHeight=cssHeight; // mobile duo removes image max-width
+  maxWidth='none';
+  const bottomAnchor=Math.min(230,Math.max(165,vh*.21));
+  bottom=bottomAnchor-(1-alphaBottom)*cssHeight;
+  offsetY=0; // The native mobile duo top is exactly vh-anchor-visibleHeight
+ }else{
+  // V361 two-person PC uses 47vh, 48vw and no additional per-person scale.
+  cssHeight=Math.min(vh*.47,560);
+  const maxW=vw*.48;
+  maxWidth=`${maxW}px`;
+  paintedHeight=Math.min(cssHeight,maxW*naturalH/naturalW);
+  bottom=Math.max(155,Math.min(vh*.23,245));
+  const nativeHeadY=vh-bottom-paintedHeight*(1-top);
+  offsetY=v367DuoReferenceTopY()-nativeHeadY;
+ }
+ return {cssHeight,paintedHeight,maxWidth,bottom,offsetY,top,alphaBottom};
 }
+
 function v366HeadTopForDuo(relative,bounds){
  return v366HeadTopRatio(relative,Array.isArray(bounds)?bounds[0]:null,null);
 }
@@ -4519,50 +4540,29 @@ function v359SoloMetricsForKey(key){
  return v365FaceMetricsForSolo(relative,V359_SOLO_RUNTIME_CACHE.get(relative)?.result||null);
 }
 function v359SoloBoxContentHeight(name,metrics){
- const mobile=window.innerWidth<=750;
- const vh=window.innerHeight;
- const vw=window.innerWidth;
- const special=portrait.classList.contains('special-solo');
- const profile=getPortraitProfile(name);
- let h=mobile?Math.min(.60*vh,620):Math.min(.66*vh,740);
- let maxWidth=.95*vw;
- let drawScale=Number(profile.scale)||1;
- if(special){
-  h=mobile?Math.min(.49*vh,600):Math.min(.56*vh,650);
-  maxWidth=Infinity;
-  drawScale=1; // .special-solo has --portrait-scale:1!important.
- }else{
-  if(profile.height==='min(60vh,620px)')h=Math.min(.60*vh,620);
-  if(profile.maxWidth==='none')maxWidth=Infinity;
- }
- if(!(metrics.width>0&&metrics.height>0))return h*drawScale;
- const naturalBoxWidth=h*metrics.width/metrics.height;
- const visibleWidth=Math.min(naturalBoxWidth,maxWidth);
- // When max-width constrains the element, object-fit:contain reduces the
- // rendered artwork's height; alpha centering must use that height, not the box.
- return Math.min(h,visibleWidth*metrics.height/metrics.width)*drawScale;
-}
-function v359ApplySoloProfile(name,metrics){
- const profile=getPortraitProfile(name);
- portrait.style.setProperty('--portrait-scale',String(profile.scale??1));
  const relative=officialKeyToFilename((portrait.classList.contains('special-solo')?'solo-':'')+name)||officialKeyToFilename(name);
- portrait.style.setProperty('--portrait-offset-y',`${v366SoloOffsetY(name,relative,metrics,profile)}px`);
- portrait.style.bottom=profile.bottom||'';
- portrait.style.height=profile.height||'';
- portrait.style.maxWidth=profile.maxWidth||'';
- portrait.style.width='auto';
- let shift=0;
- if(metrics){shift=metrics.shiftRatio*v359SoloBoxContentHeight(name,metrics)}
- else shift=junhuiCenterCompensation(name); // Safe fallback for new/unavailable assets.
- // V362: the mobile Elder artwork is visibly left of the viewport center
- // even after the alpha bounds correction (verified against the supplied capture).
- // Keep the normal alpha correction for all others and retain Elder's PC position.
+ return v368SoloLayout(name,relative,metrics).paintedHeight;
+}
+
+function v359ApplySoloProfile(name,metrics){
+ const relative=officialKeyToFilename((portrait.classList.contains('special-solo')?'solo-':'')+name)||officialKeyToFilename(name);
+ const layout=v368SoloLayout(name,relative,metrics);
+ // CSS's old .special-solo height/bottom !important values must not override
+ // these dimensions. Apply the finalized layout before rendering the PNG.
+ portrait.style.setProperty('--portrait-scale','1','important');
+ portrait.style.setProperty('height',`${layout.cssHeight.toFixed(3)}px`,'important');
+ portrait.style.setProperty('max-width',layout.maxWidth,'important');
+ portrait.style.setProperty('width','auto');
+ portrait.style.setProperty('bottom',`${layout.bottom.toFixed(3)}px`,'important');
+ portrait.style.setProperty('--portrait-offset-y',`${layout.offsetY.toFixed(2)}px`);
+ let shift=metrics?metrics.shiftRatio*layout.paintedHeight:junhuiCenterCompensation(name);
  if(/^elder-/.test(name)&&window.innerWidth<=750&&!metrics?.faceCentered)shift+=window.innerWidth*.089;
  shift=v365ClampSoloFaceShift(shift,metrics,name);
- const x=profile.x||'-50%';
+ const x=getPortraitProfile(name).x||'-50%';
  shift=Math.round(shift*100)/100;
  portrait.style.setProperty('--portrait-offset-x',Math.abs(shift)>=.01?`calc(${x} ${shift>=0?'+':'-'} ${Math.abs(shift)}px)`:x);
 }
+
 function v359AnalyzeNewSoloImage(path){
  const image=new Image();image.decoding='async';
  return new Promise((resolve,reject)=>{
@@ -4580,9 +4580,12 @@ function v359AnalyzeNewSoloImage(path){
   const ctx=canvas.getContext('2d',{willReadFrequently:true});
   ctx.drawImage(image,0,0,pw,ph);
   const pixels=ctx.getImageData(0,0,pw,ph).data;
-  let left=pw,right=-1;
+  let left=pw,right=-1,topY=ph,bottomY=-1;
   for(let y=0;y<ph;y++)for(let x=0;x<pw;x++){
-   if(pixels[(y*pw+x)*4+3]>0){if(x<left)left=x;if(x>right)right=x}
+   if(pixels[(y*pw+x)*4+3]>0){
+    if(x<left)left=x;if(x>right)right=x;
+    if(y<topY)topY=y;if(y>bottomY)bottomY=y;
+   }
   }
   if(right<0)throw new Error('Fully transparent solo portrait');
   const scan=(sx,ex,reverse)=>{
@@ -4604,8 +4607,9 @@ function v359AnalyzeNewSoloImage(path){
   const minX=scan(l0,l1,false),maxX=scan(r0,r1,true);
   const alphaShift=(width/2-(minX+(maxX+1))/2)/height;
   const face=v365DetectFaceRatio(image);
-  const headTopRatio=v366HeadTopFromFace(face,null);
-  return face?{shiftRatio:alphaShift+(face[0]-alphaShift)*V365_FACE_BLEND,width,height,faceCentered:true,faceData:face,headTopRatio}:{shiftRatio:alphaShift,width,height,headTopRatio};
+  const headTopRatio=v366HeadTopFromFace(face,topY/ph);
+  const bottomRatio=(bottomY+1)/ph;
+  return face?{shiftRatio:alphaShift+(face[0]-alphaShift)*V365_FACE_BLEND,width,height,faceCentered:true,faceData:face,headTopRatio,bottomRatio}:{shiftRatio:alphaShift,width,height,headTopRatio,bottomRatio};
  });
 }
 function v359GetSoloMetrics(relative,path){
