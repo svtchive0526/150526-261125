@@ -5880,8 +5880,9 @@ if(scene.specialMinghao){
   window.SHINDO_markCharacterMet?.('한솔');
  }
 }
-if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.artHall||scene.livingHall||scene.mainHall||scene.confMorning||scene.gongyangHall||scene.eveningDay2||scene.v316Confession||scene.day3Morning||scene.v270Wiban)&&(scene.portrait||duoVisible))){
- if(scene.clearPortrait){currentPortrait='';portrait.hidden=true}
+if(scene.kind==='dialogue'||(scene.kind==='narration'&&(scene.prayerRoom||scene.artHall||scene.livingHall||scene.mainHall||scene.confMorning||scene.gongyangHall||scene.eveningDay2||scene.v316Confession||scene.day3Morning||scene.v270Wiban||scene.v344Hyungje)&&(scene.portrait||duoVisible))){
+ // V347: [형제] narration without a specified portrait must not retain the previous character.
+ if(scene.clearPortrait||(scene.v344Hyungje&&!scene.portrait&&!duoVisible)){currentPortrait='';portrait.hidden=true}
  if(duoVisible){currentPortrait='';portrait.dataset.officialRequest=String((Number(portrait.dataset.officialRequest)||0)+1);portrait.hidden=true;portrait.removeAttribute('src');} // V116: prevent lingering solo portrait behind two-person scene
  if(inDay2Square && !scene.portrait)currentPortrait='';
  if((scene.livingHall||scene.mainHall)&&!scene.portrait)currentPortrait='';
