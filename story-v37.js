@@ -3082,7 +3082,11 @@ const V316_PM_DAY_KEY='shindo_pm_accusation_day_v316';
 const V316_PM_TARGET_KEY='shindo_pm_accusation_target_v316';
 // V317: temporary feedback-only override; never modify character unlock records.
 const V317_CONF_TEST_KEY='shindo_v317_day4_confession_test';
+// V345: this test-only switch never modifies the stored affinity map.
+const V345_HYUNGJE_TEST_KEY='shindo_v345_hyungje_test';
+let v345StartingHyungjeTest=false;
 function v317ConfTestActive(){return sessionStorage.getItem(V317_CONF_TEST_KEY)==='1'}
+function v345HyungjeTestActive(){return sessionStorage.getItem(V345_HYUNGJE_TEST_KEY)==='1'&&v317ConfTestActive()}
 const v316Scene=(kind,text='',speaker='',extra={})=>({kind,text,...(speaker?{speaker}:{}),v316Confession:true,eveningLocation:'inside',...extra,...(extra.v316Shade?{eveningShade:.6}:{})});
 const v344Scene=(kind,text='',speaker='',extra={})=>({kind,text,...(speaker?{speaker}:{}),v344Hyungje:true,...extra});
 const V316_PM_START=scenes.length;
@@ -3246,7 +3250,7 @@ function v316AfternoonStart(day){
  v334StopTongkwaeBgm();
  const d=Number(day);if(![4,5,6].includes(d))return false;
  // Ordinary gameplay must always obey actual character-name unlocks.
- if(!v317ConfTestEntering)sessionStorage.removeItem(V317_CONF_TEST_KEY);
+ if(!v317ConfTestEntering){sessionStorage.removeItem(V317_CONF_TEST_KEY);sessionStorage.removeItem(V345_HYUNGJE_TEST_KEY);}
  v316StopTick();v316ClearDeadline();v320StopTimerDone();v322StopTimerIng();
  localStorage.setItem(V316_PM_DAY_KEY,String(d));
  localStorage.setItem('shindo_current_story_day_v109',String(d));
@@ -3262,6 +3266,8 @@ function v316AfternoonStart(day){
 // The test bypasses only the twelve name-unlock filters in the target grid.
 // Authored S01 outcomes remain intact; unauthored accusation results remain pending.
 function v317StartDay4ConfessionTest(){
+ // Opening the ordinary Day-4 test must not inherit a previous Hyungje override.
+ if(!v345StartingHyungjeTest)sessionStorage.removeItem(V345_HYUNGJE_TEST_KEY);
  v317ConfTestEntering=true;
  sessionStorage.setItem(V317_CONF_TEST_KEY,'1');
  let ok=false;
@@ -3276,6 +3282,22 @@ function v317StartDay4ConfessionTest(){
  return ok;
 }
 window.SHINDO_startDay4ConfessionTestV317=v317StartDay4ConfessionTest;
+function v345StartJunhuiHyungjeEndingTest(){
+ // Reuse the established Day-4 confession test entrance and unlock display;
+ // the only additional bypass is Minghao's score for an actual Junhui accusation.
+ v345StartingHyungjeTest=true;
+ let ok=false;
+ try{
+  sessionStorage.setItem(V345_HYUNGJE_TEST_KEY,'1');
+  ok=v317StartDay4ConfessionTest()===true;
+ }catch(error){console.error('[SHINDO V345] Junhui/Hyungje test failed',error)}
+ finally{
+  v345StartingHyungjeTest=false;
+  if(!ok)sessionStorage.removeItem(V345_HYUNGJE_TEST_KEY);
+ }
+ return ok;
+}
+window.SHINDO_startJunhuiHyungjeEndingTestV345=v345StartJunhuiHyungjeEndingTest;
 let v316TickTimer=null,v316DeadlineTimer=null;
 // V320: Only the 1.95-second-and-later segment of the supplied timer sound
 // is distributed, avoiding slow seeks on the exact 13-second deadline.
@@ -3373,8 +3395,8 @@ function v316ShowAccuseChoice(){
   window.SHINDO_addPlayRecord?.('선택','오후 고해소: '+options[which],Number(localStorage.getItem(V316_PM_DAY_KEY))||4);
   v316StopTick();
   if(which===0){v339ArmGyeolsokBgm();v320PreloadTimerDone();v316Go(V316_PM_TARGET_SCREEN)}
-  else if(which===1){storyBackdrop.style.filter='';v316Go(V316_PM_S01_START)}
-  else{storyBackdrop.style.filter='';v316Go(V326_PM_S03_START)}
+  else if(which===1){sessionStorage.removeItem(V345_HYUNGJE_TEST_KEY);storyBackdrop.style.filter='';v316Go(V316_PM_S01_START)}
+  else{sessionStorage.removeItem(V345_HYUNGJE_TEST_KEY);storyBackdrop.style.filter='';v316Go(V326_PM_S03_START)}
  });
 }
 function v316ShowS01Choice(){
@@ -3519,9 +3541,10 @@ function v335EnterGyeolsokRoute(){
 function v344ShouldRunHyungjeRoute(){
  const day=v335AccusationDay();
  if(day<4||day>6)return false;
- return v335MinghaoAffinity()>=60&&v335AccusationTarget()==='준휘';
+ return v335AccusationTarget()==='준휘' && (v335MinghaoAffinity()>=60 || v345HyungjeTestActive());
 }
 function v344EnterHyungjeRoute(){
+ sessionStorage.removeItem(V345_HYUNGJE_TEST_KEY);
  v316StopTick();locked=true;areaSkipButton.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  overlay.classList.remove('confession-fade','v336-gyeolsok-day-reveal','v339-gyeolsok-ending','v336-gyeolsok-art-fading');
  overlay.classList.add('v336-gyeolsok-preblack');
@@ -6009,7 +6032,7 @@ window.SHINDO_hasDay3RestartSnapshot=()=>{
 };
 
 // Temporary development shortcut: return to DAY 01 without resetting the mail login or browser state.
-function restartFromDay1(){v336StopGyeolsokBgm();v334StopTongkwaeBgm();v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));v304StopChanBgm();sessionStorage.removeItem(V303_JILSI_TEST_KEY);sessionStorage.removeItem(V303_JILSI_LOCK_BACKUP);['shindo_chan_event_day_v299','shindo_chan_memory_pair_v299','shindo_character_status_v299','shindo_jilsi_choice_day_v298','shindo_jilsi_choice_result_v298'].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay1(){sessionStorage.removeItem(V345_HYUNGJE_TEST_KEY);v336StopGyeolsokBgm();v334StopTongkwaeBgm();v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));v304StopChanBgm();sessionStorage.removeItem(V303_JILSI_TEST_KEY);sessionStorage.removeItem(V303_JILSI_LOCK_BACKUP);['shindo_chan_event_day_v299','shindo_chan_memory_pair_v299','shindo_character_status_v299','shindo_jilsi_choice_day_v298','shindo_jilsi_choice_result_v298'].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -6069,7 +6092,7 @@ function restartFromDay1(){v336StopGyeolsokBgm();v334StopTongkwaeBgm();v322StopT
 window.SHINDO_restartFromDay1=restartFromDay1;
 
 // V169: Test restart at the black "2일차" title, keeping the authenticated mail/browser.
-function restartFromDay2(){v336StopGyeolsokBgm();v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));[V312_DAY4_OFFICE_KEY,V312_DAY2_SLEEP_KEY,V312_DAY3_SLEEP_KEY,V312_DAY4_PRAYER_KEY].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
+function restartFromDay2(){sessionStorage.removeItem(V345_HYUNGJE_TEST_KEY);v336StopGyeolsokBgm();v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();v316ClearDeadline();[V316_PM_BRANCH_KEY,V316_PM_DAY_KEY,V316_PM_TARGET_KEY].forEach(k=>localStorage.removeItem(k));[V312_DAY4_OFFICE_KEY,V312_DAY2_SLEEP_KEY,V312_DAY3_SLEEP_KEY,V312_DAY4_PRAYER_KEY].forEach(k=>localStorage.removeItem(k));localStorage.removeItem('shindo_checkpoint_states_v295');localStorage.removeItem(V293_DAY3_NIGHT_KEY);overlay.classList.remove('v293-day4-title');localStorage.removeItem(V291_DAY3_PM_BRANCH_KEY);
  v289StopForestCue();
  localStorage.removeItem(V289_CONF_VISITS_KEY);
  localStorage.removeItem(V290_GONGYANG_DAYS_KEY);
@@ -8040,7 +8063,7 @@ function next(userAdvance=false){
  index=nextIndex;save();render();
 }
 overlay.addEventListener('click',()=>{audioContext();if(scenes[index]?.eveningLocation==='village'&&!v207EscapeMusicFading)v207StartEscapeMusic();if(v178BellWanted&&!v178BellStarted){prepareV178BellFromGesture();if(v178BellBuffer)startV178Bell();}next(true)});document.addEventListener('keydown',e=>{if(!overlay.classList.contains('active'))return;if(phoneDrawer.classList.contains('is-open'))return;/* Never hijack typing in feedback, including spaces and line breaks. */if(document.getElementById('shindo-feedback')?.classList.contains('sf-open'))return;if(e.target.closest('textarea,input,select,[contenteditable="true"],[role="textbox"]'))return;if(e.key===' '||e.key==='Enter'){e.preventDefault();audioContext();next(true)}});
-window.SHINDO_startStory=()=>{v336StopGyeolsokBgm();v344StopAftermathBgm();v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();overlay.querySelector('.shindo-v316-targets')?.remove();
+window.SHINDO_startStory=()=>{sessionStorage.removeItem(V345_HYUNGJE_TEST_KEY);v336StopGyeolsokBgm();v344StopAftermathBgm();v322StopTimerIng();v320StopTimerDone();sessionStorage.removeItem(V317_CONF_TEST_KEY);v316StopTick();overlay.querySelector('.shindo-v316-targets')?.remove();
  v304StopChanBgm();
  v281ClearFinalArtwork();
  v273StopKnock();v270StopMusic();v270StopBell();
