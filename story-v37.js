@@ -3301,22 +3301,24 @@ function v317StartDay4ConfessionTest(){
  return ok;
 }
 window.SHINDO_startDay4ConfessionTestV317=v317StartDay4ConfessionTest;
-function v345StartJunhuiHyungjeEndingTest(){
- // Reuse the established Day-4 confession test entrance and unlock display;
- // the only additional bypass is Minghao's score for an actual Junhui accusation.
+function v351StartHyungjeEndingTest(){
+ // Reuse the full Day-4 confession test entrance and unlock display.
+ // The affinity bypass applies only when the player accuses Junhui or Hansol.
  v345StartingHyungjeTest=true;
  let ok=false;
  try{
   sessionStorage.setItem(V345_HYUNGJE_TEST_KEY,'1');
   ok=v317StartDay4ConfessionTest()===true;
- }catch(error){console.error('[SHINDO V345] Junhui/Hyungje test failed',error)}
+ }catch(error){console.error('[SHINDO V351] Hyungje test failed',error)}
  finally{
   v345StartingHyungjeTest=false;
   if(!ok)sessionStorage.removeItem(V345_HYUNGJE_TEST_KEY);
  }
  return ok;
 }
-window.SHINDO_startJunhuiHyungjeEndingTestV345=v345StartJunhuiHyungjeEndingTest;
+window.SHINDO_startHyungjeEndingTestV351=v351StartHyungjeEndingTest;
+// Retain the previous entry point for any existing external test links.
+window.SHINDO_startJunhuiHyungjeEndingTestV345=v351StartHyungjeEndingTest;
 let v316TickTimer=null,v316DeadlineTimer=null;
 // V320: Only the 1.95-second-and-later segment of the supplied timer sound
 // is distributed, avoiding slow seeks on the exact 13-second deadline.
@@ -3565,7 +3567,7 @@ function v344ShouldRunHyungjeRoute(){
 function v346ShouldRunHyungjeHansolRoute(){
  const day=v335AccusationDay();
  if(day<4||day>6)return false;
- return v335AccusationTarget()==='한솔' && v335MinghaoAffinity()>=60;
+ return v335AccusationTarget()==='한솔' && (v335MinghaoAffinity()>=60 || v345HyungjeTestActive());
 }
 function v344EnterHyungjeRoute(){
  sessionStorage.removeItem(V345_HYUNGJE_TEST_KEY);
@@ -3582,6 +3584,7 @@ function v344EnterHyungjeRoute(){
  },950);
 }
 function v346EnterHyungjeHansolRoute(){
+ sessionStorage.removeItem(V345_HYUNGJE_TEST_KEY);
  v316StopTick();locked=true;areaSkipButton.hidden=true;overlay.querySelector('.vn-hint').style.display='none';
  overlay.classList.remove('confession-fade','v336-gyeolsok-day-reveal','v339-gyeolsok-ending','v336-gyeolsok-art-fading');
  overlay.classList.add('v336-gyeolsok-preblack');

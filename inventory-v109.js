@@ -718,7 +718,7 @@
   ['3일차 고해소','day3_confession'],
   ['3일차 오후활동','day3_afternoon'],
   ['4일차 고해소','day4_confession_test'],
-  ['준휘+형제 엔딩','junhui_hyungje_ending_test'],
+  ['형제 엔딩','hyungje_ending_test'],
   ['질시 엔딩','jilsi_ending_test']
  ];
  const grid=make('div','inv-checkpoint-grid');
@@ -760,13 +760,13 @@
     document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');
     return;
    }
-   if(id==='junhui_hyungje_ending_test'){
-    if(typeof window.SHINDO_startJunhuiHyungjeEndingTestV345!=='function'){
-     window.alert('준휘+형제 엔딩 테스트 기능을 불러오지 못했습니다. story-v37.js와 inventory-v109.js를 함께 배포했는지 확인해주세요.');return;
+   if(id==='hyungje_ending_test'){
+    if(typeof window.SHINDO_startHyungjeEndingTestV351!=='function'){
+     window.alert('형제 엔딩 테스트 기능을 불러오지 못했습니다. story-v37.js와 inventory-v109.js를 함께 배포했는지 확인해주세요.');return;
     }
-    if(!window.confirm('4일차 오후 고해소 처음부터 [형제] 엔딩을 테스트할까요?\n고발 대상은 해금 여부와 관계없이 12명 모두 표시됩니다.\n준휘를 선택해 고발 확정하면 명호 친밀도 60 조건만 건너뛰고 [형제] 엔딩으로 연결됩니다.\n다른 캐릭터 고발은 기존 조건대로 진행됩니다.'))return;
-    if(window.SHINDO_startJunhuiHyungjeEndingTestV345()!==true){
-     window.alert('준휘+형제 엔딩 테스트 화면으로 이동하지 못했습니다.');return;
+    if(!window.confirm('4일차 오후 고해소 처음부터 [형제] 엔딩을 테스트할까요?\n고발 대상은 해금 여부와 관계없이 12명 모두 표시됩니다.\n준휘 또는 한솔을 고발 확정하면 명호 친밀도와 관계없이 각자의 [형제] 엔딩으로 연결됩니다.\n다른 캐릭터 고발은 기존 조건대로 진행됩니다.'))return;
+    if(window.SHINDO_startHyungjeEndingTestV351()!==true){
+     window.alert('형제 엔딩 테스트 화면으로 이동하지 못했습니다.');return;
     }
     drawer.classList.remove('is-open');
     document.getElementById('shindo-phone-toggle')?.setAttribute('aria-expanded','false');
